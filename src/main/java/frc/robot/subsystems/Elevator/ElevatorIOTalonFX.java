@@ -1,4 +1,5 @@
 package frc.robot.subsystems.Elevator;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -9,15 +10,17 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.Elevator.ElevatorExtenderIO.ElevatorIOInputs;
+import frc.robot.subsystems.Elevator.ElevatorPivotIO.ElevatorPivotIOInputs;
 
-public class ElevatorPivotIOTalonFX implements ElevatorPivotIO{
-    private final TalonFX falcon;
-    private final StatusSignal<Double> pivotPosition;
-    private final StatusSignal<Double> pivotVelocity;
+public class ElevatorIOTalonFX implements ElevatorExtenderIO{
+      private final TalonFX falcon;
+    private final StatusSignal<Double> elevatorPosition;
+    private final StatusSignal<Double> elevatorVelocity;
     private final StatusSignal<Double> appliedVolts;
     private final StatusSignal<Double> currentAmps;
 
-    public ElevatorPivotIOTalonFX(int id) {
+    public ElevatorIOTalonFX(int id) {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.CurrentLimits.StatorCurrentLimit = 30;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -26,19 +29,19 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO{
 
         falcon.getConfigurator().apply(config);
 
-        pivotPosition = falcon.getPosition();
-        pivotVelocity = falcon.getVelocity();
+        elevatorPosition = falcon.getPosition();
+        elevatorVelocity = falcon.getVelocity();
         appliedVolts = falcon.getMotorVoltage();
         currentAmps = falcon.getStatorCurrent();
 
-        BaseStatusSignal.setUpdateFrequencyForAll(100, pivotPosition, pivotVelocity, appliedVolts, currentAmps);
+        BaseStatusSignal.setUpdateFrequencyForAll(100, elevatorPosition, elevatorVelocity, appliedVolts, currentAmps);
 
     }
-    @Override
     
-    public void updateInputs(ElevatorPivotIOInputs inputs) {
-        inputs.pivotPosition = Units.rotationsToDegrees(pivotPosition.getValueAsDouble());
-        inputs.pivotVelocity = Units.rotationsPerMinuteToRadiansPerSecond(pivotVelocity.getValueAsDouble());
+    @Override
+    public void updateInputs(ElevatorIOInputs inputs) {
+        inputs.elevatorPosition = Units.rotationsToDegrees(elevatorPosition.getValueAsDouble());
+        inputs.elevatorVelocity = Units.rotationsPerMinuteToRadiansPerSecond(elevatorVelocity.getValueAsDouble());
         inputs.appliedVolts = appliedVolts.getValueAsDouble();
         inputs.currentAmps = currentAmps.getValueAsDouble();
         
@@ -71,6 +74,3 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO{
         falcon.getConfigurator().apply(config);
     }
 }
-
-
-
