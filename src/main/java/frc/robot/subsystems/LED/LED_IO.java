@@ -4,18 +4,19 @@
 
 package frc.robot.subsystems.LED;
 
+import frc.robot.Constants.LED_STATE;
 import org.littletonrobotics.junction.AutoLog;
 
 /** Add your docs here. */
 public interface LED_IO {
-    @AutoLog
-    public static class LED_IOInputs {
-        public double sparkControl = 0.0;
-    }
+  @AutoLog
+  public static class LED_IOInputs {
+    public LED_STATE ledState = LED_STATE.OFF;
+  }
 
-    public default void updateInputs(LED_IOInputs inputs) {}
+  public default void updateInputs(LED_IOInputs inputs) {}
 
-    public default void noBumpersPressed() {}
+  public default void noBumpersPressed() {}
 
-    public default void setColor(double color) {}
+  public default void setColor(LED_STATE state) {}
 }
