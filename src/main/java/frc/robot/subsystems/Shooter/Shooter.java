@@ -15,27 +15,25 @@ public class Shooter extends SubsystemBase {
 
   private final ShooterIO shooterMotor2;
 
-  private final ShooterFeederIO feederMotor1;
+  private final ShooterFeederIO feeder;
 
-  private final ShooterFeederIO feederMotor2;
+ 
 
   private final ShooterIOInputsAutoLogged s1Inputs = new ShooterIOInputsAutoLogged();
   private final ShooterIOInputsAutoLogged s2Inputs = new ShooterIOInputsAutoLogged();
 
-  private final ShooterFeederIOInputsAutoLogged feed1Inputs = new ShooterFeederIOInputsAutoLogged();
-  private final ShooterFeederIOInputsAutoLogged feed2Inputs = new ShooterFeederIOInputsAutoLogged();
-
+  private final ShooterFeederIOInputsAutoLogged feedInputs = new ShooterFeederIOInputsAutoLogged();
+  
   public Shooter(
       ShooterIO shooterMotor1,
       ShooterIO shooterMotor2,
-      ShooterFeederIO feeder1,
-      ShooterFeederIO feeder2) {
+      ShooterFeederIO feeder) {
 
     this.shooterMotor1 = shooterMotor1;
     this.shooterMotor2 = shooterMotor2;
 
-    feederMotor1 = feeder1;
-    feederMotor2 = feeder2;
+    this.feeder = feeder;
+   
   }
 
   public void stopShooterMotors() {
@@ -44,13 +42,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public void stopFeeders() {
-    feederMotor1.stop();
-    feederMotor2.stop();
+    feeder.stop();
   }
 
   public void runFeeders(double velocity) {
-    feederMotor1.setVelocity(velocity);
-    feederMotor2.setVelocity(velocity);
+    feeder.setVelocity(velocity);
   }
 
   public void setShooterVelocitys(double velocity1, double velocity2) {
@@ -66,13 +62,12 @@ public class Shooter extends SubsystemBase {
     shooterMotor1.updateInputs(s1Inputs);
     shooterMotor2.updateInputs(s2Inputs);
 
-    feederMotor1.updateInputs(feed1Inputs);
-    feederMotor2.updateInputs(feed2Inputs);
+    feeder.updateInputs(feedInputs);
 
     Logger.processInputs("shooter motor 1", s1Inputs);
     Logger.processInputs("shooter motor 2", s2Inputs);
 
-    Logger.processInputs("feeder motor 1", feed1Inputs);
-    Logger.processInputs("feeder motor 2", feed2Inputs);
+    Logger.processInputs("feeder motor", feedInputs);
+    
   }
 }
