@@ -9,15 +9,15 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 
-public class ShooterIOTalonFX implements ShooterIO {
+public class ShooterFeederIOTalonFX implements ShooterFeederIO {
 
   private final TalonFX falcon;
 
-  private final StatusSignal<Double> shooterVelocity;
+  private final StatusSignal<Double> feederVelocity;
   private final StatusSignal<Double> appliedAmps;
   private final StatusSignal<Double> currentAmps;
 
-  public ShooterIOTalonFX(int id) {
+  public ShooterFeederIOTalonFX(int id) {
 
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimit = 0;
@@ -28,17 +28,17 @@ public class ShooterIOTalonFX implements ShooterIO {
 
     falcon.getConfigurator().apply(config);
 
-    shooterVelocity = falcon.getVelocity();
+    feederVelocity = falcon.getVelocity();
     appliedAmps = falcon.getMotorVoltage();
     currentAmps = falcon.getStatorCurrent();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(100, shooterVelocity, appliedAmps, currentAmps);
+    BaseStatusSignal.setUpdateFrequencyForAll(100, feederVelocity, appliedAmps, currentAmps);
   }
 
   @Override
-  public void updateInputs(ShooterIOInputs inputs) {
-    inputs.shooterVelocity =
-        Units.rotationsPerMinuteToRadiansPerSecond(shooterVelocity.getValueAsDouble());
+  public void updateInputs(ShooterFeederIOInputs inputs) {
+    inputs.feederVelocity =
+        Units.rotationsPerMinuteToRadiansPerSecond(feederVelocity.getValueAsDouble());
 
     inputs.appliedVolts = appliedAmps.getValueAsDouble();
 
