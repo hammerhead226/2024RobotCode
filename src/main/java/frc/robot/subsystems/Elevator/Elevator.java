@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 import com.ctre.phoenix6.StatusSignal;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Elevator.ElevatorPivotIO.ElevatorPivotIOInputs;
 
 public class Elevator extends SubsystemBase {
@@ -47,6 +48,33 @@ public class Elevator extends SubsystemBase {
  
  }
 
+ public double findAngle(double c){
+
+
+   return (c % 2048) * 360;
+
+}
+public double findDistance(double a){
+
+
+  return Constants.SHOOTER_LENGTH * Math.cos(findAngle(a));
+}
+
+public double findHeight(double a){
+
+  return Constants.SHOOTER_LENGTH * Math.sin(findAngle(a));
+}
+
+public double findAcceptableDeviation(double h, double d, double a){
+ double acceptableTheta =0;
+ 
+  h = findHeight(a);
+  double y = Math.sqrt( Math.pow((78.263 - h), 2) + Math.pow(d,2));
+  double x = (78.263 - (4.8 + h + (78.263 - h))) + 4.8;
+
+   acceptableTheta = Math.atan2(y, x);
+  return acceptableTheta;
+}
 
 
  @Override
