@@ -16,8 +16,8 @@ public class Elevator extends SubsystemBase {
 
     private final ElevatorExtenderIO elevator;
 
-   // private final ElevatorPivotIOInputsAutoLogged pInputs = new ElevatorPivotIOInputsAutoLogged();
-   // private final ElevatorIOInputsAutoLogged eInputs = new ElevatorPivotIOInputsAutoLogged();
+    private final ElevatorPivotIOInputsAutoLogged pInputs = new ElevatorPivotIOInputsAutoLogged();
+    private final ElevatorIOInputsAutoLogged eInputs = new ElevatorIOInputsAutoLogged();
    
 
 
@@ -29,11 +29,15 @@ public class Elevator extends SubsystemBase {
 
   }
 
-  public void setPosition(double pos1, double pos2){
-     pivot.setPosition(pos1);
-     elevator.setPosition(pos2);
+  public void setPositionElevator( double pos){
+     
+     elevator.setPosition(pos);
        
      
+  }
+  public void setPositionPivot(double pos){
+    pivot.setPosition(pos);
+
   }
 
  public void setVelocity(double vel1, double vel2){
@@ -48,42 +52,50 @@ public class Elevator extends SubsystemBase {
  
  }
 
- public double findAngle(double c){
+ public double findAngle(double ticks){
 
 
-   return (c % 2048) * 360;
+   return (ticks % 2048) * 360;
 
-}
-public double findDistance(double a){
-
-
-  return Constants.SHOOTER_LENGTH * Math.cos(findAngle(a));
-}
-
-public double findHeight(double a){
-
-  return Constants.SHOOTER_LENGTH * Math.sin(findAngle(a));
-}
-
-public double findAcceptableDeviation(double h, double d, double a){
- double acceptableTheta =0;
- 
-  h = findHeight(a);
-  double y = Math.sqrt( Math.pow((78.263 - h), 2) + Math.pow(d,2));
-  double x = (78.263 - (4.8 + h + (78.263 - h))) + 4.8;
-
-   acceptableTheta = Math.atan2(y, x);
-  return acceptableTheta;
 }
 
 
+public double findDistance(double angle){
+
+
+  return Constants.SHOOTER_LENGTH * Math.cos(findAngle(angle));
+}
+
+public double findHeight(double angle){
+
+  return (Constants.SHOOTER_LENGTH * Math.sin(findAngle(angle))) + Constants.CHASSIS_HEIGHT;
+}
+
+public void shootAlign(double currentPos, double distance){
+    
+   
+   double shooterHeight = findHeight(findAngle(currentPos)) + Constants.CHASSIS_HEIGHT;
+   double hP = 83.063 - (9.6 + shooterHeight);
+   double minAngle = Math.atan2(hP, distance- 17.791);
+   double maxAngle = Math.atan2(hP + 9.6, distance - 17.791);
+   double averageAngle = (minAngle + maxAngle) / 2;
+   
+   setPositionPivot(convertAnglesToTicks(averageAngle));
+
+   
+}
+
+public double convertAnglesToTicks(double angle){
+
+   return (angle / 360) * 2048;
+}
  @Override
  public void periodic() {
-  //  pivot.updateInputs(pInputs);
-  //  elevator.updateInputs(eInputs);
+    pivot.updateInputs(pInputs);
+    elevator.updateInputs(eInputs);
 
-  //  Logger.processInputs("pivot Motor", pInputs);
-  //  Logger.processInputs("elevate motor", eInputs);
+   Logger.processInputs("pivot Motor", pInputs);
+   Logger.processInputs("elevate motor", eInputs);
 
  }
 
