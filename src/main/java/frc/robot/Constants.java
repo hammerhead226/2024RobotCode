@@ -15,5 +15,10 @@ package frc.robot;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    
   }
+
+  public static final double PIVOT_HEIGHT = 6.25;
+  // Still need to find the SHOOTER_LENGTH
+  //public static final double = ?;
 }
