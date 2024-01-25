@@ -71,7 +71,7 @@ public double findHeight(double angle){
   return (Constants.SHOOTER_LENGTH * Math.sin(findAngle(angle))) + Constants.CHASSIS_HEIGHT;
 }
 
-public void shootAlign(double currentPos, double distance){
+public double findAverageAngle(double currentPos, double distance){
     
    
    double shooterHeight = findHeight(findAngle(currentPos)) + Constants.CHASSIS_HEIGHT;
@@ -80,7 +80,8 @@ public void shootAlign(double currentPos, double distance){
    double maxAngle = Math.atan2(hP + 9.6, distance - 17.791);
    double averageAngle = (minAngle + maxAngle) / 2;
    
-   setPositionPivot(convertAnglesToTicks(averageAngle));
+   return averageAngle;
+  
 
    
 }
