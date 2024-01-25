@@ -68,13 +68,13 @@ public double findDistance(double angle){
 
 public double findHeight(double angle){
 
-  return (Constants.SHOOTER_LENGTH * Math.sin(findAngle(angle))) + Constants.CHASSIS_HEIGHT;
+  return (Constants.SHOOTER_LENGTH * Math.sin(findAngle(angle))) + Constants.PIVOT_HEIGHT;
 }
 
 public double findAverageAngle(double currentPos, double distance){
     
    
-   double shooterHeight = findHeight(findAngle(currentPos)) + Constants.CHASSIS_HEIGHT;
+   double shooterHeight = findHeight(findAngle(currentPos)) + Constants.PIVOT_HEIGHT;
    double hP = 83.063 - (9.6 + shooterHeight);
    double minAngle = Math.atan2(hP, distance- 17.791);
    double maxAngle = Math.atan2(hP + 9.6, distance - 17.791);
