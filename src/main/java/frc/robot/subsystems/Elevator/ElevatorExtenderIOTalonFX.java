@@ -10,17 +10,15 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.Elevator.ElevatorExtenderIO.ElevatorIOInputs;
-import frc.robot.subsystems.Elevator.ElevatorPivotIO.ElevatorPivotIOInputs;
 
-public class ElevatorIOTalonFX implements ElevatorExtenderIO{
+public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO{
       private final TalonFX falcon;
     private final StatusSignal<Double> elevatorPosition;
     private final StatusSignal<Double> elevatorVelocity;
     private final StatusSignal<Double> appliedVolts;
     private final StatusSignal<Double> currentAmps;
 
-    public ElevatorIOTalonFX(int id) {
+    public ElevatorExtenderIOTalonFX(int id) {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.CurrentLimits.StatorCurrentLimit = 30;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -58,7 +56,6 @@ public class ElevatorIOTalonFX implements ElevatorExtenderIO{
     }
     
     @Override
-    // Return: this function returns void
     public void stop() {
         falcon.stopMotor();
     }

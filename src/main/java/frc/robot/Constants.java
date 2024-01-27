@@ -20,5 +20,5 @@ public final class Constants {
 
   public static final double PIVOT_HEIGHT = 6.25;
   // Still need to find the SHOOTER_LENGTH
-  //public static final double = ?;
+  public static final double SHOOTER_LENGTH = 0; // replace with actual shooter length
 }
