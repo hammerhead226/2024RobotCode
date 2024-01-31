@@ -32,7 +32,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    led.setDefaultCommand(new InstantCommand(led::noBumpersPressed, led));
+    led.setDefaultCommand(new InstantCommand(led::defaultColor, led));
   }
 
   /**
@@ -51,9 +51,8 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController
-        .b()
-        .onTrue(new InstantCommand(() -> led.setColor(Constants.LED_STATE.YELLOW), led)); // yellow
+    m_driverController.b().onTrue(new InstantCommand(() -> led.setColor(Constants.LED_STATE.YELLOW), led)); // yellow
+    m_driverController.x().onTrue(new InstantCommand(() -> led.setColor(Constants.LED_STATE.VIOLET), led)); // violet 
   }
 
   /**
