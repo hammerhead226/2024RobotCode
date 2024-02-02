@@ -1,0 +1,36 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.subsystems.Elevator;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+
+/** Add your docs here. */
+public class ElevatorPivotIOSim implements ElevatorPivotIO{
+  private ElevatorSim sim = new ElevatorSim(new LinearSystemId(), null, 0, 0, false, 0);
+  private PIDController pid = new PIDController(0, 0, 0);
+
+  private boolean closedLoop = false;
+  private double ffVolts = 0.0;
+  private double appliedVolts = 0.0;
+
+  @Override
+  public void updateInputs(ElevatorPivotIOInputs inputs) {
+    if (closedLoop) {
+      appliedVolts =
+          MathUtil.clamp(pid.calculate(sim.getAngularVelocityRadPerSec()) + ffVolts, -12.0, 12.0);
+      sim.setInputVoltage(appliedVolts);
+    }
+
+    sim.update(0.02);
+
+    inputs.positionRad = 0.0;
+    inputs.velocityRadPerSec = sim.getAngularVelocityRadPerSec();
+    inputs.appliedVolts = appliedVolts;
+    inputs.currentAmps = new double[] {sim.getCurrentDrawAmps()};
+  }
+}
