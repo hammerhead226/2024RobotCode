@@ -11,26 +11,50 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
 /** Add your docs here. */
 public class ElevatorPivotIOSim implements ElevatorPivotIO{
-  private ElevatorSim sim = new ElevatorSim(new LinearSystemId(), null, 0, 0, false, 0);
+  private ElevatorSim sim = new ElevatorSim;
   private PIDController pid = new PIDController(0, 0, 0);
 
   private boolean closedLoop = false;
   private double ffVolts = 0.0;
+  private double velocity = 0.0;
   private double appliedVolts = 0.0;
 
   @Override
   public void updateInputs(ElevatorPivotIOInputs inputs) {
     if (closedLoop) {
       appliedVolts =
-          MathUtil.clamp(pid.calculate(sim.getAngularVelocityRadPerSec()) + ffVolts, -12.0, 12.0);
+          MathUtil.clamp(pid.calculate(sim.getVelocityMetersPerSecond()) + ffVolts, -12.0, 12.0);
       sim.setInputVoltage(appliedVolts);
     }
 
     sim.update(0.02);
 
-    inputs.positionRad = 0.0;
-    inputs.velocityRadPerSec = sim.getAngularVelocityRadPerSec();
+    inputs.pivotVelocity = sim.getVelocityMetersPerSecond();
+    inputs.pivotPosition = sim.getPositionMeters();
     inputs.appliedVolts = appliedVolts;
-    inputs.currentAmps = new double[] {sim.getCurrentDrawAmps()};
+    inputs.currentAmps = sim.getCurrentDrawAmps();
+  }
+
+  @Override
+  public void setPosition(double position) {
+    closedLoop = true;
+    sim.setState(position, velocity);
+  }
+
+  @Override
+  public void setVelocity(double velocity) {
+    closedLoop = true;
+    this.velocity = velocity;
+    pid.setSetpoint(velocity);
+  }
+  
+  @Override
+  public void stop() {
+    setVelocity(0.0);
+  }
+
+  @Override
+  public void configurePID(double kP, double kI, double kD) {
+    pid.setPID(kP, kI, kD);
   }
 }

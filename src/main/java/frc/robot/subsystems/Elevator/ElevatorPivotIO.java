@@ -14,7 +14,7 @@ public interface ElevatorPivotIO {
     
     public default void setPosition(double position) {}
 
-    public default void setVelocity(double veloicty) {}
+    public default void setVelocity(double velocity) {}
 
     public default void stop() {}
 
