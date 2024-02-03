@@ -1,4 +1,4 @@
-// Copyright 2021-2024 FRC 6328
+// Copyright 2021-2023 FRC 6328
 // http://github.com/Mechanical-Advantage
 //
 // This program is free software; you can redistribute it and/or
@@ -16,25 +16,30 @@ package frc.robot.subsystems.drive;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LocalADStarAK;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
+  // private static final double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);
   private static final double MAX_LINEAR_SPEED = 5.56;
   private static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);
   private static final double TRACK_WIDTH_Y = Units.inchesToMeters(26.0);
@@ -49,6 +54,8 @@ public class Drive extends SubsystemBase {
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Pose2d pose = new Pose2d();
   private Rotation2d lastGyroRotation = new Rotation2d();
+
+  private final SwerveDrivePoseEstimator poseEstimator;
 
   public Drive(
       GyroIO gyroIO,
@@ -69,11 +76,19 @@ public class Drive extends SubsystemBase {
         () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new HolonomicPathFollowerConfig(
-            MAX_LINEAR_SPEED, DRIVE_BASE_RADIUS, new ReplanningConfig()),
-        () ->
-            DriverStation.getAlliance().isPresent()
-                && DriverStation.getAlliance().get() == Alliance.Red,
+            new PIDConstants(0.5, 0, 0, 0),
+            new PIDConstants(0.05, 0, 0, 0),
+            MAX_LINEAR_SPEED,
+            DRIVE_BASE_RADIUS,
+            new ReplanningConfig()),
+        () -> {
+          var alliance = DriverStation.getAlliance();
+
+          return false;
+        },
         this);
+    //MAX_LINEAR_SPEED, DRIVE_BASE_RADIUS, new ReplanningConfig()),
+    // this);
     Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
@@ -84,6 +99,18 @@ public class Drive extends SubsystemBase {
         (targetPose) -> {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
+
+    poseEstimator =
+    new SwerveDrivePoseEstimator(
+        kinematics,
+        new Rotation2d(),
+        new SwerveModulePosition[] {
+          new SwerveModulePosition(),
+          new SwerveModulePosition(),
+          new SwerveModulePosition(),
+          new SwerveModulePosition()
+        },
+        new Pose2d());
   }
 
   public void periodic() {
@@ -105,25 +132,38 @@ public class Drive extends SubsystemBase {
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
 
-    // Update odometry
-    SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
-    for (int i = 0; i < 4; i++) {
-      wheelDeltas[i] = modules[i].getPositionDelta();
+    switch (Constants.currentMode) {
+      case REAL:
+        updateOdometry();
+        break;
+      case REPLAY:
+      case SIM:
+        poseEstimator.update(pose.getRotation(), getModulePositions());
+        break;
+      default:
     }
-    // The twist represents the motion of the robot since the last
-    // loop cycle in x, y, and theta based only on the modules,
-    // without the gyro. The gyro is always disconnected in simulation.
-    var twist = kinematics.toTwist2d(wheelDeltas);
-    if (gyroInputs.connected) {
-      // If the gyro is connected, replace the theta component of the twist
-      // with the change in angle since the last loop cycle.
-      twist =
-          new Twist2d(
-              twist.dx, twist.dy, gyroInputs.yawPosition.minus(lastGyroRotation).getRadians());
-      lastGyroRotation = gyroInputs.yawPosition;
+
+  }
+
+  public void updateOdometry() {
+    poseEstimator.update(lastGyroRotation, getModulePositions());
+
+    double timestampSeconds =
+        Timer.getFPGATimestamp()
+            - (LimelightHelpers.getLatency_Pipeline("limelight") / 1000.0)
+            - (LimelightHelpers.getLatency_Capture("limelight") / 1000.0);
+
+    // Logger.recordOutput("sees", LimelightHelpers.getTV("limelight"));
+    // if (LimelightHelpers.getTV("limelight")) {
+    Pose2d visionMeasurement = new Pose2d();
+
+    visionMeasurement = LimelightHelpers.getBotPose2d("limelight");
+
+    Logger.recordOutput("Odometry/Vision", visionMeasurement);
+
+    if (LimelightHelpers.getTV("limelight")) {
+      poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
     }
-    // Apply the twist (change since last loop cycle) to the current pose
-    pose = pose.exp(twist);
   }
 
   /**
@@ -193,6 +233,16 @@ public class Drive extends SubsystemBase {
     return states;
   }
 
+  /** Returns the module positions (turn angles and drive velocities) for all of the modules. */
+  public SwerveModulePosition[] getModulePositions() {
+    SwerveModulePosition[] positions = new SwerveModulePosition[4];
+    for (int i = 0; i < 4; i++) {
+      positions[i] = modules[i].getPosition();
+    }
+
+    return positions;
+  }
+
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
@@ -201,12 +251,14 @@ public class Drive extends SubsystemBase {
 
   /** Returns the current odometry rotation. */
   public Rotation2d getRotation() {
-    return pose.getRotation();
+    // return pose.getRotation();
+    return poseEstimator.getEstimatedPosition().getRotation();
   }
 
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
-    this.pose = pose;
+    // this.pose = pose;
+    poseEstimator.resetPosition(lastGyroRotation, getModulePositions(), pose);
   }
 
   /** Returns the maximum linear speed in meters per sec. */
