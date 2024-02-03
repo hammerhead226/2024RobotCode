@@ -10,13 +10,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private final IntakePivotIO pivot;
   private final IntakeRollerIO roller;
-  private final IntakePivotIOInputsAutoLogged pInputs = new IntakePivotIOInputsAutoLogged();
+
   private final IntakeRollerIOInputsAutoLogged rInputs = new IntakeRollerIOInputsAutoLogged();
 
-  public Intake(IntakePivotIO pivot, IntakeRollerIO roller) {
-    this.pivot = pivot;
+  public Intake(IntakeRollerIO roller) {
     this.roller = roller;
 
   }
@@ -30,26 +28,12 @@ public class Intake extends SubsystemBase {
   public void stopRollers(){
     roller.stop();
   }
-
-  public void stopPivot(){
-
-    pivot.stop();
-  }
-
-  public void setPosition(double position){
-
-    pivot.setPosition(position);
-
-    Logger.recordOutput("Position ", position);
-  }
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    pivot.updateInputs(pInputs);
     roller.updateInputs(rInputs);
 
-    Logger.processInputs("pivot Motor ", pInputs);
     Logger.processInputs("roller Motor", rInputs);
   }
 }
