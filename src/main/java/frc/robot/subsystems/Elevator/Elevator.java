@@ -9,7 +9,7 @@ public class Elevator extends SubsystemBase {
    private final ElevatorExtenderIO elevator;
 
    private final ElevatorPivotIOInputsAutoLogged pInputs = new ElevatorPivotIOInputsAutoLogged();
-   private final ElevatorIOInputsAutoLogged eInputs = new ElevatorIOInputsAutoLogged();
+   private final ElevatorExtenderIOInputsAutoLogged eInputs = new ElevatorExtenderIOInputsAutoLogged();
    
    public Elevator(ElevatorPivotIO pivot, ElevatorExtenderIO elevator ){
       this.pivot = pivot;

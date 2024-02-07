@@ -4,14 +4,14 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface ElevatorExtenderIO {
     @AutoLog
-    public static class ElevatorIOInputs{
+    public static class ElevatorExtenderIOInputs{
         double elevatorPosition = 0;
         double elevatorVelocity = 0;
         double currentAmps = 0;
         double appliedVolts = 0;
     }
         
-    public default void updateInputs(ElevatorIOInputs inputs) {}
+    public default void updateInputs(ElevatorExtenderIOInputs inputs) {}
     
     public default void setPosition(double position) {}
 

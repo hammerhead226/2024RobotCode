@@ -37,7 +37,7 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO{
     }
     
     @Override
-    public void updateInputs(ElevatorIOInputs inputs) {
+    public void updateInputs(ElevatorExtenderIOInputs inputs) {
         inputs.elevatorPosition = Units.rotationsToDegrees(elevatorPosition.getValueAsDouble());
         inputs.elevatorVelocity = Units.rotationsPerMinuteToRadiansPerSecond(elevatorVelocity.getValueAsDouble());
         inputs.appliedVolts = appliedVolts.getValueAsDouble();
