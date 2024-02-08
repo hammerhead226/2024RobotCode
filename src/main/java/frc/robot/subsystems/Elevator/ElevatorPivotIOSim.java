@@ -4,14 +4,21 @@
 
 package frc.robot.subsystems.Elevator;
 
+import com.ctre.phoenix6.hardware.core.CoreTalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 /** Add your docs here. */
-public class ElevatorPivotIOSim implements ElevatorPivotIO{
-  private ElevatorSim sim = new ElevatorSim;
+public class ElevatorPivotIOSim implements ElevatorPivotIO {
+
+
+  private SingleJointedArmSim sim = new SingleJointedArmSim(DCMotor.getFalcon500(1), 0, 0, 0, 0, 0, true, 0);
   private PIDController pid = new PIDController(0, 0, 0);
 
   private boolean closedLoop = false;
@@ -22,23 +29,29 @@ public class ElevatorPivotIOSim implements ElevatorPivotIO{
   @Override
   public void updateInputs(ElevatorPivotIOInputs inputs) {
     if (closedLoop) {
+      
+      
       appliedVolts =
-          MathUtil.clamp(pid.calculate(sim.getVelocityMetersPerSecond()) + ffVolts, -12.0, 12.0);
-      sim.setInputVoltage(appliedVolts);
+        MathUtil.clamp(pid.calculate(sim.getVelocityRadPerSec()) + ffVolts, -12.0, 12.0);
+
+
+
+       sim.setInputVoltage(appliedVolts);
     }
 
-    sim.update(0.02);
+     sim.update(0.02);
 
-    inputs.pivotVelocity = sim.getVelocityMetersPerSecond();
-    inputs.pivotPosition = sim.getPositionMeters();
+     inputs.pivotVelocity = sim.getVelocityRadPerSec();
+     //TODO figure out a way to get simulated position 
+
     inputs.appliedVolts = appliedVolts;
-    inputs.currentAmps = sim.getCurrentDrawAmps();
+     inputs.currentAmps = sim.getCurrentDrawAmps();
   }
 
   @Override
   public void setPosition(double position) {
     closedLoop = true;
-    sim.setState(position, velocity);
+     sim.setState(position, velocity);
   }
 
   @Override
@@ -47,7 +60,7 @@ public class ElevatorPivotIOSim implements ElevatorPivotIO{
     this.velocity = velocity;
     pid.setSetpoint(velocity);
   }
-  
+
   @Override
   public void stop() {
     setVelocity(0.0);
