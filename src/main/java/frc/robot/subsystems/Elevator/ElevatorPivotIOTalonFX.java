@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
 
 public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
   private final TalonFX falcon;
@@ -34,7 +35,7 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
 
     falcon.getConfigurator().apply(config);
 
-    cancoder = new CANcoder(cancoderID);
+    cancoder = new CANcoder(cancoderID, Constants.CANIVORE_STRING);
     cancoder.getConfigurator().apply(new CANcoderConfiguration());
 
     pivotAbsolutePosition = cancoder.getAbsolutePosition();

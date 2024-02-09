@@ -18,7 +18,13 @@ public final class Constants {
     
   }
 
+  public static final String CANBUS_STRING = "Can Bus 1";
+  public static final String CANIVORE_STRING = "Can Bus 2";
+
   public static final double PIVOT_HEIGHT = 6.25;
   // Still need to find the SHOOTER_LENGTH
   public static final double SHOOTER_LENGTH = 0; // replace with actual shooter length
+
+  // TODO change canbus ID
+  public static final double CANCODER_CANBUS_ID = 0;
 }
