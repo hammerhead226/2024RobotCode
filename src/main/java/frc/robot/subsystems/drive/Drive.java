@@ -19,7 +19,6 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
-
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -69,6 +68,7 @@ public class Drive extends SubsystemBase {
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
 
+    lastGyroRotation = gyroInputs.yawPosition;
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configureHolonomic(
         this::getPose,
@@ -87,7 +87,7 @@ public class Drive extends SubsystemBase {
           return false;
         },
         this);
-    //MAX_LINEAR_SPEED, DRIVE_BASE_RADIUS, new ReplanningConfig()),
+    // MAX_LINEAR_SPEED, DRIVE_BASE_RADIUS, new ReplanningConfig()),
     // this);
     Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(
@@ -101,16 +101,16 @@ public class Drive extends SubsystemBase {
         });
 
     poseEstimator =
-    new SwerveDrivePoseEstimator(
-        kinematics,
-        new Rotation2d(),
-        new SwerveModulePosition[] {
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-          new SwerveModulePosition()
-        },
-        new Pose2d());
+        new SwerveDrivePoseEstimator(
+            kinematics,
+            new Rotation2d(),
+            new SwerveModulePosition[] {
+              new SwerveModulePosition(),
+              new SwerveModulePosition(),
+              new SwerveModulePosition(),
+              new SwerveModulePosition()
+            },
+            new Pose2d());
   }
 
   public void periodic() {
@@ -142,7 +142,6 @@ public class Drive extends SubsystemBase {
         break;
       default:
     }
-
   }
 
   public void updateOdometry() {
