@@ -13,7 +13,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 
 public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO{
-      private final TalonFX falcon;
+    private final TalonFX falcon;
     private final StatusSignal<Double> elevatorPosition;
     private final StatusSignal<Double> elevatorVelocity;
     private final StatusSignal<Double> appliedVolts;
