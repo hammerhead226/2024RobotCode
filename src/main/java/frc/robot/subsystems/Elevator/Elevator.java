@@ -56,6 +56,7 @@ public class Elevator extends SubsystemBase {
       return (Constants.SHOOTER_LENGTH * Math.sin(convertTicksToDegrees(angle))) + Constants.PIVOT_HEIGHT;
    }
 
+   /*    
    public double findAverageAngle(double currentPosition, double distance) {
       double shooterHeight = findHeight(convertTicksToDegrees(currentPosition)) + Constants.PIVOT_HEIGHT;
       double heightPerfect = 83.063 - (9.6 + shooterHeight);
@@ -64,6 +65,19 @@ public class Elevator extends SubsystemBase {
       double averageAngle = (minAngle + maxAngle) / 2;
    
       return averageAngle;
+   }
+   */
+
+   // This method takes distance in inches and returns angle in ticks
+   // This method has calculations based on test shooter 
+   // Update the method to equations from real robot
+   public double calculateNeededAngle (double distance) {
+      double angleErrorScope = 0.5;
+
+      double highestAngle = ((-0.21 * distance) + 67.44);
+      double desiredShootingAngle = (highestAngle - angleErrorScope);
+      
+      return (convertAnglesToTicks(desiredShootingAngle));
    }
 
    @Override
