@@ -19,5 +19,7 @@ public interface ElevatorExtenderIO {
 
     public default void stop() {}
 
+    public default void setVoltage(double volts) {}
+
     public default void configurePID(double kP, double kI, double kD) {}
 }

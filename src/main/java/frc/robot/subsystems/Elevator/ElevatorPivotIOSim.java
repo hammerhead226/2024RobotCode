@@ -4,66 +4,54 @@
 
 package frc.robot.subsystems.Elevator;
 
-import com.ctre.phoenix6.hardware.core.CoreTalonFX;
-import com.ctre.phoenix6.sim.TalonFXSimState;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 /** Add your docs here. */
 public class ElevatorPivotIOSim implements ElevatorPivotIO {
+  private static final double LOOP_PERIOD_SECS = 0.02;
 
-
-  private SingleJointedArmSim sim = new SingleJointedArmSim(DCMotor.getFalcon500(1), 0, 0, 0, 0, 0, true, 0);
+  private DCMotor simMotor = DCMotor.getFalcon500(1);
+  private SingleJointedArmSim sim = new SingleJointedArmSim(simMotor, 0, 0, 0, 0, 0, true, 0);
   private PIDController pid = new PIDController(0, 0, 0);
 
-  private boolean closedLoop = false;
-  private double ffVolts = 0.0;
-  private double velocity = 0.0;
-  private double appliedVolts = 0.0;
 
   @Override
   public void updateInputs(ElevatorPivotIOInputs inputs) {
-    if (closedLoop) {
-      
-      
-      appliedVolts =
-        MathUtil.clamp(pid.calculate(sim.getVelocityRadPerSec()) + ffVolts, -12.0, 12.0);
+    sim.update(LOOP_PERIOD_SECS);
 
-
-
-       sim.setInputVoltage(appliedVolts);
-    }
-
-     sim.update(0.02);
-
-     inputs.pivotVelocity = sim.getVelocityRadPerSec();
-     //TODO figure out a way to get simulated position 
-
-    inputs.appliedVolts = appliedVolts;
-     inputs.currentAmps = sim.getCurrentDrawAmps();
+    // finish the pivotAbsolutePosition and appliedVolts variables for logging
+    inputs.pivotAbsolutePosition = ;
+    inputs.pivotVelocity = sim.getVelocityRadPerSec();
+    inputs.pivotPosition = sim.getAngleRads();
+    inputs.currentAmps = sim.getCurrentDrawAmps();
+    inputs.appliedVolts = ;
   }
 
+  // rewrite this method
   @Override
   public void setPosition(double position) {
-    closedLoop = true;
-     sim.setState(position, velocity);
+
   }
 
+  // rewrite this method
   @Override
   public void setVelocity(double velocity) {
-    closedLoop = true;
-    this.velocity = velocity;
-    pid.setSetpoint(velocity);
+
   }
 
+  // rewrite this method
   @Override
   public void stop() {
-    setVelocity(0.0);
+
+  }
+
+  // rewrite this method
+  @Override
+  public void setVoltage(double voltage) {
+
   }
 
   @Override
