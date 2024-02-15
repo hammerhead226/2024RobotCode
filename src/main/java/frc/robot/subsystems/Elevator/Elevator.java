@@ -3,6 +3,8 @@ package frc.robot.subsystems.Elevator;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.PolynomialRegression;
+
 
 public class Elevator extends SubsystemBase {
    private final ElevatorPivotIO pivot;
@@ -10,6 +12,8 @@ public class Elevator extends SubsystemBase {
 
    private final ElevatorPivotIOInputsAutoLogged pInputs = new ElevatorPivotIOInputsAutoLogged();
    private final ElevatorExtenderIOInputsAutoLogged eInputs = new ElevatorExtenderIOInputsAutoLogged();
+   
+   private final PolynomialRegression angleCalculations = new PolynomialRegression(Constants.xDataPoints, Constants.yDataPoints, 1, "DistanceInInches");
    
    public Elevator(ElevatorPivotIO pivot, ElevatorExtenderIO elevator ){
       this.pivot = pivot;
@@ -68,17 +72,7 @@ public class Elevator extends SubsystemBase {
    }
    */
 
-   // This method takes distance in inches and returns angle in ticks
-   // This method has calculations based on test shooter 
-   // Update the method to equations from real robot
-   public double calculateNeededAngle (double distance) {
-      double angleErrorScope = 0.5;
 
-      double highestAngle = ((-0.21 * distance) + 67.44);
-      double desiredShootingAngle = (highestAngle - angleErrorScope);
-      
-      return (convertAnglesToTicks(desiredShootingAngle));
-   }
 
    @Override
    public void periodic() {
