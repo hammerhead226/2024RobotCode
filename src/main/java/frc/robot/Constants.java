@@ -41,4 +41,9 @@ public final class Constants {
   public static final int CANCODER_CANBUS_ID = 0;
   public static final int ELEVATOR_PIVOT_ID = 0;
   public static final int ELEVATOR_EXTENDER_ID = 0;
+
+  // Shooter Testing data points
+  public static double xDataPoints[] = {96.3, 109.8, 126.3, 145.3, 139};
+  public static double yDataPoints[] = {47, 45, 37, 34, 30};
+
 }
