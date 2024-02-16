@@ -34,8 +34,6 @@ public class ElevatorPivotIOSim implements ElevatorPivotIO {
       appliedVolts =
         MathUtil.clamp(pid.calculate(sim.getVelocityRadPerSec()) + ffVolts, -12.0, 12.0);
 
-
-
        sim.setInputVoltage(appliedVolts);
     }
 

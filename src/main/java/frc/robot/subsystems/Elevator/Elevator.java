@@ -60,22 +60,6 @@ public class Elevator extends SubsystemBase {
       return (Constants.SHOOTER_LENGTH * Math.sin(convertTicksToDegrees(angle))) + Constants.PIVOT_HEIGHT;
    }
 
-   /*    
-   public double findAverageAngle(double currentPosition, double distance) {
-      double shooterHeight = findHeight(convertTicksToDegrees(currentPosition)) + Constants.PIVOT_HEIGHT;
-      double heightPerfect = 83.063 - (9.6 + shooterHeight);
-      double minAngle = Math.atan2(heightPerfect, distance - 17.791);
-      double maxAngle = Math.atan2(heightPerfect + 9.6, distance - 17.791);
-      double averageAngle = (minAngle + maxAngle) / 2;
-   
-      return averageAngle;
-   }
-   */
-
-
-
-
-
    @Override
    public void periodic() {
       pivot.updateInputs(pInputs);

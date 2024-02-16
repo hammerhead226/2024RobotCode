@@ -18,6 +18,11 @@ public final class Constants {
     
   }
 
+  public static class currentLimitsConstants {
+    public static final double extenderTalonFXCurrentLimit = 30;
+    public static final double pivotTalonFXCurrentLimit = 30;
+  }
+
   public static final String CANBUS_STRING = "Can Bus 1";
   public static final String CANIVORE_STRING = "Can Bus 2";
 
@@ -27,6 +32,7 @@ public final class Constants {
 
   // TODO change canbus ID
   public static final double CANCODER_CANBUS_ID = 0;
+  //public static final double extenderTalonFXCurrentLimit = 0;
 
   // Shooter Testing data points
   public static double xDataPoints[] = {96.3, 109.8, 126.3, 145.3, 139};

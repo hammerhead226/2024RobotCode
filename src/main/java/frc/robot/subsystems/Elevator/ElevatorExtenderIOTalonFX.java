@@ -10,6 +10,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import frc.robot.Constants;
+
 import edu.wpi.first.math.util.Units;
 
 public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO{
@@ -21,7 +23,8 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO{
 
     public ElevatorExtenderIOTalonFX(int id) {
         TalonFXConfiguration config = new TalonFXConfiguration();
-        config.CurrentLimits.StatorCurrentLimit = 30;
+        config.CurrentLimits.StatorCurrentLimit = Constants.currentLimitsConstants.extenderTalonFXCurrentLimit;
+;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         config.Feedback.FeedbackSensorSource =  FeedbackSensorSourceValue.RotorSensor;

@@ -189,7 +189,7 @@ public class PolynomialRegression implements Comparable<PolynomialRegression> {
     }
     return 0;
   }
-
+  
   /**
    * Unit tests the {@code PolynomialRegression} data type.
    *
