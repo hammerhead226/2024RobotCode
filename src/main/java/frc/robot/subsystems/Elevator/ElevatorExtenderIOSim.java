@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
 /** Add your docs here. */
 public class ElevatorExtenderIOSim implements ElevatorExtenderIO{
+  private static final double LOOP_PERIOD_SECS = 0.02;
+
   private final DCMotor simGearbox = DCMotor.getFalcon500(2);
   private ElevatorSim sim = new ElevatorSim(2, 1, simGearbox, 0.2, 1.22, true, 0.2);
   private PIDController pid = new PIDController(0.2, 0.2, 0.2);
@@ -22,18 +24,7 @@ public class ElevatorExtenderIOSim implements ElevatorExtenderIO{
 
   @Override
   public void updateInputs(ElevatorExtenderIOInputs inputs) {
-    if (closedLoop) {
-      appliedVolts =
-          MathUtil.clamp(pid.calculate(sim.getVelocityMetersPerSecond()) + ffVolts, -12.0, 12.0);
-      sim.setInputVoltage(appliedVolts);
-    }
-
-    sim.update(0.02);
-
-    inputs.elevatorVelocity = sim.getVelocityMetersPerSecond();
-    inputs.elevatorPosition = sim.getPositionMeters();
-    inputs.appliedVolts = appliedVolts;
-    inputs.currentAmps = sim.getCurrentDrawAmps();
+    sim.update(LOOP_PERIOD_SECS);
   }
 
   @Override
