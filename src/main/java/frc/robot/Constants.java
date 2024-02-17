@@ -37,7 +37,9 @@ public final class Constants {
     public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
 
     public static final double DRIVE_STATOR_CURRENT_LIMIT = 40.0; 
+    public static final boolean DRIVE_STATOR_CURRENT_LIMIT_ENABLED = true; 
     public static final double TURN_STATOR_CURRENT_LIMIT = 30.0; 
+    public static final boolean TURN_STATOR_CURRENT_LIMIT_ENABLED = true; 
   }
 
   public static final Mode currentMode = Mode.REAL;
