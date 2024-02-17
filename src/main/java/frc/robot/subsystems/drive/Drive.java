@@ -106,6 +106,10 @@ public class Drive extends SubsystemBase {
       module.periodic();
     }
 
+    if (translationkP.hasChanged(hashCode()) || rotationkP.hasChanged(hashCode())) {
+      configureAutoBuilder(translationkP.get(), rotationkP.get());
+    }
+
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
       for (var module : modules) {
