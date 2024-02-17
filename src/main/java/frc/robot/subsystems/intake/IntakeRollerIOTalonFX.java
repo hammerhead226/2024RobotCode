@@ -8,6 +8,8 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import frc.robot.Constants;
+
 public class IntakeRollerIOTalonFX implements IntakeRollerIO{
     private final TalonFX falcon;
 
@@ -17,8 +19,8 @@ public class IntakeRollerIOTalonFX implements IntakeRollerIO{
 
     public IntakeRollerIOTalonFX(int id) {
         TalonFXConfiguration config = new TalonFXConfiguration();
-        config.CurrentLimits.StatorCurrentLimit = 30;
-        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        config.CurrentLimits.StatorCurrentLimit = Constants.intakeCurrentLimits.ROLLER_TALON_FX_CURRENT_LIMIT;
+        config.CurrentLimits.StatorCurrentLimitEnable = Constants.intakeCurrentLimits.ROLLER_TALON_FX_CURRENT_LIMIT_ENABLED;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         falcon = new TalonFX(id);
 

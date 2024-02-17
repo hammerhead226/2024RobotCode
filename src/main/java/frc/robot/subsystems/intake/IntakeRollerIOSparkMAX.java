@@ -2,6 +2,9 @@ package frc.robot.subsystems.intake;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import frc.robot.Constants;
+
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -15,7 +18,7 @@ public class IntakeRollerIOSparkMAX implements IntakeRollerIO{
         rollers.restoreFactoryDefaults();
         rollers.setIdleMode(IdleMode.kCoast);
         
-        rollers.setSmartCurrentLimit(30);
+        rollers.setSmartCurrentLimit(Constants.intakeCurrentLimits.ROLLER_SPARK_MAX_CURRENT_LIMIT);
         rollers.setCANTimeout(250);
         rollers.burnFlash();
 
