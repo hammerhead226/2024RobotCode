@@ -27,8 +27,8 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
 
   public ElevatorPivotIOTalonFX(int talonID, int cancoderID) {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.CurrentLimits.StatorCurrentLimit = Constants.currentLimitsConstants.pivotTalonFXCurrentLimit;
-    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = Constants.currentLimitsConstants.PIVOT_TALON_FX_CURRENT_LIMIT;
+    config.CurrentLimits.StatorCurrentLimitEnable = Constants.currentLimitsConstants.PIVOT_TALON_FX_CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     falcon = new TalonFX(talonID);

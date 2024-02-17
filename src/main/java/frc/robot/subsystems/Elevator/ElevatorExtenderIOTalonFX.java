@@ -23,9 +23,8 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO{
 
     public ElevatorExtenderIOTalonFX(int id) {
         TalonFXConfiguration config = new TalonFXConfiguration();
-        config.CurrentLimits.StatorCurrentLimit = Constants.currentLimitsConstants.extenderTalonFXCurrentLimit;
-;
-        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        config.CurrentLimits.StatorCurrentLimit = Constants.currentLimitsConstants.EXTENDER_TALON_FX_CURRENT_LIMIT;
+        config.CurrentLimits.StatorCurrentLimitEnable = Constants.currentLimitsConstants.EXTENDER_TALON_FX_CURRENT_LIMIT_ENABLED;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         config.Feedback.FeedbackSensorSource =  FeedbackSensorSourceValue.RotorSensor;
         
