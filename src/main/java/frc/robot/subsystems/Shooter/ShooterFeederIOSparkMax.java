@@ -2,6 +2,9 @@ package frc.robot.subsystems.Shooter;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import frc.robot.Constants;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 
@@ -15,7 +18,7 @@ public class ShooterFeederIOSparkMax implements ShooterFeederIO {
     pid = neo.getPIDController();
 
     neo.restoreFactoryDefaults();
-    neo.setSmartCurrentLimit(30);
+    neo.setSmartCurrentLimit(Constants.shooterCurrentLimits.FEEDER_SPARK_MAX_CURRENT_LIMIT);
     neo.setCANTimeout(250);
     neo.burnFlash();
   }

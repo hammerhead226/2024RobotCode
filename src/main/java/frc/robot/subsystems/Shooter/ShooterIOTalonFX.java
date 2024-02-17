@@ -21,8 +21,8 @@ public class ShooterIOTalonFX implements ShooterIO {
   public ShooterIOTalonFX(int id) {
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.CurrentLimits.StatorCurrentLimit = Constants.shooterCurrentLimits.TalonFXCurrentLimit;
-    config.CurrentLimits.StatorCurrentLimitEnable = Constants.shooterCurrentLimits.TalonFXCurrentLimitEnabled;
+    config.CurrentLimits.StatorCurrentLimit = Constants.shooterCurrentLimits.TALON_FX_CURRENT_LIMIT;
+    config.CurrentLimits.StatorCurrentLimitEnable = Constants.shooterCurrentLimits.TALON_FX_CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     falcon = new TalonFX(id);
