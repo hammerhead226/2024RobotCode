@@ -18,7 +18,7 @@ public class ShooterFeederIOSparkMax implements ShooterFeederIO {
     pid = neo.getPIDController();
 
     neo.restoreFactoryDefaults();
-    neo.setSmartCurrentLimit(Constants.shooterCurrentLimits.FEEDER_SPARK_MAX_CURRENT_LIMIT);
+    neo.setSmartCurrentLimit(Constants.ShooterConstants.FEEDER_SPARK_MAX_CURRENT_LIMIT);
     neo.setCANTimeout(250);
     neo.burnFlash();
   }
