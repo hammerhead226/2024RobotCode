@@ -16,4 +16,12 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static final class shooterCurrentLimits {
+    public static final double feederTalonFXCurrentLimit = 0;
+    public static final boolean feederTalonFXCurrentLimitEnabled = true;
+
+    public static final double TalonFXCurrentLimit = 0;
+    public static final boolean TalonFXCurrentLimitEnabled = true;
+  }
 }

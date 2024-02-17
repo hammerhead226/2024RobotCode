@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
 
 public class ShooterIOTalonFX implements ShooterIO {
 
@@ -20,8 +21,8 @@ public class ShooterIOTalonFX implements ShooterIO {
   public ShooterIOTalonFX(int id) {
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.CurrentLimits.StatorCurrentLimit = 0;
-    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = Constants.shooterCurrentLimits.TalonFXCurrentLimit;
+    config.CurrentLimits.StatorCurrentLimitEnable = Constants.shooterCurrentLimits.TalonFXCurrentLimitEnabled;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     falcon = new TalonFX(id);
