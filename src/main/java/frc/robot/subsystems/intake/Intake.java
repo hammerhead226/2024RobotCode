@@ -4,9 +4,8 @@
 
 package frc.robot.subsystems.intake;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
@@ -16,19 +15,16 @@ public class Intake extends SubsystemBase {
 
   public Intake(IntakeRollerIO roller) {
     this.roller = roller;
-
   }
 
-
-  public void runRollers(double velocity){
-     roller.setVelocity(velocity);
-
+  public void runRollers(double velocity) {
+    roller.setVelocity(velocity);
   }
 
-  public void stopRollers(){
+  public void stopRollers() {
     roller.stop();
   }
-  
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
