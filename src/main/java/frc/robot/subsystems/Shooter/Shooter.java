@@ -12,20 +12,20 @@ import org.littletonrobotics.junction.Logger;
 @AutoLog
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
-  private final ShooterIO shooterMotor1;
+  private final FlywheelIO shooterMotor1;
 
-  private final ShooterIO shooterMotor2;
+  private final FlywheelIO shooterMotor2;
 
-  private final ShooterFeederIO feeder;
+  private final FeederIO feeder;
 
-  private final ShooterIOInputsAutoLogged s1Inputs = new ShooterIOInputsAutoLogged();
-  private final ShooterIOInputsAutoLogged s2Inputs = new ShooterIOInputsAutoLogged();
+  private final FlywheelIOInputsAutoLogged s1Inputs = new FlywheelIOInputsAutoLogged();
+  private final FlywheelIOInputsAutoLogged s2Inputs = new FlywheelIOInputsAutoLogged();
 
-  private final ShooterFeederIOInputsAutoLogged feedInputs = new ShooterFeederIOInputsAutoLogged();
+  private final FeederIOInputsAutoLogged feedInputs = new FeederIOInputsAutoLogged();
 
   private final SimpleMotorFeedforward ffModel = new SimpleMotorFeedforward(0, 0.03);
   
-  public Shooter(ShooterIO shooterMotor1, ShooterIO shooterMotor2, ShooterFeederIO feeder) {
+  public Shooter(FlywheelIO shooterMotor1, FlywheelIO shooterMotor2, FeederIO feeder) {
     this.shooterMotor1 = shooterMotor1;
     this.shooterMotor2 = shooterMotor2;
 

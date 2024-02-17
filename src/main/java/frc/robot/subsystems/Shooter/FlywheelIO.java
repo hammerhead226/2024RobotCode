@@ -2,15 +2,15 @@ package frc.robot.subsystems.Shooter;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface ShooterIO {
+public interface FlywheelIO {
   @AutoLog
-  public static class ShooterIOInputs {
+  public static class FlywheelIOInputs {
     public double shooterVelocity = 0;
     public double appliedVolts = 0;
     public double currentAmps = 0;
   }
 
-  public default void updateInputs(ShooterIOInputs inputs) {}
+  public default void updateInputs(FlywheelIOInputs inputs) {}
 
   public default void setVoltage(double volts) {}
 

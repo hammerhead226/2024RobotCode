@@ -8,23 +8,23 @@ import frc.robot.Constants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 
-public class ShooterFeederIOSparkMax implements ShooterFeederIO {
+public class FeederIOSparkMax implements FeederIO {
   private final CANSparkMax neo;
   private final SparkPIDController pid;
 
-  public ShooterFeederIOSparkMax(int id) {
+  public FeederIOSparkMax(int id) {
 
     neo = new CANSparkMax(id, MotorType.kBrushless);
     pid = neo.getPIDController();
 
     neo.restoreFactoryDefaults();
-    neo.setSmartCurrentLimit(Constants.ShooterConstants.FEEDER_SPARK_MAX_CURRENT_LIMIT);
+    neo.setSmartCurrentLimit((int) Constants.ShooterConstants.FEEDER_CURRENT_LIMIT);
     neo.setCANTimeout(250);
     neo.burnFlash();
   }
 
   @Override
-  public void updateInputs(ShooterFeederIOInputs inputs) {
+  public void updateInputs(FeederIOInputs inputs) {
     inputs.feederVelocity = neo.getEncoder().getVelocity();
 
     inputs.appliedVolts = neo.getBusVoltage();

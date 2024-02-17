@@ -10,7 +10,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
-public class ShooterFeederIOTalonFX implements ShooterFeederIO {
+public class FeederIOTalonFX implements FeederIO {
 
   private final TalonFX falcon;
 
@@ -18,11 +18,11 @@ public class ShooterFeederIOTalonFX implements ShooterFeederIO {
   private final StatusSignal<Double> appliedAmps;
   private final StatusSignal<Double> currentAmps;
 
-  public ShooterFeederIOTalonFX(int id) {
+  public FeederIOTalonFX(int id) {
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.FEEDER_TALON_FX_CURRENT_LIMIT;
-    config.CurrentLimits.StatorCurrentLimitEnable = Constants.ShooterConstants.TALON_FX_CURRENT_LIMIT_ENABLED;
+    config.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.FEEDER_CURRENT_LIMIT;
+    config.CurrentLimits.StatorCurrentLimitEnable = Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     falcon = new TalonFX(id);
@@ -37,7 +37,7 @@ public class ShooterFeederIOTalonFX implements ShooterFeederIO {
   }
 
   @Override
-  public void updateInputs(ShooterFeederIOInputs inputs) {
+  public void updateInputs(FeederIOInputs inputs) {
     inputs.feederVelocity =
         Units.rotationsPerMinuteToRadiansPerSecond(feederVelocity.getValueAsDouble());
 

@@ -10,7 +10,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
-public class ShooterIOTalonFX implements ShooterIO {
+public class FlywheelIOTalonFX implements FlywheelIO {
 
   private final TalonFX falcon;
 
@@ -18,11 +18,11 @@ public class ShooterIOTalonFX implements ShooterIO {
   private final StatusSignal<Double> appliedAmps;
   private final StatusSignal<Double> currentAmps;
 
-  public ShooterIOTalonFX(int id) {
+  public FlywheelIOTalonFX(int id) {
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.TALON_FX_CURRENT_LIMIT;
-    config.CurrentLimits.StatorCurrentLimitEnable = Constants.ShooterConstants.TALON_FX_CURRENT_LIMIT_ENABLED;
+    config.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT;
+    config.CurrentLimits.StatorCurrentLimitEnable = Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     falcon = new TalonFX(id);
@@ -37,7 +37,7 @@ public class ShooterIOTalonFX implements ShooterIO {
   }
 
   @Override
-  public void updateInputs(ShooterIOInputs inputs) {
+  public void updateInputs(FlywheelIOInputs inputs) {
     inputs.shooterVelocity =
         Units.rotationsPerMinuteToRadiansPerSecond(shooterVelocity.getValueAsDouble());
 

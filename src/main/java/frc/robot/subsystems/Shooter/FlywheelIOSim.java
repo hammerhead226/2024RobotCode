@@ -10,7 +10,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 /** Add your docs here. */
-public class ShooterIOSim implements ShooterIO{
+public class FlywheelIOSim implements FlywheelIO{
   private FlywheelSim sim = new FlywheelSim(DCMotor.getNEO(1), 1.5, 0.004);
   private PIDController pid = new PIDController(0.0, 0.0, 0.0);
 
@@ -19,7 +19,7 @@ public class ShooterIOSim implements ShooterIO{
   private double appliedVolts = 0.0;
 
   @Override
-  public void updateInputs(ShooterIOInputs inputs) {
+  public void updateInputs(FlywheelIOInputs inputs) {
     if (closedLoop) {
       appliedVolts =
           MathUtil.clamp(pid.calculate(sim.getAngularVelocityRadPerSec()) + ffVolts, -12.0, 12.0);
