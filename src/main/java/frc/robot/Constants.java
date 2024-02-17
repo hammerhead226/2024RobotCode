@@ -18,15 +18,11 @@ public final class Constants {
   }
 
   public static class currentLimitsConstants {
-    public static final double EXTENDER_TALON_FX_CURRENT_LIMIT = 30;
+    public static final double EXTENDER_TALON_FX_CURRENT_LIMIT = 30.0;
+    public static final double PIVOT_TALON_FX_CURRENT_LIMIT = 30.0;
+
     public static final boolean EXTENDER_TALON_FX_CURRENT_LIMIT_ENABLED = true;
-
-
-    public static final double PIVOT_TALON_FX_CURRENT_LIMIT = 30;
     public static final boolean PIVOT_TALON_FX_CURRENT_LIMIT_ENABLED = true;
-
-    
-
   }
 
   public static enum Mode {
@@ -41,6 +37,7 @@ public final class Constants {
   }
 
   public static final Mode currentMode = Mode.SIM;
+  public static final boolean tuningMode = true;
 
   public static final String CANBUS_STRING = "Can Bus 1";
   public static final String CANIVORE_STRING = "Can Bus 2";
@@ -49,8 +46,6 @@ public final class Constants {
   // Still need to find the SHOOTER_LENGTH
   public static final double SHOOTER_LENGTH = 0; // replace with actual shooter length
 
-  // TODO change canbus ID
-  //public static final double extenderTalonFXCurrentLimit = 0;
   // TODO change all IDS here
   public static final int CANCODER_CANBUS_ID = 0;
   public static final int ELEVATOR_PIVOT_ID = 0;
@@ -60,4 +55,5 @@ public final class Constants {
   public static double xDataPoints[] = {96.3, 109.8, 126.3, 145.3, 139};
   public static double yDataPoints[] = {47, 45, 37, 34, 30};
 
+  public static final double LOOP_PERIOD_SECS = 0.02;
 }

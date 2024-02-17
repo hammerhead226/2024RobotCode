@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorExtenderIO;
 import frc.robot.subsystems.Elevator.ElevatorExtenderIOSim;
@@ -15,9 +17,7 @@ import frc.robot.subsystems.Elevator.ElevatorExtenderIOTalonFX;
 import frc.robot.subsystems.Elevator.ElevatorPivotIO;
 import frc.robot.subsystems.Elevator.ElevatorPivotIOSim;
 import frc.robot.subsystems.Elevator.ElevatorPivotIOTalonFX;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.ExampleSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -37,30 +37,23 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
-      // Real robot, instantiate hardware IO implementations
+        // Real robot, instantiate hardware IO implementations
       case REAL:
-        elevator = 
-          new Elevator(
-            new ElevatorPivotIOTalonFX(Constants.ELEVATOR_PIVOT_ID, Constants.CANCODER_CANBUS_ID), 
-            new ElevatorExtenderIOTalonFX(Constants.ELEVATOR_EXTENDER_ID));
+        elevator =
+            new Elevator(
+                new ElevatorPivotIOTalonFX(
+                    Constants.ELEVATOR_PIVOT_ID, Constants.CANCODER_CANBUS_ID),
+                new ElevatorExtenderIOTalonFX(Constants.ELEVATOR_EXTENDER_ID));
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        elevator =
-          new Elevator(
-            new ElevatorPivotIOSim(), 
-            new ElevatorExtenderIOSim()
-          );
+        elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        elevator =
-            new Elevator(
-              new ElevatorPivotIO() {}, 
-              new ElevatorExtenderIO() {}
-            );
+        elevator = new Elevator(new ElevatorPivotIO() {}, new ElevatorExtenderIO() {});
         break;
     }
 

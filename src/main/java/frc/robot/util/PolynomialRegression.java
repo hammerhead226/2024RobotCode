@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import Jama.Matrix;
 import Jama.QRDecomposition;
+import java.lang.Math;
 
 // NOTE: This file is available at
 // http://algs4.cs.princeton.edu/14analysis/PolynomialRegression.java.html
@@ -189,7 +190,7 @@ public class PolynomialRegression implements Comparable<PolynomialRegression> {
     }
     return 0;
   }
-  
+
   /**
    * Unit tests the {@code PolynomialRegression} data type.
    *

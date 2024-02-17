@@ -1,71 +1,85 @@
 package frc.robot.subsystems.Elevator;
 
-import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.util.PolynomialRegression;
-
+import frc.robot.util.LoggedTunableNumber;
+import frc.robot.util.Math.Conversions;
+import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
-   private final ElevatorPivotIO pivot;
-   private final ElevatorExtenderIO elevator;
+  private final ElevatorPivotIO pivot;
+  private final ElevatorExtenderIO extender;
 
-   private final ElevatorPivotIOInputsAutoLogged pInputs = new ElevatorPivotIOInputsAutoLogged();
-   private final ElevatorExtenderIOInputsAutoLogged eInputs = new ElevatorExtenderIOInputsAutoLogged();
-   
-   private final PolynomialRegression angleCalculations = new PolynomialRegression(Constants.xDataPoints, Constants.yDataPoints, 1, "DistanceInInches");
-   
-   public Elevator(ElevatorPivotIO pivot, ElevatorExtenderIO elevator ){
-      this.pivot = pivot;
-      this.elevator = elevator;
-   }
+  private final ElevatorPivotIOInputsAutoLogged pInputs = new ElevatorPivotIOInputsAutoLogged();
+  private final ElevatorExtenderIOInputsAutoLogged eInputs =
+      new ElevatorExtenderIOInputsAutoLogged();
 
-   public void setPositionElevator(double position) {
-      elevator.setPosition(position);
-   }
+  private static final LoggedTunableNumber pivotkP = new LoggedTunableNumber("elevatorPivotkP");
+  private static final LoggedTunableNumber extenderkP = new LoggedTunableNumber("elevatorExtenderkP");
 
-   public void setPositionPivot(double position) {
-      pivot.setPosition(position);
-   }
+  public Elevator(ElevatorPivotIO pivot, ElevatorExtenderIO extender) {
+    this.pivot = pivot;
+    this.extender = extender;
 
-   public void setPivotVelocity(double pivotVelocity) {
-      pivot.setVelocity(pivotVelocity);
-   }
+    pivotkP.initDefault(0.5);
+    extenderkP.initDefault(0.5);
 
-   public void setElevatorVelocity(double elevatorVelocity) {
-      pivot.setVelocity(elevatorVelocity);
-   }
+    this.pivot.configurePID(pivotkP.get(), 0, 0);
+    this.extender.configurePID(extenderkP.get(), 0, 0);
+  }
 
-   public void pivotStop(){
-      pivot.stop();
-   }
+  public void setPositionElevator(double position) {
+    extender.setPosition(position);
+  }
 
-   public void elevatorStop(){
-      elevator.stop();
-   }
+  public void setPositionPivot(double position) {
+    pivot.setPosition(position);
+  }
 
-   public double convertTicksToDegrees(double ticks){
-      return (ticks % 2048) * (360/2048);
-   }
+  public void setPivotVelocity(double pivotVelocity) {
+    pivot.setVelocity(pivotVelocity);
+  }
 
-   public double convertAnglesToTicks(double angle){
-      return (angle % 360) * 2048/360;
-   }
+  public void setElevatorVelocity(double elevatorVelocity) {
+    pivot.setVelocity(elevatorVelocity);
+  }
 
-   public double findDistance(double angle){
-      return Constants.SHOOTER_LENGTH * Math.cos(convertTicksToDegrees(angle));
-   }
+  public void pivotStop() {
+    pivot.stop();
+  }
 
-   public double findHeight(double angle){
-      return (Constants.SHOOTER_LENGTH * Math.sin(convertTicksToDegrees(angle))) + Constants.PIVOT_HEIGHT;
-   }
+  public void elevatorStop() {
+    extender.stop();
+  }
 
-   @Override
-   public void periodic() {
-      pivot.updateInputs(pInputs);
-      elevator.updateInputs(eInputs);
+  public double findDistance(double angle) {
+    return Constants.SHOOTER_LENGTH * Math.cos(Conversions.convertTicksToDegrees(angle));
+  }
 
-      Logger.processInputs("pivot Motor", pInputs);
-      Logger.processInputs("elevate motor", eInputs);
-   }
+  public double findHeight(double angle) {
+    return (Constants.SHOOTER_LENGTH * Math.sin(Conversions.convertTicksToDegrees(angle)))
+        + Constants.PIVOT_HEIGHT;
+  }
+
+  public double calculateAngle() {
+    double angle = 0.0;
+    return angle;
+  }
+
+  @Override
+  public void periodic() {
+    pivot.updateInputs(pInputs);
+    extender.updateInputs(eInputs);
+
+    Logger.processInputs("pivot Motor", pInputs);
+    Logger.processInputs("elevate motor", eInputs);
+
+    if (extenderkP.hasChanged(hashCode())) {
+      extender.configurePID(extenderkP.get(), 0, 0);
+    }
+
+    if (pivotkP.hasChanged(hashCode())) {
+      pivot.configurePID(pivotkP.get(), 0, 0);
+    }
+  }
 }

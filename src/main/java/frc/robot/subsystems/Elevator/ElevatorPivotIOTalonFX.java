@@ -11,7 +11,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
@@ -27,8 +26,10 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
 
   public ElevatorPivotIOTalonFX(int talonID, int cancoderID) {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.CurrentLimits.StatorCurrentLimit = Constants.currentLimitsConstants.PIVOT_TALON_FX_CURRENT_LIMIT;
-    config.CurrentLimits.StatorCurrentLimitEnable = Constants.currentLimitsConstants.PIVOT_TALON_FX_CURRENT_LIMIT_ENABLED;
+    config.CurrentLimits.StatorCurrentLimit =
+        Constants.currentLimitsConstants.PIVOT_TALON_FX_CURRENT_LIMIT;
+    config.CurrentLimits.StatorCurrentLimitEnable =
+        Constants.currentLimitsConstants.PIVOT_TALON_FX_CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     falcon = new TalonFX(talonID);
@@ -50,7 +51,8 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
 
   @Override
   public void updateInputs(ElevatorPivotIOInputs inputs) {
-    inputs.pivotAbsolutePosition = Units.rotationsToDegrees(pivotAbsolutePosition.getValueAsDouble());
+    inputs.pivotAbsolutePosition =
+        Units.rotationsToDegrees(pivotAbsolutePosition.getValueAsDouble());
     inputs.pivotPosition = Units.rotationsToDegrees(pivotPosition.getValueAsDouble());
     inputs.pivotVelocity =
         Units.rotationsPerMinuteToRadiansPerSecond(pivotVelocity.getValueAsDouble());

@@ -5,7 +5,6 @@
 package frc.robot.subsystems.Elevator;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
@@ -17,54 +16,37 @@ public class ElevatorPivotIOSim implements ElevatorPivotIO {
   private SingleJointedArmSim sim = new SingleJointedArmSim(simMotor, 0, 0, 0, 0, 0, true, 0);
   private PIDController pid = new PIDController(0, 0, 0);
 
+  private double velocity = 0.0;
 
   @Override
   public void updateInputs(ElevatorPivotIOInputs inputs) {
     sim.update(LOOP_PERIOD_SECS);
 
-<<<<<<< HEAD
-       sim.setInputVoltage(appliedVolts);
-    }
-
-     sim.update(0.02);
-
-     inputs.pivotVelocity = sim.getVelocityRadPerSec();
-     //TODO figure out a way to get simulated position 
-
-    inputs.appliedVolts = appliedVolts;
-     inputs.currentAmps = sim.getCurrentDrawAmps();
-=======
-    // finish the pivotAbsolutePosition and appliedVolts variables for logging
-    inputs.pivotAbsolutePosition = ;
+    inputs.pivotAbsolutePosition = sim.getAngleRads() * Math.random() * 2.0 * Math.PI;
     inputs.pivotVelocity = sim.getVelocityRadPerSec();
     inputs.pivotPosition = sim.getAngleRads();
     inputs.currentAmps = sim.getCurrentDrawAmps();
-    inputs.appliedVolts = ;
->>>>>>> 7acc6143760b65ca70b00a89ecf1bdcbeae9d2cd
   }
 
-  // rewrite this method
   @Override
   public void setPosition(double position) {
-
+    sim.setState(position, velocity);
   }
 
-  // rewrite this method
   @Override
   public void setVelocity(double velocity) {
-
+    this.velocity = velocity;
+    pid.setSetpoint(velocity);
   }
 
-  // rewrite this method
   @Override
   public void stop() {
-
+    sim.setInputVoltage(0.0);
   }
 
-  // rewrite this method
   @Override
   public void setVoltage(double voltage) {
-
+    sim.setInputVoltage(voltage);
   }
 
   @Override

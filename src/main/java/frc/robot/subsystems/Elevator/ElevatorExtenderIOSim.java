@@ -4,42 +4,40 @@
 
 package frc.robot.subsystems.Elevator;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import frc.robot.Constants;
 
 /** Add your docs here. */
-public class ElevatorExtenderIOSim implements ElevatorExtenderIO{
-  private static final double LOOP_PERIOD_SECS = 0.02;
+public class ElevatorExtenderIOSim implements ElevatorExtenderIO {
 
   private final DCMotor simGearbox = DCMotor.getFalcon500(2);
   private ElevatorSim sim = new ElevatorSim(2, 1, simGearbox, 0.2, 1.22, true, 0.2);
   private PIDController pid = new PIDController(0.2, 0.2, 0.2);
 
-  private boolean closedLoop = false;
-  private double ffVolts = 0.0;
   private double velocity = 0.0;
-  private double appliedVolts = 0.0;
 
   @Override
   public void updateInputs(ElevatorExtenderIOInputs inputs) {
-    sim.update(LOOP_PERIOD_SECS);
+    sim.update(Constants.LOOP_PERIOD_SECS);
+
+    inputs.elevatorPosition = sim.getPositionMeters();
+    inputs.elevatorVelocity = sim.getVelocityMetersPerSecond();
+    inputs.currentAmps = sim.getCurrentDrawAmps();
   }
 
   @Override
   public void setPosition(double position) {
-    closedLoop = true;
     sim.setState(position, velocity);
   }
 
   @Override
   public void setVelocity(double velocity) {
-    closedLoop = true;
     this.velocity = velocity;
     pid.setSetpoint(velocity);
   }
-  
+
   @Override
   public void stop() {
     setVelocity(0.0);
