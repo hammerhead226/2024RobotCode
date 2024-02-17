@@ -27,24 +27,18 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.LoggedTunableNumber;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
-  // private static final double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);
-  private static final double MAX_LINEAR_SPEED = 5.56;
-  private static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);
-  private static final double TRACK_WIDTH_Y = Units.inchesToMeters(26.0);
-  private static final double DRIVE_BASE_RADIUS =
-      Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
-  private static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -55,6 +49,9 @@ public class Drive extends SubsystemBase {
   private Rotation2d lastGyroRotation = new Rotation2d();
 
   private final SwerveDrivePoseEstimator poseEstimator;
+
+  private static final LoggedTunableNumber translationkP = new LoggedTunableNumber("translationkP");
+  private static final LoggedTunableNumber rotationkP = new LoggedTunableNumber("rotationkP");
 
   public Drive(
       GyroIO gyroIO,
@@ -69,24 +66,12 @@ public class Drive extends SubsystemBase {
     modules[3] = new Module(brModuleIO, 3);
 
     lastGyroRotation = gyroInputs.yawPosition;
-    // Configure AutoBuilder for PathPlanner
-    AutoBuilder.configureHolonomic(
-        this::getPose,
-        this::setPose,
-        () -> kinematics.toChassisSpeeds(getModuleStates()),
-        this::runVelocity,
-        new HolonomicPathFollowerConfig(
-            new PIDConstants(0.5, 0, 0, 0),
-            new PIDConstants(0.05, 0, 0, 0),
-            MAX_LINEAR_SPEED,
-            DRIVE_BASE_RADIUS,
-            new ReplanningConfig()),
-        () -> {
-          var alliance = DriverStation.getAlliance();
 
-          return false;
-        },
-        this);
+    // init translationkP and rotationkP
+    translationkP.initDefault(0.5);
+    rotationkP.initDefault(0.05);
+    // Configure AutoBuilder for PathPlanner
+    configureAutoBuilder(translationkP.get(), rotationkP.get());
     // MAX_LINEAR_SPEED, DRIVE_BASE_RADIUS, new ReplanningConfig()),
     // this);
     Pathfinding.setPathfinder(new LocalADStarAK());
@@ -114,6 +99,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void periodic() {
+    
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
     for (var module : modules) {
@@ -142,6 +128,27 @@ public class Drive extends SubsystemBase {
         break;
       default:
     }
+  }
+
+  // method that configures the autoBuilder every time the translation/rotation kPs change
+  public void configureAutoBuilder(double translationkP, double rotationkP) {
+    AutoBuilder.configureHolonomic(
+      this::getPose,
+      this::setPose,
+      () -> kinematics.toChassisSpeeds(getModuleStates()),
+      this::runVelocity,
+      new HolonomicPathFollowerConfig(
+          new PIDConstants(translationkP, 0, 0, 0),
+          new PIDConstants(rotationkP, 0, 0, 0),
+          Constants.SwerveConstants.MAX_LINEAR_SPEED,
+          Constants.SwerveConstants.DRIVE_BASE_RADIUS,
+          new ReplanningConfig()),
+      () -> {
+        var alliance = DriverStation.getAlliance();
+
+        return false;
+      },
+      this);
   }
 
   public void updateOdometry() {
@@ -174,7 +181,7 @@ public class Drive extends SubsystemBase {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, MAX_LINEAR_SPEED);
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, Constants.SwerveConstants.MAX_LINEAR_SPEED);
 
     // Send setpoints to modules
     SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
@@ -263,21 +270,25 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
-    return MAX_LINEAR_SPEED;
+    return Constants.SwerveConstants.MAX_LINEAR_SPEED;
   }
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    return MAX_ANGULAR_SPEED;
+    return Constants.SwerveConstants.MAX_ANGULAR_SPEED;
   }
 
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
     return new Translation2d[] {
-      new Translation2d(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
-      new Translation2d(TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0),
-      new Translation2d(-TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
-      new Translation2d(-TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0)
+      new Translation2d(Constants.SwerveConstants.TRACK_WIDTH_X / 2.0, 
+                        Constants.SwerveConstants.TRACK_WIDTH_Y / 2.0),
+      new Translation2d(Constants.SwerveConstants.TRACK_WIDTH_X / 2.0, 
+                        -Constants.SwerveConstants.TRACK_WIDTH_Y / 2.0),
+      new Translation2d(-Constants.SwerveConstants.TRACK_WIDTH_X / 2.0, 
+                        Constants.SwerveConstants.TRACK_WIDTH_Y / 2.0),
+      new Translation2d(-Constants.SwerveConstants.TRACK_WIDTH_X / 2.0, 
+                        -Constants.SwerveConstants.TRACK_WIDTH_Y / 2.0)
     };
   }
 }

@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -22,6 +24,22 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static class SwerveConstants {
+    public static final double MAX_LINEAR_SPEED = 5.56;
+    public static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);
+    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(26.0);
+    public static final double DRIVE_BASE_RADIUS =
+        Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
+    public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+  }
+
+  public static class ModuleConstants {
+    public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
+
+    public static final double DRIVE_STATOR_CURRENT_LIMIT = 40.0; 
+    public static final double TURN_STATOR_CURRENT_LIMIT = 30.0; 
+  }
+
   public static final Mode currentMode = Mode.REAL;
   public static final boolean tuningMode = true;
 
