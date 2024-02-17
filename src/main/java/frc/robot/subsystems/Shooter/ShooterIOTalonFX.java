@@ -21,8 +21,8 @@ public class ShooterIOTalonFX implements ShooterIO {
   public ShooterIOTalonFX(int id) {
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.CurrentLimits.StatorCurrentLimit = Constants.shooterCurrentLimits.TALON_FX_CURRENT_LIMIT;
-    config.CurrentLimits.StatorCurrentLimitEnable = Constants.shooterCurrentLimits.TALON_FX_CURRENT_LIMIT_ENABLED;
+    config.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.TALON_FX_CURRENT_LIMIT;
+    config.CurrentLimits.StatorCurrentLimitEnable = Constants.ShooterConstants.TALON_FX_CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     falcon = new TalonFX(id);
@@ -47,8 +47,9 @@ public class ShooterIOTalonFX implements ShooterIO {
   }
 
   @Override
-  public void setVelocity(double velocity) {
-    falcon.setControl(new VelocityVoltage(velocity));
+  public void setVelocity(double velocity, double ffVolts) {
+    falcon.setControl(new VelocityVoltage(
+      Units.radiansToRotations(velocity), 0, true, ffVolts, 0, false, false, false));
   }
 
   @Override

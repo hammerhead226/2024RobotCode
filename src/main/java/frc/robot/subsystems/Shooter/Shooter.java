@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.Shooter;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.Logger;
@@ -17,23 +18,18 @@ public class Shooter extends SubsystemBase {
 
   private final ShooterFeederIO feeder;
 
- 
-
   private final ShooterIOInputsAutoLogged s1Inputs = new ShooterIOInputsAutoLogged();
   private final ShooterIOInputsAutoLogged s2Inputs = new ShooterIOInputsAutoLogged();
 
   private final ShooterFeederIOInputsAutoLogged feedInputs = new ShooterFeederIOInputsAutoLogged();
-  
-  public Shooter(
-      ShooterIO shooterMotor1,
-      ShooterIO shooterMotor2,
-      ShooterFeederIO feeder) {
 
+  private final SimpleMotorFeedforward ffModel = new SimpleMotorFeedforward(0, 0.03);
+  
+  public Shooter(ShooterIO shooterMotor1, ShooterIO shooterMotor2, ShooterFeederIO feeder) {
     this.shooterMotor1 = shooterMotor1;
     this.shooterMotor2 = shooterMotor2;
 
     this.feeder = feeder;
-   
   }
 
   public void stopShooterMotors() {
@@ -50,9 +46,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterVelocitys(double velocity1, double velocity2) {
-
-    shooterMotor1.setVelocity(velocity1);
-    shooterMotor2.setVelocity(velocity2);
+    shooterMotor1.setVelocity(velocity1, ffModel.calculate(velocity1));
+    shooterMotor2.setVelocity(velocity2, ffModel.calculate(velocity2));
   }
 
   @Override

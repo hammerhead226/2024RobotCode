@@ -17,7 +17,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static final class shooterCurrentLimits {
+  public static final class ShooterConstants {
     public static final double FEEDER_TALON_FX_CURRENT_LIMIT = 0;
     public static final boolean FEEDER_TALON_FX_CURRENT_LIMIT_ENABLED = true;
 
