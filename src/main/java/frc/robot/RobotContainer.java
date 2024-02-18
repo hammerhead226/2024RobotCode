@@ -79,9 +79,13 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    m_driverController.b().whileTrue(Commands.startEnd(() -> elevator.setExtenderGoal(1.5), elevator::elevatorStop, elevator));
-    m_driverController.a().whileTrue(Commands.startEnd(() -> elevator.setExtenderGoal(3), elevator::elevatorStop, elevator));
-    m_driverController.y().whileTrue(Commands.startEnd(() -> elevator.setExtenderGoal(0), elevator::elevatorStop, elevator));
+    // m_driverController.b().whileTrue(Commands.startEnd(() -> elevator.setExtenderGoal(1.5), elevator::elevatorStop, elevator));
+    // m_driverController.a().whileTrue(Commands.startEnd(() -> elevator.setExtenderGoal(3), elevator::elevatorStop, elevator));
+    // m_driverController.y().whileTrue(Commands.startEnd(() -> elevator.setExtenderGoal(0), elevator::elevatorStop, elevator));
+
+    m_driverController.b().whileTrue(Commands.startEnd(() -> elevator.setPivotGoal(Math.PI/3), elevator::pivotStop, elevator));
+    m_driverController.a().whileTrue(Commands.startEnd(() -> elevator.setPivotGoal(Math.PI), elevator::pivotStop, elevator));
+    m_driverController.y().whileTrue(Commands.startEnd(() -> elevator.setPivotGoal(0), elevator::pivotStop, elevator));
   }
 
   /**

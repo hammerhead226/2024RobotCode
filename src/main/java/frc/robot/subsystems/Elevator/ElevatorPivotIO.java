@@ -9,13 +9,12 @@ public interface ElevatorPivotIO {
     public double pivotPosition = 0;
     public double currentAmps = 0;
     public double appliedVolts = 0;
+    public double positionSetpoint = 0;
   }
 
   public default void updateInputs(ElevatorPivotIOInputs inputs) {}
 
-  public default void setPosition(double position) {}
-
-  public default void setVelocity(double velocity) {}
+  public default void setPositionSetpoint(double position, double ffVolts) {}
 
   public default void setVoltage(double volts) {}
 

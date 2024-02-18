@@ -18,7 +18,8 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
   private final TalonFX falcon;
   private final CANcoder cancoder;
 
-  private final StatusSignal<Double> pivotAbsolutePosition;
+  private double positionSetpoint;
+
   private final StatusSignal<Double> pivotPosition;
   private final StatusSignal<Double> pivotVelocity;
   private final StatusSignal<Double> appliedVolts;
@@ -39,18 +40,21 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
     cancoder = new CANcoder(cancoderID);
     cancoder.getConfigurator().apply(new CANcoderConfiguration());
 
-    pivotAbsolutePosition = cancoder.getAbsolutePosition();
-    pivotPosition = falcon.getPosition();
+    pivotPosition = cancoder.getAbsolutePosition();
     pivotVelocity = falcon.getVelocity();
     appliedVolts = falcon.getMotorVoltage();
     currentAmps = falcon.getStatorCurrent();
 
+    // TODO:: make this a constant
+    positionSetpoint = 0;
+
     BaseStatusSignal.setUpdateFrequencyForAll(
-        100, pivotAbsolutePosition, pivotPosition, pivotVelocity, appliedVolts, currentAmps);
+        100, pivotPosition, pivotVelocity, appliedVolts, currentAmps);
   }
 
   @Override
   public void updateInputs(ElevatorPivotIOInputs inputs) {
+    BaseStatusSignal.refreshAll(pivotPosition, pivotVelocity, appliedVolts, currentAmps);
     inputs.pivotPosition = Units.rotationsToDegrees(pivotPosition.getValueAsDouble());
     inputs.pivotVelocity =
         Units.rotationsPerMinuteToRadiansPerSecond(pivotVelocity.getValueAsDouble());
@@ -59,17 +63,14 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
   }
 
   @Override
-  public void setVelocity(double velocity) {
-    falcon.setControl(new VelocityVoltage(velocity));
-  }
-
-  @Override
-  public void setPosition(double position) {
-    falcon.setControl(new PositionVoltage(position));
+  public void setPositionSetpoint(double position, double ffVolts) {
+    this.positionSetpoint = position;
+    falcon.setControl(new PositionVoltage(position, 0, false, ffVolts, 0, false, false, false));
   }
 
   @Override
   public void stop() {
+    this.positionSetpoint = pivotPosition.getValueAsDouble();
     falcon.stopMotor();
   }
 

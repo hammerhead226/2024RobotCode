@@ -16,7 +16,6 @@ public class ElevatorExtenderIOSim implements ElevatorExtenderIO {
 
   private final DCMotor simGearbox = DCMotor.getFalcon500(2);
   private ElevatorSim sim = new ElevatorSim(simGearbox, 1, 1, 0.01, 0.0, 3, true, 0.0);
-  // private ElevatorSim sim = new ElevatorSim(0.2, 0.05, simGearbox, 0, 3, true, 0);
   private PIDController pid = new PIDController(0, 0, 0);
 
   private double position = 0.0;

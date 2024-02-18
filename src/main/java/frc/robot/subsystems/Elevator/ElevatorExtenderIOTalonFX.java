@@ -16,7 +16,6 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
   private final TalonFX falcon;
 
   private double positionSetpoint;
-  private double velocitySetpoint;
   private final StatusSignal<Double> elevatorPosition;
   private final StatusSignal<Double> elevatorVelocity;
   private final StatusSignal<Double> appliedVolts;
@@ -37,7 +36,6 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
 
     // TODO:: make this a constant for our startup position
     positionSetpoint = 0;
-    velocitySetpoint = 0;
 
     elevatorPosition = falcon.getPosition();
     elevatorVelocity = falcon.getVelocity();
@@ -66,6 +64,7 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
 
   @Override
   public void stop() {
+    this.positionSetpoint = elevatorPosition.getValueAsDouble();
     falcon.stopMotor();
   }
 
