@@ -30,13 +30,13 @@ public class Elevator extends SubsystemBase {
   private TrapezoidProfile.State extenderCurrent = new TrapezoidProfile.State();
 
   private final ElevatorFeedforward elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 0.8);
-  // private final SimpleMotorFeedforward pivotFFModel = new SimpleMotorFeedforward(0.02, 6);
+  private final SimpleMotorFeedforward pivotFFModel = new SimpleMotorFeedforward(0.02, 0.3);
 
   public Elevator(ElevatorPivotIO pivot, ElevatorExtenderIO extender) {
     this.pivot = pivot;
     this.extender = extender;
 
-    pivotkP.initDefault(15000);
+    pivotkP.initDefault(0.2);
     extenderkP.initDefault(15);
 
     this.pivot.configurePID(pivotkP.get(), 0, 0);
@@ -44,7 +44,6 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setPivotGoal(double setpoint) {
-    // cahnge this to current velocity?
     pivotGoal = new TrapezoidProfile.State(setpoint, 0);
   }
 
@@ -57,7 +56,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setPositionPivot(double position, double velocity) {
-    pivot.setPositionSetpoint(position, 0);
+    pivot.setPositionSetpoint(position, pivotFFModel.calculate(velocity));
   }
 
   public void pivotStop() {

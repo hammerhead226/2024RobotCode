@@ -14,7 +14,7 @@ import frc.robot.Constants;
 /** Add your docs here. */
 public class ElevatorPivotIOSim implements ElevatorPivotIO {
   private final DCMotor pivotGearbox = DCMotor.getFalcon500(1);
-  private final SingleJointedArmSim sim = new SingleJointedArmSim(pivotGearbox, 1, SingleJointedArmSim.estimateMOI(Units.inchesToMeters(20), 2), Units.inchesToMeters(20), 0, Math.PI, true, 0);
+  private final SingleJointedArmSim sim = new SingleJointedArmSim(pivotGearbox, 5, SingleJointedArmSim.estimateMOI(Units.inchesToMeters(20), 0.1), Units.inchesToMeters(20), 0, Math.PI, true, 0);
   private final PIDController pid = new PIDController(0, 0, 0);
 
   private double currentAmps = 0.0;
