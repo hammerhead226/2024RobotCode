@@ -5,7 +5,6 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ElevatorPivotIO {
   @AutoLog
   public static class ElevatorPivotIOInputs {
-    public double pivotAbsolutePosition = 0;
     public double pivotVelocity = 0;
     public double pivotPosition = 0;
     public double currentAmps = 0;

@@ -5,51 +5,54 @@
 package frc.robot.subsystems.Elevator;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 /** Add your docs here. */
 public class ElevatorPivotIOSim implements ElevatorPivotIO {
-  private static final double LOOP_PERIOD_SECS = 0.02;
+  private final DCMotor pivotGearbox = DCMotor.getFalcon500(1);
 
-  private DCMotor simMotor = DCMotor.getFalcon500(1);
-  private SingleJointedArmSim sim = new SingleJointedArmSim(simMotor, 0, 0, 0, 0, 0, true, 0);
-  private PIDController pid = new PIDController(0, 0, 0);
-
+  private final SingleJointedArmSim sim = new SingleJointedArmSim(pivotGearbox, 1, SingleJointedArmSim.estimateMOI(Units.inchesToMeters(20), 2), Units.inchesToMeters(20), 0, Math.PI, true, 0);
+  private final PIDController pid = new PIDController(0.5, 0, 0);
   private double velocity = 0.0;
+  private double position = 0.0;
 
-  @Override
+
   public void updateInputs(ElevatorPivotIOInputs inputs) {
-    sim.update(LOOP_PERIOD_SECS);
 
-    inputs.pivotAbsolutePosition = sim.getAngleRads() * Math.random() * 2.0 * Math.PI;
-    inputs.pivotVelocity = sim.getVelocityRadPerSec();
-    inputs.pivotPosition = sim.getAngleRads();
-    inputs.currentAmps = sim.getCurrentDrawAmps();
+    sim.update(0.02);
+
+    inputs.pivotPosition = Math.toDegrees(sim.getAngleRads());
+    inputs.pivotVelocity = Units.radiansPerSecondToRotationsPerMinute(sim.getVelocityRadPerSec());
+    // inputs.appliedVolts = motor.get() * RobotController.getBatteryVoltage();
+    inputs.currentAmps = sim.getCurrentDrawAmps(); 
+
   }
 
-  @Override
   public void setPosition(double position) {
+    this.position = position;
+   sim.setState(position, velocity);
+  }
+
+  public void setVelocity(double velocity) {
+    this.velocity = velocity;
     sim.setState(position, velocity);
   }
 
-  @Override
-  public void setVelocity(double velocity) {
-    this.velocity = velocity;
-    pid.setSetpoint(velocity);
-  }
 
-  @Override
   public void stop() {
-    sim.setInputVoltage(0.0);
+    sim.setState(position, velocity);
   }
 
-  @Override
-  public void setVoltage(double voltage) {
-    sim.setInputVoltage(voltage);
-  }
-
-  @Override
   public void configurePID(double kP, double kI, double kD) {
     pid.setPID(kP, kI, kD);
   }

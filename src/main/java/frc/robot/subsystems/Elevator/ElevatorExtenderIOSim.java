@@ -13,10 +13,11 @@ import frc.robot.Constants;
 public class ElevatorExtenderIOSim implements ElevatorExtenderIO {
 
   private final DCMotor simGearbox = DCMotor.getFalcon500(2);
-  private ElevatorSim sim = new ElevatorSim(2, 1, simGearbox, 0.2, 1.22, true, 0.2);
+  private ElevatorSim sim = new ElevatorSim(2, 1, simGearbox, 0.2, 3, true, 0.2);
   private PIDController pid = new PIDController(0.2, 0.2, 0.2);
 
   private double velocity = 0.0;
+  private double position = 0.0;
 
   @Override
   public void updateInputs(ElevatorExtenderIOInputs inputs) {
@@ -29,18 +30,19 @@ public class ElevatorExtenderIOSim implements ElevatorExtenderIO {
 
   @Override
   public void setPosition(double position) {
+    this.position = position;
     sim.setState(position, velocity);
   }
 
   @Override
   public void setVelocity(double velocity) {
     this.velocity = velocity;
-    pid.setSetpoint(velocity);
+    sim.setState(position, velocity);
   }
 
   @Override
   public void stop() {
-    setVelocity(0.0);
+    sim.setState(position, velocity);
   }
 
   @Override

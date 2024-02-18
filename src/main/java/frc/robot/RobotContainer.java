@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -31,7 +32,7 @@ public class RobotContainer {
   public final Elevator elevator;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
+  public static final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -77,7 +78,10 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    m_driverController.b().whileTrue(Commands.startEnd(() -> elevator.setExtenderGoal(1.5), elevator::elevatorStop, elevator));
+    m_driverController.a().whileTrue(Commands.startEnd(() -> elevator.setExtenderGoal(3), elevator::elevatorStop, elevator));
+    m_driverController.y().whileTrue(Commands.startEnd(() -> elevator.setExtenderGoal(0), elevator::elevatorStop, elevator));
   }
 
   /**
