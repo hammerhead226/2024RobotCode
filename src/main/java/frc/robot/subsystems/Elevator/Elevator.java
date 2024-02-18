@@ -52,15 +52,6 @@ public class Elevator extends SubsystemBase {
     extender.stop();
   }
 
-  public double findDistance(double angle) {
-    return Constants.SHOOTER_LENGTH * Math.cos(Conversions.convertTicksToDegrees(angle));
-  }
-
-  public double findHeight(double angle) {
-    return (Constants.SHOOTER_LENGTH * Math.sin(Conversions.convertTicksToDegrees(angle)))
-        + Constants.PIVOT_HEIGHT;
-  }
-
   public double calculateAngle() {
     double angle = 0.0;
     return angle;

@@ -27,16 +27,16 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
   public ElevatorPivotIOTalonFX(int talonID, int cancoderID) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimit =
-        Constants.currentLimitsConstants.PIVOT_TALON_FX_CURRENT_LIMIT;
+        Constants.ElevatorConstants.PIVOT_CURRENT_LIMIT;
     config.CurrentLimits.StatorCurrentLimitEnable =
-        Constants.currentLimitsConstants.PIVOT_TALON_FX_CURRENT_LIMIT_ENABLED;
+        Constants.ElevatorConstants.PIVOT_CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     falcon = new TalonFX(talonID);
 
     falcon.getConfigurator().apply(config);
 
-    cancoder = new CANcoder(cancoderID, Constants.CANIVORE_STRING);
+    cancoder = new CANcoder(cancoderID);
     cancoder.getConfigurator().apply(new CANcoderConfiguration());
 
     pivotAbsolutePosition = cancoder.getAbsolutePosition();
