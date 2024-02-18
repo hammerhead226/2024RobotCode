@@ -14,6 +14,9 @@ import frc.robot.Constants;
 
 public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
   private final TalonFX falcon;
+
+  private double positionSetpoint;
+  private double velocitySetpoint;
   private final StatusSignal<Double> elevatorPosition;
   private final StatusSignal<Double> elevatorVelocity;
   private final StatusSignal<Double> appliedVolts;
@@ -32,6 +35,10 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
 
     falcon.getConfigurator().apply(config);
 
+    // TODO:: make this a constant for our startup position
+    positionSetpoint = 0;
+    velocitySetpoint = 0;
+
     elevatorPosition = falcon.getPosition();
     elevatorVelocity = falcon.getVelocity();
     appliedVolts = falcon.getMotorVoltage();
@@ -43,6 +50,7 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
 
   @Override
   public void updateInputs(ElevatorExtenderIOInputs inputs) {
+    BaseStatusSignal.refreshAll(elevatorPosition, elevatorVelocity, appliedVolts, currentAmps);
     inputs.elevatorPosition = Units.rotationsToDegrees(elevatorPosition.getValueAsDouble());
     inputs.elevatorVelocity =
         Units.rotationsPerMinuteToRadiansPerSecond(elevatorVelocity.getValueAsDouble());
@@ -51,13 +59,9 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
   }
 
   @Override
-  public void setVelocity(double velocity) {
-    falcon.setControl(new VelocityVoltage(velocity));
-  }
-
-  @Override
-  public void setPosition(double position) {
-    falcon.setControl(new PositionVoltage(position));
+  public void setPositionSetpoint(double position, double ffVolts) {
+    this.positionSetpoint = position;
+    falcon.setControl(new PositionVoltage(position, 0, false, ffVolts, 0, false, false, false));
   }
 
   @Override

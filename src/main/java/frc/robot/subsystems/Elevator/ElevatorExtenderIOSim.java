@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.Elevator;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -13,36 +15,48 @@ import frc.robot.Constants;
 public class ElevatorExtenderIOSim implements ElevatorExtenderIO {
 
   private final DCMotor simGearbox = DCMotor.getFalcon500(2);
-  private ElevatorSim sim = new ElevatorSim(2, 1, simGearbox, 0.2, 3, true, 0.2);
-  private PIDController pid = new PIDController(0.2, 0.2, 0.2);
+  private ElevatorSim sim = new ElevatorSim(simGearbox, 1, 1, 0.01, 0.0, 3, true, 0.0);
+  // private ElevatorSim sim = new ElevatorSim(0.2, 0.05, simGearbox, 0, 3, true, 0);
+  private PIDController pid = new PIDController(0, 0, 0);
 
-  private double velocity = 0.0;
   private double position = 0.0;
+  private double velocity = 0.0;
+  private double appliedVolts = 0.0;
+  private double currentAmps = 0.0;
+  private double positionSetpoint = 0.0;
 
   @Override
   public void updateInputs(ElevatorExtenderIOInputs inputs) {
+    positionSetpoint = pid.getSetpoint();
+  
+    appliedVolts += MathUtil.clamp(pid.calculate(sim.getPositionMeters(), positionSetpoint), -12.0, 12);
+  
+    sim.setInputVoltage(appliedVolts);
+    
+
+    position = sim.getPositionMeters();
+    velocity = sim.getVelocityMetersPerSecond();
+    currentAmps = sim.getCurrentDrawAmps();
+
+    inputs.positionSetpoint = positionSetpoint;
+    inputs.appliedVolts = appliedVolts;
+    inputs.elevatorPosition = position;
+    inputs.elevatorVelocity = velocity;
+    inputs.currentAmps = currentAmps;
+
     sim.update(Constants.LOOP_PERIOD_SECS);
-
-    inputs.elevatorPosition = sim.getPositionMeters();
-    inputs.elevatorVelocity = sim.getVelocityMetersPerSecond();
-    inputs.currentAmps = sim.getCurrentDrawAmps();
   }
 
   @Override
-  public void setPosition(double position) {
-    this.position = position;
-    sim.setState(position, velocity);
-  }
-
-  @Override
-  public void setVelocity(double velocity) {
-    this.velocity = velocity;
-    sim.setState(position, velocity);
+  public void setPositionSetpoint(double position, double ffVolts) {
+    appliedVolts = ffVolts;
+    pid.setSetpoint(position);
   }
 
   @Override
   public void stop() {
-    sim.setState(position, velocity);
+    appliedVolts = 0;
+    pid.setSetpoint(sim.getPositionMeters());
   }
 
   @Override

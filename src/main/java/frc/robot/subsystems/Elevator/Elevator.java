@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Elevator;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,20 +20,22 @@ public class Elevator extends SubsystemBase {
   private static final LoggedTunableNumber pivotkP = new LoggedTunableNumber("elevatorPivotkP");
   private static final LoggedTunableNumber extenderkP = new LoggedTunableNumber("elevatorExtenderkP");
 
-  private final TrapezoidProfile.Constraints pivotConstraints = new TrapezoidProfile.Constraints(Math.PI/4, Math.PI);
+  private final TrapezoidProfile.Constraints pivotConstraints = new TrapezoidProfile.Constraints(Math.PI/8, 3 * Math.PI / 2);
   private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State pivotSetpoint = new TrapezoidProfile.State();
 
-  private final TrapezoidProfile.Constraints extenderConstraints = new TrapezoidProfile.Constraints(0.3, 1);
+  private final TrapezoidProfile.Constraints extenderConstraints = new TrapezoidProfile.Constraints(1, 0.7);
   private TrapezoidProfile.State extenderGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State extenderSetpoint = new TrapezoidProfile.State();
+
+  private final ElevatorFeedforward ffModel = new ElevatorFeedforward(0.02, 0.05, 0.8);
 
   public Elevator(ElevatorPivotIO pivot, ElevatorExtenderIO extender) {
     this.pivot = pivot;
     this.extender = extender;
 
     pivotkP.initDefault(0.5);
-    extenderkP.initDefault(0.5);
+    extenderkP.initDefault(15);
 
     this.pivot.configurePID(pivotkP.get(), 0, 0);
     this.extender.configurePID(extenderkP.get(), 0, 0);
@@ -46,8 +49,8 @@ public class Elevator extends SubsystemBase {
     extenderGoal = new TrapezoidProfile.State(setpoint, 0);
   }
 
-  public void setPositionElevator(double position) {
-    extender.setPosition(position);
+  public void setPositionElevator(double position, double velocity) {
+    extender.setPositionSetpoint(position, ffModel.calculate(velocity));
   }
 
   public void setPositionPivot(double position) {
@@ -56,10 +59,6 @@ public class Elevator extends SubsystemBase {
 
   public void setPivotVelocity(double pivotVelocity) {
     pivot.setVelocity(pivotVelocity);
-  }
-
-  public void setElevatorVelocity(double elevatorVelocity) {
-    pivot.setVelocity(elevatorVelocity);
   }
 
   public void pivotStop() {
@@ -90,8 +89,7 @@ public class Elevator extends SubsystemBase {
     pivot.setVelocity(pivotSetpoint.velocity);
     pivot.setPosition(pivotSetpoint.position);
     
-    extender.setVelocity(extenderSetpoint.velocity);
-    extender.setPosition(extenderSetpoint.position);
+    setPositionElevator(extenderSetpoint.position, extenderSetpoint.velocity);
 
     Logger.processInputs("pivot motor", pInputs);
     Logger.processInputs("extender motor", eInputs);
