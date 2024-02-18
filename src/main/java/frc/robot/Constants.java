@@ -13,7 +13,20 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static enum Mode {
+    REAL,
+    SIM,
+    REPLAY
+  }
+
+  public static final Mode currentMode = Mode.SIM;
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+  }
+
+  public static class IntakeConstants {
+    public static final int ROLLER_CURRENT_LIMIT = 30;
+    public static final boolean ROLLER_TALON_FX_CURRENT_LIMIT_ENABLED = true;
   }
 }
