@@ -7,10 +7,8 @@ package frc.robot.subsystems.Shooter;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.Logger;
 
-@AutoLog
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   private final FlywheelIO shooterMotor1;
