@@ -18,7 +18,7 @@ public interface IntakeRollerIO {
 
   public default void updateInputs(IntakeRollerIOInputs inputs) {}
 
-  public default void setVelocity(double velocity) {}
+  public default void setVelocity(double velocity, double ffVolts) {}
 
   public default void stop() {}
 
