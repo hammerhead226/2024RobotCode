@@ -9,12 +9,20 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.robot.Constants;
 
 /** Add your docs here. */
 public class ElevatorPivotIOSim implements ElevatorPivotIO {
   private final DCMotor pivotGearbox = DCMotor.getFalcon500(1);
-  private final SingleJointedArmSim sim = new SingleJointedArmSim(pivotGearbox, 5, SingleJointedArmSim.estimateMOI(Units.inchesToMeters(20), 0.1), Units.inchesToMeters(20), 0, Math.PI, true, 0);
+  private final SingleJointedArmSim sim =
+      new SingleJointedArmSim(
+          pivotGearbox,
+          5,
+          SingleJointedArmSim.estimateMOI(Units.inchesToMeters(20), 0.1),
+          Units.inchesToMeters(20),
+          0,
+          Math.PI,
+          true,
+          0);
   private final PIDController pid = new PIDController(0, 0, 0);
 
   private double currentAmps = 0.0;
@@ -26,9 +34,9 @@ public class ElevatorPivotIOSim implements ElevatorPivotIO {
   @Override
   public void updateInputs(ElevatorPivotIOInputs inputs) {
     positionSetpoint = pid.getSetpoint();
-  
+
     appliedVolts += MathUtil.clamp(pid.calculate(sim.getAngleRads(), positionSetpoint), -12.0, 12);
-  
+
     sim.setInputVoltage(appliedVolts);
     // sim.setInput(appliedVolts);
 
@@ -57,7 +65,7 @@ public class ElevatorPivotIOSim implements ElevatorPivotIO {
     appliedVolts = 0;
     pid.setSetpoint(sim.getAngleRads());
   }
-  
+
   @Override
   public void configurePID(double kP, double kI, double kD) {
     pid.setPID(kP, kI, kD);

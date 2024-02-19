@@ -126,32 +126,30 @@ public class Conversions {
   /**
    * @param motorPositionRot Motor Position Inches
    * @param circumference Circumference of Wheel (Inches)
-   * @param gearRatio Gear Ratio between Motor and Mechanism 
+   * @param gearRatio Gear Ratio between Motor and Mechanism
    * @return Position of Motor in Inches
    */
   public static double motorRotToInches(
       double motorPositionRot, double circumference, double gearRatio) {
     return motorPositionRot * (circumference / (gearRatio));
   }
-    /**
+  /**
    * @param velocityInches Mechanism Velocity Inches
    * @param circumference Circumference of Wheel (Inches)
    * @param gearRatio Gear Ratio between Motor and Mechanism
    * @return RPM of Motor
    */
-  public static double IPSToMotorRPM(
-      double velocityIPS, double circumference, double gearRatio) {
+  public static double IPSToMotorRPM(double velocityIPS, double circumference, double gearRatio) {
     return velocityIPS / (circumference / (gearRatio)) * 60.0;
   }
   /**
    * @param velocityRPM Motor Velocity RPM
    * @param circumference Circumference of Wheel (Inches)
-   * @param gearRatio Gear Ratio between Falcon and Mechanism 
+   * @param gearRatio Gear Ratio between Falcon and Mechanism
    * @return Mechanism Velocity in Inches Per Second
    */
-  public static double motorRPMToIPS(
-      double velocityRPM, double circumference, double gearRatio) {
-    return velocityRPM *(circumference / (gearRatio)) / 60.0;
+  public static double motorRPMToIPS(double velocityRPM, double circumference, double gearRatio) {
+    return velocityRPM * (circumference / (gearRatio)) / 60.0;
   }
   /**
    * @param accelerationInchPerSecSec Mechanism Acceleration Inch Per Sec^2

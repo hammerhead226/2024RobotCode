@@ -17,13 +17,16 @@ public class Elevator extends SubsystemBase {
       new ElevatorExtenderIOInputsAutoLogged();
 
   private static final LoggedTunableNumber pivotkP = new LoggedTunableNumber("elevatorPivotkP");
-  private static final LoggedTunableNumber extenderkP = new LoggedTunableNumber("elevatorExtenderkP");
+  private static final LoggedTunableNumber extenderkP =
+      new LoggedTunableNumber("elevatorExtenderkP");
 
-  private final TrapezoidProfile.Constraints pivotConstraints = new TrapezoidProfile.Constraints(Math.PI/4, Math.PI/3);
+  private final TrapezoidProfile.Constraints pivotConstraints =
+      new TrapezoidProfile.Constraints(Math.PI / 4, Math.PI / 3);
   private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State pivotCurrent = new TrapezoidProfile.State();
 
-  private final TrapezoidProfile.Constraints extenderConstraints = new TrapezoidProfile.Constraints(1, 0.7);
+  private final TrapezoidProfile.Constraints extenderConstraints =
+      new TrapezoidProfile.Constraints(1, 0.7);
   private TrapezoidProfile.State extenderGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State extenderCurrent = new TrapezoidProfile.State();
 
@@ -128,12 +131,12 @@ public class Elevator extends SubsystemBase {
     TrapezoidProfile pivotProfile = new TrapezoidProfile(pivotConstraints);
     TrapezoidProfile extenderProfile = new TrapezoidProfile(extenderConstraints);
 
-    extenderCurrent = extenderProfile.calculate(Constants.LOOP_PERIOD_SECS, extenderCurrent, extenderGoal);
+    extenderCurrent =
+        extenderProfile.calculate(Constants.LOOP_PERIOD_SECS, extenderCurrent, extenderGoal);
     pivotCurrent = pivotProfile.calculate(Constants.LOOP_PERIOD_SECS, pivotCurrent, pivotGoal);
 
-    
     setPositionPivot(pivotCurrent.position, pivotCurrent.velocity);
-    
+
     setPositionExtend(extenderCurrent.position, extenderCurrent.velocity);
 
     Logger.processInputs("Elevator Pivot", pInputs);

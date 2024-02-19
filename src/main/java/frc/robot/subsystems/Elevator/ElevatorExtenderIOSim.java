@@ -5,7 +5,6 @@
 package frc.robot.subsystems.Elevator;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -27,11 +26,11 @@ public class ElevatorExtenderIOSim implements ElevatorExtenderIO {
   @Override
   public void updateInputs(ElevatorExtenderIOInputs inputs) {
     positionSetpoint = pid.getSetpoint();
-  
-    appliedVolts += MathUtil.clamp(pid.calculate(sim.getPositionMeters(), positionSetpoint), -12.0, 12);
-  
+
+    appliedVolts +=
+        MathUtil.clamp(pid.calculate(sim.getPositionMeters(), positionSetpoint), -12.0, 12);
+
     sim.setInputVoltage(appliedVolts);
-    
 
     position = sim.getPositionMeters();
     velocity = sim.getVelocityMetersPerSecond();
