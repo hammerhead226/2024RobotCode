@@ -16,4 +16,8 @@ public class RobotMap {
     public static final int PIVOT = 0;
     public static final int[] EXTENDERS = {0, 0};
   }
+
+  public static class LEDIDs {
+    public static final int CHANNEL = 0;
+  }
 }

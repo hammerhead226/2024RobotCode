@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants;
 
 public class FeederIOSim implements FeederIO {
   private final DCMotor motor = DCMotor.getKrakenX60(1);
@@ -12,7 +13,6 @@ public class FeederIOSim implements FeederIO {
 
   private double ffVolts = 0.0;
   private double appliedVolts = 0.0;
-  private double velocitySetpoint = 0.0;
 
   @Override
   public void updateInputs(FeederIOInputs inputs) {
@@ -21,9 +21,8 @@ public class FeederIOSim implements FeederIO {
 
     sim.setInputVoltage(appliedVolts);
 
-    sim.update(0.02);
+    sim.update(Constants.LOOP_PERIOD_SECS);
 
-    inputs.velocitySetpoint = velocitySetpoint;
 
     inputs.feederVelocity = sim.getAngularVelocityRPM();
     inputs.appliedVolts = appliedVolts;
@@ -32,7 +31,6 @@ public class FeederIOSim implements FeederIO {
 
   @Override
   public void setVelocity(double velocity, double ffVolts) {
-    this.velocitySetpoint = velocity;
     this.ffVolts = ffVolts;
     pid.setSetpoint(velocity);
   }

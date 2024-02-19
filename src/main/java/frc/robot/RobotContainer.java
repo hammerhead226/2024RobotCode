@@ -45,6 +45,7 @@ import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.LED.LED;
+import frc.robot.subsystems.LED.LED_IO;
 import frc.robot.subsystems.LED.LED_IOSpark;
 
 /**
@@ -89,7 +90,7 @@ public class RobotContainer {
                                 RobotMap.ElevatorIDs.PIVOT, RobotMap.ElevatorIDs.CANCODER),
                         new ElevatorExtenderIOTalonFX(
                                 RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]));
-                led = new LED(new LED_IOSpark(1));
+                led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
                 break;
             case REPLAY:
                 drive = new Drive(
@@ -102,7 +103,7 @@ public class RobotContainer {
                 intake = new Intake(new IntakeRollerIOSim());
                 shooter = new Shooter(new FlywheelIOSim(), new FlywheelIOSim(), new FeederIOSim());
                 elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
-                led = new LED(new LED_IO());
+                led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
                 break;
             case SIM:
                 // Sim robot, instantiate physics sim IO implementations
@@ -116,7 +117,7 @@ public class RobotContainer {
                 intake = new Intake(new IntakeRollerIOSim());
                 shooter = new Shooter(new FlywheelIOSim(), new FlywheelIOSim(), new FeederIOSim());
                 elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
-                led = new LED(new LED_IO());
+                led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
                 break;
 
             default:
@@ -142,7 +143,7 @@ public class RobotContainer {
                                 RobotMap.ElevatorIDs.PIVOT, RobotMap.ElevatorIDs.CANCODER),
                         new ElevatorExtenderIOTalonFX(
                                 RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]));
-                led = new LED(new LED_IO());
+                led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
                 break;
         }
 

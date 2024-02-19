@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.Constants;
 
 /** Add your docs here. */
 public class ElevatorPivotIOSim implements ElevatorPivotIO {
@@ -50,8 +51,7 @@ public class ElevatorPivotIOSim implements ElevatorPivotIO {
     inputs.pivotVelocity = velocity;
     inputs.currentAmps = currentAmps;
 
-    // sim.update(Constants.LOOP_PERIOD_SECS);
-    sim.update(0.02);
+    sim.update(Constants.LOOP_PERIOD_SECS);
   }
 
   @Override

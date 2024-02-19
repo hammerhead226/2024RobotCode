@@ -11,7 +11,6 @@ public class FeederIOSparkMax implements FeederIO {
   private final CANSparkMax neo;
   private final SparkPIDController pid;
 
-  private double velocitySetpoint = 0.0;
 
   public FeederIOSparkMax(int id) {
 
@@ -27,7 +26,6 @@ public class FeederIOSparkMax implements FeederIO {
   @Override
   public void updateInputs(FeederIOInputs inputs) {
 
-    inputs.velocitySetpoint = velocitySetpoint;
     inputs.feederVelocity = neo.getEncoder().getVelocity();
 
     inputs.appliedVolts = neo.getBusVoltage();
@@ -36,7 +34,6 @@ public class FeederIOSparkMax implements FeederIO {
 
   @Override
   public void setVelocity(double velocity, double ffVolts) {
-    this.velocitySetpoint = velocity;
     pid.setReference(velocity, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
   }
 

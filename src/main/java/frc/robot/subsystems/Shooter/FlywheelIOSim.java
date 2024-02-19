@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import frc.robot.Constants;
 
 /** Add your docs here. */
 public class FlywheelIOSim implements FlywheelIO {
@@ -27,7 +28,7 @@ public class FlywheelIOSim implements FlywheelIO {
       sim.setInputVoltage(appliedVolts);
     }
 
-    sim.update(0.02); 
+    sim.update(Constants.LOOP_PERIOD_SECS); 
 
     inputs.velocitySetpoint = velocitySetpoint;
 

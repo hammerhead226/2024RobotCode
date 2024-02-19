@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants;
 
 public class IntakeRollerIOSim implements IntakeRollerIO {
   private final DCMotor simGearbox = DCMotor.getNeoVortex(1);
@@ -22,7 +23,7 @@ public class IntakeRollerIOSim implements IntakeRollerIO {
       sim.setInputVoltage(appliedVolts);
     }
 
-    sim.update(0.02);
+    sim.update(Constants.LOOP_PERIOD_SECS);
     inputs.rollerVelocity = sim.getAngularVelocityRPM();
     inputs.rollerVelocity = sim.getAngularVelocityRPM();
     inputs.appliedVolts = appliedVolts;
