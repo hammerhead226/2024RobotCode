@@ -33,8 +33,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LocalADStarAK;
-import frc.robot.util.LoggedTunableNumber;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -50,9 +48,6 @@ public class Drive extends SubsystemBase {
 
   private final SwerveDrivePoseEstimator poseEstimator;
 
-  private static final LoggedTunableNumber translationkP = new LoggedTunableNumber("translationkP");
-  private static final LoggedTunableNumber rotationkP = new LoggedTunableNumber("rotationkP");
-
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -67,11 +62,24 @@ public class Drive extends SubsystemBase {
 
     lastGyroRotation = gyroInputs.yawPosition;
 
-    // init translationkP and rotationkP
-    translationkP.initDefault(0.5);
-    rotationkP.initDefault(0.05);
     // Configure AutoBuilder for PathPlanner
-    configureAutoBuilder(translationkP.get(), rotationkP.get());
+    AutoBuilder.configureHolonomic(
+        this::getPose,
+        this::setPose,
+        () -> kinematics.toChassisSpeeds(getModuleStates()),
+        this::runVelocity,
+        new HolonomicPathFollowerConfig(
+            new PIDConstants(0.5, 0, 0, 0),
+            new PIDConstants(0.05, 0, 0, 0),
+            Constants.SwerveConstants.MAX_LINEAR_SPEED,
+            Constants.SwerveConstants.DRIVE_BASE_RADIUS,
+            new ReplanningConfig()),
+        () -> {
+          var alliance = DriverStation.getAlliance();
+
+          return false;
+        },
+        this);
     // MAX_LINEAR_SPEED, DRIVE_BASE_RADIUS, new ReplanningConfig()),
     // this);
     Pathfinding.setPathfinder(new LocalADStarAK());
@@ -99,15 +107,11 @@ public class Drive extends SubsystemBase {
   }
 
   public void periodic() {
-    
+
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
     for (var module : modules) {
       module.periodic();
-    }
-
-    if (translationkP.hasChanged(hashCode()) || rotationkP.hasChanged(hashCode())) {
-      configureAutoBuilder(translationkP.get(), rotationkP.get());
     }
 
     // Stop moving when disabled
@@ -132,27 +136,6 @@ public class Drive extends SubsystemBase {
         break;
       default:
     }
-  }
-
-  // method that configures the autoBuilder every time the translation/rotation kPs change
-  public void configureAutoBuilder(double translationkP, double rotationkP) {
-    AutoBuilder.configureHolonomic(
-      this::getPose,
-      this::setPose,
-      () -> kinematics.toChassisSpeeds(getModuleStates()),
-      this::runVelocity,
-      new HolonomicPathFollowerConfig(
-          new PIDConstants(translationkP, 0, 0, 0),
-          new PIDConstants(rotationkP, 0, 0, 0),
-          Constants.SwerveConstants.MAX_LINEAR_SPEED,
-          Constants.SwerveConstants.DRIVE_BASE_RADIUS,
-          new ReplanningConfig()),
-      () -> {
-        var alliance = DriverStation.getAlliance();
-
-        return false;
-      },
-      this);
   }
 
   public void updateOdometry() {
@@ -185,7 +168,8 @@ public class Drive extends SubsystemBase {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, Constants.SwerveConstants.MAX_LINEAR_SPEED);
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        setpointStates, Constants.SwerveConstants.MAX_LINEAR_SPEED);
 
     // Send setpoints to modules
     SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
@@ -285,14 +269,18 @@ public class Drive extends SubsystemBase {
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
     return new Translation2d[] {
-      new Translation2d(Constants.SwerveConstants.TRACK_WIDTH_X / 2.0, 
-                        Constants.SwerveConstants.TRACK_WIDTH_Y / 2.0),
-      new Translation2d(Constants.SwerveConstants.TRACK_WIDTH_X / 2.0, 
-                        -Constants.SwerveConstants.TRACK_WIDTH_Y / 2.0),
-      new Translation2d(-Constants.SwerveConstants.TRACK_WIDTH_X / 2.0, 
-                        Constants.SwerveConstants.TRACK_WIDTH_Y / 2.0),
-      new Translation2d(-Constants.SwerveConstants.TRACK_WIDTH_X / 2.0, 
-                        -Constants.SwerveConstants.TRACK_WIDTH_Y / 2.0)
+      new Translation2d(
+          Constants.SwerveConstants.TRACK_WIDTH_X / 2.0,
+          Constants.SwerveConstants.TRACK_WIDTH_Y / 2.0),
+      new Translation2d(
+          Constants.SwerveConstants.TRACK_WIDTH_X / 2.0,
+          -Constants.SwerveConstants.TRACK_WIDTH_Y / 2.0),
+      new Translation2d(
+          -Constants.SwerveConstants.TRACK_WIDTH_X / 2.0,
+          Constants.SwerveConstants.TRACK_WIDTH_Y / 2.0),
+      new Translation2d(
+          -Constants.SwerveConstants.TRACK_WIDTH_X / 2.0,
+          -Constants.SwerveConstants.TRACK_WIDTH_Y / 2.0)
     };
   }
 }

@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
@@ -29,17 +30,10 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeRollerIOSim;
 import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
-
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,7 +44,6 @@ import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-
 
   private final CommandXboxController controller = new CommandXboxController(0);
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -88,7 +81,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
-        break; 
+        break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive =
@@ -124,7 +117,6 @@ public class RobotContainer {
             drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
     // Configure the button bindings
     configureButtonBindings();
-
   }
 
   /**
@@ -133,7 +125,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-
   private void configureButtonBindings() {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -152,11 +143,10 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().onTrue(new InstantCommand(() -> intake.runRollers(3)));
-    m_driverController.b().onFalse(new InstantCommand(() -> intake.stopRollers()));
+    controller.b().onTrue(new InstantCommand(() -> intake.runRollers(3)));
+    controller.b().onFalse(new InstantCommand(() -> intake.stopRollers()));
   }
 
   /**

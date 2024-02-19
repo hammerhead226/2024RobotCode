@@ -24,6 +24,15 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static enum Mode {
+    REAL,
+    SIM,
+    REPLAY
+  }
+
+  public static final Mode currentMode = Mode.SIM;
+  public static final boolean tuningMode = true;
+  public static final String CANBUS = "CAN Bus 2";
 
   public static class SwerveConstants {
     public static final double MAX_LINEAR_SPEED = 5.56;
@@ -37,23 +46,11 @@ public final class Constants {
   public static class ModuleConstants {
     public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
 
-    public static final double DRIVE_STATOR_CURRENT_LIMIT = 40.0; 
-    public static final boolean DRIVE_STATOR_CURRENT_LIMIT_ENABLED = true; 
-    public static final double TURN_STATOR_CURRENT_LIMIT = 30.0; 
-    public static final boolean TURN_STATOR_CURRENT_LIMIT_ENABLED = true; 
+    public static final double DRIVE_STATOR_CURRENT_LIMIT = 40.0;
+    public static final boolean DRIVE_STATOR_CURRENT_LIMIT_ENABLED = true;
+    public static final double TURN_STATOR_CURRENT_LIMIT = 30.0;
+    public static final boolean TURN_STATOR_CURRENT_LIMIT_ENABLED = true;
   }
-  
-  public static final boolean tuningMode = true;
-
-  public static final String CANBUS = "CAN Bus 2";
-
-  public static enum Mode {
-    REAL,
-    SIM,
-    REPLAY
-  }
-
-  public static final Mode currentMode = Mode.SIM;
 
   public static class IntakeConstants {
     public static final int ROLLER_CURRENT_LIMIT = 30;
