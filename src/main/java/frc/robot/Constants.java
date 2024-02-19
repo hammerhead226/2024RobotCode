@@ -13,18 +13,6 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-  }
-
-  public static class ElevatorConstants {
-    public static final double EXTENDER_CURRENT_LIMIT = 30.0;
-    public static final double PIVOT_CURRENT_LIMIT = 30.0;
-
-    public static final boolean EXTENDER_CURRENT_LIMIT_ENABLED = true;
-    public static final boolean PIVOT_CURRENT_LIMIT_ENABLED = true;
-  }
-
   public static enum Mode {
     /** Running on a real robot. */
     REAL,
@@ -41,10 +29,29 @@ public final class Constants {
 
   public static final String CANBUS = "CAN Bus 2";
 
-  // TODO change all IDS here
-  public static final int CANCODER_CANBUS_ID = 0;
-  public static final int ELEVATOR_PIVOT_ID = 0;
-  public static final int ELEVATOR_EXTENDER_ID = 0;
 
   public static final double LOOP_PERIOD_SECS = 0.02;
+
+  public static class ElevatorConstants {
+    public static final double EXTENDER_CURRENT_LIMIT = 30.0;
+    public static final double PIVOT_CURRENT_LIMIT = 30.0;
+
+    public static final boolean EXTENDER_CURRENT_LIMIT_ENABLED = true;
+    public static final boolean PIVOT_CURRENT_LIMIT_ENABLED = true;
+
+    public static final double PIVOT_STOW = 0;
+    public static final double EXTENDER_RETRACT = 0;
+    public static final double EXTENDER_EXTEND = 0;
+
+    public static final double PIVOT_THRESHOLD = 0;
+    public static final double EXTENDER_THRESHOLD = 0;
+
+    public static final double[] PIVOT_PID = {0, 0, 0};
+    public static final double[] EXTENDER_PID = {0, 0 , 0};
+
+  }
+
+  
+
+ 
 }

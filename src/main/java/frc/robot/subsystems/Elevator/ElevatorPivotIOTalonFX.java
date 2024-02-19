@@ -45,8 +45,7 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
     appliedVolts = falcon.getMotorVoltage();
     currentAmps = falcon.getStatorCurrent();
 
-    // TODO:: make this a constant
-    positionSetpoint = 0;
+    positionSetpoint = Constants.ElevatorConstants.PIVOT_STOW;
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         100, pivotPosition, pivotVelocity, appliedVolts, currentAmps);

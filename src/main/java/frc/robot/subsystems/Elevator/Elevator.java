@@ -1,13 +1,11 @@
 package frc.robot.subsystems.Elevator;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
-import frc.robot.util.Math.Conversions;
 import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
@@ -29,18 +27,68 @@ public class Elevator extends SubsystemBase {
   private TrapezoidProfile.State extenderGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State extenderCurrent = new TrapezoidProfile.State();
 
-  private final ElevatorFeedforward elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 0.8);
-  private final SimpleMotorFeedforward pivotFFModel = new SimpleMotorFeedforward(0.02, 0.3);
+  private final ElevatorFeedforward elevatorFFModel;
+  private final ArmFeedforward pivotFFModel;
 
   public Elevator(ElevatorPivotIO pivot, ElevatorExtenderIO extender) {
     this.pivot = pivot;
     this.extender = extender;
 
-    pivotkP.initDefault(0.2);
+    switch (Constants.currentMode) {
+      case REAL:
+        elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 1.4);
+        pivotFFModel = new ArmFeedforward(0, 0.4, 0.7);
+        pivotkP.initDefault(Constants.ElevatorConstants.PIVOT_PID[0]);
+        extenderkP.initDefault(Constants.ElevatorConstants.EXTENDER_PID[0]);
+        break;
+      case REPLAY:
+        elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 1.4);
+        pivotFFModel = new ArmFeedforward(0, 0.4, 0.7);
+        pivotkP.initDefault(0);
+        extenderkP.initDefault(15);
+        break;
+      case SIM:
+        elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 1.4);
+        pivotFFModel = new ArmFeedforward(0, 0.4, 0.7);
+        pivotkP.initDefault(0);
+        extenderkP.initDefault(15);
+        break;
+      default:
+        elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 1.4);
+        pivotFFModel = new ArmFeedforward(0, 0.4, 0.7);
+        pivotkP.initDefault(0);
+        extenderkP.initDefault(15);
+        break;
+    }
+    pivotkP.initDefault(0);
     extenderkP.initDefault(15);
 
     this.pivot.configurePID(pivotkP.get(), 0, 0);
     this.extender.configurePID(extenderkP.get(), 0, 0);
+  }
+
+  public double getPivotPosition() {
+    return pInputs.pivotPosition;
+  }
+
+  public double getExtenderPosition() {
+    return eInputs.elevatorPosition;
+  }
+
+  private double getPivotError() {
+    return pInputs.positionSetpoint - pInputs.pivotPosition;
+  }
+
+  private double getExtenderError() {
+    return eInputs.positionSetpoint - eInputs.elevatorPosition;
+  }
+
+  public boolean pivotAtSetpoint() {
+    return (Math.abs(getPivotError()) <= Constants.ElevatorConstants.PIVOT_THRESHOLD);
+  }
+
+  public boolean extenderAtSetpoint() {
+    return (Math.abs(getExtenderError()) <= Constants.ElevatorConstants.EXTENDER_THRESHOLD);
   }
 
   public void setPivotGoal(double setpoint) {
@@ -56,7 +104,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setPositionPivot(double position, double velocity) {
-    pivot.setPositionSetpoint(position, pivotFFModel.calculate(velocity));
+    pivot.setPositionSetpoint(position, pivotFFModel.calculate(position, velocity));
   }
 
   public void pivotStop() {
@@ -80,16 +128,16 @@ public class Elevator extends SubsystemBase {
     TrapezoidProfile pivotProfile = new TrapezoidProfile(pivotConstraints);
     TrapezoidProfile extenderProfile = new TrapezoidProfile(extenderConstraints);
 
-    extenderCurrent = extenderProfile.calculate(0.02, extenderCurrent, extenderGoal);
-    pivotCurrent = pivotProfile.calculate(0.02, pivotCurrent, pivotGoal);
+    extenderCurrent = extenderProfile.calculate(Constants.LOOP_PERIOD_SECS, extenderCurrent, extenderGoal);
+    pivotCurrent = pivotProfile.calculate(Constants.LOOP_PERIOD_SECS, pivotCurrent, pivotGoal);
 
     
     setPositionPivot(pivotCurrent.position, pivotCurrent.velocity);
     
     setPositionExtend(extenderCurrent.position, extenderCurrent.velocity);
 
-    Logger.processInputs("pivot motor", pInputs);
-    Logger.processInputs("extender motor", eInputs);
+    Logger.processInputs("Elevator Pivot", pInputs);
+    Logger.processInputs("Elevator Extender", eInputs);
 
     if (extenderkP.hasChanged(hashCode())) {
       extender.configurePID(extenderkP.get(), 0, 0);
