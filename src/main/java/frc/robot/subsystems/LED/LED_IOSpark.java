@@ -27,10 +27,10 @@ public class LED_IOSpark implements LED_IO {
   public void noBumpersPressed() {
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
       ledState = LED_STATE.BLUE;
-      led.set(Constants.COLOR_BLUE);
+      led.set(Constants.LEDConstants.COLOR_BLUE);
     } else {
       ledState = LED_STATE.RED;
-      led.set(Constants.COLOR_RED);
+      led.set(Constants.LEDConstants.COLOR_RED);
     }
   }
 
@@ -39,16 +39,16 @@ public class LED_IOSpark implements LED_IO {
     ledState = state;
     switch (ledState) {
       case RED:
-        led.set(Constants.COLOR_RED);
+        led.set(Constants.LEDConstants.COLOR_RED);
         break;
       case BLUE:
-        led.set(Constants.COLOR_BLUE);
+        led.set(Constants.LEDConstants.COLOR_BLUE);
         break;
       case YELLOW:
-        led.set(Constants.COLOR_YELLOW);
+        led.set(Constants.LEDConstants.COLOR_YELLOW);
         break;
       case VIOLET:
-        led.set(Constants.COLOR_VIOLET);
+        led.set(Constants.LEDConstants.COLOR_VIOLET);
         break;
       case OFF:
         led.close();

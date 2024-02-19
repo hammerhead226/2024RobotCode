@@ -21,6 +21,9 @@ public class LED extends SubsystemBase {
   @Override
   public void periodic() {
     led.updateInputs(lInputs);
+
+    setColor(lInputs.ledState);
+    
     Logger.processInputs("LED Inputs", lInputs);
   }
 
