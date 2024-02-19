@@ -55,10 +55,7 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int ROLLER_CURRENT_LIMIT = 30;
     public static final boolean ROLLER_TALON_FX_CURRENT_LIMIT_ENABLED = true;
-
-  public static final Mode currentMode = Mode.SIM;
-
-  public static final String CANBUS = "CAN Bus 2";
+  }
 
   public static final class ShooterConstants {
     public static final double FEEDER_CURRENT_LIMIT = 0;

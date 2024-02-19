@@ -23,6 +23,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Shooter.FeederIOSim;
+import frc.robot.subsystems.Shooter.FeederIOTalonFX;
+import frc.robot.subsystems.Shooter.FlywheelIOSim;
+import frc.robot.subsystems.Shooter.FlywheelIOTalonFX;
+import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -33,12 +38,6 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeRollerIOSim;
 import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Shooter.FeederIOSim;
-import frc.robot.subsystems.Shooter.FeederIOTalonFX;
-import frc.robot.subsystems.Shooter.FlywheelIOSim;
-import frc.robot.subsystems.Shooter.FlywheelIOTalonFX;
-import frc.robot.subsystems.Shooter.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -54,7 +53,6 @@ public class RobotContainer {
 
   private final CommandXboxController controller = new CommandXboxController(0);
   private final LoggedDashboardChooser<Command> autoChooser;
-
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -148,8 +146,11 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    // controller.b().onTrue(new InstantCommand(() -> intake.runRollers(3)));
-    // controller.b().onFalse(new InstantCommand(() -> intake.stopRollers()));
+    controller.a().onTrue(new InstantCommand(() -> intake.runRollers(3)));
+    controller.a().onFalse(new InstantCommand(() -> intake.stopRollers()));
+
+    controller.x().onTrue(new InstantCommand(() -> shooter.setShooterVelocitys(3000, 3000)));
+    controller.x().onFalse(new InstantCommand(() -> shooter.stopShooterMotors()));
   }
 
   /**
