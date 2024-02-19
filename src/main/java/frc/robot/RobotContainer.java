@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -66,6 +67,7 @@ public class RobotContainer {
     private final LED led;
 
     private final CommandXboxController controller = new CommandXboxController(0);
+    private final Joystick joy = new Joystick(0);
     private final LoggedDashboardChooser<Command> autoChooser;
 
     /**
@@ -165,9 +167,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
                         drive,
-                        () -> -controller.getLeftY(),
-                        () -> -controller.getLeftX(),
-                        () -> -controller.getRightX()));
+                        () -> -joy.getX(),
+                        () -> -joy.getY(),
+                        () -> -joy.getRawAxis(3)));
         controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         controller
                 .b()
