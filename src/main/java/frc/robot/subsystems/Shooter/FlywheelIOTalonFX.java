@@ -17,6 +17,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final StatusSignal<Double> shooterVelocity;
   private final StatusSignal<Double> appliedAmps;
   private final StatusSignal<Double> currentAmps;
+  private double velocitySetpoint = 0.0;
 
   public FlywheelIOTalonFX(int id) {
 
@@ -45,10 +46,12 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     inputs.appliedVolts = appliedAmps.getValueAsDouble();
 
     inputs.currentAmps = currentAmps.getValueAsDouble();
+    inputs.velocitySetpoint = velocitySetpoint;
   }
 
   @Override
   public void setVelocity(double velocity, double ffVolts) {
+    this.velocitySetpoint = velocity;
     falcon.setControl(
         new VelocityVoltage(
             Units.radiansToRotations(velocity), 0, true, ffVolts, 0, false, false, false));
@@ -56,6 +59,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
   @Override
   public void stop() {
+    velocitySetpoint = 0;
     falcon.stopMotor();
   }
 

@@ -12,6 +12,7 @@ public class FeederIOSim implements FeederIO {
 
   private double ffVolts = 0.0;
   private double appliedVolts = 0.0;
+  private double velocitySetpoint = 0.0;
 
   @Override
   public void updateInputs(FeederIOInputs inputs) {
@@ -22,6 +23,8 @@ public class FeederIOSim implements FeederIO {
 
     sim.update(0.02);
 
+    inputs.velocitySetpoint = velocitySetpoint;
+
     inputs.feederVelocity = sim.getAngularVelocityRPM();
     inputs.appliedVolts = appliedVolts;
     inputs.currentAmps = sim.getCurrentDrawAmps();
@@ -29,6 +32,7 @@ public class FeederIOSim implements FeederIO {
 
   @Override
   public void setVelocity(double velocity, double ffVolts) {
+    this.velocitySetpoint = velocity;
     this.ffVolts = ffVolts;
     pid.setSetpoint(velocity);
   }

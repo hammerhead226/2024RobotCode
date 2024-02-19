@@ -63,6 +63,8 @@ public final class Constants {
 
     public static final double FLYWHEEL_CURRENT_LIMIT = 0;
     public static final boolean FLYWHEEL_CURRENT_LIMIT_ENABLED = true;
+
+    public static final double FLYWHEEL_THRESHOLD = 0;
   }
 
   public static final double LOOP_PERIOD_SECS = 0.02;

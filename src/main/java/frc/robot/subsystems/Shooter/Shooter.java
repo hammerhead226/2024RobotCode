@@ -73,6 +73,18 @@ public class Shooter extends SubsystemBase {
     shooterMotor2.setVelocity(velocity2, flywheelFFModel.calculate(velocity2));
   }
 
+  public double[] getFlywheelVelocities() {
+    return new double[] {s1Inputs.shooterVelocity, s2Inputs.shooterVelocity};
+  }
+
+  public double[] getFlywheelErrors() {
+    return new double[] {s1Inputs.velocitySetpoint - getFlywheelVelocities()[0], s2Inputs.velocitySetpoint - getFlywheelVelocities()[1]};
+  }
+
+  public boolean atFlywheelSetpoints() {
+    return (Math.abs(getFlywheelErrors()[0]) <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD && getFlywheelErrors()[1] <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
