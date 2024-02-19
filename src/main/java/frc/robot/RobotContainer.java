@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -29,20 +28,22 @@ public class RobotContainer {
   private final Intake intake;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController m_driverController = new CommandXboxController(0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-        intake = new Intake(new IntakeRollerIOSparkFlex(10));
+        intake = new Intake(new IntakeRollerIOSparkFlex(RobotMap.IntakeIDs.ROLLERS));
+        break;
+      case REPLAY:
+        intake = new Intake(new IntakeRollerIOSim());
         break;
       case SIM:
         intake = new Intake(new IntakeRollerIOSim());
         break;
       default:
-        intake = new Intake(new IntakeRollerIOSparkFlex(10));
+        intake = new Intake(new IntakeRollerIOSparkFlex(RobotMap.IntakeIDs.ROLLERS));
         break;
     }
     // Configure the trigger bindings

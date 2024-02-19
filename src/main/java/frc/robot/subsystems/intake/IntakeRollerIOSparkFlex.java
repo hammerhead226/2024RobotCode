@@ -1,9 +1,11 @@
 package frc.robot.subsystems.intake;
 
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.SparkPIDController.ArbFFUnits;
 import frc.robot.Constants;
 
 public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
@@ -31,9 +33,8 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
   }
 
   @Override
-  public void setVelocity(double velocity) {
-    rollers.set(velocity);
-    // pid.setReference(velocity, ControlType.kVelocity);
+  public void setVelocity(double velocity, double ffVolts) {
+    pid.setReference(velocity, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
   }
 
   @Override

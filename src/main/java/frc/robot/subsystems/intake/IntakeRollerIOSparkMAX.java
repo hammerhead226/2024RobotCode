@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.SparkPIDController.ArbFFUnits;
 import frc.robot.Constants;
 
 public class IntakeRollerIOSparkMAX implements IntakeRollerIO {
@@ -32,8 +33,8 @@ public class IntakeRollerIOSparkMAX implements IntakeRollerIO {
   }
 
   @Override
-  public void setVelocity(double velocity) {
-    pid.setReference(velocity, ControlType.kVelocity);
+  public void setVelocity(double velocity, double ffVolts) {
+    pid.setReference(velocity, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
   }
 
   @Override
