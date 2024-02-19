@@ -13,7 +13,7 @@ public interface FeederIO {
 
   public default void updateInputs(FeederIOInputs inputs) {}
 
-  public default void setVelocity(double velocity) {}
+  public default void setVelocity(double velocity, double ffVolts) {}
 
   public default void stop() {}
 

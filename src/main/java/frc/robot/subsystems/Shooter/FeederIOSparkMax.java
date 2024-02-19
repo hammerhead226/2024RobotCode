@@ -2,11 +2,10 @@ package frc.robot.subsystems.Shooter;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
-import frc.robot.Constants;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.SparkPIDController.ArbFFUnits;
+import frc.robot.Constants;
 
 public class FeederIOSparkMax implements FeederIO {
   private final CANSparkMax neo;
@@ -32,8 +31,8 @@ public class FeederIOSparkMax implements FeederIO {
   }
 
   @Override
-  public void setVelocity(double velocity) {
-    pid.setReference(velocity, ControlType.kVelocity);
+  public void setVelocity(double velocity, double ffVolts) {
+    pid.setReference(velocity, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
   }
 
   @Override

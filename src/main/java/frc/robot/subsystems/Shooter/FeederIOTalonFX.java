@@ -22,7 +22,8 @@ public class FeederIOTalonFX implements FeederIO {
 
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.FEEDER_CURRENT_LIMIT;
-    config.CurrentLimits.StatorCurrentLimitEnable = Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
+    config.CurrentLimits.StatorCurrentLimitEnable =
+        Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     falcon = new TalonFX(id);
@@ -47,8 +48,8 @@ public class FeederIOTalonFX implements FeederIO {
   }
 
   @Override
-  public void setVelocity(double velocity) {
-    falcon.setControl(new VelocityVoltage(velocity));
+  public void setVelocity(double velocity, double ffVolts) {
+    falcon.setControl(new VelocityVoltage(velocity, 0, false, ffVolts, 0, false, false, false));
   }
 
   @Override

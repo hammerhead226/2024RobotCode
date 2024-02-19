@@ -13,9 +13,15 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+  public static enum Mode {
+    REAL,
+    REPLAY,
+    SIM
   }
+
+  public static final Mode currentMode = Mode.SIM;
+
+  public static final String CANBUS = "CAN Bus 2";
 
   public static final class ShooterConstants {
     public static final double FEEDER_CURRENT_LIMIT = 0;

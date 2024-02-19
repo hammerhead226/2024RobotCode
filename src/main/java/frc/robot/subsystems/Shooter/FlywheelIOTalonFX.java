@@ -22,7 +22,8 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT;
-    config.CurrentLimits.StatorCurrentLimitEnable = Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
+    config.CurrentLimits.StatorCurrentLimitEnable =
+        Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     falcon = new TalonFX(id);
@@ -48,8 +49,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
   @Override
   public void setVelocity(double velocity, double ffVolts) {
-    falcon.setControl(new VelocityVoltage(
-      Units.radiansToRotations(velocity), 0, true, ffVolts, 0, false, false, false));
+    falcon.setControl(
+        new VelocityVoltage(
+            Units.radiansToRotations(velocity), 0, true, ffVolts, 0, false, false, false));
   }
 
   @Override

@@ -6,6 +6,7 @@ package frc.robot.subsystems.Shooter;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.Logger;
 
@@ -23,13 +24,37 @@ public class Shooter extends SubsystemBase {
 
   private final FeederIOInputsAutoLogged feedInputs = new FeederIOInputsAutoLogged();
 
-  private final SimpleMotorFeedforward ffModel = new SimpleMotorFeedforward(0, 0.03);
-  
+  private final SimpleMotorFeedforward flywheelFFModel;
+  private final SimpleMotorFeedforward feederFFModel;
+
   public Shooter(FlywheelIO shooterMotor1, FlywheelIO shooterMotor2, FeederIO feeder) {
+    switch (Constants.currentMode) {
+      case REAL:
+        flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
+        feederFFModel = new SimpleMotorFeedforward(0, 0.03);
+        break;
+      case REPLAY:
+        flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
+        feederFFModel = new SimpleMotorFeedforward(0, 0.03);
+        break;
+      case SIM:
+        flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
+        feederFFModel = new SimpleMotorFeedforward(0, 0.03);
+        break;
+      default:
+        flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
+        feederFFModel = new SimpleMotorFeedforward(0, 0.03);
+        break;
+    }
     this.shooterMotor1 = shooterMotor1;
     this.shooterMotor2 = shooterMotor2;
+    // TODO:: Make these constants
+    shooterMotor1.configurePID(0, 0, 0);
+    shooterMotor2.configurePID(0, 0, 0);
 
     this.feeder = feeder;
+    // TODO:: Make these constants
+    feeder.configurePID(0, 0, 0);
   }
 
   public void stopShooterMotors() {
@@ -42,12 +67,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runFeeders(double velocity) {
-    feeder.setVelocity(velocity);
+    feeder.setVelocity(velocity, feederFFModel.calculate(velocity));
   }
 
   public void setShooterVelocitys(double velocity1, double velocity2) {
-    shooterMotor1.setVelocity(velocity1, ffModel.calculate(velocity1));
-    shooterMotor2.setVelocity(velocity2, ffModel.calculate(velocity2));
+    shooterMotor1.setVelocity(velocity1, flywheelFFModel.calculate(velocity1));
+    shooterMotor2.setVelocity(velocity2, flywheelFFModel.calculate(velocity2));
   }
 
   @Override
@@ -59,10 +84,9 @@ public class Shooter extends SubsystemBase {
 
     feeder.updateInputs(feedInputs);
 
-    Logger.processInputs("shooter motor 1", s1Inputs);
-    Logger.processInputs("shooter motor 2", s2Inputs);
+    Logger.processInputs("Flywheel 1", s1Inputs);
+    Logger.processInputs("Flywheel 2", s2Inputs);
 
-    Logger.processInputs("feeder motor", feedInputs);
-    
+    Logger.processInputs("Feeder", feedInputs);
   }
 }
