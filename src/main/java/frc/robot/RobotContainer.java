@@ -38,11 +38,21 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeRollerIOSim;
 import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorExtenderIO;
+import frc.robot.subsystems.Elevator.ElevatorExtenderIOSim;
+import frc.robot.subsystems.Elevator.ElevatorExtenderIOTalonFX;
+import frc.robot.subsystems.Elevator.ElevatorPivotIO;
+import frc.robot.subsystems.Elevator.ElevatorPivotIOSim;
+import frc.robot.subsystems.Elevator.ElevatorPivotIOTalonFX;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -50,67 +60,81 @@ public class RobotContainer {
   private final Drive drive;
   private final Intake intake;
   private final Shooter shooter;
+  public final Elevator elevator;
 
   private final CommandXboxController controller = new CommandXboxController(0);
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-        drive =
-            new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(0),
-                new ModuleIOTalonFX(1),
-                new ModuleIOTalonFX(2),
-                new ModuleIOTalonFX(3));
+        drive = new Drive(
+            new GyroIOPigeon2(),
+            new ModuleIOTalonFX(0),
+            new ModuleIOTalonFX(1),
+            new ModuleIOTalonFX(2),
+            new ModuleIOTalonFX(3));
         intake = new Intake(new IntakeRollerIOSparkFlex(RobotMap.IntakeIDs.ROLLERS));
-        shooter =
-            new Shooter(
-                new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
-                new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
-                new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
+        shooter = new Shooter(
+            new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
+            new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
+            new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
+        elevator = new Elevator(
+            new ElevatorPivotIOTalonFX(
+                RobotMap.ElevatorIDs.PIVOT, RobotMap.ElevatorIDs.CANCODER),
+            new ElevatorExtenderIOTalonFX(RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]));
         break;
       case REPLAY:
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim());
+        drive = new Drive(
+            new GyroIO() {
+            },
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
         shooter = new Shooter(new FlywheelIOSim(), new FlywheelIOSim(), new FeederIOSim());
+        elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
         break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim());
+        drive = new Drive(
+            new GyroIO() {
+            },
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
         shooter = new Shooter(new FlywheelIOSim(), new FlywheelIOSim(), new FeederIOSim());
+        elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
         break;
 
       default:
         // Replayed robot, disable IO implementations
         intake = new Intake(new IntakeRollerIOSparkFlex(RobotMap.IntakeIDs.ROLLERS));
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
-        shooter =
-            new Shooter(
-                new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
-                new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
-                new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
+        drive = new Drive(
+            new GyroIO() {
+            },
+            new ModuleIO() {
+            },
+            new ModuleIO() {
+            },
+            new ModuleIO() {
+            },
+            new ModuleIO() {
+            });
+        shooter = new Shooter(
+            new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
+            new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
+            new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
+        elevator = new Elevator(
+            new ElevatorPivotIOTalonFX(
+                RobotMap.ElevatorIDs.PIVOT, RobotMap.ElevatorIDs.CANCODER),
+            new ElevatorExtenderIOTalonFX(RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]));
         break;
     }
 
@@ -118,12 +142,18 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     configureButtonBindings();
+
+    // Configure the trigger bindings
+    configureBindings();
+
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+   * it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
@@ -138,14 +168,15 @@ public class RobotContainer {
         .b()
         .onTrue(
             Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                    drive)
+                () -> drive.setPose(
+                    new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                drive)
                 .ignoringDisable(true));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
+    // pressed,
     // cancelling on release.
+
     controller.a().onTrue(new InstantCommand(() -> intake.runRollers(3)));
     controller.a().onFalse(new InstantCommand(() -> intake.stopRollers()));
 

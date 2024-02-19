@@ -10,4 +10,10 @@ public class RobotMap {
     public static int FLYWHEEL_TWO = 0;
     public static int FEEDER = 0;
   }
+
+  public static class ElevatorIDs {
+    public static final int CANCODER = 0;
+    public static final int PIVOT = 0;
+    public static final int[] EXTENDERS = { 0, 0 };
+  }
 }
