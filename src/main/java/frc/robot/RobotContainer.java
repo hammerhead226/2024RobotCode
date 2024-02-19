@@ -33,6 +33,12 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeRollerIOSim;
 import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.Shooter.FeederIOSim;
+import frc.robot.subsystems.Shooter.FeederIOTalonFX;
+import frc.robot.subsystems.Shooter.FlywheelIOSim;
+import frc.robot.subsystems.Shooter.FlywheelIOTalonFX;
+import frc.robot.subsystems.Shooter.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -43,24 +49,17 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Intake intake;
+  private final Shooter shooter;
 
   private final CommandXboxController controller = new CommandXboxController(0);
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private final Intake intake;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-        // Real robot, instantiate hardware IO implementations
-        // drive =
-        // new Drive(
-        // new GyroIOPigeon2(),
-        // new ModuleIOSparkMax(0),
-        // new ModuleIOSparkMax(1),
-        // new ModuleIOSparkMax(2),
-        // new ModuleIOSparkMax(3));
         drive =
             new Drive(
                 new GyroIOPigeon2(),
@@ -69,7 +68,11 @@ public class RobotContainer {
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         intake = new Intake(new IntakeRollerIOSparkFlex(RobotMap.IntakeIDs.ROLLERS));
-        // flywheel = new Flywheel(new FlywheelIOTalonFX());
+        shooter =
+            new Shooter(
+                new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
+                new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
+                new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
         break;
       case REPLAY:
         drive =
@@ -80,6 +83,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
+        shooter = new Shooter(new FlywheelIOSim(), new FlywheelIOSim(), new FeederIOSim());
         break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -91,6 +95,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
+        shooter = new Shooter(new FlywheelIOSim(), new FlywheelIOSim(), new FeederIOSim());
         break;
 
       default:
@@ -103,6 +108,11 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        shooter =
+            new Shooter(
+                new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
+                new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
+                new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
         break;
     }
 
