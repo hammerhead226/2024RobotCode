@@ -23,7 +23,6 @@ public class FeederIOSim implements FeederIO {
 
     sim.update(Constants.LOOP_PERIOD_SECS);
 
-
     inputs.feederVelocity = sim.getAngularVelocityRPM();
     inputs.appliedVolts = appliedVolts;
     inputs.currentAmps = sim.getCurrentDrawAmps();

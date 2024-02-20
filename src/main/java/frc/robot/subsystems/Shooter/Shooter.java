@@ -78,11 +78,15 @@ public class Shooter extends SubsystemBase {
   }
 
   public double[] getFlywheelErrors() {
-    return new double[] {s1Inputs.velocitySetpoint - getFlywheelVelocities()[0], s2Inputs.velocitySetpoint - getFlywheelVelocities()[1]};
+    return new double[] {
+      s1Inputs.velocitySetpoint - getFlywheelVelocities()[0],
+      s2Inputs.velocitySetpoint - getFlywheelVelocities()[1]
+    };
   }
 
   public boolean atFlywheelSetpoints() {
-    return (Math.abs(getFlywheelErrors()[0]) <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD && getFlywheelErrors()[1] <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD);
+    return (Math.abs(getFlywheelErrors()[0]) <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD
+        && getFlywheelErrors()[1] <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD);
   }
 
   @Override

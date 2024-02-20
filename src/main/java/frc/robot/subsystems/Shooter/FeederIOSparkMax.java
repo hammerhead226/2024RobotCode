@@ -11,7 +11,6 @@ public class FeederIOSparkMax implements FeederIO {
   private final CANSparkMax neo;
   private final SparkPIDController pid;
 
-
   public FeederIOSparkMax(int id) {
 
     neo = new CANSparkMax(id, MotorType.kBrushless);

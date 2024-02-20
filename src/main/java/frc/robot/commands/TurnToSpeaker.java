@@ -40,7 +40,7 @@ public class TurnToSpeaker extends Command {
         gains[2] = 0;
         break;
     }
-    
+
     pid = new PIDController(gains[0], gains[1], gains[2]);
   }
 
