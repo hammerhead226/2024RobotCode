@@ -5,38 +5,38 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.Elevator.ElevatorGyroIO.ElevatorGyroIOInputs;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
   private final ElevatorPivotIO pivot;
   private final ElevatorExtenderIO extender;
-
+  private final ElevatorGyroIO gyro;
+  
   private final ElevatorPivotIOInputsAutoLogged pInputs = new ElevatorPivotIOInputsAutoLogged();
   private final ElevatorExtenderIOInputsAutoLogged eInputs =
       new ElevatorExtenderIOInputsAutoLogged();
+  private final ElevatorGyroIOInputsAutoLogged gInputs = new ElevatorGyroIOInputsAutoLogged();
 
   private static final LoggedTunableNumber pivotkP = new LoggedTunableNumber("elevatorPivotkP");
-  private static final LoggedTunableNumber extenderkP =
-      new LoggedTunableNumber("elevatorExtenderkP");
+  private static final LoggedTunableNumber extenderkP = new LoggedTunableNumber("elevatorExtenderkP");
 
-  private final TrapezoidProfile.Constraints pivotConstraints =
-      new TrapezoidProfile.Constraints(Math.PI / 4, Math.PI / 3);
+  private final TrapezoidProfile.Constraints pivotConstraints = new TrapezoidProfile.Constraints(Math.PI/4, Math.PI/3);
   private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State pivotCurrent = new TrapezoidProfile.State();
 
-  private final TrapezoidProfile.Constraints extenderConstraints =
-      new TrapezoidProfile.Constraints(1, 0.7);
+  private final TrapezoidProfile.Constraints extenderConstraints = new TrapezoidProfile.Constraints(1, 0.7);
   private TrapezoidProfile.State extenderGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State extenderCurrent = new TrapezoidProfile.State();
 
   private final ElevatorFeedforward elevatorFFModel;
   private final ArmFeedforward pivotFFModel;
 
-  public Elevator(ElevatorPivotIO pivot, ElevatorExtenderIO extender) {
+  public Elevator(ElevatorPivotIO pivot, ElevatorExtenderIO extender, ElevatorGyroIO gyro) {
     this.pivot = pivot;
     this.extender = extender;
-
+    this.gyro = gyro;
     switch (Constants.currentMode) {
       case REAL:
         elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 1.4);
@@ -96,6 +96,7 @@ public class Elevator extends SubsystemBase {
 
   public void setPivotGoal(double setpoint) {
     pivotGoal = new TrapezoidProfile.State(setpoint, 0);
+    //pivotGoal = new TrapezoidProfile.State(0);
   }
 
   public void setExtenderGoal(double setpoint) {
@@ -109,6 +110,12 @@ public class Elevator extends SubsystemBase {
   public void setPositionPivot(double position, double velocity) {
     pivot.setPositionSetpoint(position, pivotFFModel.calculate(position, velocity));
   }
+   
+
+  
+  public double getAngle(){
+     return gInputs.rotation;
+  }
 
   public void pivotStop() {
     pivot.stop();
@@ -118,29 +125,27 @@ public class Elevator extends SubsystemBase {
     extender.stop();
   }
 
-  public double calculateAngle() {
-    double angle = 0.0;
-    return angle;
-  }
-
+ 
   @Override
   public void periodic() {
     pivot.updateInputs(pInputs);
     extender.updateInputs(eInputs);
+    gyro.updateInputs(gInputs);
 
     TrapezoidProfile pivotProfile = new TrapezoidProfile(pivotConstraints);
     TrapezoidProfile extenderProfile = new TrapezoidProfile(extenderConstraints);
 
-    extenderCurrent =
-        extenderProfile.calculate(Constants.LOOP_PERIOD_SECS, extenderCurrent, extenderGoal);
+    extenderCurrent = extenderProfile.calculate(Constants.LOOP_PERIOD_SECS, extenderCurrent, extenderGoal);
     pivotCurrent = pivotProfile.calculate(Constants.LOOP_PERIOD_SECS, pivotCurrent, pivotGoal);
 
+    
     setPositionPivot(pivotCurrent.position, pivotCurrent.velocity);
-
+    
     setPositionExtend(extenderCurrent.position, extenderCurrent.velocity);
 
     Logger.processInputs("Elevator Pivot", pInputs);
     Logger.processInputs("Elevator Extender", eInputs);
+    Logger.processInputs("Elevator Pivot Gyro", gInputs);
 
     if (extenderkP.hasChanged(hashCode())) {
       extender.configurePID(extenderkP.get(), 0, 0);

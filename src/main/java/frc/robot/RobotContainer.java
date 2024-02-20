@@ -26,9 +26,12 @@ import frc.robot.commands.TurnToSpeaker;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorExtenderIOSim;
 import frc.robot.subsystems.Elevator.ElevatorExtenderIOTalonFX;
+import frc.robot.subsystems.Elevator.ElevatorGyroIO;
+import frc.robot.subsystems.Elevator.ElevatorGyroIOPigeon2;
 import frc.robot.subsystems.Elevator.ElevatorPivotIOSim;
 import frc.robot.subsystems.Elevator.ElevatorPivotIOTalonFX;
 import frc.robot.subsystems.LED.LED;
+import frc.robot.subsystems.LED.LED_IO;
 import frc.robot.subsystems.LED.LED_IOSpark;
 import frc.robot.subsystems.Shooter.FeederIOSim;
 import frc.robot.subsystems.Shooter.FeederIOTalonFX;
@@ -85,7 +88,8 @@ public class RobotContainer {
                 new ElevatorPivotIOTalonFX(
                     RobotMap.ElevatorIDs.PIVOT, RobotMap.ElevatorIDs.CANCODER),
                 new ElevatorExtenderIOTalonFX(
-                    RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]));
+                    RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]),
+                new ElevatorGyroIOPigeon2());
         led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
         break;
       case REPLAY:
@@ -98,8 +102,8 @@ public class RobotContainer {
                 new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
         shooter = new Shooter(new FlywheelIOSim(), new FlywheelIOSim(), new FeederIOSim());
-        elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
-        led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
+        elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim(), new ElevatorGyroIO() {});
+        led = new LED(new LED_IO() {});
         break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -112,7 +116,7 @@ public class RobotContainer {
                 new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
         shooter = new Shooter(new FlywheelIOSim(), new FlywheelIOSim(), new FeederIOSim());
-        elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
+        elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim(), new ElevatorGyroIO() {});
         led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
         break;
 
@@ -136,7 +140,7 @@ public class RobotContainer {
                 new ElevatorPivotIOTalonFX(
                     RobotMap.ElevatorIDs.PIVOT, RobotMap.ElevatorIDs.CANCODER),
                 new ElevatorExtenderIOTalonFX(
-                    RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]));
+                    RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]), new ElevatorGyroIO() {});
         led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
         break;
     }

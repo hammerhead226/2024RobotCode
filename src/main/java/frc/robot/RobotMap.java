@@ -15,6 +15,8 @@ public class RobotMap {
     public static final int CANCODER = 0;
     public static final int PIVOT = 0;
     public static final int[] EXTENDERS = {0, 0};
+
+    public static final int GYRO = 0;
   }
 
   public static class LEDIDs {
