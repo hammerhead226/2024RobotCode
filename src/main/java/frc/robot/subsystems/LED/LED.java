@@ -6,7 +6,6 @@ package frc.robot.subsystems.LED;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LED_STATE;
-
 import org.littletonrobotics.junction.Logger;
 
 /** Add your docs here. */
@@ -23,7 +22,7 @@ public class LED extends SubsystemBase {
     led.updateInputs(lInputs);
 
     setColor(lInputs.ledState);
-    
+
     Logger.processInputs("LED Inputs", lInputs);
   }
 

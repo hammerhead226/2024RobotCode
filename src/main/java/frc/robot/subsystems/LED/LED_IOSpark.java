@@ -16,6 +16,7 @@ public class LED_IOSpark implements LED_IO {
 
   public LED_IOSpark(int channel) {
     led = new Spark(channel);
+    ledState = Constants.LED_STATE.BLUE;
   }
 
   @Override

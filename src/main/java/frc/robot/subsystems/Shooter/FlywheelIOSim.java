@@ -28,7 +28,7 @@ public class FlywheelIOSim implements FlywheelIO {
       sim.setInputVoltage(appliedVolts);
     }
 
-    sim.update(Constants.LOOP_PERIOD_SECS); 
+    sim.update(Constants.LOOP_PERIOD_SECS);
 
     inputs.velocitySetpoint = velocitySetpoint;
 
