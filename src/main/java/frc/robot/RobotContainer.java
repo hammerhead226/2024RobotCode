@@ -187,7 +187,7 @@ public class RobotContainer {
 
         controller.x().onTrue(new InstantCommand(() -> shooter.setShooterVelocitys(3000, 3000)));
         controller.x().onFalse(new InstantCommand(() -> shooter.stopShooterMotors()));
->
+
         controller.leftBumper().onTrue(Commands.run(() -> elevator.setExtenderGoal(1), elevator));
         controller.rightBumper().onTrue(Commands.run(() -> elevator.setPivotGoal(Math.PI), elevator));
         controller.y().onTrue(Commands.run(() -> elevator.setPivotGoal(0), elevator));
