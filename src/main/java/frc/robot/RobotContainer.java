@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.SetExtenderTarget;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorExtenderIOSim;
 import frc.robot.subsystems.Elevator.ElevatorExtenderIOTalonFX;
@@ -191,6 +192,8 @@ public class RobotContainer {
         controller.leftBumper().onTrue(Commands.run(() -> elevator.setExtenderGoal(1), elevator));
         controller.rightBumper().onTrue(Commands.run(() -> elevator.setPivotGoal(Math.PI), elevator));
         controller.y().onTrue(Commands.run(() -> elevator.setPivotGoal(0), elevator));
+
+        controller.b().onTrue(new SetExtenderTarget(10));
     }
 
     /**

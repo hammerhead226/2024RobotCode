@@ -22,7 +22,7 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
   private final StatusSignal<Double> appliedVolts;
   private final StatusSignal<Double> currentAmps;
 
-  public ElevatorExtenderIOTalonFX(int lead, int follow) {
+  public ElevatorExtenderIOTalonFX(int lead, int extenders) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimit = Constants.ElevatorConstants.EXTENDER_CURRENT_LIMIT;
     config.CurrentLimits.StatorCurrentLimitEnable =
@@ -31,7 +31,7 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
     leader = new TalonFX(lead);
-    follower = new TalonFX(follow);
+    follower = new TalonFX(extenders);
 
     leader.getConfigurator().apply(config);
 
