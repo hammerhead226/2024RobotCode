@@ -21,7 +21,7 @@ public class Elevator extends SubsystemBase {
       new LoggedTunableNumber("elevatorExtenderkP");
 
   private final TrapezoidProfile.Constraints pivotConstraints =
-      new TrapezoidProfile.Constraints(Math.toDegrees(Math.PI / 4, Math.PI / 3));
+      new TrapezoidProfile.Constraints(Math.toDegrees(Math.PI / 4), Math.toDegrees(Math.PI / 3));
   private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State pivotCurrent = new TrapezoidProfile.State();
 
