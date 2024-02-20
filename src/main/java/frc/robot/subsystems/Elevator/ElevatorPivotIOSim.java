@@ -41,8 +41,8 @@ public class ElevatorPivotIOSim implements ElevatorPivotIO {
     sim.setInputVoltage(appliedVolts);
     // sim.setInput(appliedVolts);
 
-    position = sim.getAngleRads();
-    velocity = sim.getVelocityRadPerSec();
+    position = Math.toDegrees(sim.getAngleRads());
+    velocity = Math.toDegrees(sim.getVelocityRadPerSec());
     currentAmps = sim.getCurrentDrawAmps();
 
     inputs.positionSetpoint = positionSetpoint;
@@ -63,7 +63,7 @@ public class ElevatorPivotIOSim implements ElevatorPivotIO {
   @Override
   public void stop() {
     appliedVolts = 0;
-    pid.setSetpoint(sim.getAngleRads());
+    pid.setSetpoint(position);
   }
 
   @Override
