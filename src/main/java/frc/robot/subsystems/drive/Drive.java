@@ -47,6 +47,7 @@ public class Drive extends SubsystemBase {
   private static final double TRACK_WIDTH_Y = Constants.SwerveConstants.TRACK_WIDTH_Y;
   private static final double DRIVE_BASE_RADIUS = Constants.SwerveConstants.DRIVE_BASE_RADIUS;
   private static final double MAX_ANGULAR_SPEED = Constants.SwerveConstants.MAX_ANGULAR_SPEED;
+  private static double chassisSpeedMultiplier = 1;
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -55,6 +56,8 @@ public class Drive extends SubsystemBase {
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
+
+
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
@@ -172,7 +175,8 @@ public class Drive extends SubsystemBase {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, MAX_LINEAR_SPEED);
+    chassisSpeedMultiplier = MathUtil.clamp(chassisSpeedMultiplier, 0, 1);
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, (MAX_LINEAR_SPEED * chassisSpeedMultiplier));
 
     // Send setpoints to modules
     SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
@@ -184,6 +188,14 @@ public class Drive extends SubsystemBase {
     // Log setpoint states
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
     Logger.recordOutput("SwerveStates/SetpointsOptimized", optimizedSetpointStates);
+  }
+
+  public void increaseMultiplier () {
+    chassisSpeedMultiplier += 0.1;
+  }
+
+  public void decreaseMultiplier () {
+    chassisSpeedMultiplier -= 0.1;
   }
 
   /** Stops the drive. */
