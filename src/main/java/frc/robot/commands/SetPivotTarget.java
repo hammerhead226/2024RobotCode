@@ -5,10 +5,34 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.RobotMap;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorExtenderIOSim;
+import frc.robot.subsystems.Elevator.ElevatorExtenderIOTalonFX;
+import frc.robot.subsystems.Elevator.ElevatorPivotIOSim;
+import frc.robot.subsystems.Elevator.ElevatorPivotIOTalonFX;
 
 public class SetPivotTarget extends Command {
   /** Creates a new SetPivotTarget. */
-  public SetPivotTarget() {
+  private final Elevator elevator;
+  private double setPoint;
+  public SetPivotTarget(double setPoint) {
+    setPoint = this.setPoint;
+     switch (Constants.currentMode) {
+      case REAL:
+        elevator = new Elevator(new ElevatorPivotIOTalonFX(RobotMap.ElevatorIDs.PIVOT, RobotMap.ElevatorIDs.CANCODER), new ElevatorExtenderIOTalonFX(RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]));
+        break;
+      case REPLAY:
+        elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
+        break;
+      case SIM:
+        elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
+        break;
+      default: 
+        elevator = new Elevator(new ElevatorPivotIOTalonFX(RobotMap.ElevatorIDs.PIVOT, RobotMap.ElevatorIDs.CANCODER), new ElevatorExtenderIOTalonFX(RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]));
+        break;
+    }
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -18,7 +42,9 @@ public class SetPivotTarget extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    elevator.setPivotGoal(setPoint);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -27,6 +53,6 @@ public class SetPivotTarget extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return elevator.pivotAtSetpoint();
   }
 }
