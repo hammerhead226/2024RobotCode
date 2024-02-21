@@ -3,9 +3,9 @@ package frc.robot.subsystems.Elevator;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.Elevator.ElevatorGyroIO.ElevatorGyroIOInputs;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase {
   private static final LoggedTunableNumber pivotkP = new LoggedTunableNumber("elevatorPivotkP");
   private static final LoggedTunableNumber extenderkP = new LoggedTunableNumber("elevatorExtenderkP");
 
-  private final TrapezoidProfile.Constraints pivotConstraints = new TrapezoidProfile.Constraints(Math.PI/4, Math.PI/3);
+  private final TrapezoidProfile.Constraints pivotConstraints = new TrapezoidProfile.Constraints(Units.radiansToDegrees(Math.PI/4), Units.radiansToDegrees(Math.PI/3));
   private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State pivotCurrent = new TrapezoidProfile.State();
 
@@ -30,13 +30,16 @@ public class Elevator extends SubsystemBase {
   private TrapezoidProfile.State extenderGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State extenderCurrent = new TrapezoidProfile.State();
 
+  
+
   private final ElevatorFeedforward elevatorFFModel;
   private final ArmFeedforward pivotFFModel;
-
+  
   public Elevator(ElevatorPivotIO pivot, ElevatorExtenderIO extender, ElevatorGyroIO gyro) {
     this.pivot = pivot;
     this.extender = extender;
     this.gyro = gyro;
+   
     switch (Constants.currentMode) {
       case REAL:
         elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 1.4);
@@ -114,7 +117,9 @@ public class Elevator extends SubsystemBase {
 
   
   public double getAngle(){
+    
      return gInputs.rotation;
+     
   }
 
   public void pivotStop() {
