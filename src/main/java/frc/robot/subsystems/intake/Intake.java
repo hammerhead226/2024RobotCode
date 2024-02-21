@@ -7,6 +7,8 @@ package frc.robot.subsystems.intake;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.LoggedTunableNumber;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -14,7 +16,7 @@ public class Intake extends SubsystemBase {
   private final IntakeRollerIO roller;
 
   private final IntakeRollerIOInputsAutoLogged rInputs = new IntakeRollerIOInputsAutoLogged();
-
+  private static final LoggedTunableNumber rollerkP = new LoggedTunableNumber("intakekP");
   private final SimpleMotorFeedforward ffModel;
 
   public Intake(IntakeRollerIO roller) {
@@ -36,7 +38,7 @@ public class Intake extends SubsystemBase {
     this.roller = roller;
 
     // make this a constant
-    roller.configurePID(0.5, 0, 0);
+    roller.configurePID(rollerkP.get(), 0, 0);
   }
 
   public void runRollers(double velocity) {
@@ -53,5 +55,9 @@ public class Intake extends SubsystemBase {
     roller.updateInputs(rInputs);
 
     Logger.processInputs("Intake", rInputs);
+
+    if (rollerkP.hasChanged(hashCode())) {
+      roller.configurePID(rollerkP.get(), 0, 0);
+    }
   }
 }

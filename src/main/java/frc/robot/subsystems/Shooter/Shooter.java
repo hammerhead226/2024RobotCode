@@ -7,6 +7,8 @@ package frc.robot.subsystems.Shooter;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.LoggedTunableNumber;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -19,6 +21,10 @@ public class Shooter extends SubsystemBase {
 
   private final FlywheelIOInputsAutoLogged s1Inputs = new FlywheelIOInputsAutoLogged();
   private final FlywheelIOInputsAutoLogged s2Inputs = new FlywheelIOInputsAutoLogged();
+
+  private static final LoggedTunableNumber shooterMotor1kP = new LoggedTunableNumber("shooterMotor1kP");
+  private static final LoggedTunableNumber shooterMotor2kP = new LoggedTunableNumber("shooterMotor2kP");
+  private static final LoggedTunableNumber feederkP = new LoggedTunableNumber("shooterFeederkP");
 
   private final FeederIOInputsAutoLogged feedInputs = new FeederIOInputsAutoLogged();
 
@@ -47,12 +53,12 @@ public class Shooter extends SubsystemBase {
     this.shooterMotor1 = shooterMotor1;
     this.shooterMotor2 = shooterMotor2;
     // TODO:: Make these constants
-    shooterMotor1.configurePID(0, 0, 0);
-    shooterMotor2.configurePID(0, 0, 0);
+    shooterMotor1.configurePID(shooterMotor1kP.get(), 0, 0);
+    shooterMotor2.configurePID(shooterMotor2kP.get(), 0, 0);
 
     this.feeder = feeder;
     // TODO:: Make these constants
-    feeder.configurePID(0, 0, 0);
+    feeder.configurePID(feederkP.get(), 0, 0);
   }
 
   public void stopShooterMotors() {
@@ -98,5 +104,15 @@ public class Shooter extends SubsystemBase {
     Logger.processInputs("Flywheel 2", s2Inputs);
 
     Logger.processInputs("Feeder", feedInputs);
+
+    if (shooterMotor1kP.hasChanged(hashCode())) {
+      shooterMotor1.configurePID(shooterMotor1kP.get(), 0, 0);
+    }
+    if (shooterMotor2kP.hasChanged(hashCode())) {
+      shooterMotor2.configurePID(shooterMotor2kP.get(), 0, 0);
+    }
+    if (feederkP.hasChanged(hashCode())) {
+      feeder.configurePID(feederkP.get(), 0, 0);
+    }
   }
 }
