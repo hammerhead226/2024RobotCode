@@ -20,7 +20,7 @@ public class Intake extends SubsystemBase {
   public Intake(IntakeRollerIO roller) {
     switch (Constants.currentMode) {
       case REAL:
-        ffModel = new SimpleMotorFeedforward(0, 0);
+        ffModel = new SimpleMotorFeedforward(Constants.INTAKE_FEEDFORWARD[0], Constants.INTAKE_FEEDFORWARD[1]);
         break;
       case REPLAY:
         ffModel = new SimpleMotorFeedforward(0, 0);
@@ -36,7 +36,7 @@ public class Intake extends SubsystemBase {
     this.roller = roller;
 
     // make this a constant
-    roller.configurePID(0.5, 0, 0);
+    roller.configurePID(Constants.ROLLER_PID[0], Constants.ROLLER_PID[1], Constants.ROLLER_PID[2]);
   }
 
   public void runRollers(double velocity) {

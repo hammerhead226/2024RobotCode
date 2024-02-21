@@ -91,6 +91,16 @@ public final class Constants {
 
     public static final double[] PIVOT_PID = { 0, 0, 0 };
     public static final double[] EXTENDER_PID = { 0, 0, 0 };
+    public static final double[] ROLLER_PID = { 0, 0, 0 };
+    public static final double[][] SHOOTER_PIDS = {{ 0, 0, 0 }, { 0, 0, 0 }};
+    public static final double[] FEEDER_PID = { 0, 0, 0 };
+
+    public static final double[] ELEVATOR_FEEDFORWARD = { 0.02, 0.05, 1.4 };
+    public static final double[] PIVOT_FEEDFORWARD = { 0, 0.4, 0.7 };
+    public static final double[] INTAKE_FEEDFORWARD = { 0, 0 };
+    public static final double[] FLYWHEEL_FEEDFORWARD = { 0, 0.03 };
+    public static final double[] FEEDER_FEEDFORWARD = { 0, 0.03 };
+    p
   }
 
   public static class LEDConstants {

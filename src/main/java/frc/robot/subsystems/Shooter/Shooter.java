@@ -28,8 +28,8 @@ public class Shooter extends SubsystemBase {
   public Shooter(FlywheelIO shooterMotor1, FlywheelIO shooterMotor2, FeederIO feeder) {
     switch (Constants.currentMode) {
       case REAL:
-        flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
-        feederFFModel = new SimpleMotorFeedforward(0, 0.03);
+        flywheelFFModel = new SimpleMotorFeedforward(Constants.FLYWHEEL_FEEDFORWARD[0] Constants.FLYWHEEL_FEEDFORWARD[1]);
+        feederFFModel = new SimpleMotorFeedforward(Constants.FEEDER_FEEDFORWARD[0], Constants.FEEDER_FEEDFORWARD[1]);
         break;
       case REPLAY:
         flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
@@ -47,12 +47,12 @@ public class Shooter extends SubsystemBase {
     this.shooterMotor1 = shooterMotor1;
     this.shooterMotor2 = shooterMotor2;
     // TODO:: Make these constants
-    shooterMotor1.configurePID(0, 0, 0);
-    shooterMotor2.configurePID(0, 0, 0);
+    shooterMotor1.configurePID(Constants.SHOOTER_PIDS[0][0], Constants.SHOOTER_PIDS[0][1], Constants.SHOOTER_PIDS[0][2]);
+    shooterMotor2.configurePID(Constants.SHOOTER_PIDS[1][0], Constants.SHOOTER_PIDS[1][1], Constants.SHOOTER_PIDS[1][2]);
 
     this.feeder = feeder;
     // TODO:: Make these constants
-    feeder.configurePID(0, 0, 0);
+    feeder.configurePID(Constants.FEEDER_PID[0], Constants.FEEDER_PID[1], Constants.FEEDER_PID[2]);
   }
 
   public void stopShooterMotors() {

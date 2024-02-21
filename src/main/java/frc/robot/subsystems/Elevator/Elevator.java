@@ -39,8 +39,8 @@ public class Elevator extends SubsystemBase {
 
     switch (Constants.currentMode) {
       case REAL:
-        elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 1.4);
-        pivotFFModel = new ArmFeedforward(0, 0.4, 0.7);
+        elevatorFFModel = new ElevatorFeedforward(Constants.ELEVATOR_FEEDFORWARD[0], Constants.ELEVATOR_FEEDFORWARD[1], Constants.ELEVATOR_FEEDFORWARD[2]);
+        pivotFFModel = new ArmFeedforward(Constants.PIVOT_FEEDFORWARD[0], Constants.PIVOT_FEEDFORWARD[1], Constants.PIVOT_FEEDFORWARD[2]);
         pivotkP.initDefault(Constants.ElevatorConstants.PIVOT_PID[0]);
         extenderkP.initDefault(Constants.ElevatorConstants.EXTENDER_PID[0]);
         break;
@@ -66,8 +66,8 @@ public class Elevator extends SubsystemBase {
     pivotkP.initDefault(0);
     extenderkP.initDefault(15);
 
-    this.pivot.configurePID(pivotkP.get(), 0, 0);
-    this.extender.configurePID(extenderkP.get(), 0, 0);
+    this.pivot.configurePID(Constants.PIVOT_PID[0], Constants.PIVOT_PID[1], Constats.PIVOT_PID[2]);
+    this.extender.configurePID(Constants.EXTENDER_PID[0], Constants.EXTENDER_PID[1], Constants.EXTENDER_PID[2]);
   }
 
   public double getPivotPosition() {
