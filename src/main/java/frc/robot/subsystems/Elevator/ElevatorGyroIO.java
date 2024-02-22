@@ -7,7 +7,7 @@ public interface ElevatorGyroIO {
     public static class ElevatorGyroIOInputs{
           
         public boolean isConnected = false;
-        public double rotation = 0;
+        public double pitch = 0;
 
     }
 

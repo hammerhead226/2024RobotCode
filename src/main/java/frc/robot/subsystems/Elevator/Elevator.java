@@ -100,7 +100,6 @@ public class Elevator extends SubsystemBase {
 
   public void setPivotGoal(double setpoint) {
     pivotGoal = new TrapezoidProfile.State(setpoint, 0);
-    //pivotGoal = new TrapezoidProfile.State(0);
   }
 
   public void setExtenderGoal(double setpoint) {
@@ -119,7 +118,7 @@ public class Elevator extends SubsystemBase {
   
   public double getAngle(){
     
-     return gInputs.rotation;
+     return gInputs.pitch;
      
   }
 

@@ -23,7 +23,7 @@ public class ElevatorGyroIOPigeon2 implements ElevatorGyroIO{
      @Override
   public void updateInputs(ElevatorGyroIOInputs inputs) {
     inputs.isConnected = BaseStatusSignal.refreshAll(pitch).equals(StatusCode.OK);
-    inputs.rotation = pitch.getValueAsDouble();
+    inputs.pitch = pitch.getValueAsDouble();
     
   }
     
