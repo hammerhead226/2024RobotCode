@@ -16,4 +16,7 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  // TODO change DistanceSensorPort
+  public static int DistanceSensorPort = 0;
 }

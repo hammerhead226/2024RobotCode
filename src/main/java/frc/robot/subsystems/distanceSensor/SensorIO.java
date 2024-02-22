@@ -7,11 +7,11 @@ package frc.robot.subsystems.distanceSensor;
 /** Add your docs here. */
 public interface SensorIO {
   public static class SensorIOInputs {
-    public double distance;
+    public boolean isNoteThere;
   }
 
   public default void updateInputs(SensorIOInputs inputs) {}
 
-  public default double getDistance() {return 0.0;}
+  public default boolean getIfNoteThere(double distanceIn) {return false;}
 
 }

@@ -5,4 +5,6 @@
 package frc.robot.subsystems.distanceSensor;
 
 /** Add your docs here. */
-public class SensorIOREV {}
+public class SensorIOREV {
+  private final REV2mDistanceSensor sensor = new REV2mDistanceSensor()
+}
