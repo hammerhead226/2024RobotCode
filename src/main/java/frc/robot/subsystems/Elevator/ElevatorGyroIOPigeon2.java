@@ -11,15 +11,13 @@ import frc.robot.Constants;
 import frc.robot.RobotMap;
 
 public class ElevatorGyroIOPigeon2 implements ElevatorGyroIO{
-
-      // private final Pigeon2 pigeon2 = new Pigeon2(Constants.ElevatorConstants.ELEVATOR_PIGEON_PORT, "2")
-       private final Pigeon2 pigeon2 = new Pigeon2(RobotMap.ElevatorIDs.GYRO, Constants.CANBUS);
-       private final StatusSignal<Double> pitch = pigeon2.getRoll();
+       private final Pigeon2 pigeon = new Pigeon2(RobotMap.ElevatorIDs.GYRO, Constants.CANBUS);
+       private final StatusSignal<Double> pitch = pigeon.getRoll();
        
    public ElevatorGyroIOPigeon2() {
-     pigeon2.getConfigurator().apply(new Pigeon2Configuration());
+     pigeon.getConfigurator().apply(new Pigeon2Configuration());
      pitch.setUpdateFrequency(100.0);
-     pigeon2.optimizeBusUtilization();
+     pigeon.optimizeBusUtilization();
    }
 
      @Override

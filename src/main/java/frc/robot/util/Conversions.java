@@ -1,6 +1,10 @@
 package frc.robot.util;
 
 public class Conversions {
+  public static double pigeon2PitchToFalcon(double pitch, double gearRatio) {
+    // find conversion factor later
+    return pitch;
+  }
 
   /**
    * @param positionCounts CANCoder Position Counts

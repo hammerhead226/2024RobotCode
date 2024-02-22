@@ -52,6 +52,7 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
   @Override
   public void updateInputs(ElevatorPivotIOInputs inputs) {
     BaseStatusSignal.refreshAll(pivotPosition, pivotVelocity, appliedVolts, currentAmps);
+    inputs.positionSetpoint = positionSetpoint;
     inputs.pivotPosition = Units.rotationsToDegrees(pivotPosition.getValueAsDouble());
     inputs.pivotVelocity =
         Units.rotationsPerMinuteToRadiansPerSecond(pivotVelocity.getValueAsDouble());

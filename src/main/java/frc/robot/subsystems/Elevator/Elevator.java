@@ -66,6 +66,7 @@ public class Elevator extends SubsystemBase {
         extenderkP.initDefault(15);
         break;
     }
+
     pivotkP.initDefault(0);
     extenderkP.initDefault(15);
 
