@@ -25,11 +25,14 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorExtenderIO;
 import frc.robot.subsystems.Elevator.ElevatorExtenderIOSim;
 import frc.robot.subsystems.Elevator.ElevatorExtenderIOTalonFX;
+import frc.robot.subsystems.Elevator.ElevatorPivotIO;
 import frc.robot.subsystems.Elevator.ElevatorPivotIOSim;
 import frc.robot.subsystems.Elevator.ElevatorPivotIOTalonFX;
 import frc.robot.subsystems.LED.LED;
+import frc.robot.subsystems.LED.LED_IO;
 import frc.robot.subsystems.LED.LED_IOSpark;
 import frc.robot.subsystems.Shooter.FeederIOSim;
 import frc.robot.subsystems.Shooter.FeederIOTalonFX;
@@ -84,9 +87,9 @@ public class RobotContainer {
         // elevator =
         //     new Elevator(
         //         new ElevatorPivotIOTalonFX(
-        //             RobotMap.ElevatorIDs.PIVOT, RobotMap.ElevatorIDs.CANCODER),
+        //             RobotMap.ElevatorIDs.PIVOT_ONE, RobotMap.ElevatorIDs.PIVOT_TWO),
         //         new ElevatorExtenderIOTalonFX(
-        //             RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]));
+        //             RobotMap.ElevatorIDs.EXTENDER_ONE, RobotMap.ElevatorIDs.EXTENDER_TWO));
         // led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
         break;
       case REPLAY:
@@ -134,11 +137,9 @@ public class RobotContainer {
                 new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
         elevator =
             new Elevator(
-                new ElevatorPivotIOTalonFX(
-                    RobotMap.ElevatorIDs.PIVOT, RobotMap.ElevatorIDs.CANCODER),
-                new ElevatorExtenderIOTalonFX(
-                    RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]));
-        led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
+                new ElevatorPivotIO() {},
+                new ElevatorExtenderIO() {});
+        led = new LED(new LED_IO() {});
         break;
     }
 

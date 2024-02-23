@@ -5,6 +5,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -14,8 +15,8 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
-  private final TalonFX falcon;
-  private final CANcoder cancoder;
+  private final TalonFX leader;
+  private final TalonFX follower;
 
   private double positionSetpoint;
 
@@ -24,24 +25,24 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
   private final StatusSignal<Double> appliedVolts;
   private final StatusSignal<Double> currentAmps;
 
-  public ElevatorPivotIOTalonFX(int talonID, int cancoderID) {
+  public ElevatorPivotIOTalonFX(int leadID, int followID) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimit = Constants.ElevatorConstants.PIVOT_CURRENT_LIMIT;
     config.CurrentLimits.StatorCurrentLimitEnable =
         Constants.ElevatorConstants.PIVOT_CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    falcon = new TalonFX(talonID);
+    leader = new TalonFX(leadID);
+    follower = new TalonFX(followID);
 
-    falcon.getConfigurator().apply(config);
+    leader.getConfigurator().apply(config);
 
-    cancoder = new CANcoder(cancoderID);
-    cancoder.getConfigurator().apply(new CANcoderConfiguration());
+    follower.setControl(new Follower(leadID, false));
 
-    pivotPosition = cancoder.getAbsolutePosition();
-    pivotVelocity = falcon.getVelocity();
-    appliedVolts = falcon.getMotorVoltage();
-    currentAmps = falcon.getStatorCurrent();
+    pivotPosition = leader.getPosition();
+    pivotVelocity = leader.getVelocity();
+    appliedVolts = leader.getMotorVoltage();
+    currentAmps = leader.getStatorCurrent();
 
     positionSetpoint = Constants.ElevatorConstants.PIVOT_STOW;
 
@@ -62,13 +63,13 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
   @Override
   public void setPositionSetpoint(double position, double ffVolts) {
     this.positionSetpoint = position;
-    falcon.setControl(new PositionVoltage(position, 0, false, ffVolts, 0, false, false, false));
+    leader.setControl(new PositionVoltage(position, 0, false, ffVolts, 0, false, false, false));
   }
 
   @Override
   public void stop() {
     this.positionSetpoint = pivotPosition.getValueAsDouble();
-    falcon.stopMotor();
+    leader.stopMotor();
   }
 
   @Override
@@ -79,6 +80,6 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
     config.kI = kI;
     config.kD = kD;
 
-    falcon.getConfigurator().apply(config);
+    leader.getConfigurator().apply(config);
   }
 }
