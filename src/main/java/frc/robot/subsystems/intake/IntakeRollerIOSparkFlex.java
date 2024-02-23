@@ -26,10 +26,16 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
 
   @Override
   public void updateInputs(IntakeRollerIOInputs inputs) {
+    inputs.rollerRotations = rollers.getEncoder().getPosition();
     inputs.rollerVelocity = rollers.getEncoder().getVelocity();
 
     inputs.appliedVolts = rollers.getBusVoltage();
     inputs.currentAmps = rollers.getOutputCurrent();
+  }
+
+  @Override
+  public void runCharacterization(double volts) {
+    rollers.setVoltage(volts);
   }
 
   @Override

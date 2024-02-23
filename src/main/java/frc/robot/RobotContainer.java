@@ -21,8 +21,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.TurnToSpeaker;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorExtenderIOSim;
 import frc.robot.subsystems.Elevator.ElevatorExtenderIOTalonFX;
@@ -56,9 +57,9 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Intake intake;
-  private final Shooter shooter;
-  public final Elevator elevator;
-  private final LED led;
+  private Shooter shooter;
+  public Elevator elevator;
+  private LED led;
 
   private final CommandXboxController controller = new CommandXboxController(0);
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -75,18 +76,18 @@ public class RobotContainer {
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         intake = new Intake(new IntakeRollerIOSparkFlex(RobotMap.IntakeIDs.ROLLERS));
-        shooter =
-            new Shooter(
-                new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
-                new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
-                new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
-        elevator =
-            new Elevator(
-                new ElevatorPivotIOTalonFX(
-                    RobotMap.ElevatorIDs.PIVOT, RobotMap.ElevatorIDs.CANCODER),
-                new ElevatorExtenderIOTalonFX(
-                    RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]));
-        led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
+        // shooter =
+        //     new Shooter(
+        //         new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
+        //         new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
+        //         new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
+        // elevator =
+        //     new Elevator(
+        //         new ElevatorPivotIOTalonFX(
+        //             RobotMap.ElevatorIDs.PIVOT, RobotMap.ElevatorIDs.CANCODER),
+        //         new ElevatorExtenderIOTalonFX(
+        //             RobotMap.ElevatorIDs.EXTENDERS[0], RobotMap.ElevatorIDs.EXTENDERS[1]));
+        // led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
         break;
       case REPLAY:
         drive =
@@ -144,6 +145,12 @@ public class RobotContainer {
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
+    autoChooser.addDefaultOption(
+        "Intake SysID (Quasistatic Forward)",
+        intake.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addDefaultOption(
+        "Intake SysID (Dynamic Forward)", intake.sysIdDynamic(SysIdRoutine.Direction.kForward));
+
     configureButtonBindings();
   }
 
@@ -171,13 +178,15 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    controller.a().whileTrue(intake.sysIdQuasistatic(Direction.kForward));
+
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
 
-    controller.a().whileTrue(new TurnToSpeaker(drive, controller));
+    // controller.a().whileTrue(new TurnToSpeaker(drive, controller));
 
-    // controller.a().onTrue(new InstantCommand(() -> intake.runRollers(3)));
+    // controller.a().onTrue(new InstantCommand(() -> intake.runRollers(3000)));
     // controller.a().onFalse(new InstantCommand(() -> intake.stopRollers()));
 
     // controller.x().onTrue(new InstantCommand(() -> shooter.setShooterVelocitys(3000, 3000)));

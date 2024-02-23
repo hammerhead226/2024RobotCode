@@ -11,7 +11,7 @@ public interface IntakeRollerIO {
   @AutoLog
   public static class IntakeRollerIOInputs {
     public double rollerVelocity = 0.0;
-
+    public double rollerRotations = 0.0;
     public double appliedVolts = 0.0;
     public double currentAmps = 0.0;
   }
@@ -19,6 +19,8 @@ public interface IntakeRollerIO {
   public default void updateInputs(IntakeRollerIOInputs inputs) {}
 
   public default void setVelocity(double velocity, double ffVolts) {}
+
+  public default void runCharacterization(double volts) {}
 
   public default void stop() {}
 
