@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
+import com.pathplanner.lib.util.PIDConstants;
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -39,15 +39,15 @@ public final class Constants {
     public static final boolean EXTENDER_CURRENT_LIMIT_ENABLED = true;
     public static final boolean PIVOT_CURRENT_LIMIT_ENABLED = true;
 
-    public static final double PIVOT_STOW = 0;
-    public static final double EXTENDER_RETRACT = 0;
-    public static final double EXTENDER_EXTEND = 0;
+    public static final double PIVOT_STOW_DEG = 0;
+    public static final double EXTENDER_RETRACT_INCH = 0;
+    public static final double EXTENDER_EXTEND_INCH = 0;
 
-    public static final double PIVOT_THRESHOLD = 0;
-    public static final double EXTENDER_THRESHOLD = 0;
+    public static final double PIVOT_THRESHOLD_DEG = 0;
+    public static final double EXTENDER_THRESHOLD_INCH = 0;
 
-    public static final double[] PIVOT_PID = {0, 0, 0};
-    public static final double[] EXTENDER_PID = {0, 0 , 0};
+    public static final PIDConstants PIVOT_PID = new PIDConstants(0.001,0,0);
+    public static final PIDConstants Extender_PID = new PIDConstants(0.001,0,0);
 
   }
 

@@ -37,7 +37,7 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
 
     leader.getConfigurator().apply(config);
 
-    positionSetpoint = Constants.ElevatorConstants.EXTENDER_RETRACT;
+    positionSetpoint = Constants.ElevatorConstants.EXTENDER_RETRACT_INCH;
 
     follower.setControl(new Follower(lead, false));
 

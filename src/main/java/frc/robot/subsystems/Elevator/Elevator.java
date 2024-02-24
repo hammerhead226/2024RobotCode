@@ -38,7 +38,7 @@ public class Elevator extends SubsystemBase {
       case REAL:
         elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 1.4);
         pivotFFModel = new ArmFeedforward(0, 0.4, 0.7);
-        pivotkP.initDefault(Constants.ElevatorConstants.PIVOT_PID[0]);
+        pivotkP.initDefault(Constants.ElevatorConstants.PIVOT_PID(0));
         extenderkP.initDefault(Constants.ElevatorConstants.EXTENDER_PID[0]);
         break;
       case REPLAY:
