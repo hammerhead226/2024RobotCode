@@ -75,6 +75,8 @@ public class Pivot extends SubsystemBase {
     pivotProfile = new TrapezoidProfile(pivotConstraints);
 
     pivotCurrent = pivotProfile.calculate(0, pivotCurrent, pivotGoal);
+
+    pivot.configurePID(pivotkP.get(), 0, 0);
   }
 
   public double getPivotPosition() {

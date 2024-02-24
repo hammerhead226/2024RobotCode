@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.util.LoggedTunableNumber;
 
 import static edu.wpi.first.units.Units.Volts;
 
@@ -17,14 +18,9 @@ import org.littletonrobotics.junction.Logger;
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   private final FlywheelIO flywheels;
-
-  // private final FlywheelIO shooterMotor2;
-
   private final FeederIO feeder;
 
   private final FlywheelIOInputsAutoLogged fInputs = new FlywheelIOInputsAutoLogged();
-  // private final FlywheelIOInputsAutoLogged s2Inputs = new FlywheelIOInputsAutoLogged();
-
   private final FeederIOInputsAutoLogged feedInputs = new FeederIOInputsAutoLogged();
 
   private final SimpleMotorFeedforward flywheelFFModel;
@@ -33,11 +29,17 @@ public class Shooter extends SubsystemBase {
   private final SysIdRoutine feedSysId;
   private final SysIdRoutine flywheelSysId;
 
+  private static final LoggedTunableNumber feederkP = new LoggedTunableNumber("feederkP");
+  private static final LoggedTunableNumber flywheelkP = new LoggedTunableNumber("flywheelkP");
+
   public Shooter(FlywheelIO flywheels, FeederIO feeder) {
     switch (Constants.currentMode) {
       case REAL:
         flywheelFFModel = new SimpleMotorFeedforward(0, 3);
         feederFFModel = new SimpleMotorFeedforward(0, 0.3);
+
+        flywheelkP.initDefault(0);
+        feederkP.initDefault(0);
         break;
       case REPLAY:
         flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
@@ -54,7 +56,7 @@ public class Shooter extends SubsystemBase {
     }
     this.flywheels = flywheels;
     // TODO:: Make these constants
-    flywheels.configurePID(0.5, 0, 0);
+    flywheels.configurePID(flywheelkP.get(), 0, 0);
 
     // Configure SysId
     flywheelSysId =
@@ -74,7 +76,7 @@ public class Shooter extends SubsystemBase {
 
     this.feeder = feeder;
     // TODO:: Make these constants
-    feeder.configurePID(0.5, 0, 0);
+    feeder.configurePID(feederkP.get(), 0, 0);
 
     // Configure SysId
     feedSysId =
@@ -137,12 +139,12 @@ public class Shooter extends SubsystemBase {
 
     /** Returns a command to run a quasistatic test in the specified direction. */
   public Command flywheelSysIDQuasistic(SysIdRoutine.Direction direction) {
-    return feedSysId.quasistatic(direction);
+    return flywheelSysId.quasistatic(direction);
   }
 
   /** Returns a command to run a dynamic test in the specified direction. */
   public Command flywheelSysIDDynamiCommand(SysIdRoutine.Direction direction) {
-    return feedSysId.dynamic(direction);
+    return flywheelSysId.dynamic(direction);
   }
 
   @Override
@@ -154,5 +156,13 @@ public class Shooter extends SubsystemBase {
 
     Logger.processInputs("Flywheels", fInputs);
     Logger.processInputs("Feeder", feedInputs);
+
+    if (feederkP.hasChanged(hashCode())) {
+      feeder.configurePID(feederkP.get(), 0, 0);
+    }
+
+    if (flywheelkP.hasChanged(hashCode())) {
+      flywheels.configurePID(flywheelkP.get(), 0, 0);
+    }
   }
 }

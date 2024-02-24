@@ -74,8 +74,6 @@ public class Elevator extends SubsystemBase {
     extenderProfile = new TrapezoidProfile(extenderConstraints);
     extenderCurrent = extenderProfile.calculate(0, extenderCurrent, extenderGoal);
 
-    extenderkP.initDefault(15);
-
     this.elevator.configurePID(extenderkP.get(), 0, 0);
   }
 
@@ -135,7 +133,5 @@ public class Elevator extends SubsystemBase {
     if (extenderkP.hasChanged(hashCode())) {
       elevator.configurePID(extenderkP.get(), 0, 0);
     }
-
-   
   }
 }

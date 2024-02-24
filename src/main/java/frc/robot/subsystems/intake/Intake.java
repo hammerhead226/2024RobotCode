@@ -21,7 +21,6 @@ public class Intake extends SubsystemBase {
   private final IntakeRollerIOInputsAutoLogged rInputs = new IntakeRollerIOInputsAutoLogged();
 
   private static final LoggedTunableNumber intakekP = new LoggedTunableNumber("intake kP");
-  private static final LoggedTunableNumber intakekD = new LoggedTunableNumber("intake kD");
 
   private final SimpleMotorFeedforward ffModel;
 
@@ -32,7 +31,6 @@ public class Intake extends SubsystemBase {
       case REAL:
         ffModel = new SimpleMotorFeedforward(0, 0.003);
         intakekP.initDefault(0.0000000004);
-        intakekD.initDefault(0.007);
         break;
       case REPLAY:
         ffModel = new SimpleMotorFeedforward(0, 0);
@@ -89,8 +87,8 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     roller.updateInputs(rInputs);
 
-    if (intakekP.hasChanged(hashCode()) || intakekD.hasChanged(hashCode())) {
-      roller.configurePID(intakekP.get(), 0, intakekD.get());
+    if (intakekP.hasChanged(hashCode())) {
+      roller.configurePID(intakekP.get(), 0, 0);
     }
 
     Logger.processInputs("Intake", rInputs);
