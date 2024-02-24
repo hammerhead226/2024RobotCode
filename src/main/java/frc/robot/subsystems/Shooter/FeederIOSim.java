@@ -34,14 +34,14 @@ public class FeederIOSim implements FeederIO {
   }
 
   @Override
-  public void setVelocityRPM(double velocity, double ffVolts) {
+  public void setVelocityRPS(double velocity, double ffVolts) {
     this.ffVolts = ffVolts;
     pid.setSetpoint(velocity);
   }
 
   @Override
   public void stop() {
-    setVelocityRPM(0, 0);
+    setVelocityRPS(0, 0);
   }
 
   @Override

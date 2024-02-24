@@ -15,22 +15,24 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final TalonFX left;
   private final TalonFX right;
 
-  private final StatusSignal<Double> leftVelocity;
+  private final StatusSignal<Double> leftVelocityRPS;
   private final StatusSignal<Double> leftAppliedVolts;
   private final StatusSignal<Double> leftCurrentAmps;
-  private double leftSetpoint = 0.0;
+  private final StatusSignal<Double> leftRotations;
+  private double leftSetpointRPM = 0.0;
 
-  private final StatusSignal<Double> rightVelocity;
+  private final StatusSignal<Double> rightVelocityRPS;
   private final StatusSignal<Double> rightAppliedVolts;
   private final StatusSignal<Double> rightCurrentAmps;
-  private double rightSetpoint = 0.0;
+  private final StatusSignal<Double> rightRotations;
+  private double rightSetpointRPM = 0.0;
 
   public FlywheelIOTalonFX(int leftID, int rightID) {
     TalonFXConfiguration leftConfig = new TalonFXConfiguration();
     leftConfig.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT;
     leftConfig.CurrentLimits.StatorCurrentLimitEnable =
         Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
-    leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     leftConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     TalonFXConfiguration rightConfig = new TalonFXConfiguration();
@@ -38,7 +40,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
         Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT;
     rightConfig.CurrentLimits.StatorCurrentLimitEnable =
         Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
-    rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     rightConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     left = new TalonFX(leftID, Constants.CANBUS);
@@ -47,43 +49,52 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     left.getConfigurator().apply(leftConfig);
     right.getConfigurator().apply(rightConfig);
 
-    leftVelocity = left.getVelocity();
+    leftVelocityRPS = left.getVelocity();
+    leftRotations = left.getPosition();
     leftAppliedVolts = left.getMotorVoltage();
     leftCurrentAmps = left.getStatorCurrent();
 
-    rightVelocity = right.getVelocity();
+    rightVelocityRPS = right.getVelocity();
+    rightRotations = right.getPosition();
     rightAppliedVolts = right.getMotorVoltage();
     rightCurrentAmps = right.getStatorCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         100,
-        leftVelocity,
+        leftVelocityRPS,
         leftAppliedVolts,
         leftCurrentAmps,
-        rightVelocity,
+        rightVelocityRPS,
         rightAppliedVolts,
-        rightCurrentAmps);
+        rightCurrentAmps,
+        leftRotations,
+        rightRotations);
   }
 
   @Override
   public void updateInputs(FlywheelIOInputs inputs) {
     BaseStatusSignal.refreshAll(
-        leftVelocity,
+        leftVelocityRPS,
         leftAppliedVolts,
         leftCurrentAmps,
-        rightVelocity,
+        rightVelocityRPS,
         rightAppliedVolts,
-        rightCurrentAmps);
+        rightCurrentAmps,
+        leftRotations,
+        rightRotations);
 
-    inputs.leftVelocityRPM = leftVelocity.getValueAsDouble();
+    inputs.leftRotations = leftRotations.getValueAsDouble();
+    inputs.rightRotations = rightRotations.getValueAsDouble();
+
+    inputs.leftVelocityRPM = leftVelocityRPS.getValueAsDouble() * 60.0;
     inputs.leftAppliedVolts = leftAppliedVolts.getValueAsDouble();
     inputs.leftCurrentAmps = leftCurrentAmps.getValueAsDouble();
-    inputs.leftVelocitySetpoint = leftSetpoint;
+    inputs.leftVelocitySetpointRPM = leftSetpointRPM;
 
-    inputs.rightVelocityRPM = rightVelocity.getValueAsDouble();
+    inputs.rightVelocityRPM = rightVelocityRPS.getValueAsDouble() * 60.0;
     inputs.rightAppliedVolts = rightAppliedVolts.getValueAsDouble();
     inputs.rightCurrentAmps = rightCurrentAmps.getValueAsDouble();
-    inputs.rightVelocitySetpoint = rightSetpoint;
+    inputs.rightVelocitySetpointRPM = rightSetpointRPM;
   }
 
   @Override
@@ -93,19 +104,22 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   }
 
   @Override
-  public void setVelocityRPM(double leftVelocity, double rightVelocity, double ffVolts) {
-    this.leftSetpoint = leftVelocity;
-    this.rightSetpoint = rightVelocity;
+  public void setVelocityRPS(
+      double leftVelocityRPS, double rightVelocityRPS, double leftFFVolts, double rightFFVolts) {
+    this.leftSetpointRPM = leftVelocityRPS * 60.;
+    this.rightSetpointRPM = rightVelocityRPS * 60.;
 
-    left.setControl(new VelocityVoltage(leftVelocity, 0, false, ffVolts, 0, false, false, false));
+    left.setControl(
+        new VelocityVoltage(leftVelocityRPS, 0, false, leftFFVolts, 0, false, false, false));
 
-    left.setControl(new VelocityVoltage(rightVelocity, 0, false, ffVolts, 0, false, false, false));
+    right.setControl(
+        new VelocityVoltage(rightVelocityRPS, 0, false, rightFFVolts, 0, false, false, false));
   }
 
   @Override
   public void stop() {
-    leftSetpoint = 0;
-    rightSetpoint = 0;
+    leftSetpointRPM = 0;
+    rightSetpointRPM = 0;
 
     left.stopMotor();
     right.stopMotor();

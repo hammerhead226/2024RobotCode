@@ -13,11 +13,12 @@ public class FeederIOTalonFX implements FeederIO {
 
   private final TalonFX falcon;
 
-  private final StatusSignal<Double> feederVelocity;
+  private final StatusSignal<Double> feederVelocityRPS;
   private final StatusSignal<Double> appliedVolts;
   private final StatusSignal<Double> currentAmps;
+  private final StatusSignal<Double> feederRotations;
 
-  private double velocitySetpoint = 0;
+  private double velocitySetpointRPS = 0;
 
   public FeederIOTalonFX(int id) {
 
@@ -31,19 +32,22 @@ public class FeederIOTalonFX implements FeederIO {
 
     falcon.getConfigurator().apply(config);
 
-    feederVelocity = falcon.getVelocity();
+    feederVelocityRPS = falcon.getVelocity();
     appliedVolts = falcon.getMotorVoltage();
     currentAmps = falcon.getStatorCurrent();
+    feederRotations = falcon.getPosition();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(100, feederVelocity, appliedVolts, currentAmps);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        100, feederVelocityRPS, appliedVolts, currentAmps, feederRotations);
   }
 
   @Override
   public void updateInputs(FeederIOInputs inputs) {
-    BaseStatusSignal.refreshAll(feederVelocity, appliedVolts, currentAmps);
+    BaseStatusSignal.refreshAll(feederVelocityRPS, appliedVolts, currentAmps, feederRotations);
 
-    inputs.velocitySetpoint = velocitySetpoint;
-    inputs.feederVelocityRPM = feederVelocity.getValueAsDouble();
+    inputs.feederRotations = feederRotations.getValueAsDouble();
+    inputs.velocitySetpointRPS = velocitySetpointRPS;
+    inputs.feederVelocityRPM = feederVelocityRPS.getValueAsDouble() * 60.;
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.currentAmps = currentAmps.getValueAsDouble();
   }
@@ -54,9 +58,9 @@ public class FeederIOTalonFX implements FeederIO {
   }
 
   @Override
-  public void setVelocityRPM(double velocity, double ffVolts) {
-    this.velocitySetpoint = velocity;
-    falcon.setControl(new VelocityVoltage(velocity, 0, false, ffVolts, 0, false, false, false));
+  public void setVelocityRPS(double velocityRPS, double ffVolts) {
+    this.velocitySetpointRPS = velocityRPS;
+    falcon.setControl(new VelocityVoltage(velocityRPS, 0, false, ffVolts, 0, false, false, false));
   }
 
   @Override

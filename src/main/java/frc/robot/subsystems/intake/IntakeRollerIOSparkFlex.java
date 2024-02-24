@@ -1,11 +1,9 @@
 package frc.robot.subsystems.intake;
 
-import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkPIDController;
-import com.revrobotics.SparkPIDController.ArbFFUnits;
 import frc.robot.Constants;
 
 public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
@@ -18,6 +16,7 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
     rollers = new CANSparkFlex(id, MotorType.kBrushless);
     rollers.restoreFactoryDefaults();
     rollers.setIdleMode(IdleMode.kCoast);
+    rollers.setInverted(true);
 
     rollers.setSmartCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT);
     rollers.setCANTimeout(250);
@@ -29,9 +28,9 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
   @Override
   public void updateInputs(IntakeRollerIOInputs inputs) {
     inputs.rollerRotations = rollers.getEncoder().getPosition();
-    inputs.rollerVelocityRPM = rollers.getEncoder().getVelocity();
+    inputs.rollerVelocityRPM = rollers.getEncoder().getVelocity() / 60;
 
-    inputs.appliedVolts = rollers.getBusVoltage();
+    inputs.appliedVolts = rollers.getAppliedOutput();
     inputs.currentAmps = rollers.getOutputCurrent();
     inputs.velocitySetpoint = velocitySetpoint;
   }
@@ -44,7 +43,8 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
   @Override
   public void setVelocityRPM(double velocity, double ffVolts) {
     this.velocitySetpoint = velocity;
-    pid.setReference(velocity, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
+    // pid.setReference(velocity, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
+    rollers.setVoltage(9);
   }
 
   @Override

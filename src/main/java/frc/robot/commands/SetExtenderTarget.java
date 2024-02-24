@@ -16,7 +16,7 @@ public class SetExtenderTarget extends Command {
   public SetExtenderTarget(double setPoint, Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
     // addRequirements(elevator);
-    setPoint = this.setPoint;
+    this.setPoint = setPoint;
     this.elevator = elevator;
 
     addRequirements(elevator);

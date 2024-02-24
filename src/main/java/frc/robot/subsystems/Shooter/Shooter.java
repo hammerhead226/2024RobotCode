@@ -14,11 +14,10 @@ import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
-import com.revrobotics.Rev2mDistanceSensor;
-
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   private final FlywheelIO flywheels;
+
   private final FeederIO feeder;
   private final DistanceSensorIO dist;
 
@@ -26,40 +25,56 @@ public class Shooter extends SubsystemBase {
   private final FeederIOInputsAutoLogged feedInputs = new FeederIOInputsAutoLogged();
   private final DistanceSensorIOInputsAutoLogged sInputs = new DistanceSensorIOInputsAutoLogged();
 
-  private final SimpleMotorFeedforward flywheelFFModel;
+  private final SimpleMotorFeedforward leftFlyFFModel;
+  private final SimpleMotorFeedforward rightFlyFFModel;
   private final SimpleMotorFeedforward feederFFModel;
 
   private final SysIdRoutine feedSysId;
   private final SysIdRoutine flywheelSysId;
 
-  private static final LoggedTunableNumber feederkP = new LoggedTunableNumber("feederkP");
   private static final LoggedTunableNumber flywheelkP = new LoggedTunableNumber("flywheelkP");
+  private static final LoggedTunableNumber flywheelkI = new LoggedTunableNumber("flywheelkI");
+  private static final LoggedTunableNumber flywheelkD = new LoggedTunableNumber("flywheelkD");
+
+  private static final LoggedTunableNumber feederkP = new LoggedTunableNumber("feederkP");
+  private static final LoggedTunableNumber feederkI = new LoggedTunableNumber("feederkI");
+  private static final LoggedTunableNumber feederkD = new LoggedTunableNumber("feederkD");
 
   public Shooter(FlywheelIO flywheels, FeederIO feeder, DistanceSensorIO dist) {
     switch (Constants.currentMode) {
       case REAL:
-        flywheelFFModel = new SimpleMotorFeedforward(0, 3);
-        feederFFModel = new SimpleMotorFeedforward(0, 0.3);
-
-        flywheelkP.initDefault(0);
-        feederkP.initDefault(0);
+        // flywheelFFModel = new SimpleMotorFeedforward(0.18836, 7.2613, 0.16957);
+        leftFlyFFModel = new SimpleMotorFeedforward(0.18, 0.12, 0); // make constant
+        // leftFlyFFModel = new SimpleMotorFeedforward(0, 0, 0);
+        rightFlyFFModel = new SimpleMotorFeedforward(0, 0, 0);
+        // feederFFModel = new SimpleMotorFeedforward(0.0608, 6.5977, 0.16859);
+        feederFFModel = new SimpleMotorFeedforward(0, 0, 0);
+        flywheelkP.initDefault(0.4); // make constant
+        flywheelkI.initDefault(0);
+        flywheelkD.initDefault(0);
+        feederkP.initDefault(0.23); // make constant
+        feederkI.initDefault(5); // make constant
+        feederkD.initDefault(0);
         break;
       case REPLAY:
-        flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
+        leftFlyFFModel = new SimpleMotorFeedforward(0, 0.03);
+        rightFlyFFModel = new SimpleMotorFeedforward(0, 0, 0);
         feederFFModel = new SimpleMotorFeedforward(0, 0.03);
         break;
       case SIM:
-        flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
+        leftFlyFFModel = new SimpleMotorFeedforward(0, 0.03);
+        rightFlyFFModel = new SimpleMotorFeedforward(0, 0, 0);
         feederFFModel = new SimpleMotorFeedforward(0, 0.03);
         break;
       default:
-        flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
+        leftFlyFFModel = new SimpleMotorFeedforward(0, 0.03);
+        rightFlyFFModel = new SimpleMotorFeedforward(0, 0, 0);
         feederFFModel = new SimpleMotorFeedforward(0, 0.03);
         break;
     }
     this.flywheels = flywheels;
     // TODO:: Make these constants
-    flywheels.configurePID(flywheelkP.get(), 0, 0);
+    flywheels.configurePID(flywheelkP.get(), flywheelkI.get(), flywheelkD.get());
 
     // Configure SysId
     flywheelSysId =
@@ -78,7 +93,7 @@ public class Shooter extends SubsystemBase {
 
     this.feeder = feeder;
     // TODO:: Make these constants
-    feeder.configurePID(feederkP.get(), 0, 0);
+    feeder.configurePID(feederkP.get(), feederkI.get(), feederkD.get());
 
     // Configure SysId
     feedSysId =
@@ -106,22 +121,26 @@ public class Shooter extends SubsystemBase {
     feeder.stop();
   }
 
-  public void runFeeders(double velocity) {
-    feeder.setVelocityRPM(velocity, feederFFModel.calculate(velocity));
+  public void setFeedersRPM(double velocityRPM) {
+    feeder.setVelocityRPS(velocityRPM / 60.0, feederFFModel.calculate(velocityRPM / 60.));
   }
 
-  public void setFlywheelRPMs(double velocity1, double velocity2) {
-    flywheels.setVelocityRPM(velocity1, velocity2, flywheelFFModel.calculate(velocity1));
+  public void setFlywheelRPMs(double velocity1RPM, double velocity2RPM) {
+    flywheels.setVelocityRPS(
+        velocity1RPM / 60.,
+        velocity2RPM / 60.,
+        leftFlyFFModel.calculate(velocity1RPM / 60.),
+        rightFlyFFModel.calculate(velocity2RPM / 60.));
   }
 
   public double[] getFlywheelVelocities() {
-    return new double[] {fInputs.leftVelocityRPM, fInputs.rightVelocityRPM};
+    return new double[] {fInputs.leftVelocityRPM, fInputs.leftVelocityRPM};
   }
 
   public double[] getFlywheelErrors() {
     return new double[] {
-      fInputs.leftVelocitySetpoint - getFlywheelVelocities()[0],
-      fInputs.rightVelocitySetpoint - getFlywheelVelocities()[1]
+      fInputs.leftVelocitySetpointRPM - getFlywheelVelocities()[0],
+      fInputs.rightVelocitySetpointRPM - getFlywheelVelocities()[1]
     };
   }
 
@@ -162,12 +181,16 @@ public class Shooter extends SubsystemBase {
     Logger.processInputs("Feeder", feedInputs);
     Logger.processInputs("Distance Sensor", sInputs);
 
-    if (feederkP.hasChanged(hashCode())) {
-      feeder.configurePID(feederkP.get(), 0, 0);
+    if (feederkP.hasChanged(hashCode())
+        || feederkD.hasChanged(hashCode())
+        || feederkI.hasChanged(hashCode())) {
+      feeder.configurePID(feederkP.get(), feederkI.get(), feederkD.get());
     }
 
-    if (flywheelkP.hasChanged(hashCode())) {
-      flywheels.configurePID(flywheelkP.get(), 0, 0);
+    if (flywheelkP.hasChanged(hashCode())
+        || flywheelkI.hasChanged(hashCode())
+        || flywheelkD.hasChanged(hashCode())) {
+      flywheels.configurePID(flywheelkP.get(), flywheelkI.get(), flywheelkD.get());
     }
   }
 }

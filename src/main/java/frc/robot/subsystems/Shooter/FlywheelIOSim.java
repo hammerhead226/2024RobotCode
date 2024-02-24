@@ -30,7 +30,7 @@ public class FlywheelIOSim implements FlywheelIO {
 
     sim.update(Constants.LOOP_PERIOD_SECS);
 
-    inputs.leftVelocitySetpoint = velocitySetpoint;
+    inputs.leftVelocitySetpointRPM = velocitySetpoint;
 
     inputs.leftVelocityRPM = sim.getAngularVelocityRadPerSec();
     inputs.leftAppliedVolts = appliedVolts;
@@ -45,7 +45,7 @@ public class FlywheelIOSim implements FlywheelIO {
   }
 
   @Override
-  public void setVelocityRPM(double leftVelocity, double rightVelocity, double ffVolts) {
+  public void setVelocityRPS(double leftVelocity, double rightVelocity, double ffVolts, double ff) {
     closedLoop = true;
     this.velocitySetpoint = leftVelocity;
     pid.setSetpoint(leftVelocity);

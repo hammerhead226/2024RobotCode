@@ -20,9 +20,12 @@ public class Elevator extends SubsystemBase {
   private static final LoggedTunableNumber extenderkP =
       new LoggedTunableNumber("elevatorExtenderkP");
 
+  private static final LoggedTunableNumber extenderkI =
+      new LoggedTunableNumber("elevatorExtenderkI");
+
   private final TrapezoidProfile extenderProfile;
   private final TrapezoidProfile.Constraints extenderConstraints =
-      new TrapezoidProfile.Constraints(1, 0.7);
+      new TrapezoidProfile.Constraints(5, 2.5);
   private TrapezoidProfile.State extenderGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State extenderCurrent = new TrapezoidProfile.State();
 
@@ -35,8 +38,9 @@ public class Elevator extends SubsystemBase {
 
     switch (Constants.currentMode) {
       case REAL:
-        elevatorFFModel = new ElevatorFeedforward(0, 0, 0.05);
-        extenderkP.initDefault(0.04);
+        elevatorFFModel = new ElevatorFeedforward(0, 0.13, 0);
+        extenderkP.initDefault(0.35);
+        extenderkI.initDefault(0);
         break;
       case REPLAY:
         elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 1.4);
@@ -67,7 +71,7 @@ public class Elevator extends SubsystemBase {
                 null,
                 this));
 
-    setExtenderGoal(-3);
+    setExtenderGoal(0.162);
     extenderProfile = new TrapezoidProfile(extenderConstraints);
     extenderCurrent = extenderProfile.calculate(0, extenderCurrent, extenderGoal);
 
@@ -123,10 +127,10 @@ public class Elevator extends SubsystemBase {
 
     setPositionExtend(extenderCurrent.position, extenderCurrent.velocity);
 
-    Logger.processInputs("Elevator Extender", eInputs);
+    Logger.processInputs("Elevator", eInputs);
 
-    if (extenderkP.hasChanged(hashCode())) {
-      elevator.configurePID(extenderkP.get(), 0, 0);
+    if (extenderkP.hasChanged(hashCode()) || extenderkI.hasChanged(hashCode())) {
+      elevator.configurePID(extenderkP.get(), extenderkI.get(), 0);
     }
   }
 }

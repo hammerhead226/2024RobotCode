@@ -37,7 +37,7 @@ public class FeederIOSparkMax implements FeederIO {
   }
 
   @Override
-  public void setVelocityRPM(double velocity, double ffVolts) {
+  public void setVelocityRPS(double velocity, double ffVolts) {
     pid.setReference(velocity, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
   }
 
