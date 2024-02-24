@@ -2,9 +2,14 @@ package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
+
+import static edu.wpi.first.units.Units.Volts;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
@@ -24,6 +29,8 @@ public class Elevator extends SubsystemBase {
   private TrapezoidProfile.State extenderCurrent = new TrapezoidProfile.State();
 
   private final ElevatorFeedforward elevatorFFModel;
+
+  private final SysIdRoutine sysId;
   
   public Elevator(ElevatorIO elevator) {
     this.elevator = elevator;
@@ -47,13 +54,28 @@ public class Elevator extends SubsystemBase {
         break;
     }
 
+    // Configure SysId
+    sysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Elevator/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> {
+                  elevator.runCharacterization(voltage.in(Volts));
+                },
+                null,
+                this));
+
+
     setExtenderGoal(-3);
     extenderProfile = new TrapezoidProfile(extenderConstraints);
     extenderCurrent = extenderProfile.calculate(0, extenderCurrent, extenderGoal);
 
     extenderkP.initDefault(15);
 
-   
     this.elevator.configurePID(extenderkP.get(), 0, 0);
   }
 
@@ -84,6 +106,16 @@ public class Elevator extends SubsystemBase {
   public double calculateAngle() {
     double angle = 0.0;
     return angle;
+  }
+
+    /** Returns a command to run a quasistatic test in the specified direction. */
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysId.quasistatic(direction);
+  }
+
+  /** Returns a command to run a dynamic test in the specified direction. */
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return sysId.dynamic(direction);
   }
 
   @Override

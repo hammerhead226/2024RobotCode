@@ -46,6 +46,11 @@ public class ElevatorIOSim implements ElevatorIO {
   }
 
   @Override
+  public void runCharacterization(double volts) {
+    sim.setInputVoltage(volts);
+  }
+  
+  @Override
   public void setPositionSetpoint(double position, double ffVolts) {
     appliedVolts = ffVolts;
     pid.setSetpoint(position);

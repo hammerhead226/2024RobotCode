@@ -74,6 +74,12 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   }
 
   @Override
+  public void setVoltage(double volts) {
+    left.setVoltage(volts);
+    right.setVoltage(volts);
+  }
+
+  @Override
   public void setVelocityRPM(double leftVelocity, double rightVelocity, double ffVolts) {
     this.leftSetpoint = leftVelocity;
     this.rightSetpoint = rightVelocity;

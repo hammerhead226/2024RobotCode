@@ -55,6 +55,11 @@ public class PivotIOSim implements PivotIO {
   }
 
   @Override
+  public void runCharacterization(double volts) {
+    sim.setInputVoltage(volts);
+  }
+
+  @Override
   public void setPositionSetpointDegs(double position, double ffVolts) {
     appliedVolts = ffVolts;
     pid.setSetpoint(position);

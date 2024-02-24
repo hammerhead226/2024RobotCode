@@ -5,8 +5,12 @@
 package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+
+import static edu.wpi.first.units.Units.Volts;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -25,6 +29,9 @@ public class Shooter extends SubsystemBase {
 
   private final SimpleMotorFeedforward flywheelFFModel;
   private final SimpleMotorFeedforward feederFFModel;
+
+  private final SysIdRoutine feedSysId;
+  private final SysIdRoutine flywheelSysId;
 
   public Shooter(FlywheelIO flywheels, FeederIO feeder) {
     switch (Constants.currentMode) {
@@ -46,19 +53,48 @@ public class Shooter extends SubsystemBase {
         break;
     }
     this.flywheels = flywheels;
-    // this.shooterMotor2 = shooterMotor2;
     // TODO:: Make these constants
     flywheels.configurePID(0.5, 0, 0);
-    // shooterMotor2.configurePID(0.5, 0, 0);
+
+    // Configure SysId
+    flywheelSysId =
+    new SysIdRoutine(
+        new SysIdRoutine.Config(
+            null,
+            null,
+            null,
+            (state) -> Logger.recordOutput("Flywheels/SysIdState", state.toString())),
+        new SysIdRoutine.Mechanism(
+            (voltage) -> {
+              flywheels.setVoltage(voltage.in(Volts));
+            },
+            null,
+            this));
+
 
     this.feeder = feeder;
     // TODO:: Make these constants
     feeder.configurePID(0.5, 0, 0);
+
+    // Configure SysId
+    feedSysId =
+    new SysIdRoutine(
+        new SysIdRoutine.Config(
+            null,
+            null,
+            null,
+            (state) -> Logger.recordOutput("Feeder/SysIdState", state.toString())),
+        new SysIdRoutine.Mechanism(
+            (voltage) -> {
+              feeder.runCharacterization(voltage.in(Volts));
+            },
+            null,
+            this));
+
   }
 
   public void stopShooterMotors() {
     flywheels.stop();
-    // shooterMotor2.stop();
   }
 
   public void stopFeeders() {
@@ -87,6 +123,26 @@ public class Shooter extends SubsystemBase {
   public boolean atFlywheelSetpoints() {
     return (Math.abs(getFlywheelErrors()[0]) <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD
         && getFlywheelErrors()[1] <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD);
+  }
+
+    /** Returns a command to run a quasistatic test in the specified direction. */
+  public Command feedSysIDQuasistic(SysIdRoutine.Direction direction) {
+    return feedSysId.quasistatic(direction);
+  }
+
+  /** Returns a command to run a dynamic test in the specified direction. */
+  public Command feedSysIDDynamiCommand(SysIdRoutine.Direction direction) {
+    return feedSysId.dynamic(direction);
+  }
+
+    /** Returns a command to run a quasistatic test in the specified direction. */
+  public Command flywheelSysIDQuasistic(SysIdRoutine.Direction direction) {
+    return feedSysId.quasistatic(direction);
+  }
+
+  /** Returns a command to run a dynamic test in the specified direction. */
+  public Command flywheelSysIDDynamiCommand(SysIdRoutine.Direction direction) {
+    return feedSysId.dynamic(direction);
   }
 
   @Override

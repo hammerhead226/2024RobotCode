@@ -14,6 +14,8 @@ public interface FeederIO {
 
   public default void updateInputs(FeederIOInputs inputs) {}
 
+  public default void runCharacterization(double volts) {}
+
   public default void setVelocityRPM(double velocity, double ffVolts) {}
 
   public default void stop() {}

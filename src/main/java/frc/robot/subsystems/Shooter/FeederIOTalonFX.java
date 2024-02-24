@@ -49,6 +49,11 @@ public class FeederIOTalonFX implements FeederIO {
   }
 
   @Override
+  public void runCharacterization(double volts) {
+    falcon.setVoltage(volts);
+  }
+
+  @Override
   public void setVelocityRPM(double velocity, double ffVolts) {
     this.velocitySetpoint = velocity;
     falcon.setControl(new VelocityVoltage(velocity, 0, false, ffVolts, 0, false, false, false));

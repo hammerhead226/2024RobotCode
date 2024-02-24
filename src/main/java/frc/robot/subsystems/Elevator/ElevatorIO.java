@@ -14,6 +14,8 @@ public interface ElevatorIO {
 
   public default void updateInputs(ElevatorIOInputs inputs) {}
 
+  public default void runCharacterization(double volts) {}
+
   public default void setPositionSetpoint(double position, double ffVolts) {}
 
   public default void stop() {}

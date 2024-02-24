@@ -89,6 +89,11 @@ public class PivotIOTalonFX implements PivotIO {
   }
 
   @Override
+  public void runCharacterization(double volts) {
+    leader.setVoltage(volts);
+  }
+
+  @Override
   public void setPositionSetpointDegs(double position, double ffVolts) {
     this.positionSetpoint = position;
     leader.setControl(

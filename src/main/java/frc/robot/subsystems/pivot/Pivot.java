@@ -4,11 +4,15 @@
 
 package frc.robot.subsystems.pivot;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
 
@@ -22,10 +26,12 @@ public class Pivot extends SubsystemBase {
   private final TrapezoidProfile.Constraints pivotConstraints =
       new TrapezoidProfile.Constraints(Math.PI / 4, Math.PI / 3);
   
-    private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
-    private TrapezoidProfile.State pivotCurrent = new TrapezoidProfile.State();
+  private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
+  private TrapezoidProfile.State pivotCurrent = new TrapezoidProfile.State();
 
-    private final ArmFeedforward pivotFFModel;
+  private final ArmFeedforward pivotFFModel;
+
+  private final SysIdRoutine sysId;
 
 
   /** Creates a new Pivot. */
@@ -49,6 +55,22 @@ public class Pivot extends SubsystemBase {
         pivotkP.initDefault(0);
         break;
     }
+
+    // Configure SysId
+    sysId =
+    new SysIdRoutine(
+        new SysIdRoutine.Config(
+            null,
+            null,
+            null,
+            (state) -> Logger.recordOutput("Elevator/SysIdState", state.toString())),
+        new SysIdRoutine.Mechanism(
+            (voltage) -> {
+              pivot.runCharacterization(voltage.in(Volts));
+            },
+            null,
+            this));
+
     setPivotGoal(30);
     pivotProfile = new TrapezoidProfile(pivotConstraints);
 
@@ -77,6 +99,16 @@ public class Pivot extends SubsystemBase {
   
   public void setPivotGoal(double setpoint) {
     pivotGoal = new TrapezoidProfile.State(setpoint, 0);
+  }
+
+    /** Returns a command to run a quasistatic test in the specified direction. */
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysId.quasistatic(direction);
+  }
+
+  /** Returns a command to run a dynamic test in the specified direction. */
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return sysId.dynamic(direction);
   }
 
   @Override

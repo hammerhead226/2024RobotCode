@@ -14,6 +14,7 @@ public class IntakeRollerIOSim implements IntakeRollerIO {
   private boolean closedLoop = false;
   private double ffVolts = 0.0;
   private double appliedVolts = 0.0;
+  private double velocitySetpoint = 0;
 
   @Override
   public void updateInputs(IntakeRollerIOInputs inputs) {
@@ -24,14 +25,21 @@ public class IntakeRollerIOSim implements IntakeRollerIO {
     }
 
     sim.update(Constants.LOOP_PERIOD_SECS);
-    inputs.rollerVelocity = sim.getAngularVelocityRPM();
-    inputs.rollerVelocity = sim.getAngularVelocityRPM();
+    inputs.rollerVelocityRPM = sim.getAngularVelocityRPM();
+    inputs.rollerVelocityRPM = sim.getAngularVelocityRPM();
     inputs.appliedVolts = appliedVolts;
     inputs.currentAmps = sim.getCurrentDrawAmps();
+    inputs.velocitySetpoint = velocitySetpoint;
   }
 
   @Override
-  public void setVelocity(double velocity, double ffVolts) {
+  public void runCharacterization(double volts) {
+    sim.setInputVoltage(volts);
+  }
+
+  @Override
+  public void setVelocityRPM(double velocity, double ffVolts) {
+    this.velocitySetpoint = velocity;
     closedLoop = true;
     pid.setSetpoint(velocity);
     this.ffVolts = ffVolts;
@@ -40,7 +48,7 @@ public class IntakeRollerIOSim implements IntakeRollerIO {
   @Override
   public void stop() {
     closedLoop = false;
-    setVelocity(0, 0);
+    setVelocityRPM(0, 0);
   }
 
   @Override

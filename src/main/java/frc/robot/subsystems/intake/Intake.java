@@ -67,7 +67,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void runRollers(double velocity) {
-    roller.setVelocity(velocity, ffModel.calculate(velocity));
+    roller.setVelocityRPM(velocity, ffModel.calculate(velocity));
   }
 
   public void stopRollers() {
