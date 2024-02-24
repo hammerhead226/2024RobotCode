@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Shooter;
+package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -12,7 +12,7 @@ import frc.robot.Constants;
 
 /** Add your docs here. */
 public class FlywheelIOSim implements FlywheelIO {
-  private FlywheelSim sim = new FlywheelSim(DCMotor.getNEO(1), 1.5, 0.004);
+  private FlywheelSim sim = new FlywheelSim(DCMotor.getKrakenX60(2), 1.5, 0.004);
   private PIDController pid = new PIDController(0.0, 0.0, 0.0);
 
   private boolean closedLoop = false;
@@ -30,11 +30,11 @@ public class FlywheelIOSim implements FlywheelIO {
 
     sim.update(Constants.LOOP_PERIOD_SECS);
 
-    inputs.velocitySetpoint = velocitySetpoint;
+    inputs.leftVelocitySetpoint = velocitySetpoint;
 
-    inputs.shooterVelocity = sim.getAngularVelocityRadPerSec();
-    inputs.appliedVolts = appliedVolts;
-    inputs.currentAmps = sim.getCurrentDrawAmps();
+    inputs.leftVelocityRPM = sim.getAngularVelocityRadPerSec();
+    inputs.leftAppliedVolts = appliedVolts;
+    inputs.leftCurrentAmps = sim.getCurrentDrawAmps();
   }
 
   @Override
@@ -45,10 +45,10 @@ public class FlywheelIOSim implements FlywheelIO {
   }
 
   @Override
-  public void setVelocity(double velocity, double ffVolts) {
+  public void setVelocityRPM(double leftVelocity, double rightVelocity, double ffVolts) {
     closedLoop = true;
-    this.velocitySetpoint = velocity;
-    pid.setSetpoint(velocity);
+    this.velocitySetpoint = leftVelocity;
+    pid.setSetpoint(leftVelocity);
     this.ffVolts = ffVolts;
   }
 

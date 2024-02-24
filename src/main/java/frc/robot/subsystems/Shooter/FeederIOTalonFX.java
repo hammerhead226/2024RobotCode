@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Shooter;
+package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -14,8 +14,10 @@ public class FeederIOTalonFX implements FeederIO {
   private final TalonFX falcon;
 
   private final StatusSignal<Double> feederVelocity;
-  private final StatusSignal<Double> appliedAmps;
+  private final StatusSignal<Double> appliedVolts;
   private final StatusSignal<Double> currentAmps;
+
+  private double velocitySetpoint = 0;
 
   public FeederIOTalonFX(int id) {
 
@@ -30,23 +32,25 @@ public class FeederIOTalonFX implements FeederIO {
     falcon.getConfigurator().apply(config);
 
     feederVelocity = falcon.getVelocity();
-    appliedAmps = falcon.getMotorVoltage();
+    appliedVolts = falcon.getMotorVoltage();
     currentAmps = falcon.getStatorCurrent();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(100, feederVelocity, appliedAmps, currentAmps);
+    BaseStatusSignal.setUpdateFrequencyForAll(100, feederVelocity, appliedVolts, currentAmps);
   }
 
   @Override
   public void updateInputs(FeederIOInputs inputs) {
-    inputs.feederVelocity = feederVelocity.getValueAsDouble();
-
-    inputs.appliedVolts = appliedAmps.getValueAsDouble();
-
+    BaseStatusSignal.refreshAll(feederVelocity, appliedVolts, currentAmps);
+    
+    inputs.velocitySetpoint = velocitySetpoint;
+    inputs.feederVelocityRPM = feederVelocity.getValueAsDouble();
+    inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.currentAmps = currentAmps.getValueAsDouble();
   }
 
   @Override
-  public void setVelocity(double velocity, double ffVolts) {
+  public void setVelocityRPM(double velocity, double ffVolts) {
+    this.velocitySetpoint = velocity;
     falcon.setControl(new VelocityVoltage(velocity, 0, false, ffVolts, 0, false, false, false));
   }
 

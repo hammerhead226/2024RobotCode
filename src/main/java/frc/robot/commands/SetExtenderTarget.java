@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.elevator.Elevator;
 
 public class SetExtenderTarget extends Command {
   /** Creates a new ExtendElevator. */
@@ -18,6 +18,8 @@ public class SetExtenderTarget extends Command {
     // addRequirements(elevator);
     setPoint = this.setPoint;
     this.elevator = elevator;
+
+    addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.

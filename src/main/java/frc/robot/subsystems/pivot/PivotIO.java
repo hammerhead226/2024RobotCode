@@ -1,10 +1,10 @@
-package frc.robot.subsystems.Elevator;
+package frc.robot.subsystems.pivot;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface ElevatorPivotIO {
+public interface PivotIO {
   @AutoLog
-  public static class ElevatorPivotIOInputs {
+  public static class PivotIOInputs {
     public double pivotVelocity = 0;
     public double pivotPosition = 0;
     public double currentAmps = 0;
@@ -15,9 +15,9 @@ public interface ElevatorPivotIO {
     public double pitch = 0;
   }
 
-  public default void updateInputs(ElevatorPivotIOInputs inputs) {}
+  public default void updateInputs(PivotIOInputs inputs) {}
 
-  public default void setPositionSetpoint(double position, double ffVolts) {}
+  public default void setPositionSetpointDegs(double position, double ffVolts) {}
 
   public default void setVoltage(double volts) {}
 

@@ -21,30 +21,32 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.ElevatorExtenderIO;
-import frc.robot.subsystems.Elevator.ElevatorExtenderIOSim;
-import frc.robot.subsystems.Elevator.ElevatorExtenderIOTalonFX;
-import frc.robot.subsystems.Elevator.ElevatorPivotIO;
-import frc.robot.subsystems.Elevator.ElevatorPivotIOSim;
-import frc.robot.subsystems.Elevator.ElevatorPivotIOTalonFX;
-import frc.robot.subsystems.LED.LED;
-import frc.robot.subsystems.LED.LED_IO;
-import frc.robot.subsystems.LED.LED_IOSpark;
-import frc.robot.subsystems.Shooter.FeederIOSim;
-import frc.robot.subsystems.Shooter.FeederIOTalonFX;
-import frc.robot.subsystems.Shooter.FlywheelIOSim;
-import frc.robot.subsystems.Shooter.FlywheelIOTalonFX;
-import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeRollerIOSim;
 import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
+import frc.robot.subsystems.led.LED;
+import frc.robot.subsystems.led.LED_IO;
+import frc.robot.subsystems.led.LED_IOSpark;
+import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot.PivotIO;
+import frc.robot.subsystems.pivot.PivotIOSim;
+import frc.robot.subsystems.pivot.PivotIOTalonFX;
+import frc.robot.subsystems.shooter.FeederIOSim;
+import frc.robot.subsystems.shooter.FeederIOTalonFX;
+import frc.robot.subsystems.shooter.FlywheelIOSim;
+import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
+import frc.robot.subsystems.shooter.Shooter;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -57,9 +59,10 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Intake intake;
-  private Shooter shooter;
-  public Elevator elevator;
-  private LED led;
+  private final Shooter shooter;
+  private final Elevator elevator;
+  private final LED led;
+  private final Pivot pivot;
 
   private final CommandXboxController controller = new CommandXboxController(0);
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -79,17 +82,11 @@ public class RobotContainer {
         shooter =
             new Shooter(
                 new FlywheelIOTalonFX(
-                    RobotMap.ShooterIDs.FLYWHEEL_ONE, RobotMap.ShooterIDs.FLYWHEEL_TWO),
+                    RobotMap.ShooterIDs.FLYWHEEL_LEFT, RobotMap.ShooterIDs.FLYWHEEL_RIGHT),
                 new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
-        elevator =
-            new Elevator(
-                new ElevatorPivotIOTalonFX(
-                    RobotMap.ElevatorIDs.PIVOT_ONE,
-                    RobotMap.ElevatorIDs.PIVOT_TWO,
-                    RobotMap.ElevatorIDs.GYRO),
-                new ElevatorExtenderIOTalonFX(
-                    RobotMap.ElevatorIDs.EXTENDER_ONE, RobotMap.ElevatorIDs.EXTENDER_TWO));
-        // led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
+        elevator = new Elevator(new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT));
+        pivot = new Pivot(new PivotIOTalonFX(RobotMap.PivotIDs.LEFT,RobotMap.PivotIDs.RIGHT, RobotMap.PivotIDs.GYRO));
+        led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
         break;
       case REPLAY:
         drive =
@@ -101,11 +98,11 @@ public class RobotContainer {
                 new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
         shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim());
-        elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
-        led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
+        elevator = new Elevator(new ElevatorIOSim());
+        pivot = new Pivot(new PivotIOSim());
+        led = new LED(new LED_IO () {});
         break;
       case SIM:
-        // Sim robot, instantiate physics sim IO implementations
         drive =
             new Drive(
                 new GyroIO() {},
@@ -115,8 +112,9 @@ public class RobotContainer {
                 new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
         shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim());
-        elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
-        led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
+        elevator = new Elevator(new ElevatorIOSim());
+        pivot = new Pivot(new PivotIOSim());
+        led = new LED(new LED_IO () {});
         break;
 
       default:
@@ -132,9 +130,10 @@ public class RobotContainer {
         shooter =
             new Shooter(
                 new FlywheelIOTalonFX(
-                    RobotMap.ShooterIDs.FLYWHEEL_ONE, RobotMap.ShooterIDs.FLYWHEEL_TWO),
+                    RobotMap.ShooterIDs.FLYWHEEL_LEFT, RobotMap.ShooterIDs.FLYWHEEL_RIGHT),
                 new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
-        elevator = new Elevator(new ElevatorPivotIO() {}, new ElevatorExtenderIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
+        pivot = new Pivot(new PivotIO() {});
         led = new LED(new LED_IO() {});
         break;
     }
@@ -187,7 +186,7 @@ public class RobotContainer {
     // controller.a().onTrue(new SetExtenderTarget(0, elevator));
     // controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
 
-    controller.a().onTrue(new InstantCommand(() -> shooter.setShooterVelocitys(300, 300), shooter));
+    controller.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(300, 300), shooter));
     controller.a().onFalse(new InstantCommand(shooter::stopShooterMotors, shooter));
 
     controller.b().onTrue(new InstantCommand(() -> shooter.runFeeders(1500), shooter));

@@ -17,7 +17,7 @@ public class IntakeRollerIOSparkMAX implements IntakeRollerIO {
     rollers.restoreFactoryDefaults();
     rollers.setIdleMode(IdleMode.kCoast);
 
-    rollers.setSmartCurrentLimit(Constants.IntakeConstants.ROLLER_CURRENT_LIMIT);
+    rollers.setSmartCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT);
     rollers.setCANTimeout(250);
     rollers.burnFlash();
 

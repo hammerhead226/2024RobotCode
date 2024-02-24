@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Elevator;
+package frc.robot.subsystems.pivot;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
@@ -15,7 +15,7 @@ import frc.robot.Constants;
 import frc.robot.util.Conversions;
 import org.littletonrobotics.junction.Logger;
 
-public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
+public class PivotIOTalonFX implements PivotIO {
   private final TalonFX leader;
   private final TalonFX follower;
 
@@ -31,18 +31,18 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
   private final StatusSignal<Double> currentAmps;
   private final StatusSignal<Double> pitch;
 
-  public ElevatorPivotIOTalonFX(int leadID, int followID, int gyroID) {
+  public PivotIOTalonFX(int leadID, int followID, int gyroID) {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.CurrentLimits.StatorCurrentLimit = Constants.ElevatorConstants.PIVOT_CURRENT_LIMIT;
+    config.CurrentLimits.StatorCurrentLimit = Constants.PivotConstants.CURRENT_LIMIT;
     config.CurrentLimits.StatorCurrentLimitEnable =
-        Constants.ElevatorConstants.PIVOT_CURRENT_LIMIT_ENABLED;
+        Constants.PivotConstants.CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     leader = new TalonFX(leadID, Constants.CANBUS);
     follower = new TalonFX(followID, Constants.CANBUS);
     pigeon = new Pigeon2(gyroID, Constants.CANBUS);
 
-    // pigeon.getConfigurator().apply(new Pigeon2Configuration());
+    
 
     leader.getConfigurator().apply(config);
 
@@ -58,9 +58,9 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
     startAngle = pitch.getValueAsDouble();
 
     leader.setPosition(
-        Conversions.degreesToFalcon(startAngle, Constants.ElevatorConstants.PIVOT_RATIO));
+        Conversions.degreesToFalcon(startAngle, Constants.PivotConstants.GEAR_RATIO));
 
-    positionSetpoint = Constants.ElevatorConstants.PIVOT_STOW;
+    positionSetpoint = Constants.PivotConstants.STOW_SETPOINT_DEG;
 
     Logger.recordOutput("start angle", startAngle);
 
@@ -73,26 +73,27 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
   }
 
   @Override
-  public void updateInputs(ElevatorPivotIOInputs inputs) {
+  public void updateInputs(PivotIOInputs inputs) {
     BaseStatusSignal.refreshAll(pivotPosition, pivotVelocity, appliedVolts, currentAmps, pitch);
     inputs.gyroConnected = BaseStatusSignal.refreshAll(pitch).equals(StatusCode.OK);
     inputs.pitch = pitch.getValueAsDouble();
     inputs.pivotPosition =
         Conversions.falconToDegrees(
-            pivotPosition.getValueAsDouble(), Constants.ElevatorConstants.PIVOT_RATIO);
+            pivotPosition.getValueAsDouble(), Constants.PivotConstants.GEAR_RATIO);
     inputs.pivotVelocity =
         Conversions.falconToDegrees(
-            pivotVelocity.getValueAsDouble() * 2048, Constants.ElevatorConstants.PIVOT_RATIO);
+            pivotVelocity.getValueAsDouble() * 2048, Constants.PivotConstants.GEAR_RATIO);
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.currentAmps = currentAmps.getValueAsDouble();
+    inputs.positionSetpoint = positionSetpoint;
   }
 
   @Override
-  public void setPositionSetpoint(double position, double ffVolts) {
+  public void setPositionSetpointDegs(double position, double ffVolts) {
     this.positionSetpoint = position;
     leader.setControl(
         new PositionVoltage(
-            Conversions.degreesToFalcon(position, Constants.ElevatorConstants.PIVOT_RATIO),
+            Conversions.degreesToFalcon(position, Constants.PivotConstants.GEAR_RATIO),
             0,
             false,
             ffVolts,

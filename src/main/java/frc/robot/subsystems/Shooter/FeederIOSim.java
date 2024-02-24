@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Shooter;
+package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -23,20 +23,20 @@ public class FeederIOSim implements FeederIO {
 
     sim.update(Constants.LOOP_PERIOD_SECS);
 
-    inputs.feederVelocity = sim.getAngularVelocityRPM();
+    inputs.feederVelocityRPM = sim.getAngularVelocityRPM();
     inputs.appliedVolts = appliedVolts;
     inputs.currentAmps = sim.getCurrentDrawAmps();
   }
 
   @Override
-  public void setVelocity(double velocity, double ffVolts) {
+  public void setVelocityRPM(double velocity, double ffVolts) {
     this.ffVolts = ffVolts;
     pid.setSetpoint(velocity);
   }
 
   @Override
   public void stop() {
-    setVelocity(0, 0);
+    setVelocityRPM(0, 0);
   }
 
   @Override

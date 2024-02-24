@@ -2,11 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Shooter;
+package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -65,22 +66,21 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runFeeders(double velocity) {
-    feeder.setVelocity(velocity, feederFFModel.calculate(velocity));
+    feeder.setVelocityRPM(velocity, feederFFModel.calculate(velocity));
   }
 
-  public void setShooterVelocitys(double velocity1, double velocity2) {
-    flywheels.setVelocity(velocity1, flywheelFFModel.calculate(velocity1));
-    // shooterMotor2.setVelocity(velocity2, flywheelFFModel.calculate(velocity2));
+  public void setFlywheelRPMs(double velocity1, double velocity2) {
+    flywheels.setVelocityRPM(velocity1, velocity2, flywheelFFModel.calculate(velocity1));
   }
 
   public double[] getFlywheelVelocities() {
-    return new double[] {fInputs.shooterVelocity, fInputs.shooterVelocity};
+    return new double[] {fInputs.leftVelocityRPM, fInputs.rightVelocityRPM};
   }
 
   public double[] getFlywheelErrors() {
     return new double[] {
-      fInputs.velocitySetpoint - getFlywheelVelocities()[0],
-      fInputs.velocitySetpoint - getFlywheelVelocities()[1]
+      fInputs.leftVelocitySetpoint - getFlywheelVelocities()[0],
+      fInputs.rightVelocitySetpoint - getFlywheelVelocities()[1]
     };
   }
 
@@ -94,13 +94,9 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
 
     flywheels.updateInputs(fInputs);
-    // shooterMotor2.updateInputs(s2Inputs);
-
     feeder.updateInputs(feedInputs);
 
-    Logger.processInputs("Flywheel 1", fInputs);
-    // Logger.processInputs("Flywheel 2", s2Inputs);
-
+    Logger.processInputs("Flywheels", fInputs);
     Logger.processInputs("Feeder", feedInputs);
   }
 }

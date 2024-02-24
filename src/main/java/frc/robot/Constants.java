@@ -33,6 +33,7 @@ public final class Constants {
   public static final Mode currentMode = Mode.REAL;
   public static final boolean tuningMode = true;
   public static final String CANBUS = "CAN Bus 2";
+  public static final double LOOP_PERIOD_SECS = 0.02;
 
   public static class SwerveConstants {
     public static final double MAX_LINEAR_SPEED = 5.56;
@@ -56,8 +57,8 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int ROLLER_CURRENT_LIMIT = 30;
-    public static final boolean ROLLER_TALON_FX_CURRENT_LIMIT_ENABLED = true;
+    public static final int CURRENT_LIMIT = 30;
+    public static final boolean CURRENT_LIMIT_ENABLED = true;
   }
 
   public static final class ShooterConstants {
@@ -66,31 +67,33 @@ public final class Constants {
 
     public static final double FLYWHEEL_CURRENT_LIMIT = 40;
     public static final boolean FLYWHEEL_CURRENT_LIMIT_ENABLED = true;
-
+    
     public static final double FLYWHEEL_THRESHOLD = 0;
   }
 
-  public static final double LOOP_PERIOD_SECS = 0.02;
-
   public static class ElevatorConstants {
-    public static final double EXTENDER_CURRENT_LIMIT = 30.0;
-    public static final double PIVOT_CURRENT_LIMIT = 30.0;
+    public static final double CURRENT_LIMIT = 30.0;
+    public static final boolean CURRENT_LIMIT_ENABLED = true;
 
-    public static final boolean EXTENDER_CURRENT_LIMIT_ENABLED = true;
-    public static final boolean PIVOT_CURRENT_LIMIT_ENABLED = true;
+    public static final double RETRACT_SETPOINT_INCH = 0;
+    public static final double EXTEND_SETPOINT_INCH = 0;
+    public static final double THRESHOLD = 0;
 
-    public static final double PIVOT_STOW = 0;
-    public static final double EXTENDER_RETRACT = 0;
-    public static final double EXTENDER_EXTEND = 0;
 
-    public static final double PIVOT_THRESHOLD = 0;
-    public static final double EXTENDER_THRESHOLD = 0;
+    public static final double GEAR_RATIO = 0;
+    public static final double[] PID = {0, 0, 0};
+  }
 
-    public static final double PIVOT_RATIO = 100.0;
-    public static final double EXTENDER_RATIO = 0;
+  public static class PivotConstants {
+    public static final double CURRENT_LIMIT = 30.0;
+    public static final boolean CURRENT_LIMIT_ENABLED = true;
 
-    public static final double[] PIVOT_PID = {0, 0, 0};
-    public static final double[] EXTENDER_PID = {0, 0, 0};
+    // Degrees
+    public static final double STOW_SETPOINT_DEG = 0;
+    public static final double THRESHOLD = 0;
+
+    public static final double GEAR_RATIO = 100.0;
+    public static final double[] PID = {0, 0, 0};
   }
 
   public static class LEDConstants {

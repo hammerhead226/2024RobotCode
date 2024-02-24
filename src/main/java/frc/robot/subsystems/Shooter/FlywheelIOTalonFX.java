@@ -1,72 +1,97 @@
-package frc.robot.subsystems.Shooter;
+package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.util.Units;
+
 import frc.robot.Constants;
 
 public class FlywheelIOTalonFX implements FlywheelIO {
 
-  private final TalonFX leader;
-  private final TalonFX follower;
+  private final TalonFX left;
+  private final TalonFX right;
 
-  private final StatusSignal<Double> shooterVelocity;
-  private final StatusSignal<Double> appliedAmps;
-  private final StatusSignal<Double> currentAmps;
-  private double velocitySetpoint = 0.0;
+  private final StatusSignal<Double> leftVelocity;
+  private final StatusSignal<Double> leftAppliedVolts;
+  private final StatusSignal<Double> leftCurrentAmps;
+  private double leftSetpoint = 0.0;
 
-  public FlywheelIOTalonFX(int leadID, int followID) {
+  private final StatusSignal<Double> rightVelocity;
+  private final StatusSignal<Double> rightAppliedVolts;
+  private final StatusSignal<Double> rightCurrentAmps;
+  private double rightSetpoint = 0.0;
 
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT;
-    config.CurrentLimits.StatorCurrentLimitEnable =
+  public FlywheelIOTalonFX(int leftID, int rightID) {
+    TalonFXConfiguration leftConfig = new TalonFXConfiguration();
+    leftConfig.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT;
+    leftConfig.CurrentLimits.StatorCurrentLimitEnable =
         Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    leftConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    leader = new TalonFX(leadID, Constants.CANBUS);
-    follower = new TalonFX(followID, Constants.CANBUS);
+    TalonFXConfiguration rightConfig = new TalonFXConfiguration();
+    rightConfig.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT;
+    rightConfig.CurrentLimits.StatorCurrentLimitEnable =
+        Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
+    rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    rightConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    leader.getConfigurator().apply(config);
+    left = new TalonFX(leftID, Constants.CANBUS);
+    right = new TalonFX(rightID, Constants.CANBUS);
 
-    follower.setControl(new Follower(leadID, true));
+    left.getConfigurator().apply(leftConfig);
+    right.getConfigurator().apply(rightConfig);
 
-    shooterVelocity = leader.getVelocity();
-    appliedAmps = leader.getMotorVoltage();
-    currentAmps = leader.getStatorCurrent();
+    leftVelocity = left.getVelocity();
+    leftAppliedVolts = left.getMotorVoltage();
+    leftCurrentAmps = left.getStatorCurrent();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(100, shooterVelocity, appliedAmps, currentAmps);
+    rightVelocity = right.getVelocity();
+    rightAppliedVolts = right.getMotorVoltage();
+    rightCurrentAmps = right.getStatorCurrent();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(100, leftVelocity, leftAppliedVolts, leftCurrentAmps, rightVelocity, rightAppliedVolts, rightCurrentAmps);
   }
 
   @Override
   public void updateInputs(FlywheelIOInputs inputs) {
-    inputs.shooterVelocity = shooterVelocity.getValueAsDouble();
+    BaseStatusSignal.refreshAll(leftVelocity, leftAppliedVolts, leftCurrentAmps, rightVelocity, rightAppliedVolts, rightCurrentAmps);
 
-    inputs.appliedVolts = appliedAmps.getValueAsDouble();
+    inputs.leftVelocityRPM = leftVelocity.getValueAsDouble();
+    inputs.leftAppliedVolts = leftAppliedVolts.getValueAsDouble();
+    inputs.leftCurrentAmps = leftCurrentAmps.getValueAsDouble();
+    inputs.leftVelocitySetpoint = leftSetpoint;
 
-    inputs.currentAmps = currentAmps.getValueAsDouble();
-    inputs.velocitySetpoint = velocitySetpoint;
+    inputs.rightVelocityRPM = rightVelocity.getValueAsDouble();
+    inputs.rightAppliedVolts = rightAppliedVolts.getValueAsDouble();
+    inputs.rightCurrentAmps = rightCurrentAmps.getValueAsDouble();
+    inputs.rightVelocitySetpoint = rightSetpoint;
   }
 
   @Override
-  public void setVelocity(double velocity, double ffVolts) {
-    this.velocitySetpoint = velocity;
-    leader.setControl(
-        new VelocityVoltage(
-            Units.radiansToRotations(velocity), 0, true, ffVolts, 0, false, false, false));
+  public void setVelocityRPM(double leftVelocity, double rightVelocity, double ffVolts) {
+    this.leftSetpoint = leftVelocity;
+    this.rightSetpoint = rightVelocity;
+
+    left.setControl(
+        new VelocityVoltage(leftVelocity, 0, false, ffVolts, 0, false, false, false));
+    
+    left.setControl(
+        new VelocityVoltage(rightVelocity, 0, false, ffVolts, 0, false, false, false));
   }
 
   @Override
   public void stop() {
-    velocitySetpoint = 0;
-    leader.stopMotor();
+    leftSetpoint = 0;
+    rightSetpoint = 0;
+
+    left.stopMotor();
+    right.stopMotor();
   }
 
   @Override
@@ -77,6 +102,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     configs.kI = kI;
     configs.kD = kD;
 
-    leader.getConfigurator().apply(configs);
+    left.getConfigurator().apply(configs);
+    right.getConfigurator().apply(configs);
   }
 }
