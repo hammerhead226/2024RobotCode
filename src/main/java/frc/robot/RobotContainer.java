@@ -146,11 +146,18 @@ public class RobotContainer {
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
+    // Intake SysID Routines
+    autoChooser.addDefaultOption(
+        "Intake SysID (Dynamic Forward)",
+        intake.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addDefaultOption(
+        "Intake SysID (Dynamic Reverse)",
+        intake.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     autoChooser.addDefaultOption(
         "Intake SysID (Quasistatic Forward)",
         intake.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     autoChooser.addDefaultOption(
-        "Intake SysID (Dynamic Forward)", intake.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        "Intake SysID (Dynamic Reverse)", intake.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     configureButtonBindings();
   }

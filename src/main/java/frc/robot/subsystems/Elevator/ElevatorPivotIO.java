@@ -10,6 +10,9 @@ public interface ElevatorPivotIO {
     public double currentAmps = 0;
     public double appliedVolts = 0;
     public double positionSetpoint = 0;
+
+    public boolean gyroConnected = false;
+    public double pitch = 0;
   }
 
   public default void updateInputs(ElevatorPivotIOInputs inputs) {}

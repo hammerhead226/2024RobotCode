@@ -1,13 +1,16 @@
 package frc.robot.subsystems.Elevator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,14 +21,17 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
   private final TalonFX leader;
   private final TalonFX follower;
 
+  private final Pigeon2 pigeon;
+
   private double positionSetpoint;
 
   private final StatusSignal<Double> pivotPosition;
   private final StatusSignal<Double> pivotVelocity;
   private final StatusSignal<Double> appliedVolts;
   private final StatusSignal<Double> currentAmps;
+  private final StatusSignal<Double> pitch;
 
-  public ElevatorPivotIOTalonFX(int leadID, int followID) {
+  public ElevatorPivotIOTalonFX(int leadID, int followID, int gyroID) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimit = Constants.ElevatorConstants.PIVOT_CURRENT_LIMIT;
     config.CurrentLimits.StatorCurrentLimitEnable =
@@ -34,6 +40,9 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     leader = new TalonFX(leadID);
     follower = new TalonFX(followID);
+    pigeon = new Pigeon2(gyroID);
+
+    pigeon.getConfigurator().apply(new Pigeon2Configuration());
 
     leader.getConfigurator().apply(config);
 
@@ -44,7 +53,13 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
     appliedVolts = leader.getMotorVoltage();
     currentAmps = leader.getStatorCurrent();
 
+    pitch = pigeon.getRoll();
+
     positionSetpoint = Constants.ElevatorConstants.PIVOT_STOW;
+
+    pigeon.optimizeBusUtilization();
+    leader.optimizeBusUtilization();
+    follower.optimizeBusUtilization();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         100, pivotPosition, pivotVelocity, appliedVolts, currentAmps);
@@ -52,7 +67,9 @@ public class ElevatorPivotIOTalonFX implements ElevatorPivotIO {
 
   @Override
   public void updateInputs(ElevatorPivotIOInputs inputs) {
-    BaseStatusSignal.refreshAll(pivotPosition, pivotVelocity, appliedVolts, currentAmps);
+    BaseStatusSignal.refreshAll(pivotPosition, pivotVelocity, appliedVolts, currentAmps, pitch);
+    inputs.gyroConnected = BaseStatusSignal.refreshAll(pitch).equals(StatusCode.OK);
+    inputs.pitch = pitch.getValueAsDouble();
     inputs.pivotPosition = Units.rotationsToDegrees(pivotPosition.getValueAsDouble());
     inputs.pivotVelocity =
         Units.rotationsPerMinuteToRadiansPerSecond(pivotVelocity.getValueAsDouble());
