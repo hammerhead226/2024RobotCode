@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.util.Conversions;
 
 public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
   private final TalonFX leader;
@@ -27,17 +28,17 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
     config.CurrentLimits.StatorCurrentLimit = Constants.ElevatorConstants.EXTENDER_CURRENT_LIMIT;
     config.CurrentLimits.StatorCurrentLimitEnable =
         Constants.ElevatorConstants.EXTENDER_CURRENT_LIMIT_ENABLED;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
-    leader = new TalonFX(lead);
-    follower = new TalonFX(follow);
+    leader = new TalonFX(lead, Constants.CANBUS);
+    follower = new TalonFX(follow, Constants.CANBUS);
 
     leader.getConfigurator().apply(config);
 
     positionSetpoint = Constants.ElevatorConstants.EXTENDER_RETRACT;
 
-    follower.setControl(new Follower(lead, false));
+    follower.setControl(new Follower(lead, true));
 
     elevatorPosition = leader.getPosition();
     elevatorVelocity = leader.getVelocity();
@@ -51,7 +52,8 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
   @Override
   public void updateInputs(ElevatorExtenderIOInputs inputs) {
     BaseStatusSignal.refreshAll(elevatorPosition, elevatorVelocity, appliedVolts, currentAmps);
-    inputs.elevatorPosition = Units.rotationsToDegrees(elevatorPosition.getValueAsDouble());
+    inputs.elevatorPosition =
+        Conversions.motorRotToInches(elevatorPosition.getValueAsDouble(), 5.97, 15);
     inputs.elevatorVelocity =
         Units.rotationsPerMinuteToRadiansPerSecond(elevatorVelocity.getValueAsDouble());
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
@@ -61,7 +63,16 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
   @Override
   public void setPositionSetpoint(double position, double ffVolts) {
     this.positionSetpoint = position;
-    leader.setControl(new PositionVoltage(position, 0, false, ffVolts, 0, false, false, false));
+    leader.setControl(
+        new PositionVoltage(
+            Conversions.inchesToMotorRot(position, 5.97, 15),
+            0,
+            false,
+            ffVolts,
+            0,
+            false,
+            false,
+            false));
   }
 
   @Override

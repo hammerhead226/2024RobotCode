@@ -14,15 +14,12 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorExtenderIO;
@@ -79,17 +76,19 @@ public class RobotContainer {
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         intake = new Intake(new IntakeRollerIOSparkFlex(RobotMap.IntakeIDs.ROLLERS));
-        // shooter =
-        //     new Shooter(
-        //         new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
-        //         new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
-        //         new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorPivotIOTalonFX(
-        //             RobotMap.ElevatorIDs.PIVOT_ONE, RobotMap.ElevatorIDs.PIVOT_TWO),
-        //         new ElevatorExtenderIOTalonFX(
-        //             RobotMap.ElevatorIDs.EXTENDER_ONE, RobotMap.ElevatorIDs.EXTENDER_TWO));
+        shooter =
+            new Shooter(
+                new FlywheelIOTalonFX(
+                    RobotMap.ShooterIDs.FLYWHEEL_ONE, RobotMap.ShooterIDs.FLYWHEEL_TWO),
+                new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
+        elevator =
+            new Elevator(
+                new ElevatorPivotIOTalonFX(
+                    RobotMap.ElevatorIDs.PIVOT_ONE,
+                    RobotMap.ElevatorIDs.PIVOT_TWO,
+                    RobotMap.ElevatorIDs.GYRO),
+                new ElevatorExtenderIOTalonFX(
+                    RobotMap.ElevatorIDs.EXTENDER_ONE, RobotMap.ElevatorIDs.EXTENDER_TWO));
         // led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
         break;
       case REPLAY:
@@ -101,7 +100,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
-        shooter = new Shooter(new FlywheelIOSim(), new FlywheelIOSim(), new FeederIOSim());
+        shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim());
         elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
         led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
         break;
@@ -115,7 +114,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
-        shooter = new Shooter(new FlywheelIOSim(), new FlywheelIOSim(), new FeederIOSim());
+        shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim());
         elevator = new Elevator(new ElevatorPivotIOSim(), new ElevatorExtenderIOSim());
         led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
         break;
@@ -132,13 +131,10 @@ public class RobotContainer {
                 new ModuleIO() {});
         shooter =
             new Shooter(
-                new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
-                new FlywheelIOTalonFX(RobotMap.ShooterIDs.FLYWHEEL_ONE),
+                new FlywheelIOTalonFX(
+                    RobotMap.ShooterIDs.FLYWHEEL_ONE, RobotMap.ShooterIDs.FLYWHEEL_TWO),
                 new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER));
-        elevator =
-            new Elevator(
-                new ElevatorPivotIO() {},
-                new ElevatorExtenderIO() {});
+        elevator = new Elevator(new ElevatorPivotIO() {}, new ElevatorExtenderIO() {});
         led = new LED(new LED_IO() {});
         break;
     }
@@ -148,11 +144,9 @@ public class RobotContainer {
 
     // Intake SysID Routines
     autoChooser.addDefaultOption(
-        "Intake SysID (Dynamic Forward)",
-        intake.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        "Intake SysID (Dynamic Forward)", intake.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addDefaultOption(
-        "Intake SysID (Dynamic Reverse)",
-        intake.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        "Intake SysID (Dynamic Reverse)", intake.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     autoChooser.addDefaultOption(
         "Intake SysID (Quasistatic Forward)",
         intake.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -175,18 +169,32 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    controller
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                    drive)
-                .ignoringDisable(true));
+    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // controller
+    //     .b()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //                 () ->
+    //                     drive.setPose(
+    //                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+    //                 drive)
+    //             .ignoringDisable(true));
 
-    controller.a().whileTrue(intake.sysIdQuasistatic(Direction.kForward));
+    // controller.a().whileTrue(intake.sysIdQuasistatic(Direction.kForward));
+    // controller.a().onTrue(new SetPivotTarget(20, elevator));
+    // controller.a().onFalse(new InstantCommand(elevator::pivotStop, elevator));
+
+    // controller.a().onTrue(new SetExtenderTarget(0, elevator));
+    // controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
+
+    controller.a().onTrue(new InstantCommand(() -> shooter.setShooterVelocitys(300, 300), shooter));
+    controller.a().onFalse(new InstantCommand(shooter::stopShooterMotors, shooter));
+
+    controller.b().onTrue(new InstantCommand(() -> shooter.runFeeders(1500), shooter));
+    controller.b().onFalse(new InstantCommand(shooter::stopFeeders, shooter));
+
+    // controller.a().onTrue(new SetExtenderTarget(0, elevator));
+    // controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,

@@ -11,25 +11,25 @@ import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
-  private final FlywheelIO shooterMotor1;
+  private final FlywheelIO flywheels;
 
-  private final FlywheelIO shooterMotor2;
+  // private final FlywheelIO shooterMotor2;
 
   private final FeederIO feeder;
 
-  private final FlywheelIOInputsAutoLogged s1Inputs = new FlywheelIOInputsAutoLogged();
-  private final FlywheelIOInputsAutoLogged s2Inputs = new FlywheelIOInputsAutoLogged();
+  private final FlywheelIOInputsAutoLogged fInputs = new FlywheelIOInputsAutoLogged();
+  // private final FlywheelIOInputsAutoLogged s2Inputs = new FlywheelIOInputsAutoLogged();
 
   private final FeederIOInputsAutoLogged feedInputs = new FeederIOInputsAutoLogged();
 
   private final SimpleMotorFeedforward flywheelFFModel;
   private final SimpleMotorFeedforward feederFFModel;
 
-  public Shooter(FlywheelIO shooterMotor1, FlywheelIO shooterMotor2, FeederIO feeder) {
+  public Shooter(FlywheelIO flywheels, FeederIO feeder) {
     switch (Constants.currentMode) {
       case REAL:
-        flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
-        feederFFModel = new SimpleMotorFeedforward(0, 0.03);
+        flywheelFFModel = new SimpleMotorFeedforward(0, 3);
+        feederFFModel = new SimpleMotorFeedforward(0, 0.3);
         break;
       case REPLAY:
         flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
@@ -44,20 +44,20 @@ public class Shooter extends SubsystemBase {
         feederFFModel = new SimpleMotorFeedforward(0, 0.03);
         break;
     }
-    this.shooterMotor1 = shooterMotor1;
-    this.shooterMotor2 = shooterMotor2;
+    this.flywheels = flywheels;
+    // this.shooterMotor2 = shooterMotor2;
     // TODO:: Make these constants
-    shooterMotor1.configurePID(0, 0, 0);
-    shooterMotor2.configurePID(0, 0, 0);
+    flywheels.configurePID(0.5, 0, 0);
+    // shooterMotor2.configurePID(0.5, 0, 0);
 
     this.feeder = feeder;
     // TODO:: Make these constants
-    feeder.configurePID(0, 0, 0);
+    feeder.configurePID(0.5, 0, 0);
   }
 
   public void stopShooterMotors() {
-    shooterMotor1.stop();
-    shooterMotor2.stop();
+    flywheels.stop();
+    // shooterMotor2.stop();
   }
 
   public void stopFeeders() {
@@ -69,18 +69,18 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterVelocitys(double velocity1, double velocity2) {
-    shooterMotor1.setVelocity(velocity1, flywheelFFModel.calculate(velocity1));
-    shooterMotor2.setVelocity(velocity2, flywheelFFModel.calculate(velocity2));
+    flywheels.setVelocity(velocity1, flywheelFFModel.calculate(velocity1));
+    // shooterMotor2.setVelocity(velocity2, flywheelFFModel.calculate(velocity2));
   }
 
   public double[] getFlywheelVelocities() {
-    return new double[] {s1Inputs.shooterVelocity, s2Inputs.shooterVelocity};
+    return new double[] {fInputs.shooterVelocity, fInputs.shooterVelocity};
   }
 
   public double[] getFlywheelErrors() {
     return new double[] {
-      s1Inputs.velocitySetpoint - getFlywheelVelocities()[0],
-      s2Inputs.velocitySetpoint - getFlywheelVelocities()[1]
+      fInputs.velocitySetpoint - getFlywheelVelocities()[0],
+      fInputs.velocitySetpoint - getFlywheelVelocities()[1]
     };
   }
 
@@ -93,13 +93,13 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    shooterMotor1.updateInputs(s1Inputs);
-    shooterMotor2.updateInputs(s2Inputs);
+    flywheels.updateInputs(fInputs);
+    // shooterMotor2.updateInputs(s2Inputs);
 
     feeder.updateInputs(feedInputs);
 
-    Logger.processInputs("Flywheel 1", s1Inputs);
-    Logger.processInputs("Flywheel 2", s2Inputs);
+    Logger.processInputs("Flywheel 1", fInputs);
+    // Logger.processInputs("Flywheel 2", s2Inputs);
 
     Logger.processInputs("Feeder", feedInputs);
   }

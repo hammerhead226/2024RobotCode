@@ -61,10 +61,10 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final double FEEDER_CURRENT_LIMIT = 0;
+    public static final double FEEDER_CURRENT_LIMIT = 40;
     public static final boolean FEEDER_CURRENT_LIMIT_ENABLED = true;
 
-    public static final double FLYWHEEL_CURRENT_LIMIT = 0;
+    public static final double FLYWHEEL_CURRENT_LIMIT = 40;
     public static final boolean FLYWHEEL_CURRENT_LIMIT_ENABLED = true;
 
     public static final double FLYWHEEL_THRESHOLD = 0;
@@ -85,6 +85,9 @@ public final class Constants {
 
     public static final double PIVOT_THRESHOLD = 0;
     public static final double EXTENDER_THRESHOLD = 0;
+
+    public static final double PIVOT_RATIO = 100.0;
+    public static final double EXTENDER_RATIO = 0;
 
     public static final double[] PIVOT_PID = {0, 0, 0};
     public static final double[] EXTENDER_PID = {0, 0, 0};

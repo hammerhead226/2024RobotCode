@@ -7,7 +7,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 public class FeederIOTalonFX implements FeederIO {
@@ -26,7 +25,7 @@ public class FeederIOTalonFX implements FeederIO {
         Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    falcon = new TalonFX(id);
+    falcon = new TalonFX(id, Constants.CANBUS);
 
     falcon.getConfigurator().apply(config);
 
@@ -39,8 +38,7 @@ public class FeederIOTalonFX implements FeederIO {
 
   @Override
   public void updateInputs(FeederIOInputs inputs) {
-    inputs.feederVelocity =
-        Units.rotationsPerMinuteToRadiansPerSecond(feederVelocity.getValueAsDouble());
+    inputs.feederVelocity = feederVelocity.getValueAsDouble();
 
     inputs.appliedVolts = appliedAmps.getValueAsDouble();
 

@@ -20,6 +20,9 @@ public class Elevator extends SubsystemBase {
   private static final LoggedTunableNumber extenderkP =
       new LoggedTunableNumber("elevatorExtenderkP");
 
+  TrapezoidProfile pivotProfile;
+  TrapezoidProfile extenderProfile;
+
   private final TrapezoidProfile.Constraints pivotConstraints =
       new TrapezoidProfile.Constraints(Math.PI / 4, Math.PI / 3);
   private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
@@ -39,10 +42,15 @@ public class Elevator extends SubsystemBase {
 
     switch (Constants.currentMode) {
       case REAL:
-        elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 1.4);
-        pivotFFModel = new ArmFeedforward(0, 0.4, 0.7);
-        pivotkP.initDefault(Constants.ElevatorConstants.PIVOT_PID[0]);
-        extenderkP.initDefault(Constants.ElevatorConstants.EXTENDER_PID[0]);
+        // elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 1.4);
+        // pivotFFModel = new ArmFeedforward(0, 0.4, 0.7);
+        // pivotkP.initDefault(Constants.ElevatorConstants.PIVOT_PID[0]);
+        // extenderkP.initDefault(Constants.ElevatorConstants.EXTENDER_PID[0]);
+
+        elevatorFFModel = new ElevatorFeedforward(0, 0, 0.05);
+        pivotFFModel = new ArmFeedforward(0, 0, 0);
+        pivotkP.initDefault(0);
+        extenderkP.initDefault(0.04);
         break;
       case REPLAY:
         elevatorFFModel = new ElevatorFeedforward(0.02, 0.05, 1.4);
@@ -63,6 +71,15 @@ public class Elevator extends SubsystemBase {
         extenderkP.initDefault(15);
         break;
     }
+    setPivotGoal(30);
+    pivotProfile = new TrapezoidProfile(pivotConstraints);
+
+    setExtenderGoal(-3);
+    extenderProfile = new TrapezoidProfile(extenderConstraints);
+    extenderCurrent = extenderProfile.calculate(0, extenderCurrent, extenderGoal);
+
+    // TODO:: set up default extender pose
+    pivotCurrent = pivotProfile.calculate(0, pivotCurrent, pivotGoal);
     pivotkP.initDefault(0);
     extenderkP.initDefault(15);
 
@@ -127,9 +144,6 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     pivot.updateInputs(pInputs);
     extender.updateInputs(eInputs);
-
-    TrapezoidProfile pivotProfile = new TrapezoidProfile(pivotConstraints);
-    TrapezoidProfile extenderProfile = new TrapezoidProfile(extenderConstraints);
 
     extenderCurrent =
         extenderProfile.calculate(Constants.LOOP_PERIOD_SECS, extenderCurrent, extenderGoal);

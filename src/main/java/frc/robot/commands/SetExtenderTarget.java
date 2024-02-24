@@ -5,13 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.RobotMap;
 import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.ElevatorExtenderIOSim;
-import frc.robot.subsystems.Elevator.ElevatorExtenderIOTalonFX;
-import frc.robot.subsystems.Elevator.ElevatorPivotIOSim;
-import frc.robot.subsystems.Elevator.ElevatorPivotIOTalonFX;
 
 public class SetExtenderTarget extends Command {
   /** Creates a new ExtendElevator. */
@@ -21,12 +15,10 @@ public class SetExtenderTarget extends Command {
 
   public SetExtenderTarget(double setPoint, Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
-    //addRequirements(elevator);
+    // addRequirements(elevator);
     setPoint = this.setPoint;
     this.elevator = elevator;
-
   }
-
 
   // Called when the command is initially scheduled.
   @Override

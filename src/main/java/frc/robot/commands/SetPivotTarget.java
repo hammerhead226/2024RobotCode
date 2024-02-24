@@ -1,21 +1,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.RobotMap;
 import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.ElevatorExtenderIOSim;
-import frc.robot.subsystems.Elevator.ElevatorExtenderIOTalonFX;
-import frc.robot.subsystems.Elevator.ElevatorPivotIOSim;
-import frc.robot.subsystems.Elevator.ElevatorPivotIOTalonFX;
 
 public class SetPivotTarget extends Command {
   /** Creates a new SetPivotTarget. */
   private final Elevator elevator;
+
   private double setPoint;
+
   public SetPivotTarget(double setPoint, Elevator elevator) {
     setPoint = this.setPoint;
-     this.elevator = elevator;
+    this.elevator = elevator;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
