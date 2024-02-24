@@ -19,8 +19,7 @@ public class IntakeRollerIOTalonFX implements IntakeRollerIO {
   public IntakeRollerIOTalonFX(int id) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimit = Constants.IntakeConstants.CURRENT_LIMIT;
-    config.CurrentLimits.StatorCurrentLimitEnable =
-        Constants.IntakeConstants.CURRENT_LIMIT_ENABLED;
+    config.CurrentLimits.StatorCurrentLimitEnable = Constants.IntakeConstants.CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     falcon = new TalonFX(id);
 
@@ -45,6 +44,7 @@ public class IntakeRollerIOTalonFX implements IntakeRollerIO {
   public void runCharacterization(double volts) {
     falcon.setVoltage(volts);
   }
+
   @Override
   public void setVelocityRPM(double velocity, double ffVolts) {
     falcon.setControl(new VelocityVoltage(velocity, 0, false, ffVolts, 0, false, false, false));

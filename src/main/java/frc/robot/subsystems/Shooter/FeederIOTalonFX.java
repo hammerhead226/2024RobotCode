@@ -41,7 +41,7 @@ public class FeederIOTalonFX implements FeederIO {
   @Override
   public void updateInputs(FeederIOInputs inputs) {
     BaseStatusSignal.refreshAll(feederVelocity, appliedVolts, currentAmps);
-    
+
     inputs.velocitySetpoint = velocitySetpoint;
     inputs.feederVelocityRPM = feederVelocity.getValueAsDouble();
     inputs.appliedVolts = appliedVolts.getValueAsDouble();

@@ -67,7 +67,7 @@ public final class Constants {
 
     public static final double FLYWHEEL_CURRENT_LIMIT = 40;
     public static final boolean FLYWHEEL_CURRENT_LIMIT_ENABLED = true;
-    
+
     public static final double FLYWHEEL_THRESHOLD = 0;
   }
 
@@ -78,7 +78,6 @@ public final class Constants {
     public static final double RETRACT_SETPOINT_INCH = 0;
     public static final double EXTEND_SETPOINT_INCH = 0;
     public static final double THRESHOLD = 0;
-
 
     public static final double GEAR_RATIO = 0;
     public static final double[] PID = {0, 0, 0};

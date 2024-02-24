@@ -1,5 +1,7 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -7,17 +9,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
-
-import static edu.wpi.first.units.Units.Volts;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
-  
+
   private final ElevatorIO elevator;
 
-  private final ElevatorIOInputsAutoLogged eInputs =
-      new ElevatorIOInputsAutoLogged();
+  private final ElevatorIOInputsAutoLogged eInputs = new ElevatorIOInputsAutoLogged();
 
   private static final LoggedTunableNumber extenderkP =
       new LoggedTunableNumber("elevatorExtenderkP");
@@ -31,7 +29,7 @@ public class Elevator extends SubsystemBase {
   private final ElevatorFeedforward elevatorFFModel;
 
   private final SysIdRoutine sysId;
-  
+
   public Elevator(ElevatorIO elevator) {
     this.elevator = elevator;
 
@@ -69,7 +67,6 @@ public class Elevator extends SubsystemBase {
                 null,
                 this));
 
-
     setExtenderGoal(-3);
     extenderProfile = new TrapezoidProfile(extenderConstraints);
     extenderCurrent = extenderProfile.calculate(0, extenderCurrent, extenderGoal);
@@ -106,7 +103,7 @@ public class Elevator extends SubsystemBase {
     return angle;
   }
 
-    /** Returns a command to run a quasistatic test in the specified direction. */
+  /** Returns a command to run a quasistatic test in the specified direction. */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return sysId.quasistatic(direction);
   }
@@ -118,15 +115,13 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-   
+
     elevator.updateInputs(eInputs);
 
     extenderCurrent =
         extenderProfile.calculate(Constants.LOOP_PERIOD_SECS, extenderCurrent, extenderGoal);
-    
 
     setPositionExtend(extenderCurrent.position, extenderCurrent.velocity);
-
 
     Logger.processInputs("Elevator Extender", eInputs);
 

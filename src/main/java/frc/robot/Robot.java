@@ -13,6 +13,9 @@
 
 package frc.robot;
 
+import com.revrobotics.Rev2mDistanceSensor;
+import com.revrobotics.Rev2mDistanceSensor.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -32,6 +35,7 @@ public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer m_robotContainer;
 
+  private Rev2mDistanceSensor dist;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -80,7 +84,8 @@ public class Robot extends LoggedRobot {
 
     // See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
     // Logger.disableDeterministicTimestamps()
-
+    dist = new Rev2mDistanceSensor(Port.kOnboard);
+    dist.setAutomaticMode(true);
     // Start AdvantageKit logger
     Logger.start();
     // Instantiate our RobotContainer. This will perform all our button bindings,
@@ -97,6 +102,10 @@ public class Robot extends LoggedRobot {
     // finished or interrupted commands, and running subsystem periodic() methods.
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
+    if (dist.isRangeValid()) {
+      SmartDashboard.putNumber("Range Onboard", dist.getRange());
+      SmartDashboard.putNumber("Timestamp Onboard", dist.getTimestamp());
+    }
     CommandScheduler.getInstance().run();
   }
 

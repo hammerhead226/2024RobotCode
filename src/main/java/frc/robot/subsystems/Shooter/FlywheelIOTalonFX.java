@@ -8,7 +8,6 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import frc.robot.Constants;
 
 public class FlywheelIOTalonFX implements FlywheelIO {
@@ -35,7 +34,8 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     leftConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     TalonFXConfiguration rightConfig = new TalonFXConfiguration();
-    rightConfig.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT;
+    rightConfig.CurrentLimits.StatorCurrentLimit =
+        Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT;
     rightConfig.CurrentLimits.StatorCurrentLimitEnable =
         Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
     rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -55,12 +55,25 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     rightAppliedVolts = right.getMotorVoltage();
     rightCurrentAmps = right.getStatorCurrent();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(100, leftVelocity, leftAppliedVolts, leftCurrentAmps, rightVelocity, rightAppliedVolts, rightCurrentAmps);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        100,
+        leftVelocity,
+        leftAppliedVolts,
+        leftCurrentAmps,
+        rightVelocity,
+        rightAppliedVolts,
+        rightCurrentAmps);
   }
 
   @Override
   public void updateInputs(FlywheelIOInputs inputs) {
-    BaseStatusSignal.refreshAll(leftVelocity, leftAppliedVolts, leftCurrentAmps, rightVelocity, rightAppliedVolts, rightCurrentAmps);
+    BaseStatusSignal.refreshAll(
+        leftVelocity,
+        leftAppliedVolts,
+        leftCurrentAmps,
+        rightVelocity,
+        rightAppliedVolts,
+        rightCurrentAmps);
 
     inputs.leftVelocityRPM = leftVelocity.getValueAsDouble();
     inputs.leftAppliedVolts = leftAppliedVolts.getValueAsDouble();
@@ -84,11 +97,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     this.leftSetpoint = leftVelocity;
     this.rightSetpoint = rightVelocity;
 
-    left.setControl(
-        new VelocityVoltage(leftVelocity, 0, false, ffVolts, 0, false, false, false));
-    
-    left.setControl(
-        new VelocityVoltage(rightVelocity, 0, false, ffVolts, 0, false, false, false));
+    left.setControl(new VelocityVoltage(leftVelocity, 0, false, ffVolts, 0, false, false, false));
+
+    left.setControl(new VelocityVoltage(rightVelocity, 0, false, ffVolts, 0, false, false, false));
   }
 
   @Override

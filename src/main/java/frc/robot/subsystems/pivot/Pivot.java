@@ -6,8 +6,6 @@ package frc.robot.subsystems.pivot;
 
 import static edu.wpi.first.units.Units.Volts;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,24 +13,24 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.Logger;
 
 public class Pivot extends SubsystemBase {
   private final PivotIO pivot;
   private final PivotIOInputsAutoLogged pInputs = new PivotIOInputsAutoLogged();
 
   private static final LoggedTunableNumber pivotkP = new LoggedTunableNumber("elevatorPivotkP");
-  
+
   private final TrapezoidProfile pivotProfile;
   private final TrapezoidProfile.Constraints pivotConstraints =
       new TrapezoidProfile.Constraints(Math.PI / 4, Math.PI / 3);
-  
+
   private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State pivotCurrent = new TrapezoidProfile.State();
 
   private final ArmFeedforward pivotFFModel;
 
   private final SysIdRoutine sysId;
-
 
   /** Creates a new Pivot. */
   public Pivot(PivotIO pivot) {
@@ -58,18 +56,18 @@ public class Pivot extends SubsystemBase {
 
     // Configure SysId
     sysId =
-    new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,
-            null,
-            null,
-            (state) -> Logger.recordOutput("Elevator/SysIdState", state.toString())),
-        new SysIdRoutine.Mechanism(
-            (voltage) -> {
-              pivot.runCharacterization(voltage.in(Volts));
-            },
-            null,
-            this));
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Pivot/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> {
+                  pivot.runCharacterization(voltage.in(Volts));
+                },
+                null,
+                this));
 
     setPivotGoal(30);
     pivotProfile = new TrapezoidProfile(pivotConstraints);
@@ -98,12 +96,12 @@ public class Pivot extends SubsystemBase {
   public void pivotStop() {
     pivot.stop();
   }
-  
+
   public void setPivotGoal(double setpoint) {
     pivotGoal = new TrapezoidProfile.State(setpoint, 0);
   }
 
-    /** Returns a command to run a quasistatic test in the specified direction. */
+  /** Returns a command to run a quasistatic test in the specified direction. */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return sysId.quasistatic(direction);
   }

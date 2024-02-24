@@ -34,15 +34,12 @@ public class PivotIOTalonFX implements PivotIO {
   public PivotIOTalonFX(int leadID, int followID, int gyroID) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimit = Constants.PivotConstants.CURRENT_LIMIT;
-    config.CurrentLimits.StatorCurrentLimitEnable =
-        Constants.PivotConstants.CURRENT_LIMIT_ENABLED;
+    config.CurrentLimits.StatorCurrentLimitEnable = Constants.PivotConstants.CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     leader = new TalonFX(leadID, Constants.CANBUS);
     follower = new TalonFX(followID, Constants.CANBUS);
     pigeon = new Pigeon2(gyroID, Constants.CANBUS);
-
-    
 
     leader.getConfigurator().apply(config);
 

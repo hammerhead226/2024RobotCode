@@ -4,24 +4,27 @@
 
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
-
-import static edu.wpi.first.units.Units.Volts;
-
 import org.littletonrobotics.junction.Logger;
+
+import com.revrobotics.Rev2mDistanceSensor;
 
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   private final FlywheelIO flywheels;
   private final FeederIO feeder;
+  private final DistanceSensorIO dist;
 
   private final FlywheelIOInputsAutoLogged fInputs = new FlywheelIOInputsAutoLogged();
   private final FeederIOInputsAutoLogged feedInputs = new FeederIOInputsAutoLogged();
+  private final DistanceSensorIOInputsAutoLogged sInputs = new DistanceSensorIOInputsAutoLogged();
 
   private final SimpleMotorFeedforward flywheelFFModel;
   private final SimpleMotorFeedforward feederFFModel;
@@ -32,7 +35,7 @@ public class Shooter extends SubsystemBase {
   private static final LoggedTunableNumber feederkP = new LoggedTunableNumber("feederkP");
   private static final LoggedTunableNumber flywheelkP = new LoggedTunableNumber("flywheelkP");
 
-  public Shooter(FlywheelIO flywheels, FeederIO feeder) {
+  public Shooter(FlywheelIO flywheels, FeederIO feeder, DistanceSensorIO dist) {
     switch (Constants.currentMode) {
       case REAL:
         flywheelFFModel = new SimpleMotorFeedforward(0, 3);
@@ -60,19 +63,18 @@ public class Shooter extends SubsystemBase {
 
     // Configure SysId
     flywheelSysId =
-    new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,
-            null,
-            null,
-            (state) -> Logger.recordOutput("Flywheels/SysIdState", state.toString())),
-        new SysIdRoutine.Mechanism(
-            (voltage) -> {
-              flywheels.setVoltage(voltage.in(Volts));
-            },
-            null,
-            this));
-
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Flywheels/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> {
+                  flywheels.setVoltage(voltage.in(Volts));
+                },
+                null,
+                this));
 
     this.feeder = feeder;
     // TODO:: Make these constants
@@ -80,19 +82,20 @@ public class Shooter extends SubsystemBase {
 
     // Configure SysId
     feedSysId =
-    new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,
-            null,
-            null,
-            (state) -> Logger.recordOutput("Feeder/SysIdState", state.toString())),
-        new SysIdRoutine.Mechanism(
-            (voltage) -> {
-              feeder.runCharacterization(voltage.in(Volts));
-            },
-            null,
-            this));
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Feeder/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> {
+                  feeder.runCharacterization(voltage.in(Volts));
+                },
+                null,
+                this));
 
+    this.dist = dist;
   }
 
   public void stopShooterMotors() {
@@ -127,7 +130,7 @@ public class Shooter extends SubsystemBase {
         && getFlywheelErrors()[1] <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD);
   }
 
-    /** Returns a command to run a quasistatic test in the specified direction. */
+  /** Returns a command to run a quasistatic test in the specified direction. */
   public Command feedSysIDQuasistic(SysIdRoutine.Direction direction) {
     return feedSysId.quasistatic(direction);
   }
@@ -137,7 +140,7 @@ public class Shooter extends SubsystemBase {
     return feedSysId.dynamic(direction);
   }
 
-    /** Returns a command to run a quasistatic test in the specified direction. */
+  /** Returns a command to run a quasistatic test in the specified direction. */
   public Command flywheelSysIDQuasistic(SysIdRoutine.Direction direction) {
     return flywheelSysId.quasistatic(direction);
   }
@@ -153,9 +156,11 @@ public class Shooter extends SubsystemBase {
 
     flywheels.updateInputs(fInputs);
     feeder.updateInputs(feedInputs);
+    dist.updateInputs(sInputs);
 
     Logger.processInputs("Flywheels", fInputs);
     Logger.processInputs("Feeder", feedInputs);
+    Logger.processInputs("Distance Sensor", sInputs);
 
     if (feederkP.hasChanged(hashCode())) {
       feeder.configurePID(feederkP.get(), 0, 0);

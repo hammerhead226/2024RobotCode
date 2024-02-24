@@ -61,7 +61,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.positionSetpoint = positionSetpoint;
   }
 
-  @Override 
+  @Override
   public void runCharacterization(double volts) {
     leader.setVoltage(volts);
   }
