@@ -35,11 +35,6 @@ public class FeederIOSparkMax implements FeederIO {
   }
 
   @Override
-  public void runCharacterization(double volts) {
-    neo.setVoltage(volts);
-  }
-
-  @Override
   public void setVelocityRPS(double velocityRPS, double ffVolts) {
     this.velocitySetpointRPS = velocityRPS;
     pid.setReference(velocityRPS, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);

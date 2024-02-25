@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.SetElevatorTarget;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -125,9 +124,9 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        // intake = new Intake(new IntakeRollerIOSim());
+        intake = new Intake(new IntakeRollerIOSim());
         // shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim(), new DistanceSensorIO() {});
-        elevator = new Elevator(new ElevatorIOSim());
+        // elevator = new Elevator(new ElevatorIOSim());
         // pivot = new Pivot(new PivotIOSim());
         // led = new LED(new LED_IO() {});
         break;
@@ -190,11 +189,14 @@ public class RobotContainer {
     // controller.b().onTrue(new SetPivotTarget(5, pivot));
     // controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
-    controller.a().onTrue(new SetElevatorTarget(10, elevator));
-    controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
+    controller.a().onTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(1000), intake));
+    controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
 
-    controller.b().onTrue(new SetElevatorTarget(0, elevator));
-    controller.b().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
+    // controller.a().onTrue(new SetElevatorTarget(10, elevator));
+    // controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
+
+    // controller.b().onTrue(new SetElevatorTarget(0, elevator));
+    // controller.b().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
 
     // controller.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(1000, 1000),
     // shooter));

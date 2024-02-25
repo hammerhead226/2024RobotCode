@@ -47,17 +47,17 @@ public class PivotIOTalonFX implements PivotIO {
 
     follower.setControl(new Follower(leadID, true));
 
-    positionDegs = leader.getPosition();
-    velocityDegsPerSec = leader.getVelocity();
-    appliedVolts = leader.getMotorVoltage();
-    currentAmps = leader.getStatorCurrent();
-
     pitch = pigeon.getRoll();
 
     startAngleDegs = pitch.getValueAsDouble();
 
     leader.setPosition(
         Conversions.degreesToFalcon(startAngleDegs, Constants.PivotConstants.GEAR_RATIO));
+
+    positionDegs = leader.getPosition();
+    velocityDegsPerSec = leader.getVelocity();
+    appliedVolts = leader.getMotorVoltage();
+    currentAmps = leader.getStatorCurrent();
 
     positionSetpointDegs = Constants.PivotConstants.STOW_SETPOINT_DEG;
 
@@ -85,11 +85,6 @@ public class PivotIOTalonFX implements PivotIO {
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.currentAmps = currentAmps.getValueAsDouble();
     inputs.positionSetpointDegs = positionSetpointDegs;
-  }
-
-  @Override
-  public void runCharacterization(double volts) {
-    leader.setVoltage(volts);
   }
 
   @Override

@@ -32,11 +32,6 @@ public class FeederIOSim implements FeederIO {
   }
 
   @Override
-  public void runCharacterization(double volts) {
-    sim.setInputVoltage(volts);
-  }
-
-  @Override
   public void setVelocityRPS(double velocityRPS, double ffVolts) {
     this.ffVolts = ffVolts;
     this.velocitySetpointRPS = velocityRPS;

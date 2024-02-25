@@ -4,12 +4,8 @@
 
 package frc.robot.subsystems.intake;
 
-import static edu.wpi.first.units.Units.Volts;
-
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -20,66 +16,61 @@ public class Intake extends SubsystemBase {
 
   private final IntakeRollerIOInputsAutoLogged rInputs = new IntakeRollerIOInputsAutoLogged();
 
-  private static final LoggedTunableNumber intakekP = new LoggedTunableNumber("intake kP");
+  private static final LoggedTunableNumber kP = new LoggedTunableNumber("Intake/kP");
+  private static final LoggedTunableNumber kI = new LoggedTunableNumber("Intake/kI");
+  private static final LoggedTunableNumber kD = new LoggedTunableNumber("Intake/kD");
 
-  private final SimpleMotorFeedforward ffModel;
+  private static final LoggedTunableNumber kS = new LoggedTunableNumber("Intake/kS");
+  private static final LoggedTunableNumber kV = new LoggedTunableNumber("Intake/kV");
+  private static final LoggedTunableNumber kA = new LoggedTunableNumber("Intake/kA");
 
-  private final SysIdRoutine sysId;
+  private SimpleMotorFeedforward ffModel;
 
   public Intake(IntakeRollerIO roller) {
     switch (Constants.currentMode) {
       case REAL:
-        ffModel = new SimpleMotorFeedforward(0.011512, 0.028522, 0.0024588);
-        intakekP.initDefault(0.03231);
+        kS.initDefault(0);
+        kV.initDefault(10);
+        kA.initDefault(0);
+
+        kP.initDefault(0.03231);
         break;
       case REPLAY:
-        ffModel = new SimpleMotorFeedforward(0, 0);
+        kS.initDefault(0);
+        kV.initDefault(0);
+        kA.initDefault(0);
+
+        kP.initDefault(0.03231);
         break;
       case SIM:
-        ffModel = new SimpleMotorFeedforward(0, 0.8);
+        kS.initDefault(0);
+        kV.initDefault(0);
+        kA.initDefault(0);
+
+        kP.initDefault(0.03231);
         break;
       default:
-        ffModel = new SimpleMotorFeedforward(0, 0);
+        kS.initDefault(0);
+        kV.initDefault(0);
+        kA.initDefault(0);
+
+        kP.initDefault(0.03231);
         break;
     }
-
-    // Configure SysId
-    sysId =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null,
-                null,
-                null,
-                (state) -> Logger.recordOutput("Intake/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> {
-                  roller.runCharacterization(voltage.in(Volts));
-                },
-                null,
-                this));
 
     this.roller = roller;
 
     // make this a constant
-    roller.configurePID(intakekP.get(), 0, 0);
+    roller.configurePID(kP.get(), 0, 0);
+    ffModel = new SimpleMotorFeedforward(kS.get(), kV.get(), kA.get());
   }
 
-  public void runRollers(double velocity) {
-    roller.setVelocityRPM(velocity, ffModel.calculate(velocity));
+  public void setRollerVelocityRPM(double velocityRPM) {
+    roller.setVelocityRPM(velocityRPM, ffModel.calculate(velocityRPM));
   }
 
   public void stopRollers() {
     roller.stop();
-  }
-
-  /** Returns a command to run a quasistatic test in the specified direction. */
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return sysId.quasistatic(direction);
-  }
-
-  /** Returns a command to run a dynamic test in the specified direction. */
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return sysId.dynamic(direction);
   }
 
   @Override
@@ -87,8 +78,12 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     roller.updateInputs(rInputs);
 
-    if (intakekP.hasChanged(hashCode())) {
-      roller.configurePID(intakekP.get(), 0, 0);
+    if (kP.hasChanged(hashCode())) {
+      roller.configurePID(kP.get(), 0, 0);
+    }
+
+    if (kS.hasChanged(hashCode()) || kV.hasChanged(hashCode()) || kA.hasChanged(hashCode())) {
+      ffModel = new SimpleMotorFeedforward(kS.get(), kV.get(), kA.get());
     }
 
     Logger.processInputs("Intake", rInputs);
