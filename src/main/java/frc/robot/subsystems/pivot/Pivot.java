@@ -40,7 +40,7 @@ public class Pivot extends SubsystemBase {
   /** Creates a new Pivot. */
   public Pivot(PivotIO pivot) {
     this.pivot = pivot;
-    switch (Constants.currentMode) {
+    switch (Constants.getMode()) {
       case REAL:
         kS.initDefault(0.02);
         kG.initDefault(0.1);

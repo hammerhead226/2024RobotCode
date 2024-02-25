@@ -32,7 +32,7 @@ public class Elevator extends SubsystemBase {
   public Elevator(ElevatorIO elevator) {
     this.elevator = elevator;
 
-    switch (Constants.currentMode) {
+    switch (Constants.getMode()) {
       case REAL:
         kS.initDefault(0);
         kG.initDefault(0.13);

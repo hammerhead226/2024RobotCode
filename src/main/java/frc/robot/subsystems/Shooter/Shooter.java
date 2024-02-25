@@ -33,7 +33,7 @@ public class Shooter extends SubsystemBase {
   private static final LoggedTunableNumber feederkD = new LoggedTunableNumber("feederkD");
 
   public Shooter(FlywheelIO flywheels, FeederIO feeder, DistanceSensorIO dist) {
-    switch (Constants.currentMode) {
+    switch (Constants.getMode()) {
       case REAL:
         flywheelFFModel = new SimpleMotorFeedforward(0.18, 0.12, 0); // make constant
 

@@ -30,6 +30,14 @@ public final class Constants {
     REPLAY
   }
 
+  public static Mode getMode() {
+    return switch (currentMode) {
+      case REAL -> Mode.REAL;
+      case SIM -> Mode.SIM;
+      case REPLAY -> Mode.REPLAY;
+    };
+  }
+
   public static final Mode currentMode = Mode.SIM;
   public static final boolean tuningMode = true;
   public static final String CANBUS = "CAN Bus 2";
@@ -79,8 +87,9 @@ public final class Constants {
     public static final double EXTEND_SETPOINT_INCH = 0;
     public static final double THRESHOLD = 0;
 
-    public static final double GEAR_RATIO = 0;
     public static final double[] PID = {0, 0, 0};
+
+    public static final double REDUCTION = (1.0 / 15.0);
   }
 
   public static class PivotConstants {
@@ -91,8 +100,9 @@ public final class Constants {
     public static final double STOW_SETPOINT_DEG = 0;
     public static final double THRESHOLD = 0;
 
-    public static final double GEAR_RATIO = 100.0;
     public static final double[] PID = {0, 0, 0};
+
+    public static final double REDUCTION = (15.0 / 1.0) * (34.0 / 24.0) * (24.0 / 18.0) * (50.0/14.0);
   }
 
   public static class LEDConstants {

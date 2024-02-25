@@ -52,7 +52,7 @@ public class PivotIOTalonFX implements PivotIO {
     startAngleDegs = pitch.getValueAsDouble();
 
     leader.setPosition(
-        Conversions.degreesToFalcon(startAngleDegs, Constants.PivotConstants.GEAR_RATIO));
+        Conversions.degreesToFalcon(startAngleDegs, Constants.PivotConstants.REDUCTION));
 
     positionDegs = leader.getPosition();
     velocityDegsPerSec = leader.getVelocity();
@@ -78,10 +78,10 @@ public class PivotIOTalonFX implements PivotIO {
     inputs.pitch = pitch.getValueAsDouble();
     inputs.positionDegs =
         Conversions.falconToDegrees(
-            positionDegs.getValueAsDouble(), Constants.PivotConstants.GEAR_RATIO);
+            positionDegs.getValueAsDouble(), Constants.PivotConstants.REDUCTION);
     inputs.velocityDegsPerSec =
         Conversions.falconToDegrees(
-            velocityDegsPerSec.getValueAsDouble() * 2048, Constants.PivotConstants.GEAR_RATIO);
+            velocityDegsPerSec.getValueAsDouble() * 2048, Constants.PivotConstants.REDUCTION);
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.currentAmps = currentAmps.getValueAsDouble();
     inputs.positionSetpointDegs = positionSetpointDegs;
@@ -92,7 +92,7 @@ public class PivotIOTalonFX implements PivotIO {
     this.positionSetpointDegs = positionDegs;
     leader.setControl(
         new PositionVoltage(
-            Conversions.degreesToFalcon(positionDegs, Constants.PivotConstants.GEAR_RATIO),
+            Conversions.degreesToFalcon(positionDegs, Constants.PivotConstants.REDUCTION),
             0,
             false,
             ffVolts,

@@ -27,7 +27,7 @@ public class Intake extends SubsystemBase {
   private SimpleMotorFeedforward ffModel;
 
   public Intake(IntakeRollerIO roller) {
-    switch (Constants.currentMode) {
+    switch (Constants.getMode()) {
       case REAL:
         kS.initDefault(0);
         kV.initDefault(10);

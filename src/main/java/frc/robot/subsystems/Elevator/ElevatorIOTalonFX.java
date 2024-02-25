@@ -52,9 +52,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   public void updateInputs(ElevatorIOInputs inputs) {
     BaseStatusSignal.refreshAll(elevatorPosition, elevatorVelocity, appliedVolts, currentAmps);
     inputs.elevatorPosition =
-        Conversions.motorRotToInches(elevatorPosition.getValueAsDouble(), 5.97, 15);
+        Conversions.motorRotToInches(elevatorPosition.getValueAsDouble(), 5.97, Constants.ElevatorConstants.REDUCTION);
     inputs.elevatorVelocity =
-        Conversions.motorRotToInches(elevatorVelocity.getValueAsDouble() * 60., 5.97, 15);
+        Conversions.motorRotToInches(elevatorVelocity.getValueAsDouble() * 60., 5.97, Constants.ElevatorConstants.REDUCTION);
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.currentAmps = currentAmps.getValueAsDouble();
     inputs.positionSetpoint = positionSetpoint;
@@ -70,7 +70,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     this.positionSetpoint = position;
     leader.setControl(
         new PositionVoltage(
-            Conversions.inchesToMotorRot(position, 5.97, 15),
+            Conversions.inchesToMotorRot(position, 5.97, Constants.ElevatorConstants.REDUCTION),
             0,
             false,
             ffVolts,
