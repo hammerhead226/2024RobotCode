@@ -17,29 +17,30 @@ public class ElevatorIOSim implements ElevatorIO {
   private ElevatorSim sim = new ElevatorSim(simGearbox, 1, 1, 0.01, 0.0, 3, true, 0.0);
   private PIDController pid = new PIDController(0, 0, 0);
 
-  private double position = 0.0;
-  private double velocity = 0.0;
+  private double positionInches = 0.0;
+  private double velocityInchPerSec = 0.0;
   private double appliedVolts = 0.0;
   private double currentAmps = 0.0;
-  private double positionSetpoint = 0.0;
+  private double positionSetpointInches = 0.0;
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    positionSetpoint = pid.getSetpoint();
+    positionSetpointInches = pid.getSetpoint();
 
     appliedVolts +=
-        MathUtil.clamp(pid.calculate(sim.getPositionMeters(), positionSetpoint), -12.0, 12);
+        MathUtil.clamp(
+            pid.calculate(sim.getPositionMeters() * 39.37, positionSetpointInches), -12.0, 12);
 
     sim.setInputVoltage(appliedVolts);
 
-    position = sim.getPositionMeters();
-    velocity = sim.getVelocityMetersPerSecond();
+    positionInches = sim.getPositionMeters() * 39.37;
+    velocityInchPerSec = sim.getVelocityMetersPerSecond() * 39.37;
     currentAmps = sim.getCurrentDrawAmps();
 
-    inputs.positionSetpoint = positionSetpoint;
+    inputs.positionSetpoint = positionSetpointInches;
     inputs.appliedVolts = appliedVolts;
-    inputs.elevatorPosition = position;
-    inputs.elevatorVelocity = velocity;
+    inputs.elevatorPosition = positionInches;
+    inputs.elevatorVelocity = velocityInchPerSec;
     inputs.currentAmps = currentAmps;
 
     sim.update(Constants.LOOP_PERIOD_SECS);
@@ -51,15 +52,15 @@ public class ElevatorIOSim implements ElevatorIO {
   }
 
   @Override
-  public void setPositionSetpoint(double position, double ffVolts) {
+  public void setPositionSetpoint(double positionInches, double ffVolts) {
     appliedVolts = ffVolts;
-    pid.setSetpoint(position);
+    pid.setSetpoint(positionInches);
   }
 
   @Override
   public void stop() {
     appliedVolts = 0;
-    pid.setSetpoint(sim.getPositionMeters());
+    pid.setSetpoint(sim.getPositionMeters() * 39.37);
   }
 
   @Override

@@ -9,7 +9,6 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.util.Conversions;
 
@@ -55,7 +54,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.elevatorPosition =
         Conversions.motorRotToInches(elevatorPosition.getValueAsDouble(), 5.97, 15);
     inputs.elevatorVelocity =
-        Units.rotationsPerMinuteToRadiansPerSecond(elevatorVelocity.getValueAsDouble());
+        Conversions.motorRotToInches(elevatorVelocity.getValueAsDouble() * 60., 5.97, 15);
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.currentAmps = currentAmps.getValueAsDouble();
     inputs.positionSetpoint = positionSetpoint;

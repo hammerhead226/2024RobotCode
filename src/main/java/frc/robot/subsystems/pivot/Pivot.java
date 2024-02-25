@@ -23,10 +23,11 @@ public class Pivot extends SubsystemBase {
   private static final LoggedTunableNumber kG = new LoggedTunableNumber("Pivot/kG");
   private static final LoggedTunableNumber kV = new LoggedTunableNumber("Pivot/kV");
   private static final LoggedTunableNumber kA = new LoggedTunableNumber("Pivot/kA");
-  
-  private static final LoggedTunableNumber maxVelocityDegPerSec = new LoggedTunableNumber("Pivot/MaxVelocity");
-  private static final LoggedTunableNumber maxAccelerationDegPerSecSquared = new LoggedTunableNumber("Pivot/MaxAcceleration");
 
+  private static final LoggedTunableNumber maxVelocityDegPerSec =
+      new LoggedTunableNumber("Pivot/MaxVelocity");
+  private static final LoggedTunableNumber maxAccelerationDegPerSecSquared =
+      new LoggedTunableNumber("Pivot/MaxAcceleration");
 
   private TrapezoidProfile pivotProfile;
   private TrapezoidProfile.Constraints pivotConstraints;
@@ -45,7 +46,7 @@ public class Pivot extends SubsystemBase {
         kG.initDefault(0.1);
         kV.initDefault(0.06);
         kA.initDefault(0);
-        
+
         kP.initDefault(0);
         kI.initDefault(0);
         kD.initDefault(0);
@@ -63,7 +64,7 @@ public class Pivot extends SubsystemBase {
         kG.initDefault(0);
         kV.initDefault(0);
         kA.initDefault(0);
-       
+
         kP.initDefault(1.8);
         kI.initDefault(0.7);
         kD.initDefault(0);
@@ -73,15 +74,17 @@ public class Pivot extends SubsystemBase {
         kG.initDefault(0);
         kV.initDefault(0);
         kA.initDefault(0);
-       
+
         kP.initDefault(0);
         break;
     }
-    
+
     maxVelocityDegPerSec.initDefault(30);
     maxAccelerationDegPerSecSquared.initDefault(60);
 
-    pivotConstraints = new TrapezoidProfile.Constraints(maxVelocityDegPerSec.get(), maxAccelerationDegPerSecSquared.get());
+    pivotConstraints =
+        new TrapezoidProfile.Constraints(
+            maxVelocityDegPerSec.get(), maxAccelerationDegPerSecSquared.get());
     pivotProfile = new TrapezoidProfile(pivotConstraints);
 
     setPivotGoal(30);
@@ -130,12 +133,18 @@ public class Pivot extends SubsystemBase {
       pivot.configurePID(kP.get(), kI.get(), kD.get());
     }
 
-    if (kS.hasChanged(hashCode()) || kG.hasChanged(hashCode()) || kV.hasChanged(hashCode()) || kA.hasChanged(hashCode())) {
+    if (kS.hasChanged(hashCode())
+        || kG.hasChanged(hashCode())
+        || kV.hasChanged(hashCode())
+        || kA.hasChanged(hashCode())) {
       pivotFFModel = new ArmFeedforward(kS.get(), kG.get(), kV.get(), kA.get());
     }
 
-    if (maxVelocityDegPerSec.hasChanged(hashCode()) || maxAccelerationDegPerSecSquared.hasChanged(hashCode())) {
-      pivotConstraints = new TrapezoidProfile.Constraints(maxVelocityDegPerSec.get(), maxAccelerationDegPerSecSquared.get());
+    if (maxVelocityDegPerSec.hasChanged(hashCode())
+        || maxAccelerationDegPerSecSquared.hasChanged(hashCode())) {
+      pivotConstraints =
+          new TrapezoidProfile.Constraints(
+              maxVelocityDegPerSec.get(), maxAccelerationDegPerSecSquared.get());
       pivotProfile = new TrapezoidProfile(pivotConstraints);
     }
     // This method will be called once per scheduler run

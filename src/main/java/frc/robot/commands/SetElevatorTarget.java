@@ -7,13 +7,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.Elevator;
 
-public class SetExtenderTarget extends Command {
+public class SetElevatorTarget extends Command {
   /** Creates a new ExtendElevator. */
   private final Elevator elevator;
 
   private double setPoint;
 
-  public SetExtenderTarget(double setPoint, Elevator elevator) {
+  public SetElevatorTarget(double setPoint, Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
     // addRequirements(elevator);
     this.setPoint = setPoint;
