@@ -10,7 +10,7 @@ public class SetPivotTarget extends Command {
   private double setPoint;
 
   public SetPivotTarget(double setPoint, Pivot pivot) {
-    setPoint = this.setPoint;
+    this.setPoint = setPoint;
     this.pivot = pivot;
 
     addRequirements(pivot);

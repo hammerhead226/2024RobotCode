@@ -20,10 +20,11 @@ public class Pivot extends SubsystemBase {
   private final PivotIOInputsAutoLogged pInputs = new PivotIOInputsAutoLogged();
 
   private static final LoggedTunableNumber pivotkP = new LoggedTunableNumber("elevatorPivotkP");
+  private static final LoggedTunableNumber pivotkI = new LoggedTunableNumber("elevatorPivotkI");
 
   private final TrapezoidProfile pivotProfile;
   private final TrapezoidProfile.Constraints pivotConstraints =
-      new TrapezoidProfile.Constraints(Math.PI / 4, Math.PI / 3);
+      new TrapezoidProfile.Constraints(30, 60);
 
   private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State pivotCurrent = new TrapezoidProfile.State();
@@ -37,8 +38,9 @@ public class Pivot extends SubsystemBase {
     this.pivot = pivot;
     switch (Constants.currentMode) {
       case REAL:
-        pivotFFModel = new ArmFeedforward(0, 0, 0);
+        pivotFFModel = new ArmFeedforward(0.02, 0.1, 0.06, 0);
         pivotkP.initDefault(0);
+        pivotkI.initDefault(0);
         break;
       case REPLAY:
         pivotFFModel = new ArmFeedforward(0, 0.4, 0.7);
@@ -74,7 +76,7 @@ public class Pivot extends SubsystemBase {
 
     pivotCurrent = pivotProfile.calculate(0, pivotCurrent, pivotGoal);
 
-    pivot.configurePID(pivotkP.get(), 0, 0);
+    pivot.configurePID(pivotkP.get(), pivotkI.get(), 0);
   }
 
   public double getPivotPosition() {
@@ -120,8 +122,8 @@ public class Pivot extends SubsystemBase {
     setPositionPivot(pivotCurrent.position, pivotCurrent.velocity);
 
     Logger.processInputs("Elevator Pivot", pInputs);
-    if (pivotkP.hasChanged(hashCode())) {
-      pivot.configurePID(pivotkP.get(), 0, 0);
+    if (pivotkP.hasChanged(hashCode()) || pivotkI.hasChanged(hashCode())) {
+      pivot.configurePID(pivotkP.get(), pivotkI.get(), 0);
     }
     // This method will be called once per scheduler run
   }

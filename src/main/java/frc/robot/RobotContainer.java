@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.SetExtenderTarget;
+import frc.robot.commands.SetPivotTarget;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -40,10 +40,10 @@ import frc.robot.subsystems.intake.IntakeRollerIOSim;
 import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.led.LED_IO;
-import frc.robot.subsystems.led.LED_IOSpark;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
 import frc.robot.subsystems.pivot.PivotIOSim;
+import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.shooter.DistanceSensorIO;
 import frc.robot.subsystems.shooter.FeederIOSim;
 import frc.robot.subsystems.shooter.FeederIOTalonFX;
@@ -98,9 +98,11 @@ public class RobotContainer {
         elevator =
             new Elevator(
                 new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT));
-        // pivot = new Pivot(new PivotIOTalonFX(RobotMap.PivotIDs.LEFT,RobotMap.PivotIDs.RIGHT,
-        // RobotMap.PivotIDs.GYRO));
-        led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
+        pivot =
+            new Pivot(
+                new PivotIOTalonFX(
+                    RobotMap.PivotIDs.LEFT, RobotMap.PivotIDs.RIGHT, RobotMap.PivotIDs.GYRO));
+        // led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
         break;
       case REPLAY:
         drive =
@@ -227,11 +229,17 @@ public class RobotContainer {
     // controller.a().onTrue(new SetPivotTarget(20, elevator));
     // controller.a().onFalse(new InstantCommand(elevator::pivotStop, elevator));
 
-    controller.a().onTrue(new SetExtenderTarget(elevatorDistance.get(), elevator));
-    controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
+    // controller.a().onTrue(new SetExtenderTarget(19.25, elevator));
+    // controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
 
-    controller.b().onTrue(new SetExtenderTarget(0.1, elevator));
-    controller.b().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
+    // controller.b().onTrue(new SetExtenderTarget(0.1, elevator));
+    // controller.b().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
+
+    controller.a().onTrue(new SetPivotTarget(45, pivot));
+    controller.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
+
+    controller.b().onTrue(new SetPivotTarget(5, pivot));
+    controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
     // controller.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(300, 300), shooter));
     // controller.a().onFalse(new InstantCommand(shooter::stopShooterMotors, shooter));

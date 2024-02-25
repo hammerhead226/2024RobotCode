@@ -84,7 +84,7 @@ public final class Constants {
   }
 
   public static class PivotConstants {
-    public static final double CURRENT_LIMIT = 30.0;
+    public static final double CURRENT_LIMIT = 25.0;
     public static final boolean CURRENT_LIMIT_ENABLED = true;
 
     // Degrees
