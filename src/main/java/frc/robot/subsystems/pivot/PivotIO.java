@@ -5,11 +5,11 @@ import org.littletonrobotics.junction.AutoLog;
 public interface PivotIO {
   @AutoLog
   public static class PivotIOInputs {
-    public double pivotVelocity = 0;
-    public double pivotPosition = 0;
+    public double velocityDegsPerSec = 0;
+    public double positionDegs = 0;
     public double currentAmps = 0;
     public double appliedVolts = 0;
-    public double positionSetpoint = 0;
+    public double positionSetpointDegs = 0;
 
     public boolean gyroConnected = false;
     public double pitch = 0;
@@ -19,7 +19,7 @@ public interface PivotIO {
 
   public default void runCharacterization(double volts) {}
 
-  public default void setPositionSetpointDegs(double position, double ffVolts) {}
+  public default void setPositionSetpointDegs(double positionDegs, double ffVolts) {}
 
   public default void setVoltage(double volts) {}
 

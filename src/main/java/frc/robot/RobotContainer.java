@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.SetPivotTarget;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -125,9 +126,9 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         // intake = new Intake(new IntakeRollerIOSim());
-        shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim(), new DistanceSensorIO() {});
+        // shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim(), new DistanceSensorIO() {});
         // elevator = new Elevator(new ElevatorIOSim());
-        // pivot = new Pivot(new PivotIOSim());
+        pivot = new Pivot(new PivotIOSim());
         // led = new LED(new LED_IO() {});
         break;
 
@@ -183,17 +184,18 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // controller.a().onTrue(new SetPivotTarget(45, pivot));
-    // controller.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
+    controller.a().onTrue(new SetPivotTarget(45, pivot));
+    controller.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
-    // controller.b().onTrue(new SetPivotTarget(5, pivot));
-    // controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
+    controller.b().onTrue(new SetPivotTarget(5, pivot));
+    controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
-    controller.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(1000, 1000), shooter));
-    controller.a().onFalse(new InstantCommand(shooter::stopFlywheels, shooter));
+    // controller.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(1000, 1000),
+    // shooter));
+    // controller.a().onFalse(new InstantCommand(shooter::stopFlywheels, shooter));
 
-    controller.b().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter));
-    controller.b().onFalse(new InstantCommand(shooter::stopFeeders, shooter));
+    // controller.b().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter));
+    // controller.b().onFalse(new InstantCommand(shooter::stopFeeders, shooter));
   }
 
   /**

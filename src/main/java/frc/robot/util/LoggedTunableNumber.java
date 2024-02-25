@@ -10,7 +10,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
  * value not in dashboard.
  */
 public class LoggedTunableNumber {
-  private static final String tableKey = "TunableNumbers";
+  private static final String tableKey = "Tunables";
 
   private final String key;
   private boolean hasDefault = false;

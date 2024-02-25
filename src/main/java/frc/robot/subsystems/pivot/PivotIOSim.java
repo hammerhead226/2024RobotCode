@@ -28,27 +28,27 @@ public class PivotIOSim implements PivotIO {
 
   private double currentAmps = 0.0;
   private double appliedVolts = 0.0;
-  private double velocity = 0.0;
-  private double position = 0.0;
-  private double positionSetpoint = 0.0;
+  private double velocityRadsPerSec = 0.0;
+  private double positionRads = 0.0;
+  private double positionSetpointRads = 0.0;
 
   @Override
   public void updateInputs(PivotIOInputs inputs) {
-    positionSetpoint = pid.getSetpoint();
+    positionSetpointRads = pid.getSetpoint();
 
-    appliedVolts += MathUtil.clamp(pid.calculate(sim.getAngleRads(), positionSetpoint), -12.0, 12);
+    appliedVolts +=
+        MathUtil.clamp(pid.calculate(sim.getAngleRads(), positionSetpointRads), -12.0, 12);
 
     sim.setInputVoltage(appliedVolts);
-    // sim.setInput(appliedVolts);
 
-    position = sim.getAngleRads();
-    velocity = sim.getVelocityRadPerSec();
+    positionRads = sim.getAngleRads();
+    velocityRadsPerSec = sim.getVelocityRadPerSec();
     currentAmps = sim.getCurrentDrawAmps();
 
-    inputs.positionSetpoint = positionSetpoint;
+    inputs.positionSetpointDegs = Math.toDegrees(positionSetpointRads);
     inputs.appliedVolts = appliedVolts;
-    inputs.pivotPosition = position;
-    inputs.pivotVelocity = velocity;
+    inputs.positionDegs = Math.toDegrees(positionRads);
+    inputs.velocityDegsPerSec = Math.toDegrees(velocityRadsPerSec);
     inputs.currentAmps = currentAmps;
 
     sim.update(Constants.LOOP_PERIOD_SECS);
@@ -60,9 +60,9 @@ public class PivotIOSim implements PivotIO {
   }
 
   @Override
-  public void setPositionSetpointDegs(double position, double ffVolts) {
+  public void setPositionSetpointDegs(double positionDegs, double ffVolts) {
     appliedVolts = ffVolts;
-    pid.setSetpoint(position);
+    pid.setSetpoint(Math.toRadians(positionDegs));
   }
 
   @Override

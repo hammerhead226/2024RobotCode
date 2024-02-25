@@ -60,8 +60,8 @@ public class Shooter extends SubsystemBase {
         flywheelkI.initDefault(0);
         flywheelkD.initDefault(0);
 
-        feederkP.initDefault(10); 
-        feederkI.initDefault(0); 
+        feederkP.initDefault(10);
+        feederkI.initDefault(0);
         feederkD.initDefault(0);
         break;
       default:
