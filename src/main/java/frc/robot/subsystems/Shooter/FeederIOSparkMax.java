@@ -11,6 +11,8 @@ public class FeederIOSparkMax implements FeederIO {
   private final CANSparkMax neo;
   private final SparkPIDController pid;
 
+  private double velocitySetpointRPS = 0;
+
   public FeederIOSparkMax(int id) {
 
     neo = new CANSparkMax(id, MotorType.kBrushless);
@@ -26,8 +28,9 @@ public class FeederIOSparkMax implements FeederIO {
   public void updateInputs(FeederIOInputs inputs) {
 
     inputs.feederVelocityRPM = neo.getEncoder().getVelocity();
-
-    inputs.appliedVolts = neo.getBusVoltage();
+    inputs.velocitySetpointRPM = velocitySetpointRPS * 60.;
+    inputs.feederRotations = neo.getEncoder().getPosition();
+    inputs.appliedVolts = neo.getAppliedOutput();
     inputs.currentAmps = neo.getOutputCurrent();
   }
 
@@ -37,8 +40,9 @@ public class FeederIOSparkMax implements FeederIO {
   }
 
   @Override
-  public void setVelocityRPS(double velocity, double ffVolts) {
-    pid.setReference(velocity, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
+  public void setVelocityRPS(double velocityRPS, double ffVolts) {
+    this.velocitySetpointRPS = velocityRPS;
+    pid.setReference(velocityRPS, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
   }
 
   @Override

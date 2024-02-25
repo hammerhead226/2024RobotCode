@@ -12,54 +12,89 @@ import frc.robot.Constants;
 
 /** Add your docs here. */
 public class FlywheelIOSim implements FlywheelIO {
-  private FlywheelSim sim = new FlywheelSim(DCMotor.getKrakenX60(2), 1.5, 0.004);
-  private PIDController pid = new PIDController(0.0, 0.0, 0.0);
+  private FlywheelSim left = new FlywheelSim(DCMotor.getKrakenX60(1), 1, 0.004);
+  private FlywheelSim right = new FlywheelSim(DCMotor.getKrakenX60(1), 1, 0.004);
+
+  private PIDController leftPID = new PIDController(0.0, 0.0, 0.0);
+  private PIDController rightPID = new PIDController(0.0, 0.0, 0.0);
 
   private boolean closedLoop = false;
-  private double ffVolts = 0.0;
-  private double appliedVolts = 0.0;
-  private double velocitySetpoint = 0.0;
+
+  private double leftFFVolts = 0.0;
+  private double leftAppliedVolts = 0.0;
+  private double leftVelocitySetpointRPM = 0.0;
+
+  private double rightFFVolts = 0.0;
+  private double rightAppliedVolts = 0.0;
+  private double rightVelocitySetpointRPM = 0.0;
 
   @Override
   public void updateInputs(FlywheelIOInputs inputs) {
     if (closedLoop) {
-      appliedVolts =
-          MathUtil.clamp(pid.calculate(sim.getAngularVelocityRadPerSec()) + ffVolts, -12.0, 12.0);
-      sim.setInputVoltage(appliedVolts);
+      leftAppliedVolts =
+          MathUtil.clamp(
+              leftPID.calculate(left.getAngularVelocityRPM() / 60.) + leftFFVolts, -12.0, 12.0);
+      left.setInputVoltage(leftAppliedVolts);
     }
 
-    sim.update(Constants.LOOP_PERIOD_SECS);
+    left.update(Constants.LOOP_PERIOD_SECS);
 
-    inputs.leftVelocitySetpointRPM = velocitySetpoint;
+    inputs.leftVelocitySetpointRPM = leftVelocitySetpointRPM;
+    inputs.leftVelocityRPM = left.getAngularVelocityRPM();
+    inputs.leftAppliedVolts = leftAppliedVolts;
+    inputs.leftCurrentAmps = left.getCurrentDrawAmps();
 
-    inputs.leftVelocityRPM = sim.getAngularVelocityRadPerSec();
-    inputs.leftAppliedVolts = appliedVolts;
-    inputs.leftCurrentAmps = sim.getCurrentDrawAmps();
+    if (closedLoop) {
+      rightAppliedVolts =
+          MathUtil.clamp(
+              rightPID.calculate(right.getAngularVelocityRPM() / 60.) + rightFFVolts, -12.0, 12.0);
+      right.setInputVoltage(rightAppliedVolts);
+    }
+
+    right.update(Constants.LOOP_PERIOD_SECS);
+
+    inputs.rightVelocitySetpointRPM = rightVelocitySetpointRPM;
+    inputs.rightVelocityRPM = right.getAngularVelocityRPM();
+    inputs.rightAppliedVolts = rightAppliedVolts;
+    inputs.rightCurrentAmps = right.getCurrentDrawAmps();
   }
 
   @Override
   public void setVoltage(double volts) {
     closedLoop = false;
-    appliedVolts = 0.0;
-    sim.setInputVoltage(volts);
+
+    leftAppliedVolts = 0.0;
+    left.setInputVoltage(volts);
+
+    rightAppliedVolts = 0.0;
+    right.setInputVoltage(volts);
   }
 
   @Override
-  public void setVelocityRPS(double leftVelocity, double rightVelocity, double ffVolts, double ff) {
+  public void setVelocityRPS(
+      double leftVelocityRPS, double rightVelocityRPS, double leftFFVolts, double rightFFVolts) {
     closedLoop = true;
-    this.velocitySetpoint = leftVelocity;
-    pid.setSetpoint(leftVelocity);
-    this.ffVolts = ffVolts;
+
+    this.leftVelocitySetpointRPM = leftVelocityRPS * 60;
+    leftPID.setSetpoint(leftVelocityRPS);
+    this.leftFFVolts = leftFFVolts;
+
+    this.rightVelocitySetpointRPM = rightVelocityRPS * 60;
+    rightPID.setSetpoint(rightVelocityRPS);
+    this.rightFFVolts = rightFFVolts;
   }
 
   @Override
   public void stop() {
-    velocitySetpoint = 0;
+    leftVelocitySetpointRPM = 0;
+    rightVelocitySetpointRPM = 0;
+
     setVoltage(0.0);
   }
 
   @Override
   public void configurePID(double kP, double kI, double kD) {
-    pid.setPID(kP, kI, kD);
+    leftPID.setPID(kP, kI, kD);
+    rightPID.setPID(kP, kI, kD);
   }
 }

@@ -22,9 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.SetPivotTarget;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -62,7 +60,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Intake intake;
+  private Intake intake;
   private Shooter shooter;
   private Elevator elevator;
   private LED led;
@@ -126,11 +124,11 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        intake = new Intake(new IntakeRollerIOSim());
+        // intake = new Intake(new IntakeRollerIOSim());
         shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim(), new DistanceSensorIO() {});
-        elevator = new Elevator(new ElevatorIOSim());
-        pivot = new Pivot(new PivotIOSim());
-        led = new LED(new LED_IO() {});
+        // elevator = new Elevator(new ElevatorIOSim());
+        // pivot = new Pivot(new PivotIOSim());
+        // led = new LED(new LED_IO() {});
         break;
 
       default:
@@ -157,46 +155,6 @@ public class RobotContainer {
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
-    // // Intake SysID Routines
-    // autoChooser.addDefaultOption(
-    //     "Intake SysID (Dynamic Forward)", intake.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addDefaultOption(
-    //     "Intake SysID (Quasistatic Reverse)",
-    //     intake.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addDefaultOption(
-    //     "Intake SysID (Quasistatic Forward)",
-    //     intake.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addDefaultOption(
-    //     "Intake SysID (Dynamic Reverse)", intake.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    // // Flywheel SysID Routines
-    // autoChooser.addDefaultOption(
-    //     "Flywheel SysID (Dynamic Forward)",
-    //     shooter.flywheelSysIDDynamiCommand(SysIdRoutine.Direction.kForward));
-    // autoChooser.addDefaultOption(
-    //     "Flywheel SysID (Quasistatic Reverse)",
-    //     shooter.flywheelSysIDQuasistic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addDefaultOption(
-    //     "Flywheel SysID (Quasistatic Forward)",
-    //     shooter.flywheelSysIDQuasistic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addDefaultOption(
-    //     "Flywheel SysID (Dynamic Reverse)",
-    //     shooter.flywheelSysIDDynamiCommand(SysIdRoutine.Direction.kReverse));
-
-    // Feeder SysID Routines
-    autoChooser.addDefaultOption(
-        "Feeder SysID (Dynamic Forward)",
-        shooter.feedSysIDDynamiCommand(SysIdRoutine.Direction.kForward));
-    autoChooser.addDefaultOption(
-        "Feeder SysID (Quasistatic Reverse)",
-        shooter.feedSysIDQuasistic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addDefaultOption(
-        "Feeder SysID (Quasistatic Forward)",
-        shooter.feedSysIDQuasistic(SysIdRoutine.Direction.kForward));
-    autoChooser.addDefaultOption(
-        "Feeder SysID (Dynamic Reverse)",
-        shooter.feedSysIDDynamiCommand(SysIdRoutine.Direction.kReverse));
 
     configureButtonBindings();
   }
@@ -225,55 +183,17 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // controller.a().whileTrue(intake.sysIdQuasistatic(Direction.kForward));
-    // controller.a().onTrue(new SetPivotTarget(20, elevator));
-    // controller.a().onFalse(new InstantCommand(elevator::pivotStop, elevator));
+    // controller.a().onTrue(new SetPivotTarget(45, pivot));
+    // controller.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
-    // controller.a().onTrue(new SetExtenderTarget(19.25, elevator));
-    // controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
+    // controller.b().onTrue(new SetPivotTarget(5, pivot));
+    // controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
-    // controller.b().onTrue(new SetExtenderTarget(0.1, elevator));
-    // controller.b().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
+    controller.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(1000, 1000), shooter));
+    controller.a().onFalse(new InstantCommand(shooter::stopFlywheels, shooter));
 
-    controller.a().onTrue(new SetPivotTarget(45, pivot));
-    controller.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
-
-    controller.b().onTrue(new SetPivotTarget(5, pivot));
-    controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
-
-    // controller.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(300, 300), shooter));
-    // controller.a().onFalse(new InstantCommand(shooter::stopShooterMotors, shooter));
-
-    // controller.b().onTrue(new InstantCommand(() -> shooter.runFeeders(1500), shooter));
-    // controller.b().onFalse(new InstantCommand(shooter::stopFeeders, shooter));
-
-    // controller.a().onTrue(new SetExtenderTarget(0, elevator));
-    // controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-    // pressed,
-    // cancelling on release.
-
-    // controller.a().whileTrue(new TurnToSpeaker(drive, controller));
-
-    // controller.a().onTrue(new InstantCommand(() -> intake.runRollers(3000)));
-    // controller.a().onFalse(new InstantCommand(() -> intake.stopRollers()));
-
-    // controller
-    //     .x()
-    //     .onTrue(
-    //         new InstantCommand(
-    //             () -> shooter.setFlywheelRPMs(flywheelSpeed.get(), flywheelSpeed.get())));
-    // controller.x().onFalse(new InstantCommand(() -> shooter.stopShooterMotors()));
-
-    // controller.a().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(feedSpeed.get())));
-    // controller.a().onFalse(new InstantCommand(() -> shooter.stopFeeders()));
-
-    // controller.leftBumper().onTrue(new InstantCommand(() -> intake.runRollers(1000)));
-    // controller.leftBumper().onFalse(new InstantCommand(() -> intake.stopRollers()));
-    // controller.rightBumper().onTrue(Commands.run(() -> elevator.setPivotGoal(Math.PI),
-    // elevator));
-    // controller.y().onTrue(Commands.run(() -> elevator.setPivotGoal(0), elevator));
+    controller.b().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter));
+    controller.b().onFalse(new InstantCommand(shooter::stopFeeders, shooter));
   }
 
   /**

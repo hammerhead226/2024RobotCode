@@ -9,14 +9,14 @@ public interface FeederIO {
     public double feederRotations;
     public double currentAmps = 0;
     public double appliedVolts = 0;
-    public double velocitySetpointRPS = 0;
+    public double velocitySetpointRPM = 0;
   }
 
   public default void updateInputs(FeederIOInputs inputs) {}
 
   public default void runCharacterization(double volts) {}
 
-  public default void setVelocityRPS(double velocity, double ffVolts) {}
+  public default void setVelocityRPS(double velocityRPS, double ffVolts) {}
 
   public default void stop() {}
 
