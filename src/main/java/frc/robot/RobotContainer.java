@@ -21,8 +21,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.statemachines.ClimbStateMachine;
+import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -48,6 +51,9 @@ import frc.robot.subsystems.shooter.FeederIOTalonFX;
 import frc.robot.subsystems.shooter.FlywheelIOSim;
 import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
+
+import java.util.Map;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
@@ -74,6 +80,20 @@ public class RobotContainer {
 
   private final LoggedDashboardNumber elevatorDistance =
       new LoggedDashboardNumber("elevatorDistance");
+
+  private final ClimbStateMachine climbStateMachine;
+
+  private CLIMB_STATES climbSelect() {
+    return climbStateMachine.getTargetState();
+  }
+
+  private final Command climbCommand = 
+      new SelectCommand<>(
+          Map.ofEntries(
+            Map.entry(CLIMB_STATES.NONE, null),
+            Map.entry(CLIMB_STATES.EXTEND_CLIMB, null),
+            Map.entry(CLIMB_STATES.RETRACT_CLIMB, null),
+            Map.entry(CLIMB_STATES.SCORE_TRAP, null)), this::climbSelect);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -152,6 +172,8 @@ public class RobotContainer {
         led = new LED(new LED_IO() {});
         break;
     }
+
+    climbStateMachine = new ClimbStateMachine(elevator, shooter, pivot);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
