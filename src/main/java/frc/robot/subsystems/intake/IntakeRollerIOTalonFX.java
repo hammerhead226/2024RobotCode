@@ -53,7 +53,8 @@ public class IntakeRollerIOTalonFX implements IntakeRollerIO {
   public void setVelocityRPM(double velocityRPM, double ffVolts) {
     this.velocitySetpointRPM = velocityRPM;
 
-    falcon.setControl(new VelocityVoltage(velocityRPM / 60., 0, false, ffVolts, 0, false, false, false));
+    falcon.setControl(
+        new VelocityVoltage(velocityRPM / 60., 0, false, ffVolts, 0, false, false, false));
   }
 
   @Override

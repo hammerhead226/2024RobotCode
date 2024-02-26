@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.SetElevatorTarget;
+import frc.robot.commands.SetPivotTarget;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -86,13 +88,13 @@ public class RobotContainer {
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
-        intake = new Intake(new IntakeRollerIOSparkFlex(RobotMap.IntakeIDs.ROLLERS));
-        shooter =
-            new Shooter(
-                new FlywheelIOTalonFX(
-                    RobotMap.ShooterIDs.FLYWHEEL_LEFT, RobotMap.ShooterIDs.FLYWHEEL_RIGHT),
-                new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER),
-                new DistanceSensorIO() {});
+        // intake = new Intake(new IntakeRollerIOSparkFlex(RobotMap.IntakeIDs.ROLLERS));
+        // shooter =
+        // new Shooter(
+        // new FlywheelIOTalonFX(
+        // RobotMap.ShooterIDs.FLYWHEEL_LEFT, RobotMap.ShooterIDs.FLYWHEEL_RIGHT),
+        // new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER),
+        // new DistanceSensorIO() {});
         elevator =
             new Elevator(
                 new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT));
@@ -183,20 +185,18 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // controller.a().onTrue(new SetPivotTarget(45, pivot));
-    // controller.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
+    controller.a().onTrue(new SetPivotTarget(50, pivot));
+    controller.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
-    // controller.b().onTrue(new SetPivotTarget(5, pivot));
-    // controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
+    controller.b().onTrue(new SetPivotTarget(-5, pivot));
+    controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
-    controller.a().onTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(1000), intake));
-    controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
+    // controller.a().onTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(1000), intake));
+    // controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
 
-    // controller.a().onTrue(new SetElevatorTarget(10, elevator));
-    // controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
+    controller.x().onTrue(new SetElevatorTarget(10, elevator));
 
-    // controller.b().onTrue(new SetElevatorTarget(0, elevator));
-    // controller.b().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
+    controller.y().onTrue(new SetElevatorTarget(0, elevator));
 
     // controller.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(1000, 1000),
     // shooter));

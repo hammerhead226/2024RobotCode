@@ -38,7 +38,7 @@ public final class Constants {
     };
   }
 
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
   public static final boolean tuningMode = true;
   public static final String CANBUS = "CAN Bus 2";
   public static final double LOOP_PERIOD_SECS = 0.02;
@@ -102,7 +102,8 @@ public final class Constants {
 
     public static final double[] PID = {0, 0, 0};
 
-    public static final double REDUCTION = (15.0 / 1.0) * (34.0 / 24.0) * (24.0 / 18.0) * (50.0/14.0);
+    public static final double REDUCTION =
+        (15.0 / 1.0) * (34.0 / 24.0) * (24.0 / 18.0) * (50.0 / 14.0);
   }
 
   public static class LEDConstants {

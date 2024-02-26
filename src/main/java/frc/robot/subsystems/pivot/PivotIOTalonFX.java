@@ -42,6 +42,7 @@ public class PivotIOTalonFX implements PivotIO {
     leader = new TalonFX(leadID, Constants.CANBUS);
     follower = new TalonFX(followID, Constants.CANBUS);
     pigeon = new Pigeon2(gyroID, Constants.CANBUS);
+    pigeon.reset();
 
     leader.getConfigurator().apply(config);
 
