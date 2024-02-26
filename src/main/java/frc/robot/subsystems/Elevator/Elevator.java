@@ -79,16 +79,16 @@ public class Elevator extends SubsystemBase {
     elevatorFFModel = new ElevatorFeedforward(kS.get(), kG.get(), kV.get(), kA.get());
   }
 
-  public double getExtenderPosition() {
+  public double getElevatorPosition() {
     return eInputs.elevatorPosition;
   }
 
-  private double getExtenderError() {
+  private double getElevatorError() {
     return eInputs.positionSetpoint - eInputs.elevatorPosition;
   }
 
-  public boolean extenderAtSetpoint() {
-    return (Math.abs(getExtenderError()) <= Constants.ElevatorConstants.THRESHOLD);
+  public boolean elevatorAtSetpoint() {
+    return (Math.abs(getElevatorError()) <= Constants.ElevatorConstants.THRESHOLD);
   }
 
   public void setExtenderGoal(double setpoint) {
