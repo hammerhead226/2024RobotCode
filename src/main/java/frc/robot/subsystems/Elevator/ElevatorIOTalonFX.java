@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Elevator;
+package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -9,10 +9,10 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.util.Conversions;
 
-public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
+public class ElevatorIOTalonFX implements ElevatorIO {
   private final TalonFX leader;
   private final TalonFX follower;
 
@@ -22,22 +22,22 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
   private final StatusSignal<Double> appliedVolts;
   private final StatusSignal<Double> currentAmps;
 
-  public ElevatorExtenderIOTalonFX(int lead, int follow) {
+  public ElevatorIOTalonFX(int lead, int follow) {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.CurrentLimits.StatorCurrentLimit = Constants.ElevatorConstants.EXTENDER_CURRENT_LIMIT;
+    config.CurrentLimits.StatorCurrentLimit = Constants.ElevatorConstants.CURRENT_LIMIT;
     config.CurrentLimits.StatorCurrentLimitEnable =
-        Constants.ElevatorConstants.EXTENDER_CURRENT_LIMIT_ENABLED;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        Constants.ElevatorConstants.CURRENT_LIMIT_ENABLED;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
-    leader = new TalonFX(lead);
-    follower = new TalonFX(follow);
+    leader = new TalonFX(lead, Constants.CANBUS);
+    follower = new TalonFX(follow, Constants.CANBUS);
 
     leader.getConfigurator().apply(config);
 
-    positionSetpoint = Constants.ElevatorConstants.EXTENDER_RETRACT;
+    positionSetpoint = Constants.ElevatorConstants.RETRACT_SETPOINT_INCH;
 
-    follower.setControl(new Follower(lead, false));
+    follower.setControl(new Follower(lead, true));
 
     elevatorPosition = leader.getPosition();
     elevatorVelocity = leader.getVelocity();
@@ -49,19 +49,35 @@ public class ElevatorExtenderIOTalonFX implements ElevatorExtenderIO {
   }
 
   @Override
-  public void updateInputs(ElevatorExtenderIOInputs inputs) {
+  public void updateInputs(ElevatorIOInputs inputs) {
     BaseStatusSignal.refreshAll(elevatorPosition, elevatorVelocity, appliedVolts, currentAmps);
-    inputs.elevatorPosition = Units.rotationsToDegrees(elevatorPosition.getValueAsDouble());
+    inputs.elevatorPosition =
+        Conversions.motorRotToInches(elevatorPosition.getValueAsDouble(), 5.97, Constants.ElevatorConstants.REDUCTION);
     inputs.elevatorVelocity =
-        Units.rotationsPerMinuteToRadiansPerSecond(elevatorVelocity.getValueAsDouble());
+        Conversions.motorRotToInches(elevatorVelocity.getValueAsDouble() * 60., 5.97, Constants.ElevatorConstants.REDUCTION);
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.currentAmps = currentAmps.getValueAsDouble();
+    inputs.positionSetpoint = positionSetpoint;
+  }
+
+  @Override
+  public void runCharacterization(double volts) {
+    leader.setVoltage(volts);
   }
 
   @Override
   public void setPositionSetpoint(double position, double ffVolts) {
     this.positionSetpoint = position;
-    leader.setControl(new PositionVoltage(position, 0, false, ffVolts, 0, false, false, false));
+    leader.setControl(
+        new PositionVoltage(
+            Conversions.inchesToMotorRot(position, 5.97, Constants.ElevatorConstants.REDUCTION),
+            0,
+            false,
+            ffVolts,
+            0,
+            false,
+            false,
+            false));
   }
 
   @Override

@@ -12,12 +12,15 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
   private final CANSparkFlex rollers;
   private final SparkPIDController pid;
 
+  private double velocitySetpointRPM = 0;
+
   public IntakeRollerIOSparkFlex(int id) {
     rollers = new CANSparkFlex(id, MotorType.kBrushless);
     rollers.restoreFactoryDefaults();
     rollers.setIdleMode(IdleMode.kCoast);
+    rollers.setInverted(true);
 
-    rollers.setSmartCurrentLimit(Constants.IntakeConstants.ROLLER_CURRENT_LIMIT);
+    rollers.setSmartCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT);
     rollers.setCANTimeout(250);
     rollers.burnFlash();
 
@@ -26,19 +29,23 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
 
   @Override
   public void updateInputs(IntakeRollerIOInputs inputs) {
-    inputs.rollerVelocity = rollers.getEncoder().getVelocity();
+    inputs.rollerRotations = rollers.getEncoder().getPosition();
+    inputs.rollerVelocityRPM = rollers.getEncoder().getVelocity();
 
-    inputs.appliedVolts = rollers.getBusVoltage();
+    inputs.appliedVolts = rollers.getAppliedOutput();
     inputs.currentAmps = rollers.getOutputCurrent();
+    inputs.velocitySetpointRPM = velocitySetpointRPM;
   }
 
   @Override
-  public void setVelocity(double velocity, double ffVolts) {
+  public void setVelocityRPM(double velocity, double ffVolts) {
+    this.velocitySetpointRPM = velocity;
     pid.setReference(velocity, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
   }
 
   @Override
   public void stop() {
+    this.velocitySetpointRPM = 0;
     rollers.stopMotor();
   }
 

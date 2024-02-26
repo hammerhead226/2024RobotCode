@@ -8,12 +8,13 @@ import frc.robot.Constants;
 
 public class IntakeRollerIOSim implements IntakeRollerIO {
   private final DCMotor simGearbox = DCMotor.getNeoVortex(1);
-  private DCMotorSim sim = new DCMotorSim(simGearbox, 1, 0.7);
+  private DCMotorSim sim = new DCMotorSim(simGearbox, 0.33, 0.1);
   private PIDController pid = new PIDController(0.2, 0, 0);
 
   private boolean closedLoop = false;
   private double ffVolts = 0.0;
   private double appliedVolts = 0.0;
+  private double velocitySetpointRPM = 0;
 
   @Override
   public void updateInputs(IntakeRollerIOInputs inputs) {
@@ -24,23 +25,26 @@ public class IntakeRollerIOSim implements IntakeRollerIO {
     }
 
     sim.update(Constants.LOOP_PERIOD_SECS);
-    inputs.rollerVelocity = sim.getAngularVelocityRPM();
-    inputs.rollerVelocity = sim.getAngularVelocityRPM();
+
+    inputs.rollerRotations = sim.getAngularPositionRotations();
+    inputs.rollerVelocityRPM = sim.getAngularVelocityRPM();
     inputs.appliedVolts = appliedVolts;
     inputs.currentAmps = sim.getCurrentDrawAmps();
+    inputs.velocitySetpointRPM = velocitySetpointRPM;
   }
 
   @Override
-  public void setVelocity(double velocity, double ffVolts) {
+  public void setVelocityRPM(double velocityRPM, double ffVolts) {
+    this.velocitySetpointRPM = velocityRPM;
     closedLoop = true;
-    pid.setSetpoint(velocity);
+    pid.setSetpoint(velocityRPM);
     this.ffVolts = ffVolts;
   }
 
   @Override
   public void stop() {
     closedLoop = false;
-    setVelocity(0, 0);
+    setVelocityRPM(0, 0);
   }
 
   @Override

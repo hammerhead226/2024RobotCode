@@ -12,42 +12,53 @@ import frc.robot.Constants;
 public class IntakeRollerIOTalonFX implements IntakeRollerIO {
   private final TalonFX falcon;
 
-  private final StatusSignal<Double> rollerVelocity;
+  private final StatusSignal<Double> rollerRotations;
+  private final StatusSignal<Double> rollerVelocityRPS;
   private final StatusSignal<Double> appliedVolts;
   private final StatusSignal<Double> currentAmps;
 
+  private double velocitySetpointRPM = 0;
+
   public IntakeRollerIOTalonFX(int id) {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.CurrentLimits.StatorCurrentLimit = Constants.IntakeConstants.ROLLER_CURRENT_LIMIT;
-    config.CurrentLimits.StatorCurrentLimitEnable =
-        Constants.IntakeConstants.ROLLER_TALON_FX_CURRENT_LIMIT_ENABLED;
+    config.CurrentLimits.StatorCurrentLimit = Constants.IntakeConstants.CURRENT_LIMIT;
+    config.CurrentLimits.StatorCurrentLimitEnable = Constants.IntakeConstants.CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     falcon = new TalonFX(id);
 
     falcon.getConfigurator().apply(config);
 
-    rollerVelocity = falcon.getVelocity();
+    rollerRotations = falcon.getPosition();
+    rollerVelocityRPS = falcon.getVelocity();
     appliedVolts = falcon.getMotorVoltage();
     currentAmps = falcon.getStatorCurrent();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(100, rollerVelocity, appliedVolts, currentAmps);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        100, rollerVelocityRPS, appliedVolts, currentAmps, rollerRotations);
   }
 
   @Override
   public void updateInputs(IntakeRollerIOInputs inputs) {
-    inputs.rollerVelocity = rollerVelocity.getValueAsDouble() / 60;
+    BaseStatusSignal.refreshAll(rollerRotations, rollerVelocityRPS, appliedVolts, currentAmps);
 
+    inputs.rollerRotations = rollerRotations.getValueAsDouble();
+    inputs.rollerVelocityRPM = rollerVelocityRPS.getValueAsDouble() * 60.;
     inputs.appliedVolts = appliedVolts.getValue();
     inputs.currentAmps = currentAmps.getValue();
+
+    inputs.velocitySetpointRPM = velocitySetpointRPM;
   }
 
   @Override
-  public void setVelocity(double velocity, double ffVolts) {
-    falcon.setControl(new VelocityVoltage(velocity, 0, false, ffVolts, 0, false, false, false));
+  public void setVelocityRPM(double velocityRPM, double ffVolts) {
+    this.velocitySetpointRPM = velocityRPM;
+
+    falcon.setControl(new VelocityVoltage(velocityRPM / 60., 0, false, ffVolts, 0, false, false, false));
   }
 
   @Override
   public void stop() {
+    this.velocitySetpointRPM = 0;
     falcon.stopMotor();
   }
 

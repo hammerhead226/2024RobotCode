@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Shooter;
+package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -7,16 +7,18 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 public class FeederIOTalonFX implements FeederIO {
 
-  private final TalonFX falcon;
+  private final TalonFX feeder;
 
-  private final StatusSignal<Double> feederVelocity;
-  private final StatusSignal<Double> appliedAmps;
+  private final StatusSignal<Double> feederVelocityRPS;
+  private final StatusSignal<Double> appliedVolts;
   private final StatusSignal<Double> currentAmps;
+  private final StatusSignal<Double> feederRotations;
+
+  private double velocitySetpointRPS = 0;
 
   public FeederIOTalonFX(int id) {
 
@@ -26,35 +28,39 @@ public class FeederIOTalonFX implements FeederIO {
         Constants.ShooterConstants.FLYWHEEL_CURRENT_LIMIT_ENABLED;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    falcon = new TalonFX(id);
+    feeder = new TalonFX(id, Constants.CANBUS);
 
-    falcon.getConfigurator().apply(config);
+    feeder.getConfigurator().apply(config);
 
-    feederVelocity = falcon.getVelocity();
-    appliedAmps = falcon.getMotorVoltage();
-    currentAmps = falcon.getStatorCurrent();
+    feederVelocityRPS = feeder.getVelocity();
+    appliedVolts = feeder.getMotorVoltage();
+    currentAmps = feeder.getStatorCurrent();
+    feederRotations = feeder.getPosition();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(100, feederVelocity, appliedAmps, currentAmps);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        100, feederVelocityRPS, appliedVolts, currentAmps, feederRotations);
   }
 
   @Override
   public void updateInputs(FeederIOInputs inputs) {
-    inputs.feederVelocity =
-        Units.rotationsPerMinuteToRadiansPerSecond(feederVelocity.getValueAsDouble());
+    BaseStatusSignal.refreshAll(feederVelocityRPS, appliedVolts, currentAmps, feederRotations);
 
-    inputs.appliedVolts = appliedAmps.getValueAsDouble();
-
+    inputs.feederRotations = feederRotations.getValueAsDouble();
+    inputs.velocitySetpointRPM = velocitySetpointRPS * 60.;
+    inputs.feederVelocityRPM = feederVelocityRPS.getValueAsDouble() * 60.;
+    inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.currentAmps = currentAmps.getValueAsDouble();
   }
 
   @Override
-  public void setVelocity(double velocity, double ffVolts) {
-    falcon.setControl(new VelocityVoltage(velocity, 0, false, ffVolts, 0, false, false, false));
+  public void setVelocityRPS(double velocityRPS, double ffVolts) {
+    this.velocitySetpointRPS = velocityRPS;
+    feeder.setControl(new VelocityVoltage(velocityRPS, 0, false, ffVolts, 0, false, false, false));
   }
 
   @Override
   public void stop() {
-    falcon.stopMotor();
+    feeder.stopMotor();
   }
 
   @Override
@@ -65,6 +71,6 @@ public class FeederIOTalonFX implements FeederIO {
     configs.kI = kI;
     configs.kD = kD;
 
-    falcon.getConfigurator().apply(configs);
+    feeder.getConfigurator().apply(configs);
   }
 }

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Elevator;
+package frc.robot.subsystems.pivot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
 
 /** Add your docs here. */
-public class ElevatorPivotIOSim implements ElevatorPivotIO {
-  private final DCMotor pivotGearbox = DCMotor.getFalcon500(1);
+public class PivotIOSim implements PivotIO {
+  private final DCMotor pivotGearbox = DCMotor.getFalcon500(2);
   private final SingleJointedArmSim sim =
       new SingleJointedArmSim(
           pivotGearbox,
@@ -28,36 +28,36 @@ public class ElevatorPivotIOSim implements ElevatorPivotIO {
 
   private double currentAmps = 0.0;
   private double appliedVolts = 0.0;
-  private double velocity = 0.0;
-  private double position = 0.0;
-  private double positionSetpoint = 0.0;
+  private double velocityRadsPerSec = 0.0;
+  private double positionRads = 0.0;
+  private double positionSetpointRads = 0.0;
 
   @Override
-  public void updateInputs(ElevatorPivotIOInputs inputs) {
-    positionSetpoint = pid.getSetpoint();
+  public void updateInputs(PivotIOInputs inputs) {
+    positionSetpointRads = pid.getSetpoint();
 
-    appliedVolts += MathUtil.clamp(pid.calculate(sim.getAngleRads(), positionSetpoint), -12.0, 12);
+    appliedVolts +=
+        MathUtil.clamp(pid.calculate(sim.getAngleRads(), positionSetpointRads), -12.0, 12);
 
     sim.setInputVoltage(appliedVolts);
-    // sim.setInput(appliedVolts);
 
-    position = sim.getAngleRads();
-    velocity = sim.getVelocityRadPerSec();
+    positionRads = sim.getAngleRads();
+    velocityRadsPerSec = sim.getVelocityRadPerSec();
     currentAmps = sim.getCurrentDrawAmps();
 
-    inputs.positionSetpoint = positionSetpoint;
+    inputs.positionSetpointDegs = Math.toDegrees(positionSetpointRads);
     inputs.appliedVolts = appliedVolts;
-    inputs.pivotPosition = position;
-    inputs.pivotVelocity = velocity;
+    inputs.positionDegs = Math.toDegrees(positionRads);
+    inputs.velocityDegsPerSec = Math.toDegrees(velocityRadsPerSec);
     inputs.currentAmps = currentAmps;
 
     sim.update(Constants.LOOP_PERIOD_SECS);
   }
 
   @Override
-  public void setPositionSetpoint(double position, double ffVolts) {
+  public void setPositionSetpointDegs(double positionDegs, double ffVolts) {
     appliedVolts = ffVolts;
-    pid.setSetpoint(position);
+    pid.setSetpoint(Math.toRadians(positionDegs));
   }
 
   @Override
