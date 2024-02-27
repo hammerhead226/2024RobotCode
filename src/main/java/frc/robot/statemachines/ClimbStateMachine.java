@@ -1,7 +1,5 @@
 package frc.robot.statemachines;
 
-import java.lang.invoke.MethodHandles.Lookup.ClassOption;
-
 import org.littletonrobotics.junction.Logger;
 
 import frc.robot.subsystems.elevator.Elevator;
@@ -18,46 +16,41 @@ public class ClimbStateMachine {
         this.pivot = pivot;
         this.shooter = shooter;
     }
+
     public enum CLIMB_STATES {
         NONE,
-        EXTEND_CLIMB,
+        PIVOT_CLIMB,
         RETRACT_CLIMB,
         SCORE_TRAP,
+        DONE
     }
 
     private CLIMB_STATES targetState = CLIMB_STATES.NONE;
-    int counter = 0;
 
     public CLIMB_STATES getTargetState() {
         return targetState;
     }
 
     public void advanceTargetState() {
-        if (atTargetState()) counter = Math.min(counter+1, 3);
-
-        switch (counter) {
-            case 0:
-                targetState = CLIMB_STATES.NONE;
+        switch (targetState) {
+            case NONE:
+                // move angle to climbing pivot angle and extend elevator when done
+                targetState = CLIMB_STATES.PIVOT_CLIMB;
                 break;
-            case 1:
-                targetState = CLIMB_STATES.EXTEND_CLIMB;
-                break;
-            case 2:
+            case PIVOT_CLIMB:
+                // retract elevator
                 targetState = CLIMB_STATES.RETRACT_CLIMB;
                 break;
-            case 3:
+            case RETRACT_CLIMB:
+                // trap scoring sequence
                 targetState = CLIMB_STATES.SCORE_TRAP;
+            case SCORE_TRAP:
+                // do nothing lol
+                targetState = CLIMB_STATES.DONE;
             default:
                 targetState = CLIMB_STATES.NONE;
                 break;
         }
         Logger.recordOutput("Climb Target State", targetState);
-    }
-
-    public boolean atTargetState() {
-        if (elevator.extenderAtSetpoint() && pivot.pivotAtSetpoint() && shooter.atFlywheelSetpoints()) {
-            return true;
         }
-        return false;
-    }
 }

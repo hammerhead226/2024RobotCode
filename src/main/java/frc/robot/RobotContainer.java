@@ -87,13 +87,14 @@ public class RobotContainer {
     return climbStateMachine.getTargetState();
   }
 
-  private final Command climbCommand = 
+  private final Command climbCommands = 
       new SelectCommand<>(
           Map.ofEntries(
             Map.entry(CLIMB_STATES.NONE, null),
-            Map.entry(CLIMB_STATES.EXTEND_CLIMB, null),
+            Map.entry(CLIMB_STATES.PIVOT_CLIMB, null),
             Map.entry(CLIMB_STATES.RETRACT_CLIMB, null),
-            Map.entry(CLIMB_STATES.SCORE_TRAP, null)), this::climbSelect);
+            Map.entry(CLIMB_STATES.SCORE_TRAP, null),
+            Map.entry(CLIMB_STATES.DONE, null)), this::climbSelect);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -205,14 +206,16 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    controller.a().onTrue(climbCommands);
+
     // controller.a().onTrue(new SetPivotTarget(45, pivot));
     // controller.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
     // controller.b().onTrue(new SetPivotTarget(5, pivot));
     // controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
-    controller.a().onTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(1000), intake));
-    controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
+    // controller.a().onTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(1000), intake));
+    // controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
 
     // controller.a().onTrue(new SetElevatorTarget(10, elevator));
     // controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
