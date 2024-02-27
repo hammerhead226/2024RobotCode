@@ -193,9 +193,24 @@ public class RobotContainer {
     // controller.b().onTrue(new SetPivotTarget(5, pivot));
     // controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
+    //A button bindings
     controller.a().onTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(1000), intake));
     controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
 
+    controller.a().whileTrue(new ParallelCommandGroup(
+      new SetPivotTarget(Constants.PivotConstants.AMP_ANGLE, pivot), 
+      new setShooterTargetRPM(Constants.ShooterConstants.RIGHT_SHOOTER_AMP_SPEED, Constants.ShooterConstants.LEFT_SHOOTER_AMP_SPEED),
+      new InstantCommand(() -> led.setColor(LED_STATE.BLUE), led) 
+    ));
+
+    controller.a().onFalse(new ParallelCommandGroup(
+      new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
+      new setShooterTargetRPM(0, 0),
+      // change from yellow to ambient color
+      new InstantCommand(() -> led.setColor(LED_STATE.YELLOW), led) 
+    ));
+
+    //leftBumber Bindings
     controller.leftBumper().onTrue(new InstantCommand(() -> {
       double[] shooterVelocities = shooter.getFlywheelVelocitiesRPM();
       if (shooterVelocities[0] != 0 || shooterVelocities[1] != 0) {
@@ -205,14 +220,33 @@ public class RobotContainer {
       }
     }));
 
-    controller.a().whileTrue(new ParallelCommandGroup(
-    new SetPivotTarget(Constants.PivotConstants.AMP_ANGLE, pivot), 
-    new setShooterTargetRPM(Constants.ShooterConstants.RIGHT_SHOOTER_AMP_SPEED, Constants.ShooterConstants.LEFT_SHOOTER_AMP_SPEED),
-    new InstantCommand(() -> led.setColor(LED_STATE.BLUE), led) 
+    //B button bindings
+    controller.b().whileTrue(new ParallelCommandGroup(
+      new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_ANGLE, pivot),
+      new setShooterTargetRPM(Constants.ShooterConstants.RIGHT_SHOOTER_SUBWOOFER_SPEED, Constants.ShooterConstants.LEFT_SHOOTER_SUBWOOFER_SPEED),
+      new InstantCommand(() -> led.setColor(LED_STATE.BLUE), led)
     ));
 
-    controller.a().onFalse(new ParallelCommandGroup(
+    controller.b().onFalse(new ParallelCommandGroup(
+      new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
+      new setShooterTargetRPM(0, 0),
+      // change from yellow to ambient color
+      new InstantCommand(() -> led.setColor(LED_STATE.YELLOW), led) 
 
+    ));
+
+    //X button Bindings
+    controller.x().whileTrue(new ParallelCommandGroup(
+      new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_INTAKE_ANGLE, pivot),
+      new setShooterTargetRPM(Constants.ShooterConstants.RIGHT_SHOOTER_SUBWOOFER_SPEED, Constants.ShooterConstants.LEFT_SHOOTER_SUBWOOFER_SPEED),
+      new InstantCommand(() -> led.setColor(LED_STATE.BLUE), led)
+    ));
+
+    controller.x().onFalse(new ParallelCommandGroup(
+      new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
+      new setShooterTargetRPM(0, 0),
+      // change from yellow to ambient color
+      new InstantCommand(() -> led.setColor(LED_STATE.YELLOW), led) 
     ));
 
     // controller.a().onTrue(new SetElevatorTarget(10, elevator));

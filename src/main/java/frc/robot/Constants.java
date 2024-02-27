@@ -78,10 +78,12 @@ public final class Constants {
 
     public static final double FLYWHEEL_THRESHOLD = 0;
 
+    //Update these Values
     public static final double NEUTRAL_VELOCITY = 10;
-
     public static final double RIGHT_SHOOTER_AMP_SPEED = 10;
     public static final double LEFT_SHOOTER_AMP_SPEED = 10;
+    public static final double RIGHT_SHOOTER_SUBWOOFER_SPEED = 10;
+    public static final double LEFT_SHOOTER_SUBWOOFER_SPEED = 10;
   }
 
   public static class ElevatorConstants {
@@ -109,8 +111,10 @@ public final class Constants {
 
     public static final double REDUCTION =
         (15.0 / 1.0) * (34.0 / 24.0) * (24.0 / 18.0) * (50.0 / 14.0);
-
+    //Update these Values
     public static final double AMP_ANGLE = 10;
+    public static final double  SUBWOOFER_ANGLE = 10;
+    public static final double  SUBWOOFER_INTAKE_ANGLE = 10;
   }
 
   public static class LEDConstants {
