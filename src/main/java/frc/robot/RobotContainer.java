@@ -34,11 +34,13 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeRollerIOSim;
 import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.led.LED_IO;
+import frc.robot.subsystems.led.LED_IOSpark;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
 import frc.robot.subsystems.pivot.PivotIOSim;
@@ -96,14 +98,14 @@ public class RobotContainer {
                     RobotMap.ShooterIDs.FLYWHEEL_LEFT, RobotMap.ShooterIDs.FLYWHEEL_RIGHT),
                 new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER),
                 new DistanceSensorIO() {});
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT));
+        elevator =
+            new Elevator(
+                new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT));
         pivot =
             new Pivot(
                 new PivotIOTalonFX(
                     RobotMap.PivotIDs.LEFT, RobotMap.PivotIDs.RIGHT, RobotMap.PivotIDs.GYRO));
-        // led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
+        led = new LED(new LED_IOSpark(RobotMap.LEDIDs.CHANNEL));
         break;
       case REPLAY:
         drive =
@@ -128,10 +130,10 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
-        // shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim(), new DistanceSensorIO() {});
-        // elevator = new Elevator(new ElevatorIOSim());
-        // pivot = new Pivot(new PivotIOSim());
-        // led = new LED(new LED_IO() {});
+        shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim(), new DistanceSensorIO() {});
+        elevator = new Elevator(new ElevatorIOSim());
+        pivot = new Pivot(new PivotIOSim());
+        led = new LED(new LED_IO() {});
         break;
 
       default:
@@ -194,7 +196,7 @@ public class RobotContainer {
 
     controller
         .rightBumper()
-        .whileTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(2000), intake));
+        .whileTrue(new InstantCommand(() -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
     controller.rightBumper().onFalse(new InstantCommand(intake::stopRollers, intake));
 
     controller.a().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(3000)));

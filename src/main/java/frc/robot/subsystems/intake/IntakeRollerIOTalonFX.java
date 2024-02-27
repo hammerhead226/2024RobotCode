@@ -17,8 +17,6 @@ public class IntakeRollerIOTalonFX implements IntakeRollerIO {
   private final StatusSignal<Double> appliedVolts;
   private final StatusSignal<Double> currentAmps;
 
-  private double velocitySetpointRPM = 0;
-
   public IntakeRollerIOTalonFX(int id) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimit = Constants.IntakeConstants.CURRENT_LIMIT;
@@ -45,32 +43,15 @@ public class IntakeRollerIOTalonFX implements IntakeRollerIO {
     inputs.rollerVelocityRPM = rollerVelocityRPS.getValueAsDouble() * 60.;
     inputs.appliedVolts = appliedVolts.getValue();
     inputs.currentAmps = currentAmps.getValue();
-
-    inputs.velocitySetpointRPM = velocitySetpointRPM;
   }
 
   @Override
-  public void setVelocityRPM(double velocityRPM, double ffVolts) {
-    this.velocitySetpointRPM = velocityRPM;
-
-    falcon.setControl(
-        new VelocityVoltage(velocityRPM / 60., 0, false, ffVolts, 0, false, false, false));
+  public void setVoltage(double volts) {
+    falcon.setVoltage(volts);
   }
 
   @Override
   public void stop() {
-    this.velocitySetpointRPM = 0;
     falcon.stopMotor();
-  }
-
-  @Override
-  public void configurePID(double kP, double kI, double kD) {
-    Slot0Configs config = new Slot0Configs();
-
-    config.kP = kP;
-    config.kI = kI;
-    config.kD = kD;
-
-    falcon.getConfigurator().apply(config);
   }
 }

@@ -79,8 +79,8 @@ public class Pivot extends SubsystemBase {
         break;
     }
 
-    maxVelocityDegPerSec.initDefault(30);
-    maxAccelerationDegPerSecSquared.initDefault(60);
+    maxVelocityDegPerSec.initDefault(75);
+    maxAccelerationDegPerSecSquared.initDefault(110);
 
     pivotConstraints =
         new TrapezoidProfile.Constraints(

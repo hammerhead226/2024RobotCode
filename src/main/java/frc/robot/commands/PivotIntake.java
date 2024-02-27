@@ -22,7 +22,7 @@ public class PivotIntake extends SequentialCommandGroup {
     addCommands(
         new SetPivotTarget(5, pivot),
         new WaitUntilCommand(pivot::pivotAtSetpoint),
-        new InstantCommand(() -> intake.setRollerVelocityRPM(1000), intake),
+        new InstantCommand(() -> intake.runRollers(1000), intake),
         new InstantCommand(() -> shooter.setFeedersRPM(1000)));
   }
 }
