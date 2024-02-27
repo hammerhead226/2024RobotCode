@@ -1,4 +1,4 @@
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems.Elevator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -52,9 +52,11 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   public void updateInputs(ElevatorIOInputs inputs) {
     BaseStatusSignal.refreshAll(elevatorPosition, elevatorVelocity, appliedVolts, currentAmps);
     inputs.elevatorPosition =
-        Conversions.motorRotToInches(elevatorPosition.getValueAsDouble(), 5.97, Constants.ElevatorConstants.REDUCTION);
+        Conversions.motorRotToInches(
+            elevatorPosition.getValueAsDouble(), 5.97, Constants.ElevatorConstants.REDUCTION);
     inputs.elevatorVelocity =
-        Conversions.motorRotToInches(elevatorVelocity.getValueAsDouble() * 60., 5.97, Constants.ElevatorConstants.REDUCTION);
+        Conversions.motorRotToInches(
+            elevatorVelocity.getValueAsDouble() * 60., 5.97, Constants.ElevatorConstants.REDUCTION);
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.currentAmps = currentAmps.getValueAsDouble();
     inputs.positionSetpoint = positionSetpoint;

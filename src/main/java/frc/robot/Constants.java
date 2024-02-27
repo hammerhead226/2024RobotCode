@@ -81,6 +81,9 @@ public final class Constants {
     public static final boolean FLYWHEEL_CURRENT_LIMIT_ENABLED = true;
 
     public static final double FLYWHEEL_THRESHOLD = 0;
+
+    public static final double LEFT_FLYWHEEL_TRAP_SPEED = 0;
+    public static final double RIGHT_FLYWHEEL_TRAP_SPEED = 0;
   }
 
   public static class ElevatorConstants {
@@ -94,6 +97,8 @@ public final class Constants {
     public static final double[] PID = {0, 0, 0};
 
     public static final double REDUCTION = (1.0 / 15.0);
+    public static final double EXTEND_HIGH_SETPOINT = 0;
+    public static final double EXTEND_STOW_SETPOINT = 0;
   }
 
   public static class PivotConstants {
@@ -106,7 +111,8 @@ public final class Constants {
 
     public static final double[] PID = {0, 0, 0};
 
-    public static final double REDUCTION = (15.0 / 1.0) * (34.0 / 24.0) * (24.0 / 18.0) * (50.0/14.0);
+    public static final double REDUCTION =
+        (15.0 / 1.0) * (34.0 / 24.0) * (24.0 / 18.0) * (50.0 / 14.0);
 
     public static final double PIVOT_ANGLE_DEGREES = 30;
   }

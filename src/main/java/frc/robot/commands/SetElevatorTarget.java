@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.Elevator.Elevator;
 
 public class SetElevatorTarget extends Command {
   /** Creates a new ExtendElevator. */

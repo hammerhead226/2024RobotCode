@@ -5,12 +5,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.Shooter.Shooter;
 
 public class SetFeedersTargetRPM extends Command {
   /** Creates a new SetFeedersRPM. */
-
   private final Shooter shooter;
+
   private final double rpm;
 
   public SetFeedersTargetRPM(double rpm, Shooter shooter) {
