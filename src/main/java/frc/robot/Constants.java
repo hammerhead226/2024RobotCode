@@ -89,7 +89,7 @@ public final class Constants {
 
     public static final double[] PID = {0, 0, 0};
 
-    public static final double REDUCTION = (1.0 / 15.0);
+    public static final double REDUCTION = (15.0 / 1.0);
   }
 
   public static class PivotConstants {
