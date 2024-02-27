@@ -65,7 +65,7 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int CURRENT_LIMIT = 15;
+    public static final int CURRENT_LIMIT = 30;
     public static final boolean CURRENT_LIMIT_ENABLED = true;
   }
 

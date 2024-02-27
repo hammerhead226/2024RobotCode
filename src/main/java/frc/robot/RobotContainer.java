@@ -21,8 +21,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.SetPivotTarget;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -32,7 +34,6 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
-import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeRollerIOSim;
 import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
@@ -75,6 +76,8 @@ public class RobotContainer {
   private final LoggedDashboardNumber elevatorDistance =
       new LoggedDashboardNumber("elevatorDistance");
 
+  private final LoggedDashboardNumber pivotAngle = new LoggedDashboardNumber("pivotangle");
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.getMode()) {
@@ -93,9 +96,9 @@ public class RobotContainer {
                     RobotMap.ShooterIDs.FLYWHEEL_LEFT, RobotMap.ShooterIDs.FLYWHEEL_RIGHT),
                 new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER),
                 new DistanceSensorIO() {});
-        elevator =
-            new Elevator(
-                new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT));
+        // elevator =
+        //     new Elevator(
+        //         new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT));
         pivot =
             new Pivot(
                 new PivotIOTalonFX(
@@ -174,7 +177,7 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller
-        .b()
+        .y()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -183,17 +186,30 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // controller.a().onTrue(new SetPivotTarget(50, pivot));
-    // controller.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
+    controller.x().onTrue(new SetPivotTarget(57, pivot));
+    controller.x().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
-    // controller.b().onTrue(new SetPivotTarget(-5, pivot));
-    // controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
+    controller.b().onTrue(new SetPivotTarget(5, pivot));
+    controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
-    controller.a().whileTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(2000), intake));
-    // controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
+    controller
+        .rightBumper()
+        .whileTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(2000), intake));
+    controller.rightBumper().onFalse(new InstantCommand(intake::stopRollers, intake));
 
-    controller.b().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
-    controller.b().onFalse(new InstantCommand(() -> shooter.stopFeeders()));
+    controller.a().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(3000)));
+    controller
+        .a()
+        .onFalse(
+            new InstantCommand(() -> shooter.setFeedersRPM(-100))
+                .andThen(new WaitCommand(0.5).andThen(shooter::stopFeeders)));
+
+    // controller.b().whileTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(2000),
+    // intake));
+    // controller.b().onFalse(new InstantCommand(intake::stopRollers, intake));
+
+    // controller.b().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(-1000)));
+    // controller.b().onFalse(new InstantCommand(shooter::stopFeeders, shooter));
 
     // controller.a().onTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(1000), intake));
     // controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
@@ -202,9 +218,10 @@ public class RobotContainer {
 
     // controller.y().onTrue(new SetElevatorTarget(0, elevator));
 
-    // controller.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(1000, 1000),
-    // shooter));
-    // controller.a().onFalse(new InstantCommand(shooter::stopFlywheels, shooter));
+    controller
+        .leftBumper()
+        .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(600, 600), shooter));
+    controller.leftBumper().onFalse(new InstantCommand(shooter::stopFlywheels, shooter));
 
     // controller.b().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter));
     // controller.b().onFalse(new InstantCommand(shooter::stopFeeders, shooter));

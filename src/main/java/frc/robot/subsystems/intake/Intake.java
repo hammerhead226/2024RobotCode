@@ -29,9 +29,9 @@ public class Intake extends SubsystemBase {
   public Intake(IntakeRollerIO roller) {
     switch (Constants.getMode()) {
       case REAL:
-        kS.initDefault(0);
-        kV.initDefault(10);
-        kA.initDefault(0);
+        kS.initDefault(0.011512);
+        kV.initDefault(0.028522);
+        kA.initDefault(0.0024588);
 
         kP.initDefault(0.03231);
         break;

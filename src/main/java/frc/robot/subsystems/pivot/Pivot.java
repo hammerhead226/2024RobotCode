@@ -42,13 +42,13 @@ public class Pivot extends SubsystemBase {
     this.pivot = pivot;
     switch (Constants.getMode()) {
       case REAL:
-        kS.initDefault(0.02);
+        kS.initDefault(0.1);
         kG.initDefault(0.1);
-        kV.initDefault(0.06);
+        kV.initDefault(0.04);
         kA.initDefault(0);
 
-        kP.initDefault(0);
-        kI.initDefault(0);
+        kP.initDefault(0.32);
+        kI.initDefault(0.045);
         kD.initDefault(0);
         break;
       case REPLAY:

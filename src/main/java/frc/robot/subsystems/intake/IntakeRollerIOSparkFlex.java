@@ -30,7 +30,7 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
     inputs.rollerRotations = rollers.getEncoder().getPosition();
     inputs.rollerVelocityRPM = rollers.getEncoder().getVelocity();
 
-    inputs.appliedVolts = rollers.getAppliedOutput();
+    inputs.appliedVolts = rollers.getAppliedOutput() * 12.;
     inputs.currentAmps = rollers.getOutputCurrent();
     inputs.velocitySetpointRPM = velocitySetpointRPM;
   }
@@ -39,7 +39,9 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
   public void setVelocityRPM(double velocity, double ffVolts) {
     this.velocitySetpointRPM = velocity;
     // pid.setReference(velocity, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
-    rollers.setVoltage(8);
+    if (velocity < 0) rollers.setVoltage(-8);
+    else rollers.set(8);
+    // rollers.setVoltage(8);
   }
 
   @Override
