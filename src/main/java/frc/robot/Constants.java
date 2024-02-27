@@ -67,11 +67,15 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int CURRENT_LIMIT = 30;
     public static final boolean CURRENT_LIMIT_ENABLED = true;
+
+    public static final double INTAKE_NOTE_VELOCITY_RPM = -100;
   }
 
   public static final class ShooterConstants {
     public static final double FEEDER_CURRENT_LIMIT = 40;
     public static final boolean FEEDER_CURRENT_LIMIT_ENABLED = true;
+
+    public static final double FEEDER_INTAKE_NOTE_VELOCITY_RPM = -100;
 
     public static final double FLYWHEEL_CURRENT_LIMIT = 40;
     public static final boolean FLYWHEEL_CURRENT_LIMIT_ENABLED = true;
@@ -103,6 +107,8 @@ public final class Constants {
     public static final double[] PID = {0, 0, 0};
 
     public static final double REDUCTION = (15.0 / 1.0) * (34.0 / 24.0) * (24.0 / 18.0) * (50.0/14.0);
+
+    public static final double PIVOT_ANGLE_DEGREES = 30;
   }
 
   public static class LEDConstants {

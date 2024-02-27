@@ -21,8 +21,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.SetFeedersTargetRPM;
+import frc.robot.commands.SetPivotTarget;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -173,8 +176,10 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+
+    // resets the gyro
     controller
-        .b()
+        .start()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -191,6 +196,27 @@ public class RobotContainer {
 
     controller.a().onTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(1000), intake));
     controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
+
+    // note intake
+    controller.rightBumper().whileTrue(new ParallelCommandGroup(
+      new SetPivotTarget(Constants.PivotConstants.PIVOT_ANGLE_DEGREES, pivot),
+
+      new InstantCommand(() -> intake.setRollerVelocityRPM(Constants.IntakeConstants.INTAKE_NOTE_VELOCITY_RPM)),
+ 
+      new SetFeedersTargetRPM(Constants.ShooterConstants.FEEDER_INTAKE_NOTE_VELOCITY_RPM, shooter)
+    ));
+
+    // note outtake
+    controller.leftBumper().whileTrue(new ParallelCommandGroup(
+      new SetPivotTarget(Constants.PivotConstants.PIVOT_ANGLE_DEGREES, pivot),
+
+      new InstantCommand(() -> intake.setRollerVelocityRPM(-1 * Constants.IntakeConstants.INTAKE_NOTE_VELOCITY_RPM)),
+ 
+      new SetFeedersTargetRPM(-1 * Constants.ShooterConstants.FEEDER_INTAKE_NOTE_VELOCITY_RPM, shooter) 
+    ));
+    
+    // note shoot 
+    controller.rightTrigger().whileTrue(new SetFeedersTargetRPM(Constants.ShooterConstants.FEEDER_INTAKE_NOTE_VELOCITY_RPM, shooter));
 
     // controller.a().onTrue(new SetElevatorTarget(10, elevator));
     // controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
