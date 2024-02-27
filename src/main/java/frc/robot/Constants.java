@@ -77,6 +77,11 @@ public final class Constants {
     public static final boolean FLYWHEEL_CURRENT_LIMIT_ENABLED = true;
 
     public static final double FLYWHEEL_THRESHOLD = 0;
+
+    public static final double NEUTRAL_VELOCITY = 10;
+
+    public static final double RIGHT_SHOOTER_AMP_SPEED = 10;
+    public static final double LEFT_SHOOTER_AMP_SPEED = 10;
   }
 
   public static class ElevatorConstants {
@@ -102,7 +107,10 @@ public final class Constants {
 
     public static final double[] PID = {0, 0, 0};
 
-    public static final double REDUCTION = (15.0 / 1.0) * (34.0 / 24.0) * (24.0 / 18.0) * (50.0/14.0);
+    public static final double REDUCTION =
+        (15.0 / 1.0) * (34.0 / 24.0) * (24.0 / 18.0) * (50.0 / 14.0);
+
+    public static final double AMP_ANGLE = 10;
   }
 
   public static class LEDConstants {

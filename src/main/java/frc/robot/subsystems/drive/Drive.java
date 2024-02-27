@@ -20,6 +20,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -54,7 +55,6 @@ public class Drive extends SubsystemBase {
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
-
 
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
@@ -174,7 +174,8 @@ public class Drive extends SubsystemBase {
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
     chassisSpeedMultiplier = MathUtil.clamp(chassisSpeedMultiplier, 0, 1);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, (MAX_LINEAR_SPEED * chassisSpeedMultiplier));
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        setpointStates, (MAX_LINEAR_SPEED * chassisSpeedMultiplier));
 
     // Send setpoints to modules
     SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
@@ -188,11 +189,11 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("SwerveStates/SetpointsOptimized", optimizedSetpointStates);
   }
 
-  public void increaseMultiplier () {
+  public void increaseMultiplier() {
     chassisSpeedMultiplier += 0.1;
   }
 
-  public void decreaseMultiplier () {
+  public void decreaseMultiplier() {
     chassisSpeedMultiplier -= 0.1;
   }
 

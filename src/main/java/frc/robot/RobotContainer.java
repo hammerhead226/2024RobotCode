@@ -21,8 +21,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.SetPivotTarget;
+import frc.robot.commands.setShooterTargetRPM;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -192,6 +196,25 @@ public class RobotContainer {
     controller.a().onTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(1000), intake));
     controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
 
+    controller.leftBumper().onTrue(new InstantCommand(() -> {
+      double[] shooterVelocities = shooter.getFlywheelVelocitiesRPM();
+      if (shooterVelocities[0] != 0 || shooterVelocities[1] != 0) {
+        shooter.setFlywheelRPMs(0, 0);
+      } else {
+        shooter.setFlywheelRPMs(Constants.ShooterConstants.NEUTRAL_VELOCITY, Constants.ShooterConstants.NEUTRAL_VELOCITY);
+      }
+    }));
+
+    controller.a().whileTrue(new ParallelCommandGroup(
+    new SetPivotTarget(Constants.PivotConstants.AMP_ANGLE, pivot), 
+    new setShooterTargetRPM(Constants.ShooterConstants.RIGHT_SHOOTER_AMP_SPEED, Constants.ShooterConstants.LEFT_SHOOTER_AMP_SPEED),
+    new InstantCommand(() -> led.setColor(LED_STATE.BLUE), led) 
+    ));
+
+    controller.a().onFalse(new ParallelCommandGroup(
+
+    ));
+
     // controller.a().onTrue(new SetElevatorTarget(10, elevator));
     // controller.a().onFalse(new InstantCommand(elevator::elevatorStop, elevator));
 
@@ -213,5 +236,15 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public Elevator getElevator () {
+    return elevator;
+  }
+  public Pivot getPivot () {
+    return pivot;
+  }
+  public Shooter getShooter () {
+    return shooter;
   }
 }
