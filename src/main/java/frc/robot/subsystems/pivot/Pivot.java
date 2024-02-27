@@ -43,12 +43,12 @@ public class Pivot extends SubsystemBase {
     switch (Constants.getMode()) {
       case REAL:
         kS.initDefault(0.1);
-        kG.initDefault(0.1);
-        kV.initDefault(0.04);
+        kG.initDefault(0.3);
+        kV.initDefault(0.03);
         kA.initDefault(0);
 
-        kP.initDefault(0.32);
-        kI.initDefault(0.045);
+        kP.initDefault(0.4);
+        kI.initDefault(0.04);
         kD.initDefault(0);
         break;
       case REPLAY:
@@ -79,7 +79,7 @@ public class Pivot extends SubsystemBase {
         break;
     }
 
-    maxVelocityDegPerSec.initDefault(75);
+    maxVelocityDegPerSec.initDefault(80);
     maxAccelerationDegPerSecSquared.initDefault(110);
 
     pivotConstraints =

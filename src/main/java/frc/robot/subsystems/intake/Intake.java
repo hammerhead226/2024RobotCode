@@ -4,10 +4,7 @@
 
 package frc.robot.subsystems.intake;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -32,7 +29,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     roller.updateInputs(rInputs);
-    
+
     Logger.processInputs("Intake", rInputs);
   }
 }

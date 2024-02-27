@@ -1,0 +1,73 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.5209773226564,
+        "y": 6.689103378206757
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.4847042676541498,
+        "y": 6.181280608175252
+      },
+      "isLocked": false,
+      "linkedName": "end of path 3"
+    },
+    {
+      "anchor": {
+        "x": 2.3940216301485235,
+        "y": 5.473956035631369
+      },
+      "prevControl": {
+        "x": 2.4484312126518994,
+        "y": 6.4986698394449425
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "pivot shooter to shoot angle",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 39.9203921399854,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -3,7 +3,6 @@ package frc.robot.subsystems.intake;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkPIDController;
 import frc.robot.Constants;
 
 public class IntakeRollerIOSparkFlex implements IntakeRollerIO {

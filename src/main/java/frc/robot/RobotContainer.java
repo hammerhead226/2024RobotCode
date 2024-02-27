@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.SetPivotTarget;
@@ -194,17 +193,19 @@ public class RobotContainer {
     controller.b().onTrue(new SetPivotTarget(5, pivot));
     controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
-    controller
-        .rightBumper()
-        .whileTrue(new InstantCommand(() -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
-    controller.rightBumper().onFalse(new InstantCommand(intake::stopRollers, intake));
+    // controller
+    //     .rightBumper()
+    //     .whileTrue(
+    //         new InstantCommand(
+    //             () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
+    // controller.rightBumper().onFalse(new InstantCommand(intake::stopRollers, intake));
 
-    controller.a().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(3000)));
-    controller
-        .a()
-        .onFalse(
-            new InstantCommand(() -> shooter.setFeedersRPM(-100))
-                .andThen(new WaitCommand(0.5).andThen(shooter::stopFeeders)));
+    // controller.a().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(3000)));
+    // controller
+    //     .a()
+    //     .onFalse(
+    //         new InstantCommand(() -> shooter.setFeedersRPM(-100))
+    //             .andThen(new WaitCommand(0.5).andThen(shooter::stopFeeders)));
 
     // controller.b().whileTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(2000),
     // intake));
@@ -220,10 +221,10 @@ public class RobotContainer {
 
     // controller.y().onTrue(new SetElevatorTarget(0, elevator));
 
-    controller
-        .leftBumper()
-        .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(600, 600), shooter));
-    controller.leftBumper().onFalse(new InstantCommand(shooter::stopFlywheels, shooter));
+    // controller
+    //     .leftBumper()
+    //     .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(600, 600), shooter));
+    // controller.leftBumper().onFalse(new InstantCommand(shooter::stopFlywheels, shooter));
 
     // controller.b().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter));
     // controller.b().onFalse(new InstantCommand(shooter::stopFeeders, shooter));
