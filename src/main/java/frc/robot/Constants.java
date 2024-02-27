@@ -65,7 +65,7 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int CURRENT_LIMIT = 30;
+    public static final int CURRENT_LIMIT = 15;
     public static final boolean CURRENT_LIMIT_ENABLED = true;
   }
 
@@ -98,6 +98,7 @@ public final class Constants {
 
     // Degrees
     public static final double STOW_SETPOINT_DEG = 0;
+    public static final double INTAKE_SETPOINT_DEG = 5;
     public static final double THRESHOLD = 0;
 
     public static final double[] PID = {0, 0, 0};
