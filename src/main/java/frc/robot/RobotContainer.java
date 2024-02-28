@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.SetElevatorTarget;
+import frc.robot.commands.SetFeedersTargetRPM;
 import frc.robot.commands.SetPivotTarget;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
@@ -180,7 +181,7 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller
-        .b()
+        .start()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -196,46 +197,40 @@ public class RobotContainer {
     // controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
 
     // A button bindings
-    controller.a().onTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(1000), intake));
-    controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
+    // controller.a().onTrue(new InstantCommand(() -> intake.setRollerVelocityRPM(1000), intake));
+    //  controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
 
     controller
-        .a()
+        .rightBumper()
         .whileTrue(
             new ParallelCommandGroup(
-                new SetPivotTarget(Constants.PivotConstants.AMP_ANGLE, pivot),
+                new SetPivotTarget(Constants.PivotConstants.PIVOT_ANGLE_DEGREES, pivot),
                 new InstantCommand(
                     () ->
-                        shooter.setFlywheelRPMs(
-                            Constants.ShooterConstants.LEFT_FLYWHEEL_AMP_SPEED,
-                            Constants.ShooterConstants.RIGHT_FLYWHEEL_AMP_SPEED),
-                    shooter),
+                        intake.setRollerVelocityRPM(
+                            Constants.IntakeConstants.INTAKE_NOTE_VELOCITY_RPM)),
+                new SetFeedersTargetRPM(
+                    Constants.ShooterConstants.FEEDER_INTAKE_NOTE_VELOCITY_RPM, shooter),
                 new InstantCommand(() -> led.setColor(LED_STATE.BLUE), led)));
 
     controller
-        .a()
-        .onFalse(
-            new ParallelCommandGroup(
-                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
-                new InstantCommand(() -> shooter.setFlywheelRPMs(0, 0), shooter),
-                // change from yellow to ambient color
-                new InstantCommand(() -> led.setColor(LED_STATE.YELLOW), led)));
-
-    // leftBumber Bindings
-    controller
         .leftBumper()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  double[] shooterVelocities = shooter.getFlywheelVelocitiesRPM();
-                  if (shooterVelocities[0] != 0 || shooterVelocities[1] != 0) {
-                    shooter.setFlywheelRPMs(0, 0);
-                  } else {
-                    shooter.setFlywheelRPMs(
-                        Constants.ShooterConstants.NEUTRAL_VELOCITY,
-                        Constants.ShooterConstants.NEUTRAL_VELOCITY);
-                  }
-                }));
+        .whileTrue(
+            new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.PIVOT_ANGLE_DEGREES, pivot),
+                new InstantCommand(
+                    () ->
+                        intake.setRollerVelocityRPM(
+                            -1 * Constants.IntakeConstants.INTAKE_NOTE_VELOCITY_RPM)),
+                new SetFeedersTargetRPM(
+                    -1 * Constants.ShooterConstants.FEEDER_INTAKE_NOTE_VELOCITY_RPM, shooter)));
+
+    // note shoot
+    controller
+        .rightTrigger()
+        .whileTrue(
+            new SetFeedersTargetRPM(
+                Constants.ShooterConstants.FEEDER_INTAKE_NOTE_VELOCITY_RPM, shooter));
 
     // B button bindings
     // climbing buttons
