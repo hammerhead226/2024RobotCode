@@ -84,6 +84,9 @@ public final class Constants {
 
     public static final double LEFT_FLYWHEEL_TRAP_SPEED = 0;
     public static final double RIGHT_FLYWHEEL_TRAP_SPEED = 0;
+    public static final double NEUTRAL_VELOCITY = 0;
+    public static final double LEFT_FLYWHEEL_AMP_SPEED = 0;
+    public static final double RIGHT_FLYWHEEL_AMP_SPEED = 0;
   }
 
   public static class ElevatorConstants {
@@ -115,6 +118,7 @@ public final class Constants {
         (15.0 / 1.0) * (34.0 / 24.0) * (24.0 / 18.0) * (50.0 / 14.0);
 
     public static final double PIVOT_ANGLE_DEGREES = 30;
+    public static final double AMP_ANGLE = 0;
   }
 
   public static class LEDConstants {
