@@ -30,6 +30,7 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotClimb;
 import frc.robot.commands.PivotIntake;
 import frc.robot.commands.SetElevatorTarget;
+import frc.robot.commands.SetFeedersTargetRPM;
 import frc.robot.commands.SetPivotTarget;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
@@ -96,6 +97,8 @@ public class RobotContainer {
   }
 
   private final Command climbCommands;
+
+  private final Command elevatorCommands;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -188,6 +191,13 @@ public class RobotContainer {
                 Map.entry(CLIMB_STATES.RETRACT_CLIMB, new PrintCommand("hi")),
                 Map.entry(CLIMB_STATES.DONE, new PrintCommand("hello"))),
             this::climbSelect);
+    
+    elevatorCommands = 
+        new SelectCommand<>(
+            Map.ofEntries(
+                Map.entry(false, new SetElevatorTarget(Constants.ElevatorConstants.EXTEND_SETPOINT_INCH, elevator)),
+                Map.entry(true, new SetElevatorTarget(Constants.ElevatorConstants.RETRACT_SETPOINT_INCH, elevator))), 
+            elevator::isExtended);
 
     NamedCommands.registerCommand(
         "PivotIntake", new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot));
@@ -221,7 +231,7 @@ public class RobotContainer {
             () -> -driveController.getLeftY(),
             () -> -driveController.getLeftX(),
             () -> -driveController.getRightX()));
-    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+  
     driveController
         .start()
         .onTrue(
@@ -232,21 +242,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    manipController.b().whileTrue(new SetPivotTarget(20, pivot));
-    manipController
-        .b()
-        .onFalse(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot));
-
-    manipController
-        .leftBumper()
-        .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000), shooter));
-    manipController.leftBumper().onFalse(new InstantCommand(shooter::stopFlywheels, shooter));
-
-    // controller
-    //     .a()
-    //     .onTrue(
-    //         climbCommands.andThen(
-    //             new InstantCommand(climbStateMachine::advanceTargetState, pivot)));
+   
 
     driveController.rightBumper().onTrue(new PivotIntake(pivot, intake, shooter, false));
     driveController
@@ -272,67 +268,30 @@ public class RobotContainer {
     driveController.povUp().onTrue(new InstantCommand(drive::increaseSpeed, drive));
     driveController.povDown().onTrue(new InstantCommand(drive::decreaseSpeed, drive));
 
-    // controller.a().onTrue(new SetPivotTarget(45, pivot));
-    // controller.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
-
-    // controller.b().onTrue(new SetPivotTarget(5, pivot));
-    // controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
-
-    // controller.leftBumper().onTrue(new SetElevatorTarget(0, elevator));
-    // controller.b().onFalse(new InstantCommand(pivot::pivotStop, pivot));
-
-    // controller
-    // .rightBumper()
-    // .whileTrue(
-    // new InstantCommand(
-    // () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
-    // controller.rightBumper().onFalse(new InstantCommand(intake::stopRollers,
-    // intake));
-    // controller.a().onTrue(new InstantCommand(() ->
-    // intake.setRollerVelocityRPM(1000), intake));
-    // controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
-
-    // controller.a().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(3000)));
-
-    // controller.b().whileTrue(new InstantCommand(() ->
-    // intake.setRollerVelocityRPM(2000),
-    // intake));
-    // controller.b().onFalse(new InstantCommand(intake::stopRollers, intake));
-
-    // controller.b().onTrue(new InstantCommand(() ->
-    // shooter.setFeedersRPM(-1000)));
-    // controller.b().onFalse(new InstantCommand(shooter::stopFeeders, shooter));
-
-    // controller.a().onTrue(new InstantCommand(() ->
-    // intake.setRollerVelocityRPM(1000), intake));
-    // controller.a().onFalse(new InstantCommand(intake::stopRollers, intake));
-
-    // controller.x().onTrue(new SetElevatorTarget(10, elevator));
-
-    // controller.y().onTrue(new SetElevatorTarget(0, elevator));
-
     driveController
         .rightTrigger()
-        .onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter));
+        .onTrue(new SetFeedersTargetRPM(1000, shooter));
     driveController
         .rightTrigger()
         .onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
 
-    // driveController
-    //     .rightBumper()
-    //     .onTrue(
-    //         new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter)
-    //             .andThen(new WaitCommand(0.8))
-    //             .andThen(new SetElevatorTarget(1.5, elevator)));
-    // driveController
-    //     .rightBumper()
-    //     .onFalse(
-    //         new InstantCommand(() -> shooter.stopFeeders(), shooter)
-    //             .andThen(new SetElevatorTarget(0, elevator)));
+    driveController.a().onTrue(climbCommands);
+    
+    driveController.x().onTrue(elevatorCommands);
 
-    // controller.b().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000),
-    // shooter));
-    // controller.b().onFalse(new InstantCommand(shooter::stopFeeders, shooter));
+
+
+    manipController.b().whileTrue(new SetPivotTarget(20, pivot));
+    manipController
+        .b()
+        .onFalse(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot));
+
+    manipController
+        .leftBumper()
+        .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000), shooter));
+    manipController.leftBumper().onFalse(new InstantCommand(shooter::stopFlywheels, shooter));
+
+ 
   }
 
   /**

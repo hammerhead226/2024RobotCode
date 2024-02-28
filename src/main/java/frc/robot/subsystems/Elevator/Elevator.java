@@ -108,6 +108,10 @@ public class Elevator extends SubsystemBase {
     return angle;
   }
 
+  public boolean isExtended() {
+    return extenderGoal.position == Constants.ElevatorConstants.EXTEND_SETPOINT_INCH;
+  }
+
   @Override
   public void periodic() {
 

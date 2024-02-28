@@ -17,7 +17,7 @@ public class Shooter extends SubsystemBase {
   private final FeederIO feeder;
   private DistanceSensorIO dist;
 
-  private final FlywheelIOInputsAutoLogged fInputs = new FlywheelIOInputsAutoLogged();
+  private final FlywheelIOInputsAutoLogged flyInputs = new FlywheelIOInputsAutoLogged();
   private final FeederIOInputsAutoLogged feedInputs = new FeederIOInputsAutoLogged();
   private final DistanceSensorIOInputsAutoLogged sInputs = new DistanceSensorIOInputsAutoLogged();
 
@@ -99,13 +99,13 @@ public class Shooter extends SubsystemBase {
   }
 
   public double[] getFlywheelVelocitiesRPM() {
-    return new double[] {fInputs.leftVelocityRPM, fInputs.leftVelocityRPM};
+    return new double[] {flyInputs.leftVelocityRPM, flyInputs.leftVelocityRPM};
   }
 
   public double[] getFlywheelErrors() {
     return new double[] {
-      fInputs.leftVelocitySetpointRPM - getFlywheelVelocitiesRPM()[0],
-      fInputs.rightVelocitySetpointRPM - getFlywheelVelocitiesRPM()[1]
+      flyInputs.leftVelocitySetpointRPM - getFlywheelVelocitiesRPM()[0],
+      flyInputs.rightVelocitySetpointRPM - getFlywheelVelocitiesRPM()[1]
     };
   }
 
@@ -114,15 +114,27 @@ public class Shooter extends SubsystemBase {
         && getFlywheelErrors()[1] <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD);
   }
 
+  public double getFeederRPM() {
+    return feedInputs.feederVelocityRPM;
+  }
+
+  public double getFeederError() {
+    return feedInputs.velocitySetpointRPM - getFeederError();
+  }
+
+  public boolean atFeederSetpoint() {
+    return Math.abs(getFeederError()) <= Constants.ShooterConstants.FEEDER_THRESHOLD;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    flywheels.updateInputs(fInputs);
+    flywheels.updateInputs(flyInputs);
     feeder.updateInputs(feedInputs);
     dist.updateInputs(sInputs);
 
-    Logger.processInputs("Flywheels", fInputs);
+    Logger.processInputs("Flywheels", flyInputs);
     Logger.processInputs("Feeder", feedInputs);
     Logger.processInputs("Distance Sensor", sInputs);
 
