@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5209773226564,
-        "y": 4.403900913064984
+        "x": 2.5670791427174855,
+        "y": 4.19247948338978
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7864479588608302,
-        "y": 4.993338056851552
+        "x": 1.8325497789219156,
+        "y": 4.781916627176349
       },
       "isLocked": false,
       "linkedName": "end of path 2"
@@ -22,22 +22,6 @@
       "prevControl": {
         "x": 1.8252489348567498,
         "y": 5.046301318525968
-      },
-      "nextControl": {
-        "x": 2.1129054538810834,
-        "y": 6.326372828184253
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.5209773226564,
-        "y": 6.689103378206757
-      },
-      "prevControl": {
-        "x": 1.9859497613732073,
-        "y": 6.154075816923565
       },
       "nextControl": null,
       "isLocked": false,
@@ -59,37 +43,47 @@
       "command": {
         "type": "sequential",
         "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "run intake and feeders",
-      "waypointRelativePos": 1.2,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "pivot shooter to intake pos",
-      "waypointRelativePos": 1.2,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotShoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFeeders"
+              }
+            }
+          ]
         }
       }
     },
     {
       "name": "pivot shooter to shoot pos",
-      "waypointRelativePos": 0.25,
+      "waypointRelativePos": 0.3,
       "command": {
         "type": "parallel",
         "data": {
           "commands": []
+        }
+      }
+    },
+    {
+      "name": "position note in feeder",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PositionNoteInFeeder"
+              }
+            }
+          ]
         }
       }
     }
@@ -102,13 +96,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 42.82525588538983,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -45.80692945510236,
+    "rotation": -8.297144969763774,
     "velocity": 0
   },
   "useDefaultConstraints": true

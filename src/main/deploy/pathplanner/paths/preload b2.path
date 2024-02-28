@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.80209349892384,
-        "y": 5.57
+        "x": 3.1643318065523425,
+        "y": 5.573706936887558
       },
       "prevControl": {
-        "x": 1.8401733875711437,
-        "y": 5.57
+        "x": 2.202411695199646,
+        "y": 5.573706936887558
       },
       "nextControl": null,
       "isLocked": false,
@@ -37,27 +37,43 @@
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFlywheels"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.5
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "StopFeeders"
+              }
+            }
+          ]
         }
       }
     },
     {
-      "name": "pivot shooter to intake position",
+      "name": "intake note",
       "waypointRelativePos": 0.1,
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "run intake and feeders",
-      "waypointRelativePos": 0.4,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotIntake"
+              }
+            }
+          ]
         }
       }
     }

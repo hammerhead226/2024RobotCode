@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -29,9 +30,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotClimb;
 import frc.robot.commands.PivotIntake;
+import frc.robot.commands.PositionNoteInFeeder;
 import frc.robot.commands.SetElevatorTarget;
 import frc.robot.commands.SetFeedersTargetRPM;
 import frc.robot.commands.SetPivotTarget;
+import frc.robot.commands.SetShooterTargetRPM;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
 import frc.robot.subsystems.drive.Drive;
@@ -201,16 +204,19 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "PivotIntake", new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot));
+    NamedCommands.registerCommand(
+        "PivotShoot", new SetPivotTarget(30, pivot));
 
     NamedCommands.registerCommand(
-        "StartFlywheels", new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000)));
-
-    NamedCommands.registerCommand("StopFlywheels", new InstantCommand(shooter::stopFlywheels));
-
+        "StartFlywheels", new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000), shooter));
+    NamedCommands.registerCommand("StopFlywheels", new InstantCommand(shooter::stopFlywheels, shooter));
     NamedCommands.registerCommand(
-        "StartFeeders", new InstantCommand(() -> shooter.setFeedersRPM(1000)));
+        "StartFeeders", new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter));
+    NamedCommands.registerCommand("StopFeeders", new InstantCommand(shooter::stopFeeders, shooter));
+    NamedCommands.registerCommand("PositionNoteInFeeder", new PositionNoteInFeeder(shooter, intake));
 
-    NamedCommands.registerCommand("StopFeeders", new InstantCommand(shooter::stopFeeders));
+    NamedCommands.registerCommand("RunIntake", new InstantCommand(() -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
+    NamedCommands.registerCommand("StopIntake", new InstantCommand(intake::stopRollers, intake));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -245,18 +251,13 @@ public class RobotContainer {
    
 
     driveController.rightBumper().onTrue(new PivotIntake(pivot, intake, shooter, false));
-    driveController
+     driveController
         .rightBumper()
         .onFalse(
-            new InstantCommand(intake::stopRollers)
-                .andThen(new InstantCommand(() -> shooter.setFeedersRPM(-100)))
-                .andThen(
-                    new WaitCommand(0.5)
-                        .andThen(shooter::stopFeeders)
-                        .andThen(
-                            new SetPivotTarget(
-                                Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))));
-
+           new PositionNoteInFeeder(shooter, intake)
+                .andThen(new SetPivotTarget(
+                                Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
+    
     driveController.leftBumper().whileTrue(new PivotIntake(pivot, intake, shooter, true));
     driveController
         .leftBumper()
@@ -280,16 +281,46 @@ public class RobotContainer {
     driveController.x().onTrue(elevatorCommands);
 
 
+    manipController
+        .a().
+        onTrue(
+            new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot), 
+                new SetShooterTargetRPM(Constants.ShooterConstants.FLYWHEEL_AMP_RPM, Constants.ShooterConstants.FLYWHEEL_AMP_RPM, shooter)));
+    manipController
+        .a()
+        .onFalse(new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot), 
+                new SetShooterTargetRPM(0, 0, shooter)));
 
-    manipController.b().whileTrue(new SetPivotTarget(20, pivot));
+    manipController
+        .b().
+        onTrue(
+            new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot), 
+                new SetShooterTargetRPM(Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, shooter)));
     manipController
         .b()
-        .onFalse(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot));
+        .onFalse(new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot), 
+                new SetShooterTargetRPM(0, 0, shooter)));
 
     manipController
         .leftBumper()
         .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000), shooter));
     manipController.leftBumper().onFalse(new InstantCommand(shooter::stopFlywheels, shooter));
+
+   manipController
+        .x().
+        onTrue(
+            new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.REVERSE_SUBWOOFER_SETPOINT_DEG, pivot), 
+                new SetShooterTargetRPM(Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, shooter)));
+    manipController
+        .x()
+        .onFalse(new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot), 
+                new SetShooterTargetRPM(0, 0, shooter)));
 
  
   }

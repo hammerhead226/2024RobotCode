@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.80209349892384,
-        "y": 5.57
+        "x": 3.1643318065523425,
+        "y": 5.573706936887558
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.185451563885584,
-        "y": 4.957065001849302
+        "x": 2.672476671629519,
+        "y": 5.305008955239023
       },
       "isLocked": false,
       "linkedName": "end of path 1"
     },
     {
       "anchor": {
-        "x": 2.185451563885584,
-        "y": 4.630607506829048
+        "x": 2.0400914981573175,
+        "y": 4.684334618312604
       },
       "prevControl": {
-        "x": 2.0513192630447885,
-        "y": 4.80199878012562
+        "x": 1.7707422576043426,
+        "y": 5.082503060869175
       },
       "nextControl": {
-        "x": 2.348680311395711,
-        "y": 4.422037440566109
+        "x": 2.1884889836339676,
+        "y": 4.464964422390599
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.5209773226564,
-        "y": 4.403900913064984
+        "x": 2.5670791427174855,
+        "y": 4.19247948338978
       },
       "prevControl": {
-        "x": 2.2670659376406475,
-        "y": 4.485515286820048
+        "x": 2.313167757701733,
+        "y": 4.274093857144845
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,12 +48,32 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "stop intake and feeders",
+      "name": "position note in feeder",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "PositionNoteInFeeder"
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "StopIntake"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
         }
       }
     },
@@ -63,27 +83,54 @@
       "command": {
         "type": "sequential",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotShoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFeeders"
+              }
+            }
+          ]
         }
       }
     },
     {
       "name": "run intake and feeders",
-      "waypointRelativePos": 1.65,
+      "waypointRelativePos": 1.5,
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotIntake"
+              }
+            }
+          ]
         }
       }
     },
     {
-      "name": "pivot shooter to shoot angle",
-      "waypointRelativePos": 0,
+      "name": "stop flywheels",
+      "waypointRelativePos": 1.1,
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopFlywheels"
+              }
+            }
+          ]
         }
       }
     }
@@ -96,7 +143,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -38.99099404250551,
+    "rotation": -8.972626614896443,
     "rotateFast": false
   },
   "reversed": false,
