@@ -26,7 +26,8 @@ public class PivotIOTalonFX implements PivotIO {
 
   private double startAngleDegs;
 
-  private final StatusSignal<Double> positionDegs;
+  private final StatusSignal<Double> leaderPositionDegs;
+  private final StatusSignal<Double> followPositionDegs;
   private final StatusSignal<Double> velocityDegsPerSec;
   private final StatusSignal<Double> appliedVolts;
   private final StatusSignal<Double> currentAmps;
@@ -36,7 +37,7 @@ public class PivotIOTalonFX implements PivotIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimit = Constants.PivotConstants.CURRENT_LIMIT;
     config.CurrentLimits.StatorCurrentLimitEnable = Constants.PivotConstants.CURRENT_LIMIT_ENABLED;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     leader = new TalonFX(leadID, Constants.CANBUS);
@@ -55,7 +56,11 @@ public class PivotIOTalonFX implements PivotIO {
     leader.setPosition(
         Conversions.degreesToFalcon(startAngleDegs, Constants.PivotConstants.REDUCTION));
 
-    positionDegs = leader.getPosition();
+    follower.setPosition(
+        Conversions.degreesToFalcon(startAngleDegs, Constants.PivotConstants.REDUCTION));
+
+    leaderPositionDegs = leader.getPosition();
+    followPositionDegs = follower.getPosition();
     velocityDegsPerSec = leader.getVelocity();
     appliedVolts = leader.getMotorVoltage();
     currentAmps = leader.getStatorCurrent();
@@ -69,20 +74,25 @@ public class PivotIOTalonFX implements PivotIO {
     follower.optimizeBusUtilization();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        100, positionDegs, velocityDegsPerSec, appliedVolts, currentAmps, pitch);
+        100, leaderPositionDegs, velocityDegsPerSec, appliedVolts, currentAmps, pitch);
   }
 
   @Override
   public void updateInputs(PivotIOInputs inputs) {
-    BaseStatusSignal.refreshAll(positionDegs, velocityDegsPerSec, appliedVolts, currentAmps, pitch);
+    BaseStatusSignal.refreshAll(
+        leaderPositionDegs, velocityDegsPerSec, appliedVolts, currentAmps, pitch);
     inputs.gyroConnected = BaseStatusSignal.refreshAll(pitch).equals(StatusCode.OK);
     inputs.pitch = pitch.getValueAsDouble();
     inputs.positionDegs =
         Conversions.falconToDegrees(
-            positionDegs.getValueAsDouble(), Constants.PivotConstants.REDUCTION);
+            (leaderPositionDegs.getValueAsDouble()), Constants.PivotConstants.REDUCTION);
+
     inputs.velocityDegsPerSec =
         Conversions.falconToDegrees(
-            velocityDegsPerSec.getValueAsDouble() * 2048, Constants.PivotConstants.REDUCTION);
+            (followPositionDegs.getValueAsDouble()), Constants.PivotConstants.REDUCTION);
+    // inputs.velocityDegsPerSec =
+    //     Conversions.falconToDegrees(
+    //         velocityDegsPerSec.getValueAsDouble() * 2048, Constants.PivotConstants.REDUCTION);
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.currentAmps = currentAmps.getValueAsDouble();
     inputs.positionSetpointDegs = positionSetpointDegs;
@@ -105,7 +115,7 @@ public class PivotIOTalonFX implements PivotIO {
 
   @Override
   public void stop() {
-    this.positionSetpointDegs = positionDegs.getValueAsDouble();
+    this.positionSetpointDegs = leaderPositionDegs.getValueAsDouble();
     leader.stopMotor();
   }
 

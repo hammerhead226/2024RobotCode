@@ -49,7 +49,7 @@ public final class Constants {
     public static final double TRACK_WIDTH_Y = Units.inchesToMeters(26.0);
     public static final double DRIVE_BASE_RADIUS =
         Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
-    public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+    public static final double MAX_ANGULAR_SPEED = 0.6 * MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
   }
 
   public static class ModuleConstants {
@@ -86,7 +86,7 @@ public final class Constants {
 
     public static final double RETRACT_SETPOINT_INCH = 0;
     public static final double EXTEND_SETPOINT_INCH = 0;
-    public static final double THRESHOLD = 0;
+    public static final double THRESHOLD = 2;
 
     public static final double[] PID = {0, 0, 0};
 
@@ -100,7 +100,7 @@ public final class Constants {
     // Degrees
     public static final double STOW_SETPOINT_DEG = 0;
     public static final double INTAKE_SETPOINT_DEG = 5;
-    public static final double THRESHOLD = 0;
+    public static final double THRESHOLD = 5;
 
     public static final double[] PID = {0, 0, 0};
 

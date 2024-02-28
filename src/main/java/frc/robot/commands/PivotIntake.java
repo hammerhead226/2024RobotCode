@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
@@ -16,13 +17,23 @@ import frc.robot.subsystems.shooter.Shooter;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PivotIntake extends SequentialCommandGroup {
   /** Creates a new PivotIntake. */
-  public PivotIntake(Pivot pivot, Intake intake, Shooter shooter) {
+  public PivotIntake(Pivot pivot, Intake intake, Shooter shooter, boolean outtake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-        new SetPivotTarget(5, pivot),
-        new WaitUntilCommand(pivot::pivotAtSetpoint),
-        new InstantCommand(() -> intake.runRollers(1000), intake),
-        new InstantCommand(() -> shooter.setFeedersRPM(1000)));
+    if (!outtake) {
+      addCommands(
+          new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
+          new WaitUntilCommand(pivot::pivotAtSetpoint),
+          new InstantCommand(
+              () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake),
+          new InstantCommand(() -> shooter.setFeedersRPM(1000)));
+    } else {
+      addCommands(
+          new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
+          new WaitUntilCommand(pivot::pivotAtSetpoint),
+          new InstantCommand(() -> shooter.setFeedersRPM(-4000)),
+          new InstantCommand(
+              () -> intake.runRollers(-Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
+    }
   }
 }
