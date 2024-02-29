@@ -228,11 +228,11 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "PositionNoteInFeeder", new PositionNoteInFeeder(shooter, intake));
 
-    NamedCommands.registerCommand(
-        "RunIntake",
-        new InstantCommand(
-            () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
-    NamedCommands.registerCommand("StopIntake", new InstantCommand(intake::stopRollers, intake));
+    // NamedCommands.registerCommand(
+    //     "RunIntake",
+    //     new InstantCommand(
+    //         () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
+    // NamedCommands.registerCommand("StopIntake", new InstantCommand(intake::stopRollers, intake));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

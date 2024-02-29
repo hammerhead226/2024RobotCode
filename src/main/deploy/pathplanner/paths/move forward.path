@@ -86,7 +86,7 @@
       "name": "stop",
       "waypointRelativePos": 1.0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
