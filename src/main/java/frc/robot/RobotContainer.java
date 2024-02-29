@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotClimb;
@@ -35,6 +34,7 @@ import frc.robot.commands.SetElevatorTarget;
 import frc.robot.commands.SetFeedersTargetRPM;
 import frc.robot.commands.SetPivotTarget;
 import frc.robot.commands.SetShooterTargetRPM;
+import frc.robot.commands.setLEDColorSeconds;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
 import frc.robot.subsystems.drive.Drive;
@@ -286,7 +286,8 @@ public class RobotContainer {
         onTrue(
             new ParallelCommandGroup(
                 new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot), 
-                new SetShooterTargetRPM(Constants.ShooterConstants.FLYWHEEL_AMP_RPM, Constants.ShooterConstants.FLYWHEEL_AMP_RPM, shooter)));
+                new SetShooterTargetRPM(Constants.ShooterConstants.FLYWHEEL_AMP_RPM, Constants.ShooterConstants.FLYWHEEL_AMP_RPM, shooter))
+                .andThen(new setLEDColorSeconds(led, Constants.LED_STATE.GREEN, 3)));
     manipController
         .a()
         .onFalse(new ParallelCommandGroup(
@@ -298,7 +299,8 @@ public class RobotContainer {
         onTrue(
             new ParallelCommandGroup(
                 new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot), 
-                new SetShooterTargetRPM(Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, shooter)));
+                new SetShooterTargetRPM(Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, shooter))
+                .andThen(new setLEDColorSeconds(led, Constants.LED_STATE.GREEN, 3)));
     manipController
         .b()
         .onFalse(new ParallelCommandGroup(
@@ -321,8 +323,6 @@ public class RobotContainer {
         .onFalse(new ParallelCommandGroup(
                 new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot), 
                 new SetShooterTargetRPM(0, 0, shooter)));
-
- 
   }
 
   /**

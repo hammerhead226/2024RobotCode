@@ -51,6 +51,8 @@ public class LED_IOSpark implements LED_IO {
       case VIOLET:
         led.set(Constants.LEDConstants.COLOR_VIOLET);
         break;
+      case GREEN:
+        led.set(Constants.LEDConstants.COLOR_GREEN);
       case OFF:
         led.close();
         break;

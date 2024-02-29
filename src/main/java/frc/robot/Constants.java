@@ -120,6 +120,8 @@ public final class Constants {
     public static final double COLOR_RED = 0.61;
     public static final double COLOR_YELLOW = 0.66;
     public static final double COLOR_VIOLET = 0.91;
+    // TODO add color value for green
+    public static final double COLOR_GREEN = 0;
   }
 
   public static enum LED_STATE {
@@ -127,6 +129,7 @@ public final class Constants {
     RED,
     YELLOW,
     VIOLET,
+    GREEN,
     OFF
   }
 }
