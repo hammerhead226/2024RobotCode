@@ -50,6 +50,7 @@ public final class Constants {
     public static final double DRIVE_BASE_RADIUS =
         Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
     public static final double MAX_ANGULAR_SPEED = 0.6 * MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+    public static final double OPEN_LOOP_RAMP_SEC = 0.5;
   }
 
   public static class ModuleConstants {
@@ -103,10 +104,10 @@ public final class Constants {
     public static final boolean CURRENT_LIMIT_ENABLED = true;
 
     public static final double STOW_SETPOINT_DEG = 52.7;
-    public static final double INTAKE_SETPOINT_DEG = 64;
-    public static final double AMP_SETPOINT_DEG = 60;
-    public static final double SUBWOOFER_SETPOINT_DEG = 70;
-    public static final double REVERSE_SUBWOOFER_SETPOINT_DEG = 110;
+    public static final double INTAKE_SETPOINT_DEG = 64.0;
+    public static final double AMP_SETPOINT_DEG = 60.0;
+    public static final double SUBWOOFER_SETPOINT_DEG = 70.0;
+    public static final double REVERSE_SUBWOOFER_SETPOINT_DEG = 110.0;
 
     public static final double THRESHOLD = 5;
 
