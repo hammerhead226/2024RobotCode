@@ -3,74 +3,51 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4055808813372015,
-        "y": 5.573706936887558
+        "x": 4.721873067141283,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4055808813372,
-        "y": 5.573706936887558
+        "x": 5.721873067141285,
+        "y": 7.0
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "test"
     },
     {
       "anchor": {
-        "x": 3.1643318065523425,
-        "y": 5.573706936887558
+        "x": 3.550789412563132,
+        "y": 4.707756291404166
       },
       "prevControl": {
-        "x": 2.202411695199646,
-        "y": 5.573706936887558
+        "x": 2.550789412563132,
+        "y": 4.707756291404166
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "end of path 1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "shoot preload",
-      "waypointRelativePos": 0.0,
+      "name": "stop shooter and feeder",
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "parallel",
         "data": {
           "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StartFlywheels"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.5
-              }
-            },
             {
               "type": "named",
               "data": {
                 "name": "StopFeeders"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "intake note",
-      "waypointRelativePos": 0.1,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
+            },
             {
               "type": "named",
               "data": {
-                "name": "PivotIntake"
+                "name": "StopFlywheels"
               }
             }
           ]
@@ -90,7 +67,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "comp autos",
+  "folder": "New Folder",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

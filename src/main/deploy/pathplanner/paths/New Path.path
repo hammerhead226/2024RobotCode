@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0166698250657547,
-        "y": 5.164478916689645
+        "x": 1.3725738150477713,
+        "y": 5.58606903233778
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.016669825065754,
-        "y": 5.164478916689645
+        "x": 2.37257381504777,
+        "y": 5.58606903233778
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.963221740994124,
-        "y": 3.513250963734452
+        "x": 3.176042643098124,
+        "y": 5.58606903233778
       },
       "prevControl": {
-        "x": 4.963221740994124,
-        "y": 3.513250963734452
+        "x": 2.176042643098124,
+        "y": 5.58606903233778
       },
       "nextControl": null,
       "isLocked": false,
@@ -36,7 +36,71 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "stop fly feed",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopFlywheels"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "RunIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "intake",
+      "waypointRelativePos": 0.15,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFeeders"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.45,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopFeeders"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -45,7 +109,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 111.80140948635187,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,

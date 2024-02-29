@@ -102,11 +102,12 @@ public final class Constants {
     public static final double CURRENT_LIMIT = 25.0;
     public static final boolean CURRENT_LIMIT_ENABLED = true;
 
-    public static final double STOW_SETPOINT_DEG = 0;
-    public static final double INTAKE_SETPOINT_DEG = 5;
-    public static final double AMP_SETPOINT_DEG = 57;
-    public static final double SUBWOOFER_SETPOINT_DEG = 20;
-    public static final double REVERSE_SUBWOOFER_SETPOINT_DEG = -40;
+    public static final double STOW_SETPOINT_DEG = 52.7;
+    public static final double INTAKE_SETPOINT_DEG = 64;
+    public static final double AMP_SETPOINT_DEG = 60;
+    public static final double SUBWOOFER_SETPOINT_DEG = 70;
+    public static final double REVERSE_SUBWOOFER_SETPOINT_DEG = 110;
+
     public static final double THRESHOLD = 5;
 
     public static final double[] PID = {0, 0, 0};

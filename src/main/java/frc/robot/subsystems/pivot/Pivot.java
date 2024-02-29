@@ -87,7 +87,7 @@ public class Pivot extends SubsystemBase {
             maxVelocityDegPerSec.get(), maxAccelerationDegPerSecSquared.get());
     pivotProfile = new TrapezoidProfile(pivotConstraints);
 
-    setPivotGoal(45);
+    setPivotGoal(45 + 59);
     pivotCurrent = pivotProfile.calculate(0, pivotCurrent, pivotGoal);
 
     pivot.configurePID(kP.get(), kI.get(), kD.get());

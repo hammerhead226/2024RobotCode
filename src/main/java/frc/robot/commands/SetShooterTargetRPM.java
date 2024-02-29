@@ -10,8 +10,10 @@ import frc.robot.subsystems.shooter.Shooter;
 public class SetShooterTargetRPM extends Command {
   /** Creates a new setShooterTargetRPM. */
   Shooter shooter;
+
   double rightSetpointRPM;
   double leftSetpointRPM;
+
   public SetShooterTargetRPM(double rightSetpointRPM, double leftSetpointRPM, Shooter shooter) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooter = shooter;

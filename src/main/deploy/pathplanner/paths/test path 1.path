@@ -3,45 +3,39 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5670791427174855,
-        "y": 4.19247948338978
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8325497789219156,
-        "y": 4.781916627176349
+        "x": 3.0,
+        "y": 7.0
       },
       "isLocked": false,
-      "linkedName": "end of path 2"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.9315401788698316,
-        "y": 5.519297354384182
+        "x": 4.721873067141283,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 1.8252489348567498,
-        "y": 5.046301318525968
+        "x": 3.721873067141283,
+        "y": 7.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "end of path 3"
+      "linkedName": "test"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 0.0,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "shoot note",
-      "waypointRelativePos": 1.0,
+      "name": "pivot shoot",
+      "waypointRelativePos": 0.55,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
@@ -53,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "StartFeeders"
+                "name": "StartFlywheels"
               }
             }
           ]
@@ -61,18 +55,8 @@
       }
     },
     {
-      "name": "pivot shooter to shoot pos",
-      "waypointRelativePos": 0.3,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "position note in feeder",
-      "waypointRelativePos": 0,
+      "name": "shoot",
+      "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
         "data": {
@@ -80,7 +64,7 @@
             {
               "type": "named",
               "data": {
-                "name": "PositionNoteInFeeder"
+                "name": "StartFeeders"
               }
             }
           ]
@@ -96,13 +80,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "comp autos",
+  "folder": "New Folder",
   "previewStartingState": {
-    "rotation": -8.297144969763774,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true

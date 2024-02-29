@@ -25,7 +25,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotClimb;
@@ -92,7 +93,7 @@ public class RobotContainer {
   private final LoggedDashboardNumber elevatorDistance =
       new LoggedDashboardNumber("elevatorDistance");
 
-  private final LoggedDashboardNumber pivotAngle = new LoggedDashboardNumber("pivotangle");
+  private final LoggedDashboardNumber pivotAngle = new LoggedDashboardNumber("pivotAngle");
   private final ClimbStateMachine climbStateMachine;
 
   private CLIMB_STATES climbSelect() {
@@ -194,28 +195,43 @@ public class RobotContainer {
                 Map.entry(CLIMB_STATES.RETRACT_CLIMB, new PrintCommand("hi")),
                 Map.entry(CLIMB_STATES.DONE, new PrintCommand("hello"))),
             this::climbSelect);
-    
-    elevatorCommands = 
+
+    elevatorCommands =
         new SelectCommand<>(
             Map.ofEntries(
-                Map.entry(false, new SetElevatorTarget(Constants.ElevatorConstants.EXTEND_SETPOINT_INCH, elevator)),
-                Map.entry(true, new SetElevatorTarget(Constants.ElevatorConstants.RETRACT_SETPOINT_INCH, elevator))), 
+                Map.entry(
+                    false,
+                    new SetElevatorTarget(
+                        Constants.ElevatorConstants.EXTEND_SETPOINT_INCH, elevator)),
+                Map.entry(
+                    true,
+                    new SetElevatorTarget(
+                        Constants.ElevatorConstants.RETRACT_SETPOINT_INCH, elevator))),
             elevator::isExtended);
 
     NamedCommands.registerCommand(
         "PivotIntake", new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot));
     NamedCommands.registerCommand(
-        "PivotShoot", new SetPivotTarget(30, pivot));
+        "PivotShoot", new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
 
     NamedCommands.registerCommand(
         "StartFlywheels", new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000), shooter));
-    NamedCommands.registerCommand("StopFlywheels", new InstantCommand(shooter::stopFlywheels, shooter));
     NamedCommands.registerCommand(
-        "StartFeeders", new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter));
+        "StopFlywheels", new InstantCommand(shooter::stopFlywheels, shooter));
+    NamedCommands.registerCommand(
+        "StartFeeders",
+        new SequentialCommandGroup(
+            new WaitUntilCommand(pivot::pivotAtSetpoint),
+            new WaitUntilCommand(shooter::atFlywheelSetpoints),
+            new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter)));
     NamedCommands.registerCommand("StopFeeders", new InstantCommand(shooter::stopFeeders, shooter));
-    NamedCommands.registerCommand("PositionNoteInFeeder", new PositionNoteInFeeder(shooter, intake));
+    NamedCommands.registerCommand(
+        "PositionNoteInFeeder", new PositionNoteInFeeder(shooter, intake));
 
-    NamedCommands.registerCommand("RunIntake", new InstantCommand(() -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
+    NamedCommands.registerCommand(
+        "RunIntake",
+        new InstantCommand(
+            () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
     NamedCommands.registerCommand("StopIntake", new InstantCommand(intake::stopRollers, intake));
 
     // Set up auto routines
@@ -231,13 +247,20 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // driverControls();
+    // manipControls();
+
+    testControls();
+  }
+
+  private void testControls() {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
             () -> -driveController.getLeftY(),
             () -> -driveController.getLeftX(),
             () -> -driveController.getRightX()));
-  
+
     driveController
         .start()
         .onTrue(
@@ -248,16 +271,58 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-   
+    driveController
+        .a()
+        .onTrue(new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot));
+    driveController.b().onTrue(new SetPivotTarget(56, pivot));
+    // driveController.a().onTrue(new SetPivotTarget(pivotAngle.get(), pivot));
+    // driveController.a().onTrue(new SetPivotTarget(pivotAngle.get(), pivot));
+    // driveController.a().onTrue(new InstantCommand(() -> pivot.setPivotGoal(pivotAngle.get()),
+    // pivot));
+    driveController.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
+    // driveController
+    //     .b()
+    //     .onTrue(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot));
+
+    driveController
+        .x()
+        .onTrue(
+            new SetElevatorTarget(5.4, elevator)
+                .andThen(new InstantCommand(() -> shooter.setFlywheelRPMs(550, 550), shooter)));
+    driveController
+        .x()
+        .onFalse(
+            new InstantCommand(() -> shooter.stopFlywheels(), shooter)
+                .andThen(new SetElevatorTarget(0, elevator)));
+    driveController.y().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
+    driveController.y().onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
+  }
+
+  private void driverControls() {
+    drive.setDefaultCommand(
+        DriveCommands.joystickDrive(
+            drive,
+            () -> -driveController.getLeftY(),
+            () -> -driveController.getLeftX(),
+            () -> -driveController.getRightX()));
+
+    driveController
+        .start()
+        .onTrue(
+            Commands.runOnce(
+                    () ->
+                        drive.setPose(
+                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                    drive)
+                .ignoringDisable(true));
 
     driveController.rightBumper().onTrue(new PivotIntake(pivot, intake, shooter, false));
-     driveController
+    driveController
         .rightBumper()
         .onFalse(
-           new PositionNoteInFeeder(shooter, intake)
-                .andThen(new SetPivotTarget(
-                                Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
-    
+            new PositionNoteInFeeder(shooter, intake)
+                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
+
     driveController.leftBumper().whileTrue(new PivotIntake(pivot, intake, shooter, true));
     driveController
         .leftBumper()
@@ -269,40 +334,47 @@ public class RobotContainer {
     driveController.povUp().onTrue(new InstantCommand(drive::increaseSpeed, drive));
     driveController.povDown().onTrue(new InstantCommand(drive::decreaseSpeed, drive));
 
-    driveController
-        .rightTrigger()
-        .onTrue(new SetFeedersTargetRPM(1000, shooter));
+    driveController.rightTrigger().onTrue(new SetFeedersTargetRPM(1000, shooter));
     driveController
         .rightTrigger()
         .onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
 
     driveController.a().onTrue(climbCommands);
-    
+
     driveController.x().onTrue(elevatorCommands);
+  }
 
-
-    manipController
-        .a().
-        onTrue(
-            new ParallelCommandGroup(
-                new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot), 
-                new SetShooterTargetRPM(Constants.ShooterConstants.FLYWHEEL_AMP_RPM, Constants.ShooterConstants.FLYWHEEL_AMP_RPM, shooter)));
+  private void manipControls() {
     manipController
         .a()
-        .onFalse(new ParallelCommandGroup(
-                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot), 
+        .onTrue(
+            new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
+                new SetShooterTargetRPM(
+                    Constants.ShooterConstants.FLYWHEEL_AMP_RPM,
+                    Constants.ShooterConstants.FLYWHEEL_AMP_RPM,
+                    shooter)));
+    manipController
+        .a()
+        .onFalse(
+            new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
                 new SetShooterTargetRPM(0, 0, shooter)));
 
     manipController
-        .b().
-        onTrue(
+        .b()
+        .onTrue(
             new ParallelCommandGroup(
-                new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot), 
-                new SetShooterTargetRPM(Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, shooter)));
+                new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot),
+                new SetShooterTargetRPM(
+                    Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM,
+                    Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM,
+                    shooter)));
     manipController
         .b()
-        .onFalse(new ParallelCommandGroup(
-                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot), 
+        .onFalse(
+            new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
                 new SetShooterTargetRPM(0, 0, shooter)));
 
     manipController
@@ -310,19 +382,21 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000), shooter));
     manipController.leftBumper().onFalse(new InstantCommand(shooter::stopFlywheels, shooter));
 
-   manipController
-        .x().
-        onTrue(
-            new ParallelCommandGroup(
-                new SetPivotTarget(Constants.PivotConstants.REVERSE_SUBWOOFER_SETPOINT_DEG, pivot), 
-                new SetShooterTargetRPM(Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, shooter)));
     manipController
         .x()
-        .onFalse(new ParallelCommandGroup(
-                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot), 
+        .onTrue(
+            new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.REVERSE_SUBWOOFER_SETPOINT_DEG, pivot),
+                new SetShooterTargetRPM(
+                    Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM,
+                    Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM,
+                    shooter)));
+    manipController
+        .x()
+        .onFalse(
+            new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
                 new SetShooterTargetRPM(0, 0, shooter)));
-
- 
   }
 
   /**

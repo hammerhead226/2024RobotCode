@@ -26,10 +26,11 @@ public class PositionNoteInFeeder extends SequentialCommandGroup {
     //                         new SetPivotTarget(
     //                             Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)))
 
-
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new InstantCommand(() -> shooter.setFeedersRPM(-100), shooter), new WaitCommand(0.5), new InstantCommand(shooter::stopFeeders, shooter));
+        new InstantCommand(() -> shooter.setFeedersRPM(-100), shooter),
+        new WaitCommand(0.5),
+        new InstantCommand(shooter::stopFeeders, shooter));
   }
 }

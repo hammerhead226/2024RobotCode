@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4055808813372015,
-        "y": 5.573706936887558
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4055808813372,
-        "y": 5.573706936887558
+        "x": 3.0,
+        "y": 7.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.1643318065523425,
-        "y": 5.573706936887558
+        "x": 4.475945499679871,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 2.202411695199646,
-        "y": 5.573706936887558
+        "x": 3.475945499679871,
+        "y": 7.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "end of path 1"
+      "linkedName": "hello"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "shoot preload",
-      "waypointRelativePos": 0.0,
+      "name": "start flywheels",
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -43,26 +43,14 @@
               "data": {
                 "name": "StartFlywheels"
               }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.5
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "StopFeeders"
-              }
             }
           ]
         }
       }
     },
     {
-      "name": "intake note",
-      "waypointRelativePos": 0.1,
+      "name": "feed",
+      "waypointRelativePos": 0.8,
       "command": {
         "type": "parallel",
         "data": {
@@ -70,7 +58,7 @@
             {
               "type": "named",
               "data": {
-                "name": "PivotIntake"
+                "name": "StartFeeders"
               }
             }
           ]
@@ -79,7 +67,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
@@ -90,10 +78,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "comp autos",
+  "folder": "New Folder",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4055808813372015,
-      "y": 5.573706936887558
+      "x": 2.0,
+      "y": 7.0
     },
     "rotation": 0
   },
@@ -14,25 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "preload b2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "b2b3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "b3b1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "b3"
+            "pathName": "move forward"
           }
         }
       ]

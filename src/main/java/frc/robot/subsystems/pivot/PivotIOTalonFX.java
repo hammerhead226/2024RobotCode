@@ -37,7 +37,7 @@ public class PivotIOTalonFX implements PivotIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimit = Constants.PivotConstants.CURRENT_LIMIT;
     config.CurrentLimits.StatorCurrentLimitEnable = Constants.PivotConstants.CURRENT_LIMIT_ENABLED;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     leader = new TalonFX(leadID, Constants.CANBUS);
@@ -82,17 +82,18 @@ public class PivotIOTalonFX implements PivotIO {
     BaseStatusSignal.refreshAll(
         leaderPositionDegs, velocityDegsPerSec, appliedVolts, currentAmps, pitch);
     inputs.gyroConnected = BaseStatusSignal.refreshAll(pitch).equals(StatusCode.OK);
-    inputs.pitch = pitch.getValueAsDouble();
+    inputs.pitch = pitch.getValueAsDouble() + 59;
     inputs.positionDegs =
         Conversions.falconToDegrees(
-            (leaderPositionDegs.getValueAsDouble()), Constants.PivotConstants.REDUCTION);
+                (leaderPositionDegs.getValueAsDouble()), Constants.PivotConstants.REDUCTION)
+            + 59;
 
-    inputs.velocityDegsPerSec =
-        Conversions.falconToDegrees(
-            (followPositionDegs.getValueAsDouble()), Constants.PivotConstants.REDUCTION);
     // inputs.velocityDegsPerSec =
     //     Conversions.falconToDegrees(
-    //         velocityDegsPerSec.getValueAsDouble() * 2048, Constants.PivotConstants.REDUCTION);
+    //         (followPositionDegs.getValueAsDouble()), Constants.PivotConstants.REDUCTION);
+    inputs.velocityDegsPerSec =
+        Conversions.falconToDegrees(
+            velocityDegsPerSec.getValueAsDouble() * 2048, Constants.PivotConstants.REDUCTION);
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.currentAmps = currentAmps.getValueAsDouble();
     inputs.positionSetpointDegs = positionSetpointDegs;
@@ -103,7 +104,7 @@ public class PivotIOTalonFX implements PivotIO {
     this.positionSetpointDegs = positionDegs;
     leader.setControl(
         new PositionVoltage(
-            Conversions.degreesToFalcon(positionDegs, Constants.PivotConstants.REDUCTION),
+            Conversions.degreesToFalcon(positionDegs - 59, Constants.PivotConstants.REDUCTION),
             0,
             false,
             ffVolts,

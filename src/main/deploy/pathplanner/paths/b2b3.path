@@ -147,7 +147,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "comp autos",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
