@@ -25,8 +25,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotClimb;
@@ -211,28 +209,31 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "PivotIntake", new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot));
-    NamedCommands.registerCommand(
-        "PivotShoot", new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
+    // NamedCommands.registerCommand(
+    //     "PivotShoot", new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG,
+    // pivot));
 
     NamedCommands.registerCommand(
         "StartFlywheels", new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000), shooter));
     NamedCommands.registerCommand(
         "StopFlywheels", new InstantCommand(shooter::stopFlywheels, shooter));
+    // NamedCommands.registerCommand(
+    //     "StartFeeders",
+    //     new SequentialCommandGroup(
+    //         new WaitUntilCommand(pivot::pivotAtSetpoint),
+    //         new WaitUntilCommand(shooter::atFlywheelSetpoints),
+    //         new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter)));
     NamedCommands.registerCommand(
-        "StartFeeders",
-        new SequentialCommandGroup(
-            new WaitUntilCommand(pivot::pivotAtSetpoint),
-            new WaitUntilCommand(shooter::atFlywheelSetpoints),
-            new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter)));
+        "StartFeeders", new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter));
     NamedCommands.registerCommand("StopFeeders", new InstantCommand(shooter::stopFeeders, shooter));
-    NamedCommands.registerCommand(
-        "PositionNoteInFeeder", new PositionNoteInFeeder(shooter, intake));
+    // NamedCommands.registerCommand(
+    //     "PositionNoteInFeeder", new PositionNoteInFeeder(shooter, intake));
 
-    NamedCommands.registerCommand(
-        "RunIntake",
-        new InstantCommand(
-            () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
-    NamedCommands.registerCommand("StopIntake", new InstantCommand(intake::stopRollers, intake));
+    // NamedCommands.registerCommand(
+    //     "RunIntake",
+    //     new InstantCommand(
+    //         () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
+    // NamedCommands.registerCommand("StopIntake", new InstantCommand(intake::stopRollers, intake));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

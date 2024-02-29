@@ -61,13 +61,13 @@
                   {
                     "type": "named",
                     "data": {
-                      "name": "PositionNoteInFeeder"
+                      "name": null
                     }
                   },
                   {
                     "type": "named",
                     "data": {
-                      "name": "StopIntake"
+                      "name": null
                     }
                   }
                 ]
@@ -87,7 +87,7 @@
             {
               "type": "named",
               "data": {
-                "name": "PivotShoot"
+                "name": null
               }
             },
             {
