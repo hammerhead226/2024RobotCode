@@ -18,19 +18,21 @@ public class setLEDColorSeconds extends SequentialCommandGroup {
   private final LED led;
 
   private final LED_STATE color;
+  private final LED_STATE final_color;
 
   private final double seconds;
-  public setLEDColorSeconds(LED led, LED_STATE color, double seconds) {
+  public setLEDColorSeconds(LED led, LED_STATE color, double seconds,LED_STATE final_color) {
     this.led = led;
     this.color = color;
     this.seconds = seconds;
+    this.final_color = final_color;
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new InstantCommand(() -> led.setColor(color), led), 
-      new WaitCommand(seconds), 
-      new InstantCommand(() -> led.setColor(LED_STATE.BLUE), led) 
+      new InstantCommand(() -> this.led.setColor(this.color), this.led), 
+      new WaitCommand(this.seconds), 
+      new InstantCommand(() -> this.led.setColor(this.final_color), this.led) 
     );
   }
 }

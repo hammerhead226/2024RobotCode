@@ -287,7 +287,7 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot), 
                 new SetShooterTargetRPM(Constants.ShooterConstants.FLYWHEEL_AMP_RPM, Constants.ShooterConstants.FLYWHEEL_AMP_RPM, shooter))
-                .andThen(new setLEDColorSeconds(led, Constants.LED_STATE.GREEN, 3)));
+                .andThen(new setLEDColorSeconds(led, Constants.LED_STATE.GREEN, 3, Constants.LED_STATE.BLUE )));
     manipController
         .a()
         .onFalse(new ParallelCommandGroup(
@@ -300,7 +300,7 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot), 
                 new SetShooterTargetRPM(Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM, shooter))
-                .andThen(new setLEDColorSeconds(led, Constants.LED_STATE.GREEN, 3)));
+                .andThen(new setLEDColorSeconds(led, Constants.LED_STATE.GREEN, 3, Constants.LED_STATE.BLUE)));
     manipController
         .b()
         .onFalse(new ParallelCommandGroup(
