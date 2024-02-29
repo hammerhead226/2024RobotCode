@@ -213,7 +213,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "PivotIntake", new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot));
     NamedCommands.registerCommand(
-        "PivotShoot", new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
+        "PivotSubwoofer", new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
 
     NamedCommands.registerCommand(
         "StartFlywheels", new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000), shooter));
@@ -222,8 +222,8 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "StartFeeders",
         new SequentialCommandGroup(
-            new WaitUntilCommand(pivot::pivotAtSetpoint),
-            new WaitUntilCommand(shooter::atFlywheelSetpoints),
+            //new WaitUntilCommand(pivot::pivotAtSetpoint),
+            //new WaitUntilCommand(shooter::atFlywheelSetpoints),
             new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter)));
     NamedCommands.registerCommand("StopFeeders", new InstantCommand(shooter::stopFeeders, shooter));
     NamedCommands.registerCommand(
@@ -297,7 +297,7 @@ public class RobotContainer {
                 .andThen(new SetElevatorTarget(0, elevator)));
     driveController.y().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
     driveController.y().onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
-    driveController.rightBumper().whileTrue(new TurnToSpeaker(drive, driveController));
+    driveController.rightBumper().whileTrue(new TurnToSpeaker(drive, shooter,pivot, driveController));
   }
 
   private void driverControls() {

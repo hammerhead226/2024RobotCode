@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3725738150477713,
-        "y": 5.58606903233778
+        "x": 2.8972048530270182,
+        "y": 5.551360187404265
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.37257381504777,
-        "y": 5.58606903233778
+        "x": 1.8616634543971777,
+        "y": 5.433989174578077
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.176042643098124,
-        "y": 5.58606903233778
+        "x": 1.861859906055994,
+        "y": 6.268066781147808
       },
       "prevControl": {
-        "x": 2.176042643098124,
-        "y": 5.58606903233778
+        "x": 1.8334647979512575,
+        "y": 5.998313254152816
+      },
+      "nextControl": {
+        "x": 1.8852482149408742,
+        "y": 6.4902557155541665
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.832474724778509,
+        "y": 6.981410202136645
+      },
+      "prevControl": {
+        "x": 1.8501657516135546,
+        "y": 6.677362186633206
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,62 +46,16 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 180.0,
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 27.645975363738618,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "stop fly feed",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StopFlywheels"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "PivotIntake"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "RunIntake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "intake",
-      "waypointRelativePos": 0.15,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StartFeeders"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.45,
+      "name": "stop shooter",
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
         "data": {
@@ -94,6 +64,41 @@
               "type": "named",
               "data": {
                 "name": "StopFeeders"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "StopFlywheels"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "intake note",
+      "waypointRelativePos": 0.05,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "RunIntake"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 2.0
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "StopIntake"
               }
             }
           ]
@@ -109,7 +114,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 27.89727103094759,
     "rotateFast": false
   },
   "reversed": false,

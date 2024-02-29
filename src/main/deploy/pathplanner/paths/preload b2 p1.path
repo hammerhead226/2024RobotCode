@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4055808813372015,
+        "x": 1.41,
         "y": 5.573706936887558
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4055808813372,
+        "x": 2.4099999999999984,
         "y": 5.573706936887558
       },
       "isLocked": false,
@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.1643318065523425,
-        "y": 5.573706936887558
+        "x": 2.8909454969907094,
+        "y": 5.55472336015897
       },
       "prevControl": {
-        "x": 2.202411695199646,
-        "y": 5.573706936887558
+        "x": 1.9290253856380128,
+        "y": 5.55472336015897
       },
       "nextControl": null,
       "isLocked": false,
@@ -35,25 +35,19 @@
       "name": "shoot preload",
       "waypointRelativePos": 0.0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "StartFlywheels"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.5
+                "name": "StopFeeders"
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "StopFeeders"
+                "name": "StopFlywheels"
               }
             }
           ]
@@ -62,7 +56,7 @@
     },
     {
       "name": "intake note",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.05,
       "command": {
         "type": "parallel",
         "data": {
@@ -79,8 +73,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -90,7 +84,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "comp autos",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
