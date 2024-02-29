@@ -173,6 +173,7 @@ public class ModuleIOTalonFX implements ModuleIO {
   public void setDriveVoltage(double volts) {
     driveTalon.setControl(new VoltageOut(volts));
   }
+
   @Override
   public void setDriveOpenLoopRamp(double seconds) {
     var ramping = new OpenLoopRampsConfigs();

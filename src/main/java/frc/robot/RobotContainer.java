@@ -36,6 +36,7 @@ import frc.robot.commands.SetElevatorTarget;
 import frc.robot.commands.SetFeedersTargetRPM;
 import frc.robot.commands.SetPivotTarget;
 import frc.robot.commands.SetShooterTargetRPM;
+import frc.robot.commands.TurnToSpeaker;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
 import frc.robot.subsystems.drive.Drive;
@@ -247,10 +248,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-     driverControls();
-     manipControls();
+    // driverControls();
+    // manipControls();
 
-    //testControls();
+    testControls();
   }
 
   private void testControls() {
@@ -296,6 +297,7 @@ public class RobotContainer {
                 .andThen(new SetElevatorTarget(0, elevator)));
     driveController.y().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
     driveController.y().onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
+    driveController.rightBumper().whileTrue(new TurnToSpeaker(drive, driveController));
   }
 
   private void driverControls() {

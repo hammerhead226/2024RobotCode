@@ -11,12 +11,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.util.FieldConstants;
 
 public class TurnToSpeaker extends Command {
   private final Drive drive;
@@ -42,9 +42,9 @@ public class TurnToSpeaker extends Command {
         gains[2] = 0;
         break;
       case SIM:
-        gains[0] = 10;
+        gains[0] = 13;
         gains[1] = 0;
-        gains[2] = 0;
+        gains[2] = 01;
         break;
       default:
         gains[0] = 0;
@@ -70,13 +70,13 @@ public class TurnToSpeaker extends Command {
     if (alliance == DriverStation.Alliance.Red) {
       pid.setSetpoint(
           new Rotation2d(
-                  Units.inchesToMeters(651.223) - drive.getPose().getX(),
-                  Units.inchesToMeters(219.277) - drive.getPose().getY())
+                  FieldConstants.fieldLength - drive.getPose().getX(),
+                  FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
               .getDegrees());
     } else {
       pid.setSetpoint(
           new Rotation2d(
-                  -drive.getPose().getX(), Units.inchesToMeters(219.277) - drive.getPose().getY())
+                  -drive.getPose().getX(), FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
               .getDegrees());
     }
     double linearMagnitude =
