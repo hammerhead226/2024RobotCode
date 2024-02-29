@@ -207,33 +207,33 @@ public class RobotContainer {
                         Constants.ElevatorConstants.RETRACT_SETPOINT_INCH, elevator))),
             elevator::isExtended);
 
-    NamedCommands.registerCommand(
-        "PivotIntake", new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot));
     // NamedCommands.registerCommand(
-    //     "PivotShoot", new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG,
-    // pivot));
-
-    NamedCommands.registerCommand(
-        "StartFlywheels", new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000), shooter));
-    NamedCommands.registerCommand(
-        "StopFlywheels", new InstantCommand(shooter::stopFlywheels, shooter));
-    // NamedCommands.registerCommand(
-    //     "StartFeeders",
-    //     new SequentialCommandGroup(
-    //         new WaitUntilCommand(pivot::pivotAtSetpoint),
-    //         new WaitUntilCommand(shooter::atFlywheelSetpoints),
-    //         new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter)));
-    NamedCommands.registerCommand(
-        "StartFeeders", new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter));
-    NamedCommands.registerCommand("StopFeeders", new InstantCommand(shooter::stopFeeders, shooter));
-    // NamedCommands.registerCommand(
-    //     "PositionNoteInFeeder", new PositionNoteInFeeder(shooter, intake));
+    //     "PivotIntake", new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot));
+    // // NamedCommands.registerCommand(
+    // //     "PivotShoot", new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG,
+    // // pivot));
 
     // NamedCommands.registerCommand(
-    //     "RunIntake",
-    //     new InstantCommand(
-    //         () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
-    // NamedCommands.registerCommand("StopIntake", new InstantCommand(intake::stopRollers, intake));
+    //     "StartFlywheels", new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000), shooter));
+    // NamedCommands.registerCommand(
+    //     "StopFlywheels", new InstantCommand(shooter::stopFlywheels, shooter));
+    // // NamedCommands.registerCommand(
+    // //     "StartFeeders",
+    // //     new SequentialCommandGroup(
+    // //         new WaitUntilCommand(pivot::pivotAtSetpoint),
+    // //         new WaitUntilCommand(shooter::atFlywheelSetpoints),
+    // //         new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter)));
+    // NamedCommands.registerCommand(
+    //     "StartFeeders", new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter));
+    // NamedCommands.registerCommand("StopFeeders", new InstantCommand(shooter::stopFeeders, shooter));
+    // // NamedCommands.registerCommand(
+    // //     "PositionNoteInFeeder", new PositionNoteInFeeder(shooter, intake));
+
+    // // NamedCommands.registerCommand(
+    // //     "RunIntake",
+    // //     new InstantCommand(
+    // //         () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
+    // // NamedCommands.registerCommand("StopIntake", new InstantCommand(intake::stopRollers, intake));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -248,10 +248,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // driverControls();
-    // manipControls();
+    driverControls();
+    manipControls();
 
-    testControls();
+    // testControls();
   }
 
   private void testControls() {
@@ -317,7 +317,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    driveController.rightBumper().onTrue(new PivotIntake(pivot, intake, shooter, false));
+    driveController.rightBumper().whileTrue(new PivotIntake(pivot, intake, shooter, false));
     driveController
         .rightBumper()
         .onFalse(
