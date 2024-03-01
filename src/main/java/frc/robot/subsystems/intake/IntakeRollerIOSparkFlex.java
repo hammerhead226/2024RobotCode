@@ -10,7 +10,7 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
 
   public IntakeRollerIOSparkFlex(int id) {
     rollers = new CANSparkFlex(id, MotorType.kBrushless);
-    rollers.restoreFactoryDefaults();
+    // rollers.restoreFactoryDefaults();
     rollers.setIdleMode(IdleMode.kCoast);
     rollers.setInverted(true);
 

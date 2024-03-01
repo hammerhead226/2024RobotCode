@@ -27,7 +27,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     config.CurrentLimits.StatorCurrentLimit = Constants.ElevatorConstants.CURRENT_LIMIT;
     config.CurrentLimits.StatorCurrentLimitEnable =
         Constants.ElevatorConstants.CURRENT_LIMIT_ENABLED;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
     leader = new TalonFX(lead, Constants.CANBUS);

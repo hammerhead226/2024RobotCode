@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.pivot.Pivot;
@@ -23,14 +22,14 @@ public class PivotIntake extends SequentialCommandGroup {
     if (!outtake) {
       addCommands(
           new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
-          new WaitUntilCommand(pivot::pivotAtSetpoint),
+          // new WaitUntilCommand(pivot::pivotAtSetpoint),
           new InstantCommand(
               () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake),
           new InstantCommand(() -> shooter.setFeedersRPM(1000)));
     } else {
       addCommands(
           new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
-          new WaitUntilCommand(pivot::pivotAtSetpoint),
+          // new WaitUntilCommand(pivot::pivotAtSetpoint),
           new InstantCommand(() -> shooter.setFeedersRPM(-4000)),
           new InstantCommand(
               () -> intake.runRollers(-Constants.IntakeConstants.APPLIED_VOLTAGE), intake));

@@ -28,11 +28,12 @@ public class TurnToSpeaker extends Command {
   private final PIDController pid;
   private double[] gains = new double[3];
   private DriverStation.Alliance alliance = null;
-  private double distanceToSpeakerMeter =0;
+  private double distanceToSpeakerMeter = 0;
   private double shooterSetpointRPM = 0;
   private double pivotSetpointDeg = 0;
   /** Creates a new TurnToSpeaker. */
-  public TurnToSpeaker(Drive drive, Shooter shooter, Pivot pivot, CommandXboxController controller) {
+  public TurnToSpeaker(
+      Drive drive, Shooter shooter, Pivot pivot, CommandXboxController controller) {
     this.drive = drive;
     this.shooter = shooter;
     this.pivot = pivot;
@@ -110,22 +111,23 @@ public class TurnToSpeaker extends Command {
             Math.toRadians(angularSpeed),
             drive.getPose().getRotation()));
 
-    distanceToSpeakerMeter = 0; //TODO distanceToSpeaker = equation;
-    shooter.setFlywheelRPMs(calculateShooterSpeedRPM(distanceToSpeakerMeter), calculateShooterSpeedRPM(distanceToSpeakerMeter));
+    distanceToSpeakerMeter = 0; // TODO distanceToSpeaker = equation;
+    shooter.setFlywheelRPMs(
+        calculateShooterSpeedRPM(distanceToSpeakerMeter),
+        calculateShooterSpeedRPM(distanceToSpeakerMeter));
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
-
   }
 
-  private double calculateShooterSpeedRPM (double distanceToSpeakerMeter) {
-    shooterSetpointRPM = 0; //TODO shooterSetpointDeg = equation
+  private double calculateShooterSpeedRPM(double distanceToSpeakerMeter) {
+    shooterSetpointRPM = 0; // TODO shooterSetpointDeg = equation
     return shooterSetpointRPM;
   }
 
-  private double calculatePivotAngleDeg (double distanceToSpeakerMeter) {
-    pivotSetpointDeg = 0; //TODO pivotSetpointDeg = equation
+  private double calculatePivotAngleDeg(double distanceToSpeakerMeter) {
+    pivotSetpointDeg = 0; // TODO pivotSetpointDeg = equation
     return pivotSetpointDeg;
   }
-  
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
