@@ -98,7 +98,7 @@ public class Pivot extends SubsystemBase {
     return pInputs.positionDegs;
   }
 
-  public boolean pivotAtSetpoint() {
+  public boolean atSetpoint() {
     return (Math.abs(getPivotError()) <= Constants.PivotConstants.THRESHOLD);
   }
 

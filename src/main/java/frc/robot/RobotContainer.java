@@ -35,6 +35,8 @@ import frc.robot.commands.SetElevatorTarget;
 import frc.robot.commands.SetFeedersTargetRPM;
 import frc.robot.commands.SetPivotTarget;
 import frc.robot.commands.SetShooterTargetRPM;
+import frc.robot.commands.ShootNote;
+import frc.robot.commands.StopIntakeFeed;
 import frc.robot.commands.TurnToSpeaker;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
@@ -209,12 +211,19 @@ public class RobotContainer {
                         Constants.ElevatorConstants.RETRACT_SETPOINT_INCH, elevator))),
             elevator::isExtended);
 
+    NamedCommands.registerCommand("StopIntakeFeed", new StopIntakeFeed(shooter, intake));
+
+    NamedCommands.registerCommand(
+        "PivotShoot", new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
+
     NamedCommands.registerCommand(
         "PivotIntake", new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot));
 
     NamedCommands.registerCommand(
         "PivotSubwoofer",
         new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
+
+    NamedCommands.registerCommand("ShootNote", new ShootNote(shooter));
     // This one
     NamedCommands.registerCommand(
         "StartFlywheels2",
@@ -224,12 +233,12 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "StopFlywheels", new InstantCommand(shooter::stopFlywheels, shooter));
 
-    NamedCommands.registerCommand(
-        "StartFeeders",
-        new SequentialCommandGroup(
-            // new WaitUntilCommand(pivot::pivotAtSetpoint),
-            // new WaitUntilCommand(shooter::atFlywheelSetpoints),
-            new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter)));
+    // NamedCommands.registerCommand(
+    //     "StartFeeders",
+    //     new SequentialCommandGroup(
+    //         // new WaitUntilCommand(pivot::pivotAtSetpoint),
+    //         // new WaitUntilCommand(shooter::atFlywheelSetpoints),
+    //         new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter)));
 
     NamedCommands.registerCommand("StopFeeders", new InstantCommand(shooter::stopFeeders, shooter));
     NamedCommands.registerCommand(
@@ -239,7 +248,7 @@ public class RobotContainer {
         "RunIntake",
         new InstantCommand(
             () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
-    NamedCommands.registerCommand("StopIntake", new InstantCommand(intake::stopRollers, intake));
+    // NamedCommands.registerCommand("StopIntake", new InstantCommand(intake::stopRollers, intake));
 
     // Set up auto routines
     autoChooser =

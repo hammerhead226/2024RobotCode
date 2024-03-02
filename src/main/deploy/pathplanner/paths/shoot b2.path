@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.1174884603692163,
+        "y": 5.58606903233778
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.2145381558014843,
+        "y": 5.58606903233778
+      },
+      "isLocked": false,
+      "linkedName": "b2 path 1 end"
+    },
+    {
+      "anchor": {
+        "x": 1.4896821805055864,
+        "y": 5.58606903233778
+      },
+      "prevControl": {
+        "x": 2.134203898441835,
+        "y": 5.58606903233778
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "pivot shoot",
+      "waypointRelativePos": 0.15,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotShoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "b2",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

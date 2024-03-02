@@ -2,7 +2,7 @@ package frc.robot;
 
 public class RobotMap {
   public static class IntakeIDs {
-    public static final int ROLLERS = 10;
+    public static final int ROLLERS = 11;
   }
 
   public static class ShooterIDs {

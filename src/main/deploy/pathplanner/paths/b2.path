@@ -3,36 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 1.4194171612308972,
+        "y": 5.58606903233778
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 2.4194171612308972,
+        "y": 5.58606903233778
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.096619836606291,
-        "y": 7.0
+        "x": 3.1174884603692163,
+        "y": 5.58606903233778
       },
       "prevControl": {
-        "x": 4.096619836606291,
-        "y": 7.0
+        "x": 2.1174884603692163,
+        "y": 5.58606903233778
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "b2 path 1 end"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "pivot intake",
+      "name": "intake note",
       "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
@@ -42,40 +42,6 @@
               "type": "named",
               "data": {
                 "name": "PivotIntake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "stop intake feed",
-      "waypointRelativePos": 0.3,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StopIntakeFeed"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "shoot note",
-      "waypointRelativePos": 0.8,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "ShootNote"
               }
             }
           ]
@@ -95,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "b2",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

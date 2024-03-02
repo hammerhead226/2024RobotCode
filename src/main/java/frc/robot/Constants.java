@@ -109,7 +109,7 @@ public final class Constants {
     public static final double SUBWOOFER_SETPOINT_DEG = 60.0;
     public static final double REVERSE_SUBWOOFER_SETPOINT_DEG = 110.0;
 
-    public static final double THRESHOLD = 5;
+    public static final double THRESHOLD = 2;
 
     public static final double[] PID = {0, 0, 0};
 

@@ -4,25 +4,25 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.statemachines.ClimbStateMachine;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.pivot.Pivot;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.shooter.Shooter;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PivotClimb extends SequentialCommandGroup {
-  /** Creates a new PivotClimb. */
-  public PivotClimb(ClimbStateMachine climbStateMachine, Elevator elevator, Pivot pivot) {
-
-    // System.out.println("Test");
+public class ShootNote extends SequentialCommandGroup {
+  /** Creates a new ShootNote. */
+  public ShootNote(Shooter shooter) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-
-    addCommands(new SetElevatorTarget(19., elevator), new SetPivotTarget(90, pivot));
-    // addCommands(new SetElevatorTarget(19., elevator));
-
-    // climbStateMachine.advanceTargetState();
+    addCommands(
+        new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000)),
+        new WaitCommand(1),
+        new InstantCommand(() -> shooter.setFeedersRPM(4000)),
+        new WaitCommand(2),
+        new InstantCommand(shooter::stopFeeders, shooter),
+        new InstantCommand(shooter::stopFlywheels, shooter));
   }
 }

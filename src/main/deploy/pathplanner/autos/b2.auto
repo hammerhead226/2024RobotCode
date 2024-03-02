@@ -1,0 +1,73 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4194171612308972,
+      "y": 5.58606903233778
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "PivotShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "b2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopIntakeFeed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PositionNoteInFeeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PivotShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot b2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PivotShoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "autos",
+  "choreoAuto": false
+}

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2,
-      "y": 2
+      "x": 2.0,
+      "y": 7.0
     },
     "rotation": 0
   },
@@ -12,75 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "PIvotIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "RunIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StartFeeders"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopFeeders"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StartFlywheels2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StartFeeders"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopFeeders"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopFlywheels"
+            "pathName": "Example Path"
           }
         }
       ]
