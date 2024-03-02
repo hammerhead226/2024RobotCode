@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
@@ -74,6 +75,7 @@ public class TurnToSpeaker extends Command {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
+  RobotContainer container;
   @Override
   public void execute() {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
@@ -111,7 +113,11 @@ public class TurnToSpeaker extends Command {
             Math.toRadians(angularSpeed),
             drive.getPose().getRotation()));
 
-    distanceToSpeakerMeter = 0; // TODO distanceToSpeaker = equation;
+    
+    double distanceDifferenceY = container.getDrive().getPose().getY() - FieldConstants.Speaker.speakerCenterY;
+    double distanceDifferenceX = container.getDrive().getPose().getX() - 0;
+    distanceToSpeakerMeter = Math.sqrt(Math.pow(distanceDifferenceY, 2) + Math.pow(distanceDifferenceX, 2));
+    
     shooter.setFlywheelRPMs(
         calculateShooterSpeedRPM(distanceToSpeakerMeter),
         calculateShooterSpeedRPM(distanceToSpeakerMeter));
