@@ -79,6 +79,24 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "c2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartFeeders"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "StopFeeders"

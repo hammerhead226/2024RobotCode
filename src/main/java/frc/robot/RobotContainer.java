@@ -56,7 +56,6 @@ import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.led.LED_IO;
 import frc.robot.subsystems.led.LED_IOCANdle;
-import frc.robot.subsystems.led.LED_IOSpark;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
 import frc.robot.subsystems.pivot.PivotIOSim;
@@ -132,7 +131,7 @@ public class RobotContainer {
             new Pivot(
                 new PivotIOTalonFX(
                     RobotMap.PivotIDs.LEFT, RobotMap.PivotIDs.RIGHT, RobotMap.PivotIDs.GYRO));
-        led = new LED(new LED_IOCANdle(RobotMap.LEDIDs.CHANNEL,"CAN Bus 2"));
+        led = new LED(new LED_IOCANdle(RobotMap.LEDIDs.CHANNEL, "CAN Bus 2"));
         break;
       case REPLAY:
         drive =
@@ -146,7 +145,7 @@ public class RobotContainer {
         shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim(), new DistanceSensorIO() {});
         elevator = new Elevator(new ElevatorIOSim());
         pivot = new Pivot(new PivotIOSim());
-        led = new LED(new LED_IO() {});
+        led = new LED(new LED_IOCANdle(20, Constants.CANBUS));
         break;
       case SIM:
         drive =

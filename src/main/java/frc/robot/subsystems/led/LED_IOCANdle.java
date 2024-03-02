@@ -5,42 +5,39 @@
 package frc.robot.subsystems.led;
 
 import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdleConfiguration;
-import com.ctre.phoenix.led.CANdleControlFrame;
-import com.ctre.phoenix.led.ColorFlowAnimation;
-import com.ctre.phoenix.led.StrobeAnimation;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.CANdleConfiguration;
+import com.ctre.phoenix.led.ColorFlowAnimation;
 import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
-
+import com.ctre.phoenix.led.StrobeAnimation;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-//import edu.wpi.first.wpilibj.motorcontrol.Spark;
+// import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 
 public class LED_IOCANdle implements LED_IO {
   LED_STATE ledState;
-  
+
   CANdle candle;
 
-  StrobeAnimation flashGreen = new StrobeAnimation(0, 204, 0, 0, 5 ,300);
+  StrobeAnimation flashGreen = new StrobeAnimation(0, 204, 0, 0, 5, 300);
   StrobeAnimation flashRed = new StrobeAnimation(179, 30, 0, 0, 1, 300);
   ColorFlowAnimation wayBlue = new ColorFlowAnimation(0, 0, 240, 0, 2, 300, Direction.Forward);
 
   public LED_IOCANdle(int channel, String CANBUS) {
-    //led = new Spark(channel);
+    // led = new Spark(channel);
     candle = new CANdle(channel, CANBUS);
     ledState = Constants.LED_STATE.BLUE;
 
     CANdleConfiguration configs = new CANdleConfiguration();
-    //CANdleControlFrame.CANdle_Control_1_General(0x4000);
+    // CANdleControlFrame.CANdle_Control_1_General(0x4000);
     configs.stripType = LEDStripType.RGB;
     configs.brightnessScalar = 0.7;
-    
-    
-    candle.configAllSettings(configs);
-    
 
+    candle.configAllSettings(configs);
+
+    setColor(LED_STATE.FLASHING_GREEN);
   }
 
   @Override
@@ -52,11 +49,11 @@ public class LED_IOCANdle implements LED_IO {
   public void noBumpersPressed() {
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
       ledState = LED_STATE.BLUE;
-      //led.set(Constants.LEDConstants.COLOR_BLUE);
-      
+      // led.set(Constants.LEDConstants.COLOR_BLUE);
+
     } else {
       ledState = LED_STATE.RED;
-      //led.set(Constants.LEDConstants.COLOR_RED);
+      // led.set(Constants.LEDConstants.COLOR_RED);
     }
   }
 
@@ -65,26 +62,26 @@ public class LED_IOCANdle implements LED_IO {
     ledState = state;
     switch (ledState) {
       case RED:
-       // led.set(Constants.LEDConstants.COLOR_RED);
+        // led.set(Constants.LEDConstants.COLOR_RED);
         break;
       case BLUE:
-       // led.set(Constants.LEDConstants.COLOR_BLUE);
-       candle.animate(wayBlue);
+        // led.set(Constants.LEDConstants.COLOR_BLUE);
+        candle.animate(wayBlue);
         break;
       case YELLOW:
-       // led.set(Constants.LEDConstants.COLOR_YELLOW);
+        // led.set(Constants.LEDConstants.COLOR_YELLOW);
         break;
       case VIOLET:
-       // led.set(Constants.LEDConstants.COLOR_VIOLET);
+        // led.set(Constants.LEDConstants.COLOR_VIOLET);
         break;
-        case FLASHING_GREEN:
-          candle.animate(flashGreen);
+      case FLASHING_GREEN:
+        candle.animate(flashGreen);
         break;
-        case FLASHING_RED:
-          candle.animate(flashRed);
+      case FLASHING_RED:
+        candle.animate(flashRed);
         break;
       case OFF:
-       // led.close();
+        // led.close();
         break;
     }
   }
