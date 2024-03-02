@@ -2,31 +2,19 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4194171612308972,
-      "y": 5.58606903233778
+      "x": 0.9626945359454185,
+      "y": 4.485250397034318
     },
-    "rotation": 0
+    "rotation": -59.0362434679265
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "PivotShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNote"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "b2"
+            "pathName": "p-b3"
           }
         },
         {
@@ -36,21 +24,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "PositionNoteInFeeder"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "shoot b2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PivotShoot"
+            "pathName": "score b3"
           }
         },
         {
@@ -60,9 +36,33 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "c4"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "PivotShoot"
+            "name": "StopIntakeFeed"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot c4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "gas gas gas"
           }
         }
       ]

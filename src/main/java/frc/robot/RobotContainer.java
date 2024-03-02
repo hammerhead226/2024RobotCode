@@ -32,7 +32,6 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotClimb;
 import frc.robot.commands.PivotIntake;
 import frc.robot.commands.PositionNoteInFeeder;
-import frc.robot.commands.ScoreAmp;
 import frc.robot.commands.SetElevatorTarget;
 import frc.robot.commands.SetFeedersTargetRPM;
 import frc.robot.commands.SetPivotTarget;
@@ -230,6 +229,8 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "PivotShoot", new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
 
+    NamedCommands.registerCommand("PivotShootFar", new SetPivotTarget(41, pivot));
+
     NamedCommands.registerCommand("PivotIntake", new PivotIntake(pivot, intake, shooter, false));
 
     NamedCommands.registerCommand(
@@ -241,17 +242,13 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "StartFlywheels2",
         new SequentialCommandGroup(
-            new InstantCommand(() -> shooter.setFlywheelRPMs(3000.0, 3000.0), shooter)));
+            new InstantCommand(() -> shooter.setFlywheelRPMs(4000.0, 4000.0), shooter)));
 
     NamedCommands.registerCommand(
         "StopFlywheels", new InstantCommand(shooter::stopFlywheels, shooter));
 
-    // NamedCommands.registerCommand(
-    //     "StartFeeders",
-    //     new SequentialCommandGroup(
-    //         // new WaitUntilCommand(pivot::pivotAtSetpoint),
-    //         // new WaitUntilCommand(shooter::atFlywheelSetpoints),
-    //         new InstantCommand(() -> shooter.setFeedersRPM(1000), shooter)));
+    NamedCommands.registerCommand(
+        "StartFeeders", new InstantCommand(() -> shooter.setFeedersRPM(4000), shooter));
 
     NamedCommands.registerCommand("StopFeeders", new InstantCommand(shooter::stopFeeders, shooter));
     NamedCommands.registerCommand(
@@ -277,10 +274,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driverControls();
-    manipControls();
+    // driverControls();
+    // manipControls();
 
-    // testControls();
+    testControls();
   }
 
   private void testControls() {
@@ -319,7 +316,27 @@ public class RobotContainer {
 
     driveController
         .a()
-        .onTrue(new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot));
+        .onTrue(new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
+
+    driveController
+        .y()
+        .onTrue(new SetPivotTarget(Constants.PivotConstants.PODIUM_SETPOINT_DEG, pivot));
+
+    driveController
+        .x()
+        .onTrue(new SetPivotTarget(Constants.PivotConstants.REVERSE_SUBWOOFER_SETPOINT_DEG, pivot));
+
+    // driveController
+    //     .rightTrigger()
+    //     .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(4000, 4000)));
+    driveController
+        .rightTrigger()
+        .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(1500, 1500)));
+    driveController.rightTrigger().onFalse(new InstantCommand(() -> shooter.stopFlywheels()));
+
+    driveController.leftTrigger().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(4000)));
+    driveController.leftTrigger().onFalse(new InstantCommand(() -> shooter.stopFeeders()));
+
     driveController.b().onTrue(new SetPivotTarget(56, pivot));
     // driveController.a().onTrue(new SetPivotTarget(pivotAngle.get(), pivot));
     // driveController.a().onTrue(new SetPivotTarget(pivotAngle.get(), pivot));
@@ -330,31 +347,31 @@ public class RobotContainer {
     //     .b()
     //     .onTrue(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot));
 
-    driveController
-        .x()
-        .onTrue(
-            new SetElevatorTarget(5.4, elevator)
-                .andThen(new InstantCommand(() -> shooter.setFlywheelRPMs(550, 550), shooter)));
-    driveController
-        .x()
-        .onFalse(
-            new InstantCommand(() -> shooter.stopFlywheels(), shooter)
-                .andThen(new SetElevatorTarget(0, elevator)));
-    driveController.y().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
-    driveController.y().onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
+    // driveController
+    //     .x()
+    //     .onTrue(
+    //         new SetElevatorTarget(5.4, elevator)
+    //             .andThen(new InstantCommand(() -> shooter.setFlywheelRPMs(550, 550), shooter)));
+    // driveController
+    //     .x()
+    //     .onFalse(
+    //         new InstantCommand(() -> shooter.stopFlywheels(), shooter)
+    //             .andThen(new SetElevatorTarget(0, elevator)));
+    // driveController.y().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
+    // driveController.y().onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
     // driveController
     //     .rightBumper()
     //     .whileTrue(new TurnToSpeaker(drive, shooter, pivot, driveController));
 
     // THIS IS THE WORKING AMP CODE DO NOT DELETE PLEASE
-    driveController.y().onTrue(new ScoreAmp(elevator, pivot, shooter));
-    driveController
-        .y()
-        .onFalse(
-            new InstantCommand(() -> shooter.stopFlywheels(), shooter)
-                // .andThen(new SetElevatorTarget(10, elevator))
-                .andThen(new SetElevatorTarget(0, elevator))
-                .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
+    // driveController.y().onTrue(new ScoreAmp(elevator, pivot, shooter));
+    // driveController
+    //     .y()
+    //     .onFalse(
+    //         new InstantCommand(() -> shooter.stopFlywheels(), shooter)
+    //             // .andThen(new SetElevatorTarget(10, elevator))
+    //             .andThen(new SetElevatorTarget(0, elevator))
+    //             .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
   }
 
   private void driverControls() {
@@ -391,9 +408,6 @@ public class RobotContainer {
                 .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
                 .andThen(new InstantCommand(() -> shooter.stopFeeders())));
 
-    driveController.povUp().onTrue(new InstantCommand(drive::increaseSpeed, drive));
-    driveController.povDown().onTrue(new InstantCommand(drive::decreaseSpeed, drive));
-
     driveController.rightTrigger().onTrue(new SetFeedersTargetRPM(1000, shooter));
     driveController
         .rightTrigger()
@@ -402,6 +416,9 @@ public class RobotContainer {
     driveController.a().onTrue(climbCommands);
 
     driveController.x().onTrue(elevatorCommands);
+
+    driveController.leftTrigger().onTrue(new InstantCommand(drive::toggleLowSpeed, drive));
+    driveController.leftTrigger().onFalse(new InstantCommand(drive::toggleLowSpeed, drive));
 
     // driveController.y().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
     // driveController.y().onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
@@ -460,6 +477,11 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
                 new SetShooterTargetRPM(0, 0, shooter)));
+
+    manipController.rightTrigger().onTrue(new SetFeedersTargetRPM(1000, shooter));
+    manipController
+        .rightTrigger()
+        .onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
   }
 
   /**

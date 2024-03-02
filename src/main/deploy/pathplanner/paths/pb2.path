@@ -3,79 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 1.3491521419562087,
+        "y": 5.58606903233778
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 2.3491521419562087,
+        "y": 5.58606903233778
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.096619836606291,
-        "y": 7.0
+        "x": 2.9783894545367575,
+        "y": 5.567964499157698
       },
       "prevControl": {
-        "x": 4.096619836606291,
-        "y": 7.0
+        "x": 1.9783894545367575,
+        "y": 5.567964499157698
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "p-b2 end "
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "pivot intake",
-      "waypointRelativePos": 0,
+      "name": "intake note",
+      "waypointRelativePos": 0.0,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
                 "name": "PivotIntake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "stop intake feed",
-      "waypointRelativePos": 0.3,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StopIntakeFeed"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "shoot note",
-      "waypointRelativePos": 0.8,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "ShootNote"
               }
             }
           ]
@@ -95,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "p-b2",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

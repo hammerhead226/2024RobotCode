@@ -21,7 +21,7 @@ public class ShootNote extends SequentialCommandGroup {
         new InstantCommand(() -> shooter.setFlywheelRPMs(4000, 4000)),
         new WaitCommand(1),
         new InstantCommand(() -> shooter.setFeedersRPM(4000)),
-        new WaitCommand(2),
+        new WaitCommand(0.5),
         new InstantCommand(shooter::stopFeeders, shooter),
         new InstantCommand(shooter::stopFlywheels, shooter));
   }

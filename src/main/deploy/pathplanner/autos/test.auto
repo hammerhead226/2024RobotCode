@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.9626945359454185,
+      "y": 4.485250397034318
+    },
+    "rotation": -56.768288932020695
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "p-b3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopIntakeFeed"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "score b3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "autos",
+  "choreoAuto": false
+}

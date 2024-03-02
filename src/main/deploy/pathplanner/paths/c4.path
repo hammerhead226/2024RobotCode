@@ -1,0 +1,108 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.9509836993996369,
+        "y": 4.473539560488535
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.5213810337934586,
+        "y": 2.8990228384044205
+      },
+      "isLocked": false,
+      "linkedName": "shoot b3 end"
+    },
+    {
+      "anchor": {
+        "x": 3.788275199868786,
+        "y": 2.6413319194351392
+      },
+      "prevControl": {
+        "x": 3.254486867718131,
+        "y": 2.972648815252787
+      },
+      "nextControl": {
+        "x": 4.647454328428665,
+        "y": 2.1080483223979725
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.279201231048202,
+        "y": 1.5185357724975534
+      },
+      "prevControl": {
+        "x": 4.395689508867808,
+        "y": 2.079933845966347
+      },
+      "nextControl": {
+        "x": 6.172796975854268,
+        "y": 0.9507301429853648
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.012618136505887,
+        "y": 0.77
+      },
+      "prevControl": {
+        "x": 7.040336555323939,
+        "y": 0.77
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "c4 end"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 2.2,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.4,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotIntake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.56,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "p-b3-c4",
+  "previewStartingState": {
+    "rotation": -59.42077312751088,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

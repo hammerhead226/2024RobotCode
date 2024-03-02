@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9783894545367575,
-        "y": 5.567964499157698
+        "x": 8.012618136505887,
+        "y": 0.77
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0754391499690255,
-        "y": 5.567964499157698
+        "x": 6.25599265463866,
+        "y": 1.2150117887396974
       },
       "isLocked": false,
-      "linkedName": "p-b2 end "
+      "linkedName": "c4 end"
     },
     {
       "anchor": {
-        "x": 1.44283883432246,
-        "y": 5.609490705429342
+        "x": 0.9260653498885487,
+        "y": 4.463574846432205
       },
       "prevControl": {
-        "x": 2.0873605522587084,
-        "y": 5.609490705429342
+        "x": 1.4414471878271122,
+        "y": 3.4604209118732134
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "shoot b2 end"
+      "linkedName": "shoot c4 end"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "pivot shoot",
-      "waypointRelativePos": 0.15,
+      "waypointRelativePos": 0.35,
       "command": {
         "type": "sequential",
         "data": {
@@ -50,21 +50,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 5.56,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -59.98163257239108,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "p-b2",
+  "folder": "p-b3-c4",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

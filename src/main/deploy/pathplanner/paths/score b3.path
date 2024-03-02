@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9783894545367575,
-        "y": 5.567964499157698
+        "x": 2.578789979263267,
+        "y": 4.098792791023527
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0754391499690255,
-        "y": 5.567964499157698
+        "x": 1.4194171612308972,
+        "y": 4.344720358484938
       },
       "isLocked": false,
-      "linkedName": "p-b2 end "
+      "linkedName": "p-b3 end"
     },
     {
       "anchor": {
-        "x": 1.44283883432246,
-        "y": 5.609490705429342
+        "x": 0.9509836993996369,
+        "y": 4.473539560488535
       },
       "prevControl": {
-        "x": 2.0873605522587084,
-        "y": 5.609490705429342
+        "x": 1.735609747966998,
+        "y": 4.239322829572904
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "shoot b2 end"
+      "linkedName": "shoot b3 end"
     }
   ],
   "rotationTargets": [],
@@ -50,21 +50,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 5.56,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
-    "rotateFast": false
+    "rotation": -59.03624346792648,
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": "p-b2",
+  "folder": "p-b3-c4",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

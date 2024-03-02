@@ -1,0 +1,92 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.9626945359454185,
+        "y": 4.485250397034318
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4138374465089747,
+        "y": 4.362339128265701
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.7707422576043426,
+        "y": 4.292021594028922
+      },
+      "prevControl": {
+        "x": 1.4414471878271118,
+        "y": 4.389948869583837
+      },
+      "nextControl": {
+        "x": 1.9012753341251298,
+        "y": 4.253203070076743
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.578789979263267,
+        "y": 4.098792791023527
+      },
+      "prevControl": {
+        "x": 2.4169913810679646,
+        "y": 4.132257950614556
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "p-b3 end"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.95,
+      "rotationDegrees": -10.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "intake note",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotIntake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.56,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "p-b3-c4",
+  "previewStartingState": {
+    "rotation": -57.652556500557985,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
