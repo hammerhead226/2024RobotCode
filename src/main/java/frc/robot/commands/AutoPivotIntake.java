@@ -27,7 +27,7 @@ public class AutoPivotIntake extends SequentialCommandGroup {
           new WaitUntilCommand(pivot::atSetpoint),
           new InstantCommand(
               () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake),
-          new InstantCommand(() -> shooter.setFeedersRPM(1000)));
+          new InstantCommand(() -> shooter.setFeedersRPM(4000)));
     } else {
       addCommands(
           new SetPivotTarget(pivotTarget, pivot),

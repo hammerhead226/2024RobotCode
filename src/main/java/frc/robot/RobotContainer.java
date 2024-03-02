@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -89,6 +90,7 @@ public class RobotContainer {
   private final CommandXboxController driveController = new CommandXboxController(0);
   private final CommandXboxController manipController = new CommandXboxController(1);
   private final LoggedDashboardChooser<Command> autoChooser;
+  private final SendableChooser<Command> autos;
 
   private final LoggedDashboardNumber flywheelSpeed = new LoggedDashboardNumber("flywheelSpeed");
   private final LoggedDashboardNumber feedSpeed = new LoggedDashboardNumber("feedSpeed");
@@ -132,7 +134,7 @@ public class RobotContainer {
             new Pivot(
                 new PivotIOTalonFX(
                     RobotMap.PivotIDs.LEFT, RobotMap.PivotIDs.RIGHT, RobotMap.PivotIDs.GYRO));
-        led = new LED(new LED_IOCANdle(RobotMap.LEDIDs.CHANNEL, "CAN Bus 2"));
+        led = new LED(new LED_IO() {});
         break;
       case REPLAY:
         drive =
@@ -263,8 +265,10 @@ public class RobotContainer {
     // NamedCommands.registerCommand("StopIntake", new InstantCommand(intake::stopRollers, intake));
 
     // Set up auto routines
-    autoChooser =
-        new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser("New Auto"));
+    autos = new SendableChooser<>();
+    autos.addOption("p-b2-b1-c2-optimal", AutoBuilder.buildAuto("p-b2-b1-c2-optimized"));
+
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices", autos);
 
     configureButtonBindings();
   }

@@ -36,12 +36,12 @@
         "y": 6.991369417831561
       },
       "prevControl": {
-        "x": 2.862095500249944,
-        "y": 6.601318570181765
+        "x": 2.6373441619921745,
+        "y": 6.640044321458116
       },
       "nextControl": {
-        "x": 2.857005780569969,
-        "y": 7.485441966074025
+        "x": 3.124208981969119,
+        "y": 7.408778247737501
       },
       "isLocked": false,
       "linkedName": null
@@ -76,6 +76,12 @@
         "type": "sequential",
         "data": {
           "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopFlywheels"
+              }
+            },
             {
               "type": "named",
               "data": {
