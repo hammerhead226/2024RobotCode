@@ -42,22 +42,10 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "PivotShootFar"
+                  "name": "StopFlywheels"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PositionNoteInFeeder"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNote"
           }
         },
         {

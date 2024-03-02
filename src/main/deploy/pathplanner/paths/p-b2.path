@@ -37,7 +37,14 @@
       "command": {
         "type": "sequential",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotIntake"
+              }
+            }
+          ]
         }
       }
     }
@@ -54,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "p-b2-b1",
+  "folder": "c!p-b2-b1-c2",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

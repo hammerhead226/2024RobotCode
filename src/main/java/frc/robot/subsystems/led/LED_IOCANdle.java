@@ -66,7 +66,7 @@ public class LED_IOCANdle implements LED_IO {
         break;
       case BLUE:
         // led.set(Constants.LEDConstants.COLOR_BLUE);
-        candle.animate(wayBlue);
+        candle.animate(wayBlue, 0);
         break;
       case YELLOW:
         // led.set(Constants.LEDConstants.COLOR_YELLOW);
@@ -75,10 +75,10 @@ public class LED_IOCANdle implements LED_IO {
         // led.set(Constants.LEDConstants.COLOR_VIOLET);
         break;
       case FLASHING_GREEN:
-        candle.animate(flashGreen);
+        candle.animate(flashGreen, 0);
         break;
       case FLASHING_RED:
-        candle.animate(flashRed);
+        candle.animate(flashRed, 0);
         break;
       case OFF:
         // led.close();

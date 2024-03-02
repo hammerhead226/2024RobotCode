@@ -84,7 +84,7 @@
       "name": "stop intake feed pivot shoot",
       "waypointRelativePos": 2.35,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -107,7 +107,7 @@
       "name": "position note in feeder",
       "waypointRelativePos": 2.45,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -124,7 +124,7 @@
       "name": "start flywheels",
       "waypointRelativePos": 2.75,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -173,7 +173,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "c!p-b2-b1-c2",
+  "folder": "c!p-b2-b1-c2-optimized",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

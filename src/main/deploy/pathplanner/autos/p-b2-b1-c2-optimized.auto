@@ -1,0 +1,73 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4194171612308972,
+      "y": 5.58606903233778
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "PivotShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of p-b2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of b1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of c2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartFeeders"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopFeeders"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopFlywheels"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "autos",
+  "choreoAuto": false
+}

@@ -3,9 +3,11 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "p-b2-b1",
-    "p-b2",
-    "p-b3-c4"
+    "c!p-b2-b1-c2-optimized",
+    "c!p-b2",
+    "c!p-b2-b1-c2",
+    "s!p-b3-c4",
+    "s!p-c5"
   ],
   "autoFolders": [
     "autos"

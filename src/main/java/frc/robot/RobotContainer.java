@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AutoPivotIntake;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotClimb;
 import frc.robot.commands.PivotIntake;
@@ -232,6 +233,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("PivotShootFar", new SetPivotTarget(41, pivot));
 
     NamedCommands.registerCommand("PivotIntake", new PivotIntake(pivot, intake, shooter, false));
+    NamedCommands.registerCommand(
+        "AutoPivotIntake", new AutoPivotIntake(pivot, intake, shooter, 41, false));
 
     NamedCommands.registerCommand(
         "PivotSubwoofer",
@@ -241,8 +244,7 @@ public class RobotContainer {
     // This one
     NamedCommands.registerCommand(
         "StartFlywheels2",
-        new SequentialCommandGroup(
-            new InstantCommand(() -> shooter.setFlywheelRPMs(4000.0, 4000.0), shooter)));
+        new InstantCommand(() -> shooter.setFlywheelRPMs(4000.0, 4000.0), shooter));
 
     NamedCommands.registerCommand(
         "StopFlywheels", new InstantCommand(shooter::stopFlywheels, shooter));
