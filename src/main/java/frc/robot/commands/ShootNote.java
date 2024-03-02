@@ -18,7 +18,7 @@ public class ShootNote extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new InstantCommand(() -> shooter.setFlywheelRPMs(3000, 3000)),
+        new InstantCommand(() -> shooter.setFlywheelRPMs(4000, 4000)),
         new WaitCommand(1),
         new InstantCommand(() -> shooter.setFeedersRPM(4000)),
         new WaitCommand(2),

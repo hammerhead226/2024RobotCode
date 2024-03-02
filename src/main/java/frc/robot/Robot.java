@@ -29,6 +29,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  * project.
  */
 public class Robot extends LoggedRobot {
+
+  // TODO:: in teleop init disable all shooter feeder intake
   private Command autonomousCommand;
   private RobotContainer m_robotContainer;
 

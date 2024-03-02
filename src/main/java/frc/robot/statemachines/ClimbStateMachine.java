@@ -43,9 +43,13 @@ public class ClimbStateMachine {
       case RETRACT_CLIMB:
         // trap scoring sequence
         targetState = CLIMB_STATES.SCORE_TRAP;
+        break;
       case SCORE_TRAP:
         // do nothing lol
         targetState = CLIMB_STATES.DONE;
+        break;
+      case DONE:
+        break;
       default:
         targetState = CLIMB_STATES.NONE;
         break;

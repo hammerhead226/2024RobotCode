@@ -47,7 +47,7 @@ public class Pivot extends SubsystemBase {
         kV.initDefault(0.03);
         kA.initDefault(0);
 
-        kP.initDefault(0.4);
+        kP.initDefault(0.44);
         kI.initDefault(0.04);
         kD.initDefault(0);
         break;
@@ -128,6 +128,7 @@ public class Pivot extends SubsystemBase {
     setPositionDegs(pivotCurrent.position, pivotCurrent.velocity);
 
     Logger.processInputs("Pivot", pInputs);
+    Logger.recordOutput("pivot error", getPivotError());
 
     if (kP.hasChanged(hashCode()) || kI.hasChanged(hashCode()) || kD.hasChanged(hashCode())) {
       pivot.configurePID(kP.get(), kI.get(), kD.get());

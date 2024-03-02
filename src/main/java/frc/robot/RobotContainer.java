@@ -26,18 +26,19 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotClimb;
 import frc.robot.commands.PivotIntake;
 import frc.robot.commands.PositionNoteInFeeder;
+import frc.robot.commands.ScoreAmp;
 import frc.robot.commands.SetElevatorTarget;
 import frc.robot.commands.SetFeedersTargetRPM;
 import frc.robot.commands.SetPivotTarget;
 import frc.robot.commands.SetShooterTargetRPM;
 import frc.robot.commands.ShootNote;
 import frc.robot.commands.StopIntakeFeed;
-import frc.robot.commands.TurnToSpeaker;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
 import frc.robot.subsystems.drive.Drive;
@@ -189,13 +190,26 @@ public class RobotContainer {
     climbCommands =
         new SelectCommand<>(
             Map.ofEntries(
-                Map.entry(CLIMB_STATES.NONE, new PivotClimb(climbStateMachine, elevator, pivot)),
+                Map.entry(
+                    CLIMB_STATES.NONE,
+                    new PivotClimb(climbStateMachine, elevator, pivot)
+                        .andThen(climbStateMachine::advanceTargetState, elevator)),
                 Map.entry(
                     CLIMB_STATES.PIVOT_CLIMB,
-                    new SetElevatorTarget(1, elevator)
+                    new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_ONE_DEG, pivot)
+                        .andThen(new SetElevatorTarget(1, elevator))
                         .andThen(climbStateMachine::advanceTargetState, elevator)),
-                Map.entry(CLIMB_STATES.RETRACT_CLIMB, new PrintCommand("hi")),
-                Map.entry(CLIMB_STATES.DONE, new PrintCommand("hello"))),
+                Map.entry(
+                    CLIMB_STATES.RETRACT_CLIMB,
+                    new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_TWO_DEG, pivot)
+                        .andThen(climbStateMachine::advanceTargetState, elevator)),
+                Map.entry(
+                    CLIMB_STATES.SCORE_TRAP,
+                    new SequentialCommandGroup(
+                        new SetElevatorTarget(19, elevator),
+                        new WaitCommand(1),
+                        new SetPivotTarget(100, pivot))),
+                Map.entry(CLIMB_STATES.DONE, new PrintCommand("hi"))),
             this::climbSelect);
 
     elevatorCommands =
@@ -216,8 +230,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "PivotShoot", new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
 
-    NamedCommands.registerCommand(
-        "PivotIntake", new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot));
+    NamedCommands.registerCommand("PivotIntake", new PivotIntake(pivot, intake, shooter, false));
 
     NamedCommands.registerCommand(
         "PivotSubwoofer",
@@ -288,6 +301,22 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    driveController.rightBumper().onTrue(new PivotIntake(pivot, intake, shooter, false));
+    driveController
+        .rightBumper()
+        .onFalse(
+            new PositionNoteInFeeder(shooter, intake)
+                .andThen(new InstantCommand(() -> intake.stopRollers(), intake))
+                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
+
+    driveController.leftBumper().whileTrue(new PivotIntake(pivot, intake, shooter, true));
+    driveController
+        .leftBumper()
+        .onFalse(
+            new InstantCommand(intake::stopRollers)
+                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+                .andThen(new InstantCommand(() -> shooter.stopFeeders())));
+
     driveController
         .a()
         .onTrue(new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot));
@@ -313,25 +342,19 @@ public class RobotContainer {
                 .andThen(new SetElevatorTarget(0, elevator)));
     driveController.y().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
     driveController.y().onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
-    driveController
-        .rightBumper()
-        .whileTrue(new TurnToSpeaker(drive, shooter, pivot, driveController));
+    // driveController
+    //     .rightBumper()
+    //     .whileTrue(new TurnToSpeaker(drive, shooter, pivot, driveController));
 
     // THIS IS THE WORKING AMP CODE DO NOT DELETE PLEASE
-    // driveController
-    //     .y()
-    //     .onTrue(
-    //         new SetElevatorTarget(8, elevator)
-    //             .andThen(new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot))
-    //             .andThen(new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter))
-    //             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(200), shooter)));
-    // driveController
-    //     .y()
-    //     .onFalse(
-    //         new InstantCommand(() -> shooter.stopFlywheels(), shooter)
-    //             // .andThen(new SetElevatorTarget(10, elevator))
-    //             .andThen(new SetElevatorTarget(0, elevator))
-    //             .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
+    driveController.y().onTrue(new ScoreAmp(elevator, pivot, shooter));
+    driveController
+        .y()
+        .onFalse(
+            new InstantCommand(() -> shooter.stopFlywheels(), shooter)
+                // .andThen(new SetElevatorTarget(10, elevator))
+                .andThen(new SetElevatorTarget(0, elevator))
+                .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
   }
 
   private void driverControls() {

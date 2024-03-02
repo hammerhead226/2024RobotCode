@@ -92,7 +92,7 @@ public final class Constants {
 
     public static final double RETRACT_SETPOINT_INCH = 0;
     public static final double EXTEND_SETPOINT_INCH = 0;
-    public static final double THRESHOLD = 2;
+    public static final double THRESHOLD = 3;
 
     public static final double[] PID = {0, 0, 0};
 
@@ -100,14 +100,16 @@ public final class Constants {
   }
 
   public static class PivotConstants {
-    public static final double CURRENT_LIMIT = 25.0;
+    public static final double CURRENT_LIMIT = 35.0;
     public static final boolean CURRENT_LIMIT_ENABLED = true;
 
     public static final double STOW_SETPOINT_DEG = 52.7;
     public static final double INTAKE_SETPOINT_DEG = 64.0;
     public static final double AMP_SETPOINT_DEG = 60.0;
-    public static final double SUBWOOFER_SETPOINT_DEG = 60.0;
+    public static final double SUBWOOFER_SETPOINT_DEG = 62.0;
     public static final double REVERSE_SUBWOOFER_SETPOINT_DEG = 110.0;
+    public static final double CLIMB_SETPOINT_ONE_DEG = 50;
+    public static final double CLIMB_SETPOINT_TWO_DEG = 110;
 
     public static final double THRESHOLD = 2;
 
