@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4194171612308972,
-      "y": 5.58606903233778
+      "x": 1.407706324685116,
+      "y": 5.5040931765173085
     },
     "rotation": 0
   },
@@ -24,9 +24,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "StartFlywheels2"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Copy of p-b2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
@@ -54,15 +66,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "StartFeeders"
-          }
-        },
-        {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.3
           }
         },
         {

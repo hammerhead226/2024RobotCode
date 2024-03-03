@@ -3,57 +3,57 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8598500563620233,
+        "x": 2.9,
         "y": 5.5040931765173085
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.445189719220122,
-        "y": 6.048567085220879
+        "x": 2.356284084893418,
+        "y": 5.632912378520905
       },
       "isLocked": false,
       "linkedName": "pb2b1 path 1 end"
     },
     {
       "anchor": {
-        "x": 2.2390789960143676,
-        "y": 6.090726096785691
+        "x": 2.230416167194108,
+        "y": 5.932835528352249
       },
       "prevControl": {
-        "x": 2.4385089954582577,
-        "y": 5.681182347927702
+        "x": 2.335813696106141,
+        "y": 5.511245412704115
       },
       "nextControl": {
-        "x": 1.9767562573888615,
-        "y": 6.62942457789164
+        "x": 2.1302862740859196,
+        "y": 6.333355100785002
       },
       "isLocked": false,
       "linkedName": "blob"
     },
     {
       "anchor": {
-        "x": 2.8598500563620233,
-        "y": 6.991369417831561
+        "x": 2.9377506945593113,
+        "y": 7.01491682518246
       },
       "prevControl": {
-        "x": 2.6373441619921745,
-        "y": 6.640044321458116
+        "x": 2.5164744644117505,
+        "y": 6.5902155850336985
       },
       "nextControl": {
-        "x": 3.124208981969119,
-        "y": 7.408778247737501
+        "x": 3.5139238526117618,
+        "y": 7.595774317853223
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.3959954881393342,
-        "y": 5.6212015419751244
+        "x": 3.1,
+        "y": 5.5
       },
       "prevControl": {
-        "x": 2.092790262613333,
-        "y": 6.774718941734604
+        "x": 3.5467141949399497,
+        "y": 6.1389462515580036
       },
       "nextControl": null,
       "isLocked": false,
@@ -64,6 +64,11 @@
     {
       "waypointRelativePos": 1.4,
       "rotationDegrees": 45.568504655821094,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.9500000000000002,
+      "rotationDegrees": 45.57,
       "rotateFast": false
     }
   ],
@@ -85,7 +90,7 @@
             {
               "type": "named",
               "data": {
-                "name": "PivotIntake"
+                "name": "AutoPivotIntake"
               }
             }
           ]
@@ -94,7 +99,7 @@
     },
     {
       "name": "stop intake feed position in feed pivot shoot",
-      "waypointRelativePos": 2.45,
+      "waypointRelativePos": 2.5,
       "command": {
         "type": "sequential",
         "data": {
@@ -109,12 +114,6 @@
               "type": "named",
               "data": {
                 "name": "PositionNoteInFeeder"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "PivotShoot"
               }
             }
           ]
@@ -141,7 +140,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -156,5 +155,5 @@
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
