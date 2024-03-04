@@ -30,6 +30,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -162,6 +163,20 @@ public class Drive extends SubsystemBase {
 
     // Apply odometry update
     poseEstimator.update(rawGyroRotation, modulePositions);
+
+    if (DriverStation.getAlliance().isPresent()) {
+      double timestampSeconds = 
+          Timer.getFPGATimestamp()
+          - (LimelightHelpers.getLatency_Capture(Constants.LL_ALIGN) / 1000.) 
+          - (LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN) / 1000.);
+      if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiBlue(Constants.LL_ALIGN);
+        addVisionMeasurement(visionMeasurement, timestampSeconds);
+      } else {
+        Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiRed(Constants.LL_ALIGN);
+        addVisionMeasurement(visionMeasurement, timestampSeconds);
+      }
+    }  
   }
 
   public void toggleLowSpeed() {

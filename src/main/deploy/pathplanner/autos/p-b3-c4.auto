@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "p-b3"
+            "pathName": "b3"
           }
         },
         {
@@ -39,24 +39,6 @@
           "type": "path",
           "data": {
             "pathName": "c4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopIntakeFeed"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "shoot c4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNote"
           }
         },
         {

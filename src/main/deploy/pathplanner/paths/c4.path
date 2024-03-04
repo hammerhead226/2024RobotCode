@@ -8,61 +8,82 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5213810337934586,
-        "y": 2.8990228384044205
+        "x": 3.2697293354643757,
+        "y": 2.6817815689839652
       },
       "isLocked": false,
       "linkedName": "shoot b3 end"
     },
     {
       "anchor": {
-        "x": 3.788275199868786,
-        "y": 2.6413319194351392
+        "x": 3.7850061434787623,
+        "y": 2.389010655339427
       },
       "prevControl": {
-        "x": 3.254486867718131,
-        "y": 2.972648815252787
+        "x": 3.4453918836510984,
+        "y": 2.6466490593466205
       },
       "nextControl": {
-        "x": 4.647454328428665,
-        "y": 2.1080483223979725
+        "x": 4.590641916241385,
+        "y": 1.777838689795368
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.279201231048202,
-        "y": 1.5185357724975534
+        "x": 5.436234096433955,
+        "y": 1.3584570393106543
       },
       "prevControl": {
-        "x": 4.395689508867808,
-        "y": 2.079933845966347
+        "x": 4.552722374253561,
+        "y": 1.9198551127794476
       },
       "nextControl": {
-        "x": 6.172796975854268,
-        "y": 0.9507301429853648
+        "x": 6.32982984124002,
+        "y": 0.7906514097984657
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.012618136505887,
-        "y": 0.77
+        "x": 8.317099886696207,
+        "y": 0.7612043754757987
       },
       "prevControl": {
-        "x": 7.040336555323939,
-        "y": 0.77
+        "x": 7.344818305514258,
+        "y": 0.7612043754757987
+      },
+      "nextControl": {
+        "x": 9.289381467878155,
+        "y": 0.7612043754757987
+      },
+      "isLocked": false,
+      "linkedName": "c4 end"
+    },
+    {
+      "anchor": {
+        "x": 0.9322463609263865,
+        "y": 4.44543355277866
+      },
+      "prevControl": {
+        "x": 2.9652475852757783,
+        "y": 1.862023010779258
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "c4 end"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 2.2,
+      "waypointRelativePos": 3.0,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.5,
       "rotationDegrees": 0,
       "rotateFast": false
     }
@@ -70,7 +91,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
+      "name": "intake note",
       "waypointRelativePos": 1.4,
       "command": {
         "type": "sequential",
@@ -80,6 +101,52 @@
               "type": "named",
               "data": {
                 "name": "PivotIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stop intake feed position note in feed",
+      "waypointRelativePos": 3.3,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopIntakeFeed"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PositionNoteInFeeder"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFlywheels2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 4.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFeeders"
               }
             }
           ]
@@ -95,7 +162,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 0,
+    "rotation": -58.02307967060501,
     "rotateFast": false
   },
   "reversed": false,

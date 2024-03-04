@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -71,21 +73,35 @@ public class AlignToNoteAuto extends Command {
   public void execute() {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
 
+    double noteError = drive.getNoteError();
+
+    double xPIDEffort = xPID.calculate(noteError);
+    double yPIDEffort = yPID.calculate(drive.getPose().getY());
+
     if (alliance == DriverStation.Alliance.Red) {
       drive.runVelocity(
-          ChassisSpeeds.fromFieldRelativeSpeeds(
-              xPID.calculate(drive.getNoteError()),
-              yPID.calculate(drive.getPose().getY()),
+          ChassisSpeeds.fromRobotRelativeSpeeds(
+              xPIDEffort,
+              yPIDEffort,
               0,
               drive.getPose().getRotation()));
     } else {
       drive.runVelocity(
-          ChassisSpeeds.fromFieldRelativeSpeeds(
-              -xPID.calculate(drive.getNoteError()),
-              yPID.calculate(drive.getPose().getY()),
+          ChassisSpeeds.fromRobotRelativeSpeeds(
+              -xPIDEffort,
+              yPIDEffort,
               0,
               drive.getPose().getRotation()));
+
+      xPIDEffort = -xPIDEffort;
     }
+
+    Logger.recordOutput("at xPID", xPID.atSetpoint());
+    Logger.recordOutput("at yPID", yPID.atSetpoint());
+
+
+    Logger.recordOutput("xPIDEffort", xPIDEffort);
+    Logger.recordOutput("yPIDEffort", yPIDEffort);
   }
 
   // Called once the command ends or is interrupted.

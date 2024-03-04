@@ -43,6 +43,9 @@ public final class Constants {
   public static final String CANBUS = "CAN Bus 2";
   public static final double LOOP_PERIOD_SECS = 0.02;
 
+  public static final String LL_ALIGN = "limelight-align";
+  public static final String LL_INTAKE = "limelight-intake";
+
   public static class SwerveConstants {
     public static final double MAX_LINEAR_SPEED = 5.56;
     public static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);
