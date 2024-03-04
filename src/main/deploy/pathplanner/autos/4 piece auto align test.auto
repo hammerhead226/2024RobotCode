@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4194171612308972,
-      "y": 5.58606903233778
+      "x": 1.407706324685116,
+      "y": 5.5040931765173085
     },
     "rotation": 0
   },
@@ -24,34 +24,39 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "pb2"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopIntakeFeed"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopFlywheels"
-                }
-              }
-            ]
+            "name": "StartFlywheels2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "auto align p-b2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "auto align b1-1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "auto align b1-2"
           }
         },
         {
@@ -69,19 +74,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "c2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StartFeeders"
+            "pathName": "auto align c2"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.3
           }
         },
         {

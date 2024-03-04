@@ -12,36 +12,36 @@
         "y": 5.995948311440133
       },
       "isLocked": false,
-      "linkedName": "b1 end"
+      "linkedName": "auto align path3"
     },
     {
       "anchor": {
-        "x": 5.576982206595992,
-        "y": 6.471465048193254
+        "x": 5.223319920324052,
+        "y": 6.48960157569438
       },
       "prevControl": {
-        "x": 4.570265690897085,
-        "y": 6.6299296849236375
+        "x": 4.27115222651498,
+        "y": 6.4442602569415675
       },
       "nextControl": {
-        "x": 6.841752553540395,
-        "y": 6.272380826914969
+        "x": 6.502213888819678,
+        "y": 6.550501288479885
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.297461331764769,
-        "y": 5.764140475649373
+        "x": 8.27025654051308,
+        "y": 5.726599070887158
       },
       "prevControl": {
-        "x": 6.511013372903941,
-        "y": 5.7019309791553985
+        "x": 6.937221769180381,
+        "y": 5.709730893145998
       },
       "nextControl": {
-        "x": 9.45725586031778,
-        "y": 5.804528012996812
+        "x": 9.430661163890225,
+        "y": 5.741282792467219
       },
       "isLocked": false,
       "linkedName": null
@@ -60,7 +60,13 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.75,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
@@ -202,7 +208,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "c!p-b2-b1-c2-optimized",
+  "folder": "auto align test",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

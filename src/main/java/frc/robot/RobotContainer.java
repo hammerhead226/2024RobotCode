@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AutoPivotIntake;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotClimb;
@@ -272,12 +273,15 @@ public class RobotContainer {
                 "RunIntake",
                 new InstantCommand(
                         () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
+
+        NamedCommands.registerCommand("AutoAlignNote", new AlignToNoteAuto(drive));
         // NamedCommands.registerCommand("StopIntake", new
         // InstantCommand(intake::stopRollers, intake));
 
         // Set up auto routines
         autos = new SendableChooser<>();
-        autos.addOption("p-b2-b1-c2-optimal", AutoBuilder.buildAuto("p-b2-b1-c2-optimized"));
+        autos.addOption("c!p-b2-b1-c2-optimal", AutoBuilder.buildAuto("c!p-b2-b1-c2-optimized"));
+        autos.addOption("4 piece auto align test", AutoBuilder.buildAuto("4 piece auto align test"));
 
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", autos);
 
@@ -355,7 +359,8 @@ public class RobotContainer {
         driveController.leftTrigger().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(4000)));
         driveController.leftTrigger().onFalse(new InstantCommand(() -> shooter.stopFeeders()));
 
-        driveController.b().onTrue(new SetPivotTarget(56, pivot));
+        // driveController.b().onTrue(new SetPivotTarget(56, pivot));
+        driveController.b().onTrue(new AlignToNoteAuto(drive));
         // driveController.a().onTrue(new SetPivotTarget(pivotAngle.get(), pivot));
         // driveController.a().onTrue(new SetPivotTarget(pivotAngle.get(), pivot));
         // driveController.a().onTrue(new InstantCommand(() ->

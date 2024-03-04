@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "pb2b1 path 1 end"
+      "linkedName": "auto align path1"
     }
   ],
   "rotationTargets": [],
@@ -41,7 +41,13 @@
             {
               "type": "named",
               "data": {
-                "name": "PivotIntake"
+                "name": "AutoPivotIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFeeders"
               }
             }
           ]
@@ -51,7 +57,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -61,10 +67,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "c!p-b2-b1-c2",
+  "folder": "auto align test",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -3,69 +3,96 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.1,
-        "y": 5.5
+        "x": 0.9793724850647213,
+        "y": 6.571215949449959
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.716095443317849,
-        "y": 5.8513250963734444
+        "x": 2.8383665539260905,
+        "y": 6.761649488211257
       },
       "isLocked": false,
-      "linkedName": "b1 end"
+      "linkedName": "a!p-b1-c2-path1"
     },
     {
       "anchor": {
-        "x": 5.31912573097614,
-        "y": 6.440960100179829
+        "x": 5.132637282818426,
+        "y": 6.580284213200006
       },
       "prevControl": {
-        "x": 4.300282951493148,
-        "y": 6.417538427088266
+        "x": 3.527554598968848,
+        "y": 6.670966850705632
       },
       "nextControl": {
-        "x": 6.449150423477358,
-        "y": 6.466937679317789
+        "x": 6.794698739951857,
+        "y": 6.486382435960829
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.305389050150424,
-        "y": 5.785153253616065
+        "x": 8.279324804263645,
+        "y": 5.7732087393999345
       },
       "prevControl": {
-        "x": 7.154161097195232,
-        "y": 5.931538710438334
+        "x": 7.018836142935444,
+        "y": 5.791345266901061
       },
       "nextControl": {
-        "x": 9.456617003105617,
-        "y": 5.638767796793797
+        "x": 8.898165597527127,
+        "y": 5.7643045553242
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.3959954881393342,
-        "y": 5.6212015419751244
+        "x": 4.216742644011604,
+        "y": 6.80699080696407
       },
       "prevControl": {
-        "x": 4.61647553822925,
-        "y": 7.167031966018283
+        "x": 4.777153230118824,
+        "y": 6.749017298056427
+      },
+      "nextControl": {
+        "x": 3.690783346478974,
+        "y": 6.861400389467445
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.997509012561885,
+        "y": 6.571215949449443
+      },
+      "prevControl": {
+        "x": 1.6866970576046416,
+        "y": 6.6528303232045065
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.05,
+      "rotationDegrees": -5.8591133064089576,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.95,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "intake note",
-      "waypointRelativePos": 1.0499999999999998,
+      "waypointRelativePos": 0.25,
       "command": {
         "type": "sequential",
         "data": {
@@ -81,10 +108,10 @@
       }
     },
     {
-      "name": "stop intake feed pivot shoot",
-      "waypointRelativePos": 2.35,
+      "name": "stop intake feed position note start fly",
+      "waypointRelativePos": 2.25,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -96,37 +123,9 @@
             {
               "type": "named",
               "data": {
-                "name": "PivotShoot"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "position note in feeder",
-      "waypointRelativePos": 2.45,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
                 "name": "PositionNoteInFeeder"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "start flywheels",
-      "waypointRelativePos": 2.75,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
+            },
             {
               "type": "named",
               "data": {
@@ -138,8 +137,8 @@
       }
     },
     {
-      "name": "stop flywheels feeders",
-      "waypointRelativePos": 0.2,
+      "name": "shoot",
+      "waypointRelativePos": 4.0,
       "command": {
         "type": "sequential",
         "data": {
@@ -147,13 +146,7 @@
             {
               "type": "named",
               "data": {
-                "name": "StopFeeders"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "StopFlywheels"
+                "name": "StartFeeders"
               }
             }
           ]
@@ -162,21 +155,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 4.5,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 57.42594286542754,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "c!p-b2-b1-c2",
+  "folder": "a!p-b1-c2",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 59.82647997075778,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
