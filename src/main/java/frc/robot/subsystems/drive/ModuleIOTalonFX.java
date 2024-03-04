@@ -17,6 +17,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -99,6 +100,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         Constants.ModuleConstants.DRIVE_STATOR_CURRENT_LIMIT_ENABLED;
     driveTalon.getConfigurator().apply(driveConfig);
     setDriveBrakeMode(true);
+    setDriveOpenLoopRamp(Constants.SwerveConstants.OPEN_LOOP_RAMP_SEC);
 
     var turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.StatorCurrentLimit =
@@ -170,6 +172,13 @@ public class ModuleIOTalonFX implements ModuleIO {
   @Override
   public void setDriveVoltage(double volts) {
     driveTalon.setControl(new VoltageOut(volts));
+  }
+
+  @Override
+  public void setDriveOpenLoopRamp(double seconds) {
+    var ramping = new OpenLoopRampsConfigs();
+
+    ramping.VoltageOpenLoopRampPeriod = seconds;
   }
 
   @Override

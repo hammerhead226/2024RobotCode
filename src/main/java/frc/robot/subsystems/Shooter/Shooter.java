@@ -119,7 +119,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getFeederError() {
-    return feedInputs.velocitySetpointRPM - getFeederError();
+    return 0; // feedInputs.velocitySetpointRPM - getFeederError();
   }
 
   public boolean atFeederSetpoint() {

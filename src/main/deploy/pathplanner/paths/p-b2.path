@@ -3,62 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 1.407706324685116,
+        "y": 5.5040931765173085
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 2.4077063246851154,
+        "y": 5.5040931765173085
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.475945499679871,
-        "y": 7.0
+        "x": 2.9,
+        "y": 5.5040931765173085
       },
       "prevControl": {
-        "x": 3.475945499679871,
-        "y": 7.0
+        "x": 1.9,
+        "y": 5.5040931765173085
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "hello"
+      "linkedName": "pb2b1 path 1 end"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "start flywheels",
-      "waypointRelativePos": 0,
+      "name": "pivot intake",
+      "waypointRelativePos": 0.0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "StartFlywheels"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "feed",
-      "waypointRelativePos": 0.8,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StartFeeders"
+                "name": "PivotIntake"
               }
             }
           ]
@@ -67,8 +50,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -78,10 +61,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "New Folder",
+  "folder": "c!p-b2-b1-c2",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

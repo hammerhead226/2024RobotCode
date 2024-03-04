@@ -1,0 +1,91 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.407706324685116,
+      "y": 5.5040931765173085
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "PivotShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartFlywheels2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of p-b2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of b1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartFeeders"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of c2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopFeeders"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopFlywheels"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "autos",
+  "choreoAuto": false
+}

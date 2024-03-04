@@ -3,51 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.475945499679871,
-        "y": 7.0
+        "x": 2.9783894545367575,
+        "y": 5.567964499157698
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2697293354643757,
-        "y": 6.991369417831561
+        "x": 2.0754391499690255,
+        "y": 5.567964499157698
       },
       "isLocked": false,
-      "linkedName": "hello"
+      "linkedName": "p-b2 end "
     },
     {
       "anchor": {
-        "x": 1.4662605074140238,
-        "y": 7.0
+        "x": 1.44283883432246,
+        "y": 5.609490705429342
       },
       "prevControl": {
-        "x": 2.6373441619921745,
-        "y": 6.991369417831561
+        "x": 2.0873605522587084,
+        "y": 5.609490705429342
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "shoot b2 end"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 1.0,
+      "name": "pivot shoot",
+      "waypointRelativePos": 0.15,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "StopFlywheels"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "StopFeeders"
+                "name": "PivotShoot"
               }
             }
           ]
@@ -56,8 +50,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -67,10 +61,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "New Folder",
+  "folder": "c!p-b2",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

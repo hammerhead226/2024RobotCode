@@ -15,21 +15,22 @@ import frc.robot.subsystems.shooter.Shooter;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PivotIntake extends SequentialCommandGroup {
+public class AutoPivotIntake extends SequentialCommandGroup {
   /** Creates a new PivotIntake. */
-  public PivotIntake(Pivot pivot, Intake intake, Shooter shooter, boolean outtake) {
+  public AutoPivotIntake(
+      Pivot pivot, Intake intake, Shooter shooter, double pivotTarget, boolean outtake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     if (!outtake) {
       addCommands(
-          new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
+          new SetPivotTarget(pivotTarget, pivot),
           new WaitUntilCommand(pivot::atSetpoint),
           new InstantCommand(
               () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake),
-          new InstantCommand(() -> shooter.setFeedersRPM(1000)));
+          new InstantCommand(() -> shooter.setFeedersRPM(4000)));
     } else {
       addCommands(
-          new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
+          new SetPivotTarget(pivotTarget, pivot),
           new WaitUntilCommand(pivot::atSetpoint),
           new InstantCommand(() -> shooter.setFeedersRPM(-4000)),
           new InstantCommand(

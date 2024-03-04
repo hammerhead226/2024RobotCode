@@ -20,7 +20,6 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -36,18 +35,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LocalADStarAK;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
-  private static final double MAX_LINEAR_SPEED = Constants.SwerveConstants.MAX_LINEAR_SPEED * 0.8;
+  private static final double MAX_LINEAR_SPEED = Constants.SwerveConstants.MAX_LINEAR_SPEED * 0.75;
   private static final double TRACK_WIDTH_X = Constants.SwerveConstants.TRACK_WIDTH_X;
   private static final double TRACK_WIDTH_Y = Constants.SwerveConstants.TRACK_WIDTH_Y;
   private static final double DRIVE_BASE_RADIUS = Constants.SwerveConstants.DRIVE_BASE_RADIUS;
   private static final double MAX_ANGULAR_SPEED = Constants.SwerveConstants.MAX_ANGULAR_SPEED;
-
-  public static double multiplier = 1.0;
+  private static double multiplier = 1.0;
+  private static boolean toggle = false;
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -164,12 +164,9 @@ public class Drive extends SubsystemBase {
     poseEstimator.update(rawGyroRotation, modulePositions);
   }
 
-  public void increaseSpeed() {
-    multiplier = MathUtil.clamp(multiplier += 0.1, 0, 1);
-  }
-
-  public void decreaseSpeed() {
-    multiplier = MathUtil.clamp(multiplier -= 0.1, 0, 1);
+  public void toggleLowSpeed() {
+    if (!toggle) multiplier = 0.4;
+    else multiplier = 1;
   }
 
   /**
@@ -276,6 +273,10 @@ public class Drive extends SubsystemBase {
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
     return MAX_ANGULAR_SPEED;
+  }
+
+  public double getNoteError() {
+    return LimelightHelpers.getTX("limelight-intake");
   }
 
   /** Returns an array of module translations. */

@@ -1,21 +1,22 @@
 package frc.robot.subsystems.intake;
 
-import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import frc.robot.Constants;
 
 public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
   private final CANSparkFlex rollers;
 
   public IntakeRollerIOSparkFlex(int id) {
     rollers = new CANSparkFlex(id, MotorType.kBrushless);
-    rollers.restoreFactoryDefaults();
-    rollers.setIdleMode(IdleMode.kCoast);
-    rollers.setInverted(true);
+    // rollers.restoreFactoryDefaults();
+    // rollers.clearFaults();
 
-    rollers.setSmartCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT);
+    // rollers.setIdleMode(IdleMode.kCoast);
+    // rollers.setInverted(true);
+
+    // rollers.setSmartCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT);
     rollers.setCANTimeout(250);
+
     rollers.burnFlash();
   }
 

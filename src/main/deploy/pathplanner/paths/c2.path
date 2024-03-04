@@ -1,0 +1,182 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.1,
+        "y": 5.5
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.716095443317849,
+        "y": 5.8513250963734444
+      },
+      "isLocked": false,
+      "linkedName": "b1 end"
+    },
+    {
+      "anchor": {
+        "x": 5.31912573097614,
+        "y": 6.440960100179829
+      },
+      "prevControl": {
+        "x": 4.300282951493148,
+        "y": 6.417538427088266
+      },
+      "nextControl": {
+        "x": 6.449150423477358,
+        "y": 6.466937679317789
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.305389050150424,
+        "y": 5.785153253616065
+      },
+      "prevControl": {
+        "x": 7.154161097195232,
+        "y": 5.931538710438334
+      },
+      "nextControl": {
+        "x": 9.456617003105617,
+        "y": 5.638767796793797
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.3959954881393342,
+        "y": 5.6212015419751244
+      },
+      "prevControl": {
+        "x": 4.61647553822925,
+        "y": 7.167031966018283
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "intake note",
+      "waypointRelativePos": 1.0499999999999998,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stop intake feed pivot shoot",
+      "waypointRelativePos": 2.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopIntakeFeed"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "position note in feeder",
+      "waypointRelativePos": 2.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PositionNoteInFeeder"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "start flywheels",
+      "waypointRelativePos": 2.75,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFlywheels2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stop flywheels feeders",
+      "waypointRelativePos": 0.2,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopFeeders"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "StopFlywheels"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "c!p-b2-b1-c2",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

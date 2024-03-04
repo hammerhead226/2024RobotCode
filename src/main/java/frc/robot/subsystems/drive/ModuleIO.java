@@ -34,6 +34,8 @@ public interface ModuleIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ModuleIOInputs inputs) {}
 
+  public default void setDriveOpenLoopRamp(double seconds) {}
+
   /** Run the drive motor at the specified voltage. */
   public default void setDriveVoltage(double volts) {}
 

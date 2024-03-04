@@ -1,0 +1,211 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.1,
+        "y": 5.5
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.31199378803893,
+        "y": 5.995948311440133
+      },
+      "isLocked": false,
+      "linkedName": "b1 end"
+    },
+    {
+      "anchor": {
+        "x": 5.799270029353182,
+        "y": 6.241875878901544
+      },
+      "prevControl": {
+        "x": 4.792553513654275,
+        "y": 6.400340515631927
+      },
+      "nextControl": {
+        "x": 7.064040376297585,
+        "y": 6.042791657623258
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.27025654051308,
+        "y": 5.726599070887158
+      },
+      "prevControl": {
+        "x": 7.872088097956508,
+        "y": 5.714888234341376
+      },
+      "nextControl": {
+        "x": 9.430252443960628,
+        "y": 5.760716597459146
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.5950797094176201,
+        "y": 5.597779868883561
+      },
+      "prevControl": {
+        "x": 4.815559759507539,
+        "y": 7.143610292926726
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 2.25,
+      "maxWaypointRelativePos": 3.0,
+      "constraints": {
+        "maxVelocity": 3.75,
+        "maxAcceleration": 4.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "intake note",
+      "waypointRelativePos": 0.1,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stop intake feed pivot shoot",
+      "waypointRelativePos": 2.35,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopIntakeFeed"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "position note in feeder",
+      "waypointRelativePos": 2.45,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PositionNoteInFeeder"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "start flywheels",
+      "waypointRelativePos": 2.5,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFlywheels2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stop flywheels feeders",
+      "waypointRelativePos": 0.2,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopFeeders"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "StopFlywheels"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 3.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFeeders"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "c!p-b2-b1-c2-optimized",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

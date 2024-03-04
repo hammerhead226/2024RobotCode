@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 1.3491521419562087,
+        "y": 5.58606903233778
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 2.3491521419562087,
+        "y": 5.58606903233778
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.721873067141283,
-        "y": 7.0
+        "x": 2.9783894545367575,
+        "y": 5.567964499157698
       },
       "prevControl": {
-        "x": 3.721873067141283,
-        "y": 7.0
+        "x": 1.9783894545367575,
+        "y": 5.567964499157698
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "test"
+      "linkedName": "p-b2 end "
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "pivot shoot",
-      "waypointRelativePos": 0.55,
+      "name": "intake note",
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,30 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": null
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "StartFlywheels"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 1.0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StartFeeders"
+                "name": "PivotIntake"
               }
             }
           ]
@@ -73,8 +50,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -84,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "New Folder",
+  "folder": "c!p-b2",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

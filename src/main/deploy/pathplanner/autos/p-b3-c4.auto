@@ -1,0 +1,73 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.9626945359454185,
+      "y": 4.485250397034318
+    },
+    "rotation": -59.0362434679265
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "p-b3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopIntakeFeed"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "score b3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "c4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopIntakeFeed"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot c4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "gas gas gas"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "autos",
+  "choreoAuto": false
+}
