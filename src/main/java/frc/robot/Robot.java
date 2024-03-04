@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -99,6 +101,10 @@ public class Robot extends LoggedRobot {
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    UsbCamera camera = CameraServer.startAutomaticCapture(0);
+    camera.setResolution(400, 300);
+    camera.setExposureManual(50);
   }
 
   /** This function is called once when the robot is disabled. */
