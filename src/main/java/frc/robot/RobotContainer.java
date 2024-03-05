@@ -39,7 +39,8 @@ import frc.robot.commands.SetElevatorTarget;
 import frc.robot.commands.SetFeedersTargetRPM;
 import frc.robot.commands.SetPivotTarget;
 import frc.robot.commands.SetShooterTargetRPM;
-import frc.robot.commands.ShootNote;
+import frc.robot.commands.ShootNoteCenter;
+import frc.robot.commands.ShootNoteSource;
 import frc.robot.commands.StopIntakeFeed;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
@@ -71,7 +72,6 @@ import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
 import java.util.Map;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -92,14 +92,6 @@ public class RobotContainer {
   private final CommandXboxController manipController = new CommandXboxController(1);
   private final LoggedDashboardChooser<Command> autoChooser;
   private final SendableChooser<Command> autos;
-
-  private final LoggedDashboardNumber flywheelSpeed = new LoggedDashboardNumber("flywheelSpeed");
-  private final LoggedDashboardNumber feedSpeed = new LoggedDashboardNumber("feedSpeed");
-
-  private final LoggedDashboardNumber elevatorDistance =
-      new LoggedDashboardNumber("elevatorDistance");
-
-  private final LoggedDashboardNumber pivotAngle = new LoggedDashboardNumber("pivotAngle");
   private final ClimbStateMachine climbStateMachine;
 
   private CLIMB_STATES climbSelect() {
@@ -243,11 +235,17 @@ public class RobotContainer {
         "PivotSubwoofer",
         new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
 
-    NamedCommands.registerCommand("ShootNote", new ShootNote(shooter));
+    NamedCommands.registerCommand("ShootNoteCenter", new ShootNoteCenter(shooter));
     // This one
     NamedCommands.registerCommand(
-        "StartFlywheels2",
+        "StartFlywheelsCenter",
         new InstantCommand(() -> shooter.setFlywheelRPMs(4000.0, 4000.0), shooter));
+
+    NamedCommands.registerCommand(
+        "StartFlywheelsSource",
+        new InstantCommand(() -> shooter.setFlywheelRPMs(5000.0, 3000.0), shooter));
+
+    NamedCommands.registerCommand("ShootNoteSource", new ShootNoteSource(shooter));
 
     NamedCommands.registerCommand(
         "StopFlywheels", new InstantCommand(shooter::stopFlywheels, shooter));
@@ -264,7 +262,7 @@ public class RobotContainer {
         new InstantCommand(
             () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
 
-    NamedCommands.registerCommand("AutoAlignNote", new AlignToNoteAuto(drive));
+    NamedCommands.registerCommand("AutoAlignNote", new AlignToNoteAuto(drive, 1.941));
     // NamedCommands.registerCommand("StopIntake", new
     // InstantCommand(intake::stopRollers, intake));
 
@@ -335,8 +333,13 @@ public class RobotContainer {
     // .y()
     // .onTrue(new SetPivotTarget(Constants.PivotConstants.PODIUM_SETPOINT_DEG, pivot));
 
-    driveController.x().onTrue(new SetPivotTarget(108, pivot));
+    // driveController.x().onTrue(new SetPivotTarget(108, pivot));
 
+    driveController
+        .x()
+        .onTrue(
+            new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot)
+                .andThen(new ShootNoteSource(shooter)));
     //     driveController
     //         .x()
     //         .onTrue(new SetPivotTarget(Constants.PivotConstants.REVERSE_SUBWOOFER_SETPOINT_DEG,
@@ -524,5 +527,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public Shooter getShooter() {
+    return shooter;
   }
 }

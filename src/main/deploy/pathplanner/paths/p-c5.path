@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.857297007033385,
-        "y": 4.42669621430541
+        "x": 1.0917237977973722,
+        "y": 4.215087174568969
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0166698250657547,
-        "y": 3.325877579001948
+        "x": 2.2510966158297423,
+        "y": 3.114268539265507
       },
       "isLocked": false,
       "linkedName": null
@@ -20,24 +20,24 @@
         "y": 2.119661414786453
       },
       "prevControl": {
-        "x": 2.5905008158090483,
-        "y": 2.728624915167091
+        "x": 2.3801783926437814,
+        "y": 2.650535166541185
       },
       "nextControl": {
-        "x": 3.748130378522227,
-        "y": 1.6138705214432898
+        "x": 3.839851101652588,
+        "y": 1.7309968468945183
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.852956486182032,
-        "y": 0.7270565213776169
+        "x": 6.604468814318795,
+        "y": 0.6810402858473878
       },
       "prevControl": {
-        "x": 4.4522349942968225,
-        "y": 0.797321540652307
+        "x": 4.2037473224335855,
+        "y": 0.7513053051220779
       },
       "nextControl": null,
       "isLocked": false,
@@ -56,83 +56,20 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
-  "eventMarkers": [
+  "constraintZones": [
     {
-      "name": "intake note",
-      "waypointRelativePos": 0.95,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "PivotIntake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "stop intake feed position note in feeder",
-      "waypointRelativePos": 2,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StopIntakeFeed"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "PositionNoteInFeeder"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "start flywheel",
-      "waypointRelativePos": 2,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StartFlywheels2"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 2,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StartFeeders"
-              }
-            }
-          ]
-        }
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.8,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
       }
     }
   ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.5,
     "maxAcceleration": 4.0,

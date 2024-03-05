@@ -20,7 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootNote"
+            "name": "ShootNoteSource"
           }
         },
         {
@@ -30,21 +30,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "AutoAlignNote"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoAlignNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PivotIntake"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "pb2"
+            "pathName": "score c5"
           }
         }
       ]

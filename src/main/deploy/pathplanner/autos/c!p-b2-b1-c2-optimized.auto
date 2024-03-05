@@ -20,13 +20,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootNote"
+            "name": "ShootNoteCenter"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StartFlywheels2"
+            "name": "StartFlywheelsCenter"
           }
         },
         {

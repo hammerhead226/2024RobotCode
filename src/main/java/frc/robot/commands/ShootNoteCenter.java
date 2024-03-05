@@ -12,9 +12,9 @@ import frc.robot.subsystems.shooter.Shooter;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ShootNote extends SequentialCommandGroup {
+public class ShootNoteCenter extends SequentialCommandGroup {
   /** Creates a new ShootNote. */
-  public ShootNote(Shooter shooter) {
+  public ShootNoteCenter(Shooter shooter) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
