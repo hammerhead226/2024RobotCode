@@ -3,8 +3,8 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "auto align test",
     "a!p-b1-c2",
+    "auto align test",
     "c!p-b2",
     "c!p-b2-b1-c2-optimized",
     "s!p-b3-c4",

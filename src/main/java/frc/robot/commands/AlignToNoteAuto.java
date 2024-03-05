@@ -4,14 +4,16 @@
 
 package frc.robot.commands;
 
-import org.littletonrobotics.junction.Logger;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.util.LimelightHelpers;
+import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.Logger;
 
 public class AlignToNoteAuto extends Command {
   /** Creates a new AlignToNoteAuto. */
@@ -21,42 +23,33 @@ public class AlignToNoteAuto extends Command {
   private final PIDController xPID;
   private final PIDController yPID;
 
-  public AlignToNoteAuto(Drive drive) {
-    double xKP;
-    double xKI;
-    double xKD;
+  private final LoggedTunableNumber xKp = new LoggedTunableNumber("AlignToNoteAuto/xKp");
+  private final LoggedTunableNumber xKd = new LoggedTunableNumber("AlignToNoteAuto/xKd");
 
-    double yKP;
-    double yKI;
-    double yKD;
+  private final LoggedTunableNumber yKp = new LoggedTunableNumber("AlignToNoteAuto/yKp");
+  private final LoggedTunableNumber yKd = new LoggedTunableNumber("AlignToNoteAuto/yKd");
+
+  public AlignToNoteAuto(Drive drive) {
 
     switch (Constants.getMode()) {
       case REAL:
-        xKP = 1;
-        xKI = 0;
-        xKD = 0;
+        xKp.initDefault(0.045);
+        xKd.initDefault(0);
 
-        yKP = 1;
-        yKI = 0;
-        yKD = 0;
+        yKp.initDefault(0.08);
+        yKd.initDefault(0);
+
         break;
 
       default:
-        xKP = 1;
-        xKI = 0;
-        xKD = 0;
-
-        yKP = 1;
-        yKI = 0;
-        yKD = 0;
         break;
     }
 
-    yPID = new PIDController(yKP, yKI, yKD);
-    xPID = new PIDController(xKP, xKI, xKD);
+    yPID = new PIDController(yKp.get(), 0, yKd.get());
+    xPID = new PIDController(xKp.get(), 0, xKd.get());
 
     xPID.setTolerance(5);
-    yPID.setTolerance(0.1);
+    yPID.setTolerance(5);
     this.drive = drive;
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -65,40 +58,39 @@ public class AlignToNoteAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    yPID.setSetpoint(1);
+    yPID.setSetpoint(-18);
+    xPID.setSetpoint(-4);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    Logger.recordOutput("TA", LimelightHelpers.getTA(Constants.LL_INTAKE));
+
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
 
     double noteError = drive.getNoteError();
+    double distanceError = LimelightHelpers.getTY(Constants.LL_INTAKE);
 
-    double xPIDEffort = xPID.calculate(noteError);
-    double yPIDEffort = yPID.calculate(drive.getPose().getY());
+    double xPIDEffort =
+        MathUtil.clamp(
+            xPID.calculate(noteError),
+            -Constants.SwerveConstants.MAX_LINEAR_SPEED,
+            Constants.SwerveConstants.MAX_LINEAR_SPEED);
+    double yPIDEffort =
+        MathUtil.clamp(
+            yPID.calculate(LimelightHelpers.getTY(Constants.LL_INTAKE)),
+            -Constants.SwerveConstants.MAX_LINEAR_SPEED,
+            Constants.SwerveConstants.MAX_LINEAR_SPEED);
 
-    if (alliance == DriverStation.Alliance.Red) {
-      drive.runVelocity(
-          ChassisSpeeds.fromRobotRelativeSpeeds(
-              xPIDEffort,
-              yPIDEffort,
-              0,
-              drive.getPose().getRotation()));
-    } else {
-      drive.runVelocity(
-          ChassisSpeeds.fromRobotRelativeSpeeds(
-              -xPIDEffort,
-              yPIDEffort,
-              0,
-              drive.getPose().getRotation()));
+    drive.runVelocity(new ChassisSpeeds(-yPIDEffort, xPIDEffort, 0));
 
-      xPIDEffort = -xPIDEffort;
-    }
+    Logger.recordOutput("Distance Error", distanceError);
+
+    Logger.recordOutput("Note Error", noteError);
 
     Logger.recordOutput("at xPID", xPID.atSetpoint());
     Logger.recordOutput("at yPID", yPID.atSetpoint());
-
 
     Logger.recordOutput("xPIDEffort", xPIDEffort);
     Logger.recordOutput("yPIDEffort", yPIDEffort);
@@ -111,6 +103,6 @@ public class AlignToNoteAuto extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return xPID.atSetpoint() && yPID.atSetpoint();
+    return LimelightHelpers.getTA(Constants.LL_INTAKE) <= 0;
   }
 }

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.9626945359454185,
-      "y": 4.485250397034318
+      "x": 0.857297007033385,
+      "y": 4.42669621430541
     },
-    "rotation": -59.0362434679265
+    "rotation": -59.236893493478306
   },
   "command": {
     "type": "sequential",
@@ -26,37 +26,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "b3"
+            "pathName": "p-c5"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StopIntakeFeed"
+            "name": "AutoAlignNote"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "score b3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "c4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "gas gas gas"
+            "pathName": "pb2"
           }
         }
       ]

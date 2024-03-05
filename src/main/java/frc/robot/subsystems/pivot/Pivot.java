@@ -35,6 +35,9 @@ public class Pivot extends SubsystemBase {
   private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State pivotCurrent = new TrapezoidProfile.State();
 
+  double currTarget;
+  double lastTarget;
+
   private ArmFeedforward pivotFFModel;
 
   /** Creates a new Pivot. */
@@ -42,13 +45,13 @@ public class Pivot extends SubsystemBase {
     this.pivot = pivot;
     switch (Constants.getMode()) {
       case REAL:
-        kS.initDefault(0.1);
-        kG.initDefault(0.3);
-        kV.initDefault(0.03);
+        kS.initDefault(0);
+        kG.initDefault(0);
+        kV.initDefault(0);
         kA.initDefault(0);
 
-        kP.initDefault(0.44);
-        kI.initDefault(0.04);
+        kP.initDefault(0);
+        kI.initDefault(0);
         kD.initDefault(0);
         break;
       case REPLAY:
@@ -87,7 +90,7 @@ public class Pivot extends SubsystemBase {
             maxVelocityDegPerSec.get(), maxAccelerationDegPerSecSquared.get());
     pivotProfile = new TrapezoidProfile(pivotConstraints);
 
-    setPivotGoal(45 + 59);
+    setPivotGoal(70);
     pivotCurrent = pivotProfile.calculate(0, pivotCurrent, pivotGoal);
 
     pivot.configurePID(kP.get(), kI.get(), kD.get());
@@ -108,7 +111,8 @@ public class Pivot extends SubsystemBase {
 
   public void setPositionDegs(double positionDegs, double velocityDegsPerSec) {
     pivot.setPositionSetpointDegs(
-        positionDegs, pivotFFModel.calculate(positionDegs, velocityDegsPerSec));
+        positionDegs,
+        pivotFFModel.calculate(Math.toRadians(positionDegs), Math.toRadians(velocityDegsPerSec)));
   }
 
   public void pivotStop() {
@@ -126,6 +130,7 @@ public class Pivot extends SubsystemBase {
     pivotCurrent = pivotProfile.calculate(Constants.LOOP_PERIOD_SECS, pivotCurrent, pivotGoal);
 
     setPositionDegs(pivotCurrent.position, pivotCurrent.velocity);
+    // setPositionDegs(Math.toRadians(70), 0);
 
     Logger.processInputs("Pivot", pInputs);
     Logger.recordOutput("pivot error", getPivotError());

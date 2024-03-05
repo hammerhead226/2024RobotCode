@@ -32,28 +32,12 @@
     },
     {
       "anchor": {
-        "x": 6.8649561550193,
-        "y": 0.749493538930016
+        "x": 6.852956486182032,
+        "y": 0.7270565213776169
       },
       "prevControl": {
-        "x": 4.46423466313409,
-        "y": 0.8197585582047061
-      },
-      "nextControl": {
-        "x": 7.205231386396616,
-        "y": 0.739534263865314
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.19999152123839,
-        "y": 0.749493538930016
-      },
-      "prevControl": {
-        "x": 7.064040376297583,
-        "y": 0.7963368851131432
+        "x": 4.4522349942968225,
+        "y": 0.797321540652307
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,22 +46,102 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.9500000000000002,
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.0,
       "rotationDegrees": 0,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "intake note",
+      "waypointRelativePos": 0.95,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stop intake feed position note in feeder",
+      "waypointRelativePos": 2,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopIntakeFeed"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PositionNoteInFeeder"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "start flywheel",
+      "waypointRelativePos": 2,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFlywheels2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 2,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFeeders"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0,
+    "velocity": 3.5,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
@@ -86,5 +150,5 @@
     "rotation": -59.03624346792642,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

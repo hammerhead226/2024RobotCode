@@ -106,7 +106,7 @@ public final class Constants {
     public static final double CURRENT_LIMIT = 35.0;
     public static final boolean CURRENT_LIMIT_ENABLED = true;
 
-    public static final double PODIUM_SETPOINT_DEG = 43.0;
+    public static final double PODIUM_SETPOINT_DEG = 41.45;
     public static final double STOW_SETPOINT_DEG = 52.7;
     public static final double INTAKE_SETPOINT_DEG = 56.0;
     public static final double AMP_SETPOINT_DEG = 60.0;

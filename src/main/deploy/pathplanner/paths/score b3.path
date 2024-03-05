@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.6607658350837373,
-        "y": 4.11050362756931
+        "x": 2.7667147710977043,
+        "y": 4.095444962190373
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5013930170513676,
-        "y": 4.356431195030721
+        "x": 1.6073419530653346,
+        "y": 4.341372529651784
       },
       "isLocked": false,
       "linkedName": "p-b3 end"
@@ -58,7 +58,7 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": -59.03624346792648,
-    "rotateFast": true
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "s!p-b3-c4",
