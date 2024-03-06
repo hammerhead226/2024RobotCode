@@ -21,9 +21,9 @@ public class LED_IOCANdle implements LED_IO {
 
   CANdle candle;
 
-  StrobeAnimation flashGreen = new StrobeAnimation(0, 204, 0, 0, 5, 300);
-  StrobeAnimation flashRed = new StrobeAnimation(179, 30, 0, 0, 1, 300);
-  ColorFlowAnimation wayBlue = new ColorFlowAnimation(0, 0, 240, 0, 2, 300, Direction.Forward);
+  StrobeAnimation flashGreen = new StrobeAnimation(0, 204, 0, 0, 0.01, 28);
+  StrobeAnimation flashRed = new StrobeAnimation(179, 30, 0, 0, 0.01, 28);
+  ColorFlowAnimation wayBlue = new ColorFlowAnimation(0, 0, 240, 0, 0.01, 28, Direction.Forward);
 
   public LED_IOCANdle(int channel, String CANBUS) {
     // led = new Spark(channel);
@@ -66,7 +66,7 @@ public class LED_IOCANdle implements LED_IO {
         break;
       case BLUE:
         // led.set(Constants.LEDConstants.COLOR_BLUE);
-        candle.animate(wayBlue, 0);
+        candle.animate(wayBlue);
         break;
       case YELLOW:
         // led.set(Constants.LEDConstants.COLOR_YELLOW);
@@ -75,10 +75,10 @@ public class LED_IOCANdle implements LED_IO {
         // led.set(Constants.LEDConstants.COLOR_VIOLET);
         break;
       case FLASHING_GREEN:
-        candle.animate(flashGreen, 0);
+        candle.animate(flashGreen);
         break;
       case FLASHING_RED:
-        candle.animate(flashRed, 0);
+        candle.animate(flashRed);
         break;
       case OFF:
         // led.close();

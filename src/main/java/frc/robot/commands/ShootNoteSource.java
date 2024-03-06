@@ -18,11 +18,33 @@ public class ShootNoteSource extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new InstantCommand(() -> shooter.setFlywheelRPMs(5000, 4200)),
+        new InstantCommand(() -> shooter.setFlywheelRPMSSource(), shooter),
         new WaitCommand(1),
         new InstantCommand(() -> shooter.setFeedersRPM(4000)),
         new WaitCommand(0.5),
         new InstantCommand(shooter::stopFeeders, shooter),
         new InstantCommand(shooter::stopFlywheels, shooter));
+    // if (DriverStation.getAlliance().get() == Alliance.Blue) {
+    //     addCommands(
+    //         new InstantCommand(() -> shooter.setFlywheelRPMs(5000, 4200)),
+    //         new WaitCommand(1),
+    //         new InstantCommand(() -> shooter.setFeedersRPM(4000)),
+    //         new WaitCommand(0.5),
+    //         new InstantCommand(shooter::stopFeeders, shooter),
+    //         new InstantCommand(shooter::stopFlywheels, shooter));
+    //   } else {
+    //     addCommands(
+    //         // new InstantCommand(
+    //         //     () -> {
+    //         //       if (DriverStation.getAlliance().get() == Alliance.Blue)
+    //         //         shooter.setFlywheelRPMs(5000, 4200);
+    //         //       else shooter.setFlywheelRPMs(4200, 5000);
+    //         //     }),
+    //         new WaitCommand(1),
+    //         new InstantCommand(() -> shooter.setFeedersRPM(4000)),
+    //         new WaitCommand(0.5),
+    //         new InstantCommand(shooter::stopFeeders, shooter),
+    //         new InstantCommand(shooter::stopFlywheels, shooter));
+    //   }
   }
 }

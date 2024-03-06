@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
@@ -19,6 +20,8 @@ public class AlignToNoteTeleop extends Command {
   /** Creates a new AlignToNoteTeleop. */
   private final Drive drive;
 
+  private final XboxController controller;
+
   private DriverStation.Alliance alliance = null;
   private final PIDController xPID;
   private final PIDController yPID;
@@ -29,7 +32,7 @@ public class AlignToNoteTeleop extends Command {
   private final LoggedTunableNumber yKp = new LoggedTunableNumber("AlignToNoteAuto/yKp");
   private final LoggedTunableNumber yKd = new LoggedTunableNumber("AlignToNoteAuto/yKd");
 
-  public AlignToNoteTeleop(Drive drive) {
+  public AlignToNoteTeleop(Drive drive, XboxController controller) {
 
     switch (Constants.getMode()) {
       case REAL:
@@ -51,6 +54,7 @@ public class AlignToNoteTeleop extends Command {
     xPID.setTolerance(5);
     yPID.setTolerance(5);
     this.drive = drive;
+    this.controller = controller;
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -83,7 +87,9 @@ public class AlignToNoteTeleop extends Command {
             -Constants.SwerveConstants.MAX_LINEAR_SPEED,
             Constants.SwerveConstants.MAX_LINEAR_SPEED);
 
-    drive.runVelocity(new ChassisSpeeds(-yPIDEffort, xPIDEffort, 0));
+    drive.runVelocity(
+        new ChassisSpeeds(
+            -controller.getLeftY() * Constants.SwerveConstants.MAX_LINEAR_SPEED, xPIDEffort, 0));
 
     Logger.recordOutput("Distance Error", distanceError);
 
@@ -103,6 +109,6 @@ public class AlignToNoteTeleop extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return LimelightHelpers.getTA(Constants.LL_INTAKE) <= 0;
+    return false;
   }
 }

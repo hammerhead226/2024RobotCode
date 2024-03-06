@@ -34,7 +34,9 @@ import frc.robot.commands.AutoPivotIntake;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotClimb;
 import frc.robot.commands.PivotIntake;
+import frc.robot.commands.PivotSource;
 import frc.robot.commands.PositionNoteInFeeder;
+import frc.robot.commands.ScoreAmp;
 import frc.robot.commands.SetElevatorTarget;
 import frc.robot.commands.SetFeedersTargetRPM;
 import frc.robot.commands.SetPivotTarget;
@@ -127,7 +129,7 @@ public class RobotContainer {
             new Pivot(
                 new PivotIOTalonFX(
                     RobotMap.PivotIDs.LEFT, RobotMap.PivotIDs.RIGHT, RobotMap.PivotIDs.GYRO));
-        led = new LED(new LED_IO() {});
+        led = new LED(new LED_IOCANdle(20, Constants.CANBUS));
         break;
       case REPLAY:
         drive =
@@ -268,7 +270,7 @@ public class RobotContainer {
 
     // Set up auto routines
     autos = new SendableChooser<>();
-    autos.addOption("c!p-b2-b1-c2-optimal", AutoBuilder.buildAuto("c!p-b2-b1-c2-optimized"));
+    autos.addOption("hammertime", AutoBuilder.buildAuto("hammertime"));
     autos.addOption("4 piece auto align test", AutoBuilder.buildAuto("4 piece auto align test"));
     autos.addOption("c!p-b2", AutoBuilder.buildAuto("c!p-b2"));
     autos.addOption("s!p-b3-c4", AutoBuilder.buildAuto("s!p-b3-c4"));
@@ -287,10 +289,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //     driverControls();
-    //     manipControls();
+    driverControls();
+    manipControls();
 
-    testControls();
+    // testControls();
   }
 
   private void testControls() {
@@ -335,11 +337,16 @@ public class RobotContainer {
 
     // driveController.x().onTrue(new SetPivotTarget(108, pivot));
 
+    driveController.x().onTrue(new PivotSource(pivot, intake, shooter));
+
     driveController
         .x()
-        .onTrue(
-            new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot)
-                .andThen(new ShootNoteSource(shooter)));
+        .onFalse(
+            new InstantCommand(() -> shooter.setFeedersRPM(100), shooter)
+                .andThen(new WaitCommand(0.5))
+                .andThen(
+                    new InstantCommand(shooter::stopFeeders, shooter)
+                        .andThen(new InstantCommand(shooter::stopFlywheels, shooter))));
     //     driveController
     //         .x()
     //         .onTrue(new SetPivotTarget(Constants.PivotConstants.REVERSE_SUBWOOFER_SETPOINT_DEG,
@@ -398,14 +405,14 @@ public class RobotContainer {
     // .whileTrue(new TurnToSpeaker(drive, shooter, pivot, driveController));
 
     // THIS IS THE WORKING AMP CODE DO NOT DELETE PLEASE
-    //     driveController.y().onTrue(new ScoreAmp(elevator, pivot, shooter));
-    //     driveController
-    //         .y()
-    //         .onFalse(
-    //             new InstantCommand(() -> shooter.stopFlywheels(), shooter)
-    //                 // .andThen(new SetElevatorTarget(10, elevator))
-    //                 .andThen(new SetElevatorTarget(0, elevator))
-    //                 .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
+    // driveController.y().onTrue(new ScoreAmp(elevator, pivot, shooter));
+    // driveController
+    //     .y()
+    //     .onFalse(
+    //         new InstantCommand(() -> shooter.stopFlywheels(), shooter)
+    //             // .andThen(new SetElevatorTarget(10, elevator))
+    //             .andThen(new SetElevatorTarget(0, elevator))
+    //             .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
   }
 
   private void driverControls() {
@@ -451,8 +458,17 @@ public class RobotContainer {
 
     driveController.x().onTrue(elevatorCommands);
 
-    driveController.leftTrigger().onTrue(new InstantCommand(drive::toggleLowSpeed, drive));
-    driveController.leftTrigger().onFalse(new InstantCommand(drive::toggleLowSpeed, drive));
+    // driveController.y().onTrue(new ScoreAmp(elevator, pivot, shooter));
+    // driveController
+    //     .y()
+    //     .onFalse(
+    //         new InstantCommand(() -> shooter.stopFlywheels(), shooter)
+    //             // .andThen(new SetElevatorTarget(10, elevator))
+    //             .andThen(new SetElevatorTarget(0, elevator))
+    //             .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
+
+    // driveController.leftTrigger().onTrue(new InstantCommand(drive::toggleLowSpeed, drive));
+    // driveController.leftTrigger().onFalse(new InstantCommand(drive::toggleLowSpeed, drive));
 
     // driveController.y().onTrue(new InstantCommand(() ->
     // shooter.setFeedersRPM(200), shooter));
@@ -461,21 +477,14 @@ public class RobotContainer {
   }
 
   private void manipControls() {
-    manipController
-        .a()
-        .onTrue(
-            new ParallelCommandGroup(
-                new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
-                new SetShooterTargetRPM(
-                    Constants.ShooterConstants.FLYWHEEL_AMP_RPM,
-                    Constants.ShooterConstants.FLYWHEEL_AMP_RPM,
-                    shooter)));
+    manipController.a().onTrue(new ScoreAmp(elevator, pivot, shooter));
     manipController
         .a()
         .onFalse(
-            new ParallelCommandGroup(
-                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
-                new SetShooterTargetRPM(0, 0, shooter)));
+            new InstantCommand(() -> shooter.stopFlywheels(), shooter)
+                // .andThen(new SetElevatorTarget(10, elevator))
+                .andThen(new SetElevatorTarget(0, elevator))
+                .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
 
     manipController
         .b()
@@ -518,6 +527,17 @@ public class RobotContainer {
     manipController
         .rightTrigger()
         .onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
+
+    manipController.x().onTrue(new PivotSource(pivot, intake, shooter));
+
+    manipController
+        .x()
+        .onFalse(
+            new InstantCommand(() -> shooter.setFeedersRPM(100), shooter)
+                .andThen(new WaitCommand(0.5))
+                .andThen(
+                    new InstantCommand(shooter::stopFeeders, shooter)
+                        .andThen(new InstantCommand(shooter::stopFlywheels, shooter))));
   }
 
   /**

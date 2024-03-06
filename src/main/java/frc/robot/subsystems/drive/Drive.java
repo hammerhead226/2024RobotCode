@@ -163,7 +163,7 @@ public class Drive extends SubsystemBase {
     // Apply odometry update
     poseEstimator.update(rawGyroRotation, modulePositions);
 
-    // if (DriverStation.getAlliance().isPresent()) {
+    // if (DriverStation.getAlliance().isPresent() && LimelightHelpers.getTV(Constants.LL_ALIGN)) {
     //   double timestampSeconds =
     //       Timer.getFPGATimestamp()
     //           - (LimelightHelpers.getLatency_Capture(Constants.LL_ALIGN) / 1000.)
@@ -179,8 +179,13 @@ public class Drive extends SubsystemBase {
   }
 
   public void toggleLowSpeed() {
-    if (!toggle) multiplier = 0.4;
-    else multiplier = 1;
+    if (!toggle) {
+      toggle = !toggle;
+      multiplier = 0.4;
+    } else {
+      toggle = !toggle;
+      multiplier = 1;
+    }
   }
 
   /**

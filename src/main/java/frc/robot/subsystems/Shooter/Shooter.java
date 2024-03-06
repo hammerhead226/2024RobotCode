@@ -5,6 +5,8 @@
 package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
@@ -96,6 +98,26 @@ public class Shooter extends SubsystemBase {
         rightVelocityRPM / 60.,
         flywheelFFModel.calculate(leftVelocityRPM / 60.),
         flywheelFFModel.calculate(rightVelocityRPM / 60.));
+  }
+
+  public void setFlywheelRPMSSource() {
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      flywheels.setVelocityRPS(
+          5000, 4200, flywheelFFModel.calculate(5000 / 60.), flywheelFFModel.calculate(4200 / 60.));
+    } else {
+      flywheels.setVelocityRPS(
+          4200, 5000, flywheelFFModel.calculate(5000 / 60.), flywheelFFModel.calculate(4200 / 60.));
+    }
+  }
+
+  public void setFlywheelRPMSAmp() {
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      flywheels.setVelocityRPS(
+          4200, 5000, flywheelFFModel.calculate(4200 / 60.), flywheelFFModel.calculate(5000 / 60.));
+    } else {
+      flywheels.setVelocityRPS(
+          5000, 4200, flywheelFFModel.calculate(5000 / 60.), flywheelFFModel.calculate(4200 / 60.));
+    }
   }
 
   public double[] getFlywheelVelocitiesRPM() {
