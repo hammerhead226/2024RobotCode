@@ -20,10 +20,16 @@ public class LED_IOCANdle implements LED_IO {
   LED_STATE ledState;
 
   CANdle candle;
-
-  StrobeAnimation flashGreen = new StrobeAnimation(0, 204, 0, 0, 0.01, 28);
-  StrobeAnimation flashRed = new StrobeAnimation(179, 30, 0, 0, 0.01, 28);
-  ColorFlowAnimation wayBlue = new ColorFlowAnimation(0, 0, 240, 0, 0.01, 28, Direction.Forward);
+  StrobeAnimation flashGreen = new StrobeAnimation(0, 204, 0, 0, 0.01, 56);
+  StrobeAnimation flashRed = new StrobeAnimation(179, 30, 0, 0, 0.01, 56);
+  ColorFlowAnimation off = new ColorFlowAnimation(0, 0, 0, 0, 0.01, 0, Direction.Forward, 28);
+  ColorFlowAnimation wayBlue =
+      new ColorFlowAnimation(0, 0, 240, 0, 0.01, 28, Direction.Forward, 28);
+  ColorFlowAnimation wayYellow =
+      new ColorFlowAnimation(255, 255, 0, 0, 0, 56, Direction.Forward, 0);
+  ColorFlowAnimation wayRed = new ColorFlowAnimation(240, 0, 0, 0, 0.01, 28, Direction.Forward, 28);
+  ColorFlowAnimation wayGreen =
+      new ColorFlowAnimation(0, 240, 0, 0, 0.01, 28, Direction.Forward, 28);
 
   public LED_IOCANdle(int channel, String CANBUS) {
     // led = new Spark(channel);
@@ -37,7 +43,7 @@ public class LED_IOCANdle implements LED_IO {
 
     candle.configAllSettings(configs);
 
-    setColor(LED_STATE.FLASHING_GREEN);
+    setColor(ledState);
   }
 
   @Override
@@ -48,11 +54,11 @@ public class LED_IOCANdle implements LED_IO {
   @Override
   public void noBumpersPressed() {
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      ledState = LED_STATE.BLUE;
+      setColor(LED_STATE.BLUE);
       // led.set(Constants.LEDConstants.COLOR_BLUE);
 
     } else {
-      ledState = LED_STATE.RED;
+      setColor(LED_STATE.RED);
       // led.set(Constants.LEDConstants.COLOR_RED);
     }
   }
@@ -62,26 +68,33 @@ public class LED_IOCANdle implements LED_IO {
     ledState = state;
     switch (ledState) {
       case RED:
-        // led.set(Constants.LEDConstants.COLOR_RED);
+        candle.animate(wayRed, 0);
         break;
       case BLUE:
         // led.set(Constants.LEDConstants.COLOR_BLUE);
-        candle.animate(wayBlue);
+        candle.animate(wayBlue, 0);
         break;
       case YELLOW:
         // led.set(Constants.LEDConstants.COLOR_YELLOW);
+        candle.clearAnimation(0);
+        candle.animate(wayYellow);
         break;
       case VIOLET:
         // led.set(Constants.LEDConstants.COLOR_VIOLET);
         break;
+      case GREEN:
+        candle.animate(wayGreen, 0);
+        break;
       case FLASHING_GREEN:
-        candle.animate(flashGreen);
+        candle.animate(flashGreen, 0);
         break;
       case FLASHING_RED:
-        candle.animate(flashRed);
+        candle.animate(flashRed, 0);
         break;
       case OFF:
-        // led.close();
+        // candle.animate(off);
+        candle.clearAnimation(0);
+        candle.setLEDs(0, 0, 0, 0, 0, 0);
         break;
     }
   }

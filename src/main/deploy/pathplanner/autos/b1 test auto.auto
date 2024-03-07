@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.9703042213101971,
-      "y": 6.580284213200006
+      "x": 0.9509836993996369,
+      "y": 6.534646792546081
     },
-    "rotation": 60.12400730831056
+    "rotation": 54.24611274556333
   },
   "command": {
     "type": "sequential",
@@ -36,13 +36,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AutoAlignNote"
+                  "name": "PivotIntake"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "PivotIntake"
+                  "name": "AutoAlignNote"
                 }
               }
             ]
@@ -52,37 +52,6 @@
           "type": "path",
           "data": {
             "pathName": "a!score b1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "a!c2"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "PivotIntake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoAlignNote"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "a!score c2"
           }
         }
       ]

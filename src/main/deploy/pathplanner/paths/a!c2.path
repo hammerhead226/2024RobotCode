@@ -3,73 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9793724850647213,
-        "y": 6.571215949449959
+        "x": 0.9392728628538557,
+        "y": 6.534646792546081
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8383665539260905,
-        "y": 6.761649488211257
+        "x": 3.1994643161886063,
+        "y": 6.710309340728721
       },
       "isLocked": false,
-      "linkedName": "a!p-b1-c2-path1"
+      "linkedName": "a!score b1 end"
     },
     {
       "anchor": {
-        "x": 5.132637282818426,
-        "y": 6.580284213200006
+        "x": 4.6867405575028585,
+        "y": 6.6985985041829395
       },
       "prevControl": {
-        "x": 3.527554598968848,
-        "y": 6.670966850705632
+        "x": 3.808427816569245,
+        "y": 6.8157068696407554
       },
       "nextControl": {
-        "x": 6.794698739951857,
-        "y": 6.486382435960829
+        "x": 5.556729332471196,
+        "y": 6.582600000853827
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.279324804263645,
-        "y": 5.7732087393999345
+        "x": 7.157727068662757,
+        "y": 5.913972455615578
       },
       "prevControl": {
-        "x": 7.018836142935444,
-        "y": 5.791345266901061
-      },
-      "nextControl": {
-        "x": 8.898165597527127,
-        "y": 5.7643045553242
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 4.216742644011604,
-        "y": 6.80699080696407
-      },
-      "prevControl": {
-        "x": 4.777153230118824,
-        "y": 6.749017298056427
-      },
-      "nextControl": {
-        "x": 3.690783346478974,
-        "y": 6.861400389467445
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.997509012561885,
-        "y": 6.571215949449443
-      },
-      "prevControl": {
-        "x": 1.6866970576046416,
-        "y": 6.6528303232045065
+        "x": 5.8109808659037565,
+        "y": 5.9022616190728865
       },
       "nextControl": null,
       "isLocked": false,
@@ -78,12 +46,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.05,
-      "rotationDegrees": -5.8591133064089576,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1.95,
+      "waypointRelativePos": 1.45,
       "rotationDegrees": 0,
       "rotateFast": false
     }
@@ -91,8 +54,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "intake note",
-      "waypointRelativePos": 0.25,
+      "name": "stop feeders fly",
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "sequential",
         "data": {
@@ -100,53 +63,13 @@
             {
               "type": "named",
               "data": {
-                "name": "PivotIntake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "stop intake feed position note start fly",
-      "waypointRelativePos": 2.25,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StopIntakeFeed"
+                "name": "StopFeeders"
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "PositionNoteInFeeder"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "StartFlywheelsCenter"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 4.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StartFeeders"
+                "name": "StopFlywheels"
               }
             }
           ]
@@ -155,21 +78,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 3.0,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 57.42594286542754,
+    "velocity": 2.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "a!p-b1-c2",
   "previewStartingState": {
-    "rotation": 59.82647997075778,
+    "rotation": 61.11341823308942,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

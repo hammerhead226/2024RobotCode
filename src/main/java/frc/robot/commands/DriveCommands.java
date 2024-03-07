@@ -38,9 +38,11 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier) {
+      DoubleSupplier omegaSupplier,
+      DoubleSupplier speedSupplier) {
     return Commands.run(
         () -> {
+
           // Apply deadband
           double linearMagnitude =
               MathUtil.applyDeadband(
@@ -48,6 +50,11 @@ public class DriveCommands {
           Rotation2d linearDirection =
               new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
           double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+
+          if (speedSupplier.getAsDouble() > 0.2) {
+            linearMagnitude *= 0.4;
+            omega *= 0.4;
+          }
 
           // Square values
           linearMagnitude = linearMagnitude * linearMagnitude;

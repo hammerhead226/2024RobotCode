@@ -3,59 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.375654069425114,
-        "y": 7.401248696933913
+        "x": 3.0706451141860898,
+        "y": 7.003080254377342
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.375654069425112,
-        "y": 7.401248696933913
+        "x": 2.2860109916966556,
+        "y": 6.874310239542722
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.569632192046123,
-        "y": 7.038212764014687
+        "x": 0.9392728628538557,
+        "y": 6.534646792546081
       },
       "prevControl": {
-        "x": 5.658739990803803,
-        "y": 7.049923600560469
-      },
-      "nextControl": {
-        "x": 3.935875584953975,
-        "y": 7.031398176841653
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.7636103146671328,
-        "y": 6.347273407813577
-      },
-      "prevControl": {
-        "x": 1.8878506230621572,
-        "y": 7.471513716208603
+        "x": 1.9260721087638797,
+        "y": 6.696595081426847
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "a!p-c1 score c1 end"
+      "linkedName": "a!score b1 end"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.3,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "stop intkae feed position note",
-      "waypointRelativePos": 0.2,
+      "name": "stop intake feed position note fly",
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
         "data": {
@@ -71,6 +49,29 @@
               "data": {
                 "name": "PositionNoteInFeeder"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFlywheelsAmp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFeeders"
+              }
             }
           ]
         }
@@ -78,21 +79,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 57.724355685422495,
+    "rotation": 58.17255342332682,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "a!p-c1",
+  "folder": "a!p-b1-c2",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 1.9091524329964342,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

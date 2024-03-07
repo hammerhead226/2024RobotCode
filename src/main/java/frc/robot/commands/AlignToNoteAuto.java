@@ -10,7 +10,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.led.LED;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -18,6 +20,8 @@ import org.littletonrobotics.junction.Logger;
 public class AlignToNoteAuto extends Command {
   /** Creates a new AlignToNoteTeleop. */
   private final Drive drive;
+
+  private final LED led;
 
   private DriverStation.Alliance alliance = null;
   private final PIDController xPID;
@@ -32,7 +36,7 @@ public class AlignToNoteAuto extends Command {
   private final LoggedTunableNumber yKp = new LoggedTunableNumber("AlignToNoteAuto/yKp");
   private final LoggedTunableNumber yKd = new LoggedTunableNumber("AlignToNoteAuto/yKd");
 
-  public AlignToNoteAuto(Drive drive, double threshold) {
+  public AlignToNoteAuto(Drive drive, LED led, double threshold) {
 
     switch (Constants.getMode()) {
       case REAL:
@@ -57,6 +61,7 @@ public class AlignToNoteAuto extends Command {
     xPID.setTolerance(5);
     yPID.setTolerance(5);
     this.drive = drive;
+    this.led = led;
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -64,6 +69,7 @@ public class AlignToNoteAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    led.setColor(LED_STATE.FLASHING_GREEN);
     startingPositionX = drive.getPose().getX();
     Logger.recordOutput("startingpos", startingPositionX);
     xPID.setSetpoint(-4);
@@ -105,7 +111,9 @@ public class AlignToNoteAuto extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    led.setColor(LED_STATE.BLUE);
+  }
 
   // Returns true when the command should end.
   @Override
