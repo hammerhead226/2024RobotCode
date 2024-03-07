@@ -22,6 +22,8 @@ public class LED_IOCANdle implements LED_IO {
   CANdle candle;
   StrobeAnimation flashGreen = new StrobeAnimation(0, 204, 0, 0, 0.01, 56);
   StrobeAnimation flashRed = new StrobeAnimation(179, 30, 0, 0, 0.01, 56);
+  StrobeAnimation fashYellow = new StrobeAnimation(255, 255, 0, 0, 0.01, 56);
+
   ColorFlowAnimation off = new ColorFlowAnimation(0, 0, 0, 0, 0.01, 0, Direction.Forward, 28);
   ColorFlowAnimation wayBlue =
       new ColorFlowAnimation(0, 0, 240, 0, 0.01, 28, Direction.Forward, 28);
@@ -68,22 +70,21 @@ public class LED_IOCANdle implements LED_IO {
     ledState = state;
     switch (ledState) {
       case RED:
-        candle.animate(wayRed, 0);
+        candle.setLEDs(255, 0, 0, 0, 28, 28);
         break;
       case BLUE:
         // led.set(Constants.LEDConstants.COLOR_BLUE);
-        candle.animate(wayBlue, 0);
+        candle.setLEDs(0, 0, 255, 0, 28, 28);
         break;
       case YELLOW:
         // led.set(Constants.LEDConstants.COLOR_YELLOW);
-        candle.clearAnimation(0);
-        candle.animate(wayYellow);
+        candle.setLEDs(255, 255, 0, 0, 28, 28);
         break;
       case VIOLET:
         // led.set(Constants.LEDConstants.COLOR_VIOLET);
         break;
       case GREEN:
-        candle.animate(wayGreen, 0);
+        candle.setLEDs(0, 255, 0, 0, 28, 28);
         break;
       case FLASHING_GREEN:
         candle.animate(flashGreen, 0);
@@ -93,8 +94,8 @@ public class LED_IOCANdle implements LED_IO {
         break;
       case OFF:
         // candle.animate(off);
-        candle.clearAnimation(0);
         candle.setLEDs(0, 0, 0, 0, 0, 0);
+        // candle.t
         break;
     }
   }
