@@ -40,7 +40,7 @@ public class AlignToNoteAuto extends Command {
 
     switch (Constants.getMode()) {
       case REAL:
-        xKp.initDefault(0.055);
+        xKp.initDefault(0.042);
         xKd.initDefault(0);
 
         yKp.initDefault(0.08);

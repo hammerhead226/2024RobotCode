@@ -82,6 +82,12 @@
               "data": {
                 "name": "StartFlywheelsCenter"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotShoot"
+              }
             }
           ]
         }
@@ -117,7 +123,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "auto align test",
+  "folder": "hammertime",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

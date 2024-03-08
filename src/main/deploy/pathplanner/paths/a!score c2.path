@@ -49,6 +49,12 @@
               "data": {
                 "name": "PositionNoteInFeeder"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotShoot"
+              }
             }
           ]
         }
@@ -65,6 +71,12 @@
               "type": "named",
               "data": {
                 "name": "StartFlywheelsAmp"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotShoot"
               }
             }
           ]

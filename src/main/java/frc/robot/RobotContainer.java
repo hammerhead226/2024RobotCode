@@ -298,7 +298,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("PivotIntake", new PivotIntake(pivot, intake, shooter, false));
     NamedCommands.registerCommand(
-        "AutoPivotIntake", new AutoPivotIntake(pivot, intake, shooter, 41, false));
+        "AutoPivotIntake", new AutoPivotIntake(pivot, intake, shooter, 39, false));
 
     NamedCommands.registerCommand(
         "PivotSubwoofer",
@@ -336,13 +336,21 @@ public class RobotContainer {
             () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
 
     NamedCommands.registerCommand("AutoAlignNote", new AlignToNoteAuto(drive, led, 1.132));
+
+    NamedCommands.registerCommand("AutoAlignNoteAmp", new AlignToNoteAuto(drive, led, 0.75));
     // NamedCommands.registerCommand("StopIntake", new
     // InstantCommand(intake::stopRollers, intake));
 
     // Set up auto routines
     autos = new SendableChooser<>();
     autos.addOption("hammertime", AutoBuilder.buildAuto("hammertime"));
-    autos.addOption("4 piece auto align test", AutoBuilder.buildAuto("4 piece auto align test"));
+    autos.addOption("4 piece", AutoBuilder.buildAuto("4 piece"));
+
+    autos.addOption("3 note center", AutoBuilder.buildAuto("3 note center"));
+
+    autos.addOption("good center 3 piece", AutoBuilder.buildAuto("good center 3 piece"));
+
+    autos.addOption("c!p-b2-b1", AutoBuilder.buildAuto("c!p-b2-b1"));
     autos.addOption("c!p-b2", AutoBuilder.buildAuto("c!p-b2"));
     autos.addOption("s!p-b3-c4", AutoBuilder.buildAuto("s!p-b3-c4"));
 
@@ -563,6 +571,7 @@ public class RobotContainer {
             new InstantCommand(() -> shooter.stopFlywheels(), shooter)
                 // .andThen(new SetElevatorTarget(10, elevator))
                 .andThen(new SetElevatorTarget(0, elevator))
+                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
                 .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
 
     manipController

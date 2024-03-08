@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "auto align p-b2"
+            "pathName": "Copy of p-b2"
           }
         },
         {
@@ -44,19 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "auto align b1-1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoAlignNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "auto align b1-2"
+            "pathName": "Copy of b1"
           }
         },
         {
@@ -74,32 +62,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "auto align c2"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "PivotIntake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoAlignNote"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "auto align score c2"
+            "pathName": "Copy of c2"
           }
         },
         {

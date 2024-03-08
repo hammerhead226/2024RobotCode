@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.407706324685116,
-      "y": 5.5040931765173085
+      "x": 1.4194171612308972,
+      "y": 5.58606903233778
     },
     "rotation": 0
   },
@@ -24,57 +24,45 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "StartFlywheelsCenter"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "auto align p-b2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "auto align b1-1"
+            "pathName": "pb2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AutoAlignNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "auto align b1-2"
+            "name": "StopIntakeFeed"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StartFeeders"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "name": "PositionNoteInFeeder"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "auto align c2"
+            "pathName": "shoot b2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PivotShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "gc3p!p-b1"
           }
         },
         {
@@ -90,7 +78,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AutoAlignNote"
+                  "name": "AutoAlignNoteAmp"
                 }
               }
             ]
@@ -99,19 +87,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "auto align score c2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
+            "pathName": "gc3p!score b1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StopFeeders"
+            "name": "StartFeeders"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.75
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopIntakeFeed"
           }
         },
         {

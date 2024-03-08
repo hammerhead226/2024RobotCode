@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.407706324685116,
-        "y": 5.5040931765173085
+        "x": 3.3517051912848466,
+        "y": 7.37782702384235
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4077063246851154,
-        "y": 5.5040931765173085
+        "x": 2.4851032868970147,
+        "y": 6.628333484912334
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.9,
-        "y": 5.5040931765173085
+        "x": 1.1617787572237042,
+        "y": 5.574358195791997
       },
       "prevControl": {
-        "x": 1.9,
-        "y": 5.5040931765173085
+        "x": 1.993248151974192,
+        "y": 6.4292492636340475
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "auto align path1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "pivot intake",
-      "waypointRelativePos": 0.0,
+      "name": "stop intake feed position note",
+      "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
         "data": {
@@ -41,13 +41,30 @@
             {
               "type": "named",
               "data": {
-                "name": "AutoPivotIntake"
+                "name": "StopIntakeFeed"
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "StartFeeders"
+                "name": "PositionNoteInFeeder"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "start flywheels",
+      "waypointRelativePos": 0.15,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFlywheelsCenter"
               }
             }
           ]
@@ -57,7 +74,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 2.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -67,9 +84,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "hammertime",
+  "folder": "good center 3 piece",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 40.95551442581888,
     "velocity": 0
   },
   "useDefaultConstraints": false

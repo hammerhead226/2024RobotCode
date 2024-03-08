@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 0.9509836993996369,
-        "y": 4.473539560488535
+        "x": 0.8455861704876034,
+        "y": 4.567226252854788
       },
       "prevControl": {
-        "x": 1.735609747966998,
-        "y": 4.239322829572904
+        "x": 1.6302122190549646,
+        "y": 4.3330095219391564
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "pivot shoot",
+      "name": "position note pivot shoot",
       "waypointRelativePos": 0.15,
       "command": {
         "type": "sequential",
@@ -41,7 +41,30 @@
             {
               "type": "named",
               "data": {
+                "name": "PositionNoteInFeeder"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
                 "name": "PivotShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFeeders"
               }
             }
           ]

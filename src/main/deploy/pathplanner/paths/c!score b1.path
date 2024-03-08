@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3491521419562087,
-        "y": 5.58606903233778
+        "x": 2.976958421819838,
+        "y": 5.562647359246215
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3491521419562087,
+        "x": 2.192332373252477,
         "y": 5.58606903233778
       },
       "isLocked": false,
@@ -16,32 +16,32 @@
     },
     {
       "anchor": {
-        "x": 3.246307662372813,
-        "y": 5.58606903233778
+        "x": 1.3374413054104268,
+        "y": 5.562647359246215
       },
       "prevControl": {
-        "x": 2.246307662372813,
+        "x": 2.2977299021645106,
         "y": 5.58606903233778
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "p-b2 end "
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "intake note",
+      "name": "pivot shoot",
       "waypointRelativePos": 0.0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "PivotIntake"
+                "name": "PivotShoot"
               }
             }
           ]
@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "c!p-b2",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

@@ -3,52 +3,34 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3491521419562087,
-        "y": 5.58606903233778
+        "x": 1.2671762861357376,
+        "y": 5.562647359246215
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3491521419562087,
-        "y": 5.58606903233778
+        "x": 2.122067353977788,
+        "y": 5.890550782528099
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.246307662372813,
-        "y": 5.58606903233778
+        "x": 2.4382599407138885,
+        "y": 6.2770083885388885
       },
       "prevControl": {
-        "x": 2.246307662372813,
-        "y": 5.58606903233778
+        "x": 1.8644289499705946,
+        "y": 5.6212015419751244
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "p-b2 end "
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "intake note",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "PivotIntake"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
@@ -57,11 +39,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 55.17551084304318,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "c!p-b2",
+  "folder": "good center 3 piece",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.317099886696207,
-        "y": 0.7612043754757987
+        "x": 8.363943232879333,
+        "y": 0.8080477216589235
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.560474404828979,
-        "y": 1.206216164215496
+        "x": 6.607317751012105,
+        "y": 1.253059510398621
       },
       "isLocked": false,
-      "linkedName": "c4 end"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.9260653498885487,
-        "y": 4.463574846432205
+        "x": 0.8338753339418218,
+        "y": 4.532093743217444
       },
       "prevControl": {
-        "x": 1.4414471878271122,
-        "y": 3.4604209118732134
+        "x": 1.3492571718803854,
+        "y": 3.5289398086584525
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,6 +42,63 @@
               "type": "named",
               "data": {
                 "name": "PivotShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stop intake feed position note",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopIntakeFeed"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PositionNoteInFeeder"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "start flywheels",
+      "waypointRelativePos": 0.25,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFlywheelsSource"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 0.95,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFeeders"
               }
             }
           ]

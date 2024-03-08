@@ -55,6 +55,12 @@
               "data": {
                 "name": "StartFlywheelsAmp"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotShoot"
+              }
             }
           ]
         }
