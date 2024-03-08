@@ -33,7 +33,6 @@ import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AutoPivotIntake;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.PivotClimb;
 import frc.robot.commands.PivotIntake;
 import frc.robot.commands.PivotSource;
 import frc.robot.commands.PositionNoteInFeeder;
@@ -234,17 +233,23 @@ public class RobotContainer {
                     new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_TWO_DEG, pivot)
                         .andThen(climbStateMachine::advanceTargetState, elevator)),
 
+                // make pivot 96
                 // Trap Scoring Sequence
                 Map.entry(
                     CLIMB_STATES.EXCHANGE_HOOK,
                     new SequentialCommandGroup(
-                        new SetPivotTarget(90, pivot),
+                        new SetPivotTarget(96, pivot),
                         new WaitCommand(1),
                         new SetElevatorTarget(1, elevator),
                         new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
-                Map.entry(CLIMB_STATES.TRAP_STAGE_1, 
-                          new SetPivotTarget(60, pivot)
-                            .andThen(new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
+
+                // pivot 104
+                // elevator go up at same time
+                Map.entry(
+                    CLIMB_STATES.TRAP_STAGE_1,
+                    new SetElevatorTarget(19, elevator)
+                        .andThen(new SetPivotTarget(104, pivot))
+                        .andThen(new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
                 Map.entry(
                     CLIMB_STATES.TRAP_STAGE_2,
                     new SequentialCommandGroup(
@@ -252,14 +257,19 @@ public class RobotContainer {
                         // new WaitCommand(1),
                         new SetPivotTarget(85, pivot),
                         new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
+
+                        // pivot 71
+                        // elkevator 3
                 Map.entry(
                     CLIMB_STATES.TRAP_STAGE_3,
-                    new SequentialCommandGroup(
-                        new SetElevatorTarget(19, elevator),
-                        new WaitCommand(1),
-                        new SetPivotTarget(108, pivot),
-                        new InstantCommand(() -> shooter.setFlywheelRPMs(800, 800), shooter),
-                        new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
+                    new ParallelCommandGroup(new SetElevatorTarget(3, elevator),
+                                                new SetPivotTarget(71, pivot))),
+                    // new SequentialCommandGroup(
+                    //     new SetElevatorTarget(19, elevator),
+                    //     new WaitCommand(1),
+                    //     new SetPivotTarget(108, pivot),
+                    //     new InstantCommand(() -> shooter.setFlywheelRPMs(800, 800), shooter),
+                    //     new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
 
                 // .andThen(
                 //     new InstantCommand(() -> shooter.setFlywheelRPMs(800, 800), shooter))
@@ -267,8 +277,7 @@ public class RobotContainer {
                 Map.entry(
                     CLIMB_STATES.TRAP_STAGE_4,
                     new InstantCommand(() -> shooter.setFeedersRPM(800))
-                        .andThen(new InstantCommand(climbStateMachine::advanceTargetState,
-    pivot))),
+                        .andThen(new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
                 Map.entry(
                     CLIMB_STATES.SHOOT,
                     new SequentialCommandGroup(
