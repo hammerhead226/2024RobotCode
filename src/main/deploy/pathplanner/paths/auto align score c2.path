@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.3189845327059078,
-        "y": 7.314813576995575
+        "x": 8.363943232879333,
+        "y": 5.785153253616065
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2010971039485945,
-        "y": 6.80699080696407
+        "x": 7.754979732498694,
+        "y": 5.7617315805245015
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0120909314571827,
-        "y": 5.515804013063089
+        "x": 5.623607481166459,
+        "y": 6.593200975274989
       },
       "prevControl": {
-        "x": 2.9680958153967754,
-        "y": 6.12453851123384
+        "x": 6.623567623855607,
+        "y": 6.584272759715264
+      },
+      "nextControl": {
+        "x": 4.31199378803893,
+        "y": 6.604911811820771
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.290597959227301,
+        "y": 5.6212015419751244
+      },
+      "prevControl": {
+        "x": 4.02736773947157,
+        "y": 5.960815801802788
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "auto align path3"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,7 +49,7 @@
   "eventMarkers": [
     {
       "name": "stop intake feed position note",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
         "data": {
@@ -55,8 +71,8 @@
       }
     },
     {
-      "name": "start flywheels",
-      "waypointRelativePos": 0.3,
+      "name": "start fly",
+      "waypointRelativePos": 0.4,
       "command": {
         "type": "sequential",
         "data": {
@@ -70,11 +86,28 @@
           ]
         }
       }
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 1.95,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFeeders"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -86,8 +119,8 @@
   "reversed": false,
   "folder": "auto align test",
   "previewStartingState": {
-    "rotation": 42.0643265535788,
+    "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

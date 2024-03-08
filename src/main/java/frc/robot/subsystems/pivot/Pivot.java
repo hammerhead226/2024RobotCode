@@ -61,12 +61,13 @@ public class Pivot extends SubsystemBase {
 
     maxVelocityDegPerSec = 150;
     maxAccelerationDegPerSecSquared = 226;
+    // maxAccelerationDegPerSecSquared = 180;
 
     pivotConstraints =
         new TrapezoidProfile.Constraints(maxVelocityDegPerSec, maxAccelerationDegPerSecSquared);
     pivotProfile = new TrapezoidProfile(pivotConstraints);
 
-    setPivotGoal(Constants.PivotConstants.STOW_SETPOINT_DEG);
+    setPivotGoal(90);
     pivotCurrent = pivotProfile.calculate(0, pivotCurrent, pivotGoal);
 
     pivot.configurePID(kP, 0, 0);

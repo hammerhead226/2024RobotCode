@@ -33,6 +33,7 @@ import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AutoPivotIntake;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.PivotClimb;
 import frc.robot.commands.PivotIntake;
 import frc.robot.commands.PivotSource;
 import frc.robot.commands.PositionNoteInFeeder;
@@ -185,94 +186,95 @@ public class RobotContainer {
 
     climbStateMachine = new ClimbStateMachine(elevator, shooter, pivot);
 
-    // climbCommands =
-    //     new SelectCommand<>(
-    //         Map.ofEntries(
-    //             Map.entry(
-    //                 CLIMB_STATES.NONE,
-    //                 new PivotClimb(climbStateMachine, elevator, pivot)
-    //                     .andThen(climbStateMachine::advanceTargetState, elevator)),
-    //             Map.entry(
-    //                 CLIMB_STATES.PIVOT_CLIMB,
-    //                 new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_ONE_DEG, pivot)
-    //                     .andThen(new SetElevatorTarget(1, elevator))
-    //                     .andThen(climbStateMachine::advanceTargetState, elevator)),
-    //             Map.entry(
-    //                 CLIMB_STATES.RETRACT_CLIMB,
-    //                 new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_TWO_DEG, pivot)
-    //                     .andThen(climbStateMachine::advanceTargetState, elevator)),
-    //             Map.entry(
-    //                 CLIMB_STATES.SCORE_TRAP,
-    //                 new SequentialCommandGroup(
-    //                     new SetElevatorTarget(19, elevator),
-    //                     new WaitCommand(1),
-    //                     new SetPivotTarget(100, pivot))),
-    //             Map.entry(CLIMB_STATES.DONE, new PrintCommand("hi"))),
-    //         this::climbSelect);
-
     climbCommands =
         new SelectCommand<>(
             Map.ofEntries(
                 Map.entry(
                     CLIMB_STATES.NONE,
-                    new SetPivotTarget(90, pivot)
+                    new PivotClimb(climbStateMachine, elevator, pivot)
                         .andThen(climbStateMachine::advanceTargetState, elevator)),
                 Map.entry(
-                    CLIMB_STATES.PIVOT,
-                    new SetElevatorTarget(19, elevator)
-                        .andThen(climbStateMachine::advanceTargetState, elevator)),
-                Map.entry(
-                    CLIMB_STATES.EXTEND,
-                    new SetElevatorTarget(1, elevator)
-                        .andThen(
-                            new SetPivotTarget(
-                                Constants.PivotConstants.CLIMB_SETPOINT_ONE_DEG, pivot))
+                    CLIMB_STATES.PIVOT_CLIMB,
+                    new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_ONE_DEG, pivot)
+                        .andThen(new SetElevatorTarget(1, elevator))
                         .andThen(climbStateMachine::advanceTargetState, elevator)),
                 Map.entry(
                     CLIMB_STATES.RETRACT_CLIMB,
                     new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_TWO_DEG, pivot)
                         .andThen(climbStateMachine::advanceTargetState, elevator)),
-
-                // Trap Scoring Sequence
                 Map.entry(
-                    CLIMB_STATES.EXCHANGE_HOOK,
-                    new SequentialCommandGroup(
-                        new SetPivotTarget(90, pivot),
-                        new WaitCommand(1),
-                        new SetElevatorTarget(1, elevator),
-                        new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
-                Map.entry(CLIMB_STATES.TRAP_STAGE_1, new SetPivotTarget(60, pivot)),
-                Map.entry(
-                    CLIMB_STATES.TRAP_STAGE_2,
-                    new SequentialCommandGroup(
-                        // new SetElevatorTarget(1, elevator),
-                        // new WaitCommand(1),
-                        new SetPivotTarget(85, pivot),
-                        new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
-                Map.entry(
-                    CLIMB_STATES.TRAP_STAGE_3,
+                    CLIMB_STATES.SCORE_TRAP,
                     new SequentialCommandGroup(
                         new SetElevatorTarget(19, elevator),
                         new WaitCommand(1),
-                        new SetPivotTarget(108, pivot),
-                        new InstantCommand(() -> shooter.setFlywheelRPMs(800, 800), shooter),
-                        new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
-
-                // .andThen(
-                //     new InstantCommand(() -> shooter.setFlywheelRPMs(800, 800), shooter))
-                // .andThen(climbStateMachine::advanceTargetState, elevator)),
-                Map.entry(
-                    CLIMB_STATES.TRAP_STAGE_4,
-                    new InstantCommand(() -> shooter.setFeedersRPM(800))
-                        .andThen(new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
-                Map.entry(
-                    CLIMB_STATES.SHOOT,
-                    new SequentialCommandGroup(
-                        new InstantCommand(shooter::stopFeeders),
-                        new InstantCommand(shooter::stopFlywheels),
-                        new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
+                        new SetPivotTarget(100, pivot))),
                 Map.entry(CLIMB_STATES.DONE, new PrintCommand("hi"))),
             this::climbSelect);
+
+    // climbCommands =
+    //     new SelectCommand<>(
+    //         Map.ofEntries(
+    //             Map.entry(
+    //                 CLIMB_STATES.NONE,
+    //                 new SetPivotTarget(90, pivot)
+    //                     .andThen(climbStateMachine::advanceTargetState, elevator)),
+    //             Map.entry(
+    //                 CLIMB_STATES.PIVOT,
+    //                 new SetElevatorTarget(19, elevator)
+    //                     .andThen(climbStateMachine::advanceTargetState, elevator)),
+    //             Map.entry(
+    //                 CLIMB_STATES.EXTEND,
+    //                 new SetElevatorTarget(1, elevator)
+    //                     .andThen(
+    //                         new SetPivotTarget(
+    //                             Constants.PivotConstants.CLIMB_SETPOINT_ONE_DEG, pivot))
+    //                     .andThen(climbStateMachine::advanceTargetState, elevator)),
+    //             Map.entry(
+    //                 CLIMB_STATES.RETRACT_CLIMB,
+    //                 new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_TWO_DEG, pivot)
+    //                     .andThen(climbStateMachine::advanceTargetState, elevator)),
+
+    //             // Trap Scoring Sequence
+    //             Map.entry(
+    //                 CLIMB_STATES.EXCHANGE_HOOK,
+    //                 new SequentialCommandGroup(
+    //                     new SetPivotTarget(90, pivot),
+    //                     new WaitCommand(1),
+    //                     new SetElevatorTarget(1, elevator),
+    //                     new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
+    //             Map.entry(CLIMB_STATES.TRAP_STAGE_1, new SetPivotTarget(60, pivot)),
+    //             Map.entry(
+    //                 CLIMB_STATES.TRAP_STAGE_2,
+    //                 new SequentialCommandGroup(
+    //                     // new SetElevatorTarget(1, elevator),
+    //                     // new WaitCommand(1),
+    //                     new SetPivotTarget(85, pivot),
+    //                     new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
+    //             Map.entry(
+    //                 CLIMB_STATES.TRAP_STAGE_3,
+    //                 new SequentialCommandGroup(
+    //                     new SetElevatorTarget(19, elevator),
+    //                     new WaitCommand(1),
+    //                     new SetPivotTarget(108, pivot),
+    //                     new InstantCommand(() -> shooter.setFlywheelRPMs(800, 800), shooter),
+    //                     new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
+
+    //             // .andThen(
+    //             //     new InstantCommand(() -> shooter.setFlywheelRPMs(800, 800), shooter))
+    //             // .andThen(climbStateMachine::advanceTargetState, elevator)),
+    //             Map.entry(
+    //                 CLIMB_STATES.TRAP_STAGE_4,
+    //                 new InstantCommand(() -> shooter.setFeedersRPM(800))
+    //                     .andThen(new InstantCommand(climbStateMachine::advanceTargetState,
+    // pivot))),
+    //             Map.entry(
+    //                 CLIMB_STATES.SHOOT,
+    //                 new SequentialCommandGroup(
+    //                     new InstantCommand(shooter::stopFeeders),
+    //                     new InstantCommand(shooter::stopFlywheels),
+    //                     new InstantCommand(climbStateMachine::advanceTargetState, pivot))),
+    //             Map.entry(CLIMB_STATES.DONE, new PrintCommand("hi"))),
+    //         this::climbSelect);
 
     elevatorCommands =
         new SelectCommand<>(
@@ -630,5 +632,13 @@ public class RobotContainer {
 
   public Shooter getShooter() {
     return shooter;
+  }
+
+  public Pivot getPivot() {
+    return pivot;
+  }
+
+  public Intake getIntake() {
+    return intake;
   }
 }

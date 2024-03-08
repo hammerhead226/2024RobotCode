@@ -109,10 +109,7 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {
-    m_robotContainer.getShooter().stopFlywheels();
-    m_robotContainer.getShooter().stopFeeders();
-  }
+  public void disabledInit() {}
 
   /** This function is called periodically when disabled. */
   @Override
@@ -143,6 +140,11 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+
+    m_robotContainer.getPivot().setPivotGoal(Constants.PivotConstants.STOW_SETPOINT_DEG);
+    m_robotContainer.getShooter().stopFlywheels();
+    m_robotContainer.getShooter().stopFeeders();
+    m_robotContainer.getIntake().stopRollers();
   }
 
   /** This function is called periodically during operator control. */
