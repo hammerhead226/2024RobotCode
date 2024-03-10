@@ -84,7 +84,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "PivotIntake"
+                  "name": "AutoPivotIntake"
                 }
               },
               {
