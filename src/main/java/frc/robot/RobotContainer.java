@@ -73,6 +73,7 @@ import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
 import java.util.Map;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -94,6 +95,8 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
   private final SendableChooser<Command> autos;
   private final ClimbStateMachine climbStateMachine;
+
+  private final LoggedDashboardNumber flywheelSpeed = new LoggedDashboardNumber("fly soeed", 5400);
 
   private CLIMB_STATES climbSelect() {
     return climbStateMachine.getTargetState();
@@ -374,10 +377,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driverControls();
-    manipControls();
+    // driverControls();
+    // manipControls();
 
-    // testControls();
+    testControls();
   }
 
   private void testControls() {
@@ -399,7 +402,17 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    driveController.rightBumper().onTrue(new PivotIntake(pivot, intake, shooter, false));
+    driveController.b().onTrue(new SetPivotTarget((-0.276 * Math.abs(108 - 36) + 62), pivot));
+    driveController
+        .a()
+        .whileTrue(
+            Commands.startEnd(
+                () -> shooter.setFlywheelRPMs(flywheelSpeed.get(), flywheelSpeed.get()),
+                shooter::stopFlywheels,
+                shooter));
+    // pivot::pivotStop, pivot));
+    // driveController.a().onTrue(new SetPivotTarget(angle.get(), pivot));
+    driveController.rightBumper().onTrue(new AutoPivotIntake(pivot, intake, shooter, 41, false));
     driveController
         .rightBumper()
         .onFalse(
@@ -407,7 +420,7 @@ public class RobotContainer {
                 .andThen(new InstantCommand(() -> intake.stopRollers(), intake))
                 .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
 
-    driveController.leftBumper().whileTrue(new PivotIntake(pivot, intake, shooter, true));
+    driveController.leftBumper().whileTrue(new AutoPivotIntake(pivot, intake, shooter, 41, true));
     driveController
         .leftBumper()
         .onFalse(
@@ -415,8 +428,8 @@ public class RobotContainer {
                 .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
                 .andThen(new InstantCommand(() -> shooter.stopFeeders())));
 
-    // driveController.a().onTrue(new SetPivotTarget(40, pivot));
-    driveController.a().onTrue(new SetElevatorTarget(19, elevator));
+    // // driveController.a().onTrue(new SetPivotTarget(40, pivot));
+    // driveController.a().onTrue(new SetElevatorTarget(19, elevator));
 
     //     driveController
     // .y()
@@ -424,16 +437,16 @@ public class RobotContainer {
 
     // driveController.x().onTrue(new SetPivotTarget(108, pivot));
 
-    driveController.x().onTrue(new PivotSource(pivot, intake, shooter, led));
+    // driveController.x().onTrue(new PivotSource(pivot, intake, shooter, led));
 
-    driveController
-        .x()
-        .onFalse(
-            new InstantCommand(() -> shooter.setFeedersRPM(100), shooter)
-                .andThen(new WaitCommand(0.5))
-                .andThen(
-                    new InstantCommand(shooter::stopFeeders, shooter)
-                        .andThen(new InstantCommand(shooter::stopFlywheels, shooter))));
+    // driveController
+    //     .x()
+    //     .onFalse(
+    //         new InstantCommand(() -> shooter.setFeedersRPM(100), shooter)
+    //             .andThen(new WaitCommand(0.5))
+    //             .andThen(
+    //                 new InstantCommand(shooter::stopFeeders, shooter)
+    //                     .andThen(new InstantCommand(shooter::stopFlywheels, shooter))));
     //     driveController
     //         .x()
     //         .onTrue(new SetPivotTarget(Constants.PivotConstants.REVERSE_SUBWOOFER_SETPOINT_DEG,
@@ -444,10 +457,10 @@ public class RobotContainer {
     // .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(4000, 4000)));
     driveController
         .rightTrigger()
-        .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(4000, 4000)));
+        .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(5400, 5400)));
     driveController.rightTrigger().onFalse(new InstantCommand(() -> shooter.stopFlywheels()));
 
-    driveController.leftTrigger().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(4000)));
+    driveController.leftTrigger().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
     driveController.leftTrigger().onFalse(new InstantCommand(() -> shooter.stopFeeders()));
 
     // driveController.b().onTrue(new SetPivotTarget(56, pivot));
@@ -466,7 +479,7 @@ public class RobotContainer {
     // driveController.a().onTrue(new InstantCommand(() ->
     // pivot.setPivotGoal(pivotAngle.get()),
     // pivot));
-    driveController.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
+    // driveController.a().onFalse(new InstantCommand(pivot::pivotStop, pivot));
     // driveController
     // .b()
     // .onTrue(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG,

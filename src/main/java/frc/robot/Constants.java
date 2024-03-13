@@ -57,7 +57,7 @@ public final class Constants {
   }
 
   public static class ModuleConstants {
-    public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
+    public static final double WHEEL_RADIUS = Units.inchesToMeters(3.9/2.);
 
     public static final double DRIVE_GEAR_RATIO = 6.12;
     public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
@@ -79,6 +79,7 @@ public final class Constants {
     public static final boolean FEEDER_CURRENT_LIMIT_ENABLED = true;
 
     public static final double FEEDER_THRESHOLD = 0;
+    public static final double FEEDER_DIST = 0;
 
     public static final double FLYWHEEL_CURRENT_LIMIT = 40;
     public static final boolean FLYWHEEL_CURRENT_LIMIT_ENABLED = true;
@@ -112,6 +113,7 @@ public final class Constants {
     public static final double AMP_SETPOINT_DEG = 60.0;
     public static final double SUBWOOFER_SETPOINT_DEG = 62.0;
     public static final double REVERSE_SUBWOOFER_SETPOINT_DEG = 118;
+
     public static final double SOURCE_SETPOINT_DEG = 113;
     public static final double CLIMB_SETPOINT_ONE_DEG = 50;
     public static final double CLIMB_SETPOINT_TWO_DEG = 110;

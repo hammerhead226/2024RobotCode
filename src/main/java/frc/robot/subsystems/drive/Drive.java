@@ -31,6 +31,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -53,6 +54,9 @@ public class Drive extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
+
+  private double timeSinceLastTag = 0;
+  private double lasttime = 0;
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -117,6 +121,8 @@ public class Drive extends SubsystemBase {
                 },
                 null,
                 this));
+
+    lasttime = Timer.getFPGATimestamp();
   }
 
   public void periodic() {
@@ -163,19 +169,35 @@ public class Drive extends SubsystemBase {
     // Apply odometry update
     poseEstimator.update(rawGyroRotation, modulePositions);
 
-    // if (DriverStation.getAlliance().isPresent() && LimelightHelpers.getTV(Constants.LL_ALIGN)) {
-    //   double timestampSeconds =
-    //       Timer.getFPGATimestamp()
-    //           - (LimelightHelpers.getLatency_Capture(Constants.LL_ALIGN) / 1000.)
-    //           - (LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN) / 1000.);
-    //   if (DriverStation.getAlliance().get() == Alliance.Blue) {
-    //     Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiBlue(Constants.LL_ALIGN);
-    //     addVisionMeasurement(visionMeasurement, timestampSeconds);
-    //   } else {
-    //     Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiRed(Constants.LL_ALIGN);
-    //     addVisionMeasurement(visionMeasurement, timestampSeconds);
-    //   }
-    // }
+    if (DriverStation.getAlliance().isPresent() && LimelightHelpers.getTV(Constants.LL_ALIGN)) {
+      double timestampSeconds =
+          Timer.getFPGATimestamp()
+              - (LimelightHelpers.getLatency_Capture(Constants.LL_ALIGN) / 1000.)
+              - (LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN) / 1000.);
+
+              
+      timeSinceLastTag = timestampSeconds - lasttime;
+
+      lasttime = timestampSeconds;
+
+      if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiBlue(Constants.LL_ALIGN);
+        Logger.recordOutput("Vision Measurement", visionMeasurement);
+        if (timeSinceLastTag > 5) addVisionMeasurement(visionMeasurement, timestampSeconds);
+
+      } else {
+        Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiRed(Constants.LL_ALIGN);
+        Logger.recordOutput("Vision Measurement", visionMeasurement);
+        if (timeSinceLastTag > 5) addVisionMeasurement(visionMeasurement, timestampSeconds);
+      }
+    }
+
+    Logger.recordOutput("time since last", timeSinceLastTag);
+  }
+
+  public boolean acceptableMeasurements(Pose2d visionMeasurement) {
+    return Math.abs(visionMeasurement.getX() - getPose().getX()) < 1
+        && Math.abs(visionMeasurement.getY() - getPose().getY()) < 1;
   }
 
   public void toggleLowSpeed() {

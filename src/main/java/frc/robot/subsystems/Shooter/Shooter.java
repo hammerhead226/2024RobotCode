@@ -148,6 +148,19 @@ public class Shooter extends SubsystemBase {
     return Math.abs(getFeederError()) <= Constants.ShooterConstants.FEEDER_THRESHOLD;
   }
 
+  public void stopFeedWhenSeen() {
+    double distanceSensorVal = Constants.ShooterConstants.FEEDER_DIST;
+
+    if (sInputs.distance > distanceSensorVal && sInputs.distance < 2800) dist.increaseSustain();
+    else dist.resetSustain();
+
+    if (sInputs.sustain >= 3) {
+      feeder.setVelocityRPS(0, 0);
+      dist.resetSustain();
+    }
+
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

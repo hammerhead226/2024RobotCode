@@ -26,7 +26,7 @@ public class LED_IOCANdle implements LED_IO {
 
   ColorFlowAnimation off = new ColorFlowAnimation(0, 0, 0, 0, 0.01, 0, Direction.Forward, 28);
   ColorFlowAnimation wayBlue =
-      new ColorFlowAnimation(0, 0, 240, 0, 0.01, 28, Direction.Forward, 28);
+      new ColorFlowAnimation(0, 0, 240, 0, 0.01, 24, Direction.Forward, 32);
   ColorFlowAnimation wayYellow =
       new ColorFlowAnimation(255, 255, 0, 0, 0, 56, Direction.Forward, 0);
   ColorFlowAnimation wayRed = new ColorFlowAnimation(240, 0, 0, 0, 0.01, 28, Direction.Forward, 28);
@@ -36,7 +36,7 @@ public class LED_IOCANdle implements LED_IO {
   public LED_IOCANdle(int channel, String CANBUS) {
     // led = new Spark(channel);
     candle = new CANdle(channel, CANBUS);
-    ledState = Constants.LED_STATE.BLUE;
+    ledState = Constants.LED_STATE.RED;
 
     CANdleConfiguration configs = new CANdleConfiguration();
     // CANdleControlFrame.CANdle_Control_1_General(0x4000);
@@ -68,13 +68,14 @@ public class LED_IOCANdle implements LED_IO {
   @Override
   public void setColor(LED_STATE state) {
     ledState = state;
+    // candle.setLEDs(0, 0, 0);
     switch (ledState) {
       case RED:
         candle.setLEDs(255, 0, 0, 0, 28, 28);
         break;
       case BLUE:
         // led.set(Constants.LEDConstants.COLOR_BLUE);
-        candle.setLEDs(0, 0, 255, 0, 28, 28);
+        candle.setLEDs(0, 0, 255, 0, 32, 24);
         break;
       case YELLOW:
         // led.set(Constants.LEDConstants.COLOR_YELLOW);

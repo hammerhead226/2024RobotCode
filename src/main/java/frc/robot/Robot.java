@@ -13,8 +13,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -91,9 +89,9 @@ public class Robot extends LoggedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    UsbCamera camera = CameraServer.startAutomaticCapture(0);
-    camera.setResolution(400, 300);
-    camera.setExposureManual(50);
+    // UsbCamera camera = CameraServer.startAutomaticCapture(0);
+    // camera.setResolution(400, 300);
+    // camera.setExposureManual(50);
   }
 
   /** This function is called periodically during all modes. */
