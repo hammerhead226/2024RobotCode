@@ -158,7 +158,6 @@ public class Shooter extends SubsystemBase {
       feeder.setVelocityRPS(0, 0);
       dist.resetSustain();
     }
-
   }
 
   @Override

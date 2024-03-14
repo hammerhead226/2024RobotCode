@@ -57,7 +57,7 @@ public final class Constants {
   }
 
   public static class ModuleConstants {
-    public static final double WHEEL_RADIUS = Units.inchesToMeters(3.9/2.);
+    public static final double WHEEL_RADIUS = Units.inchesToMeters(3.9 / 2.);
 
     public static final double DRIVE_GEAR_RATIO = 6.12;
     public static final double TURN_GEAR_RATIO = 150.0 / 7.0;

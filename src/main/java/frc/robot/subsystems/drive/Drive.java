@@ -55,7 +55,7 @@ public class Drive extends SubsystemBase {
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
 
-  private double timeSinceLastTag = 0;
+  private double timeSinceLastCorrection = 6;
   private double lasttime = 0;
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
@@ -175,29 +175,49 @@ public class Drive extends SubsystemBase {
               - (LimelightHelpers.getLatency_Capture(Constants.LL_ALIGN) / 1000.)
               - (LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN) / 1000.);
 
-              
-      timeSinceLastTag = timestampSeconds - lasttime;
+      // timeSinceLastCorrection = timestampSeconds - lasttime;
 
-      lasttime = timestampSeconds;
+      // lasttime = timestampSeconds;
 
       if (DriverStation.getAlliance().get() == Alliance.Blue) {
         Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiBlue(Constants.LL_ALIGN);
         Logger.recordOutput("Vision Measurement", visionMeasurement);
-        if (timeSinceLastTag > 5) addVisionMeasurement(visionMeasurement, timestampSeconds);
+
+        if (canCorrect(visionMeasurement, timeSinceLastCorrection)) {
+          timeSinceLastCorrection = timestampSeconds - lasttime;
+          lasttime = timestampSeconds;
+
+          addVisionMeasurement(visionMeasurement, timestampSeconds);
+        }
 
       } else {
         Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiRed(Constants.LL_ALIGN);
         Logger.recordOutput("Vision Measurement", visionMeasurement);
-        if (timeSinceLastTag > 5) addVisionMeasurement(visionMeasurement, timestampSeconds);
+
+        if (canCorrect(visionMeasurement, timeSinceLastCorrection)) {
+          timeSinceLastCorrection = timestampSeconds - lasttime;
+          lasttime = timestampSeconds;
+
+          addVisionMeasurement(visionMeasurement, timestampSeconds);
+        }
       }
     }
 
-    Logger.recordOutput("time since last", timeSinceLastTag);
+    Logger.recordOutput("time since last", timeSinceLastCorrection);
   }
 
   public boolean acceptableMeasurements(Pose2d visionMeasurement) {
     return Math.abs(visionMeasurement.getX() - getPose().getX()) < 1
         && Math.abs(visionMeasurement.getY() - getPose().getY()) < 1;
+  }
+
+  public boolean canCorrect(Pose2d visionMeasurement, double timeSinceLastCorrection) {
+    if (timeSinceLastCorrection < 5) {
+      if (acceptableMeasurements(visionMeasurement)) return true;
+    } else {
+      return true;
+    }
+    return false;
   }
 
   public void toggleLowSpeed() {

@@ -66,6 +66,7 @@ import frc.robot.subsystems.pivot.PivotIO;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.shooter.DistanceSensorIO;
+import frc.robot.subsystems.shooter.DistanceSensorIOAnalog;
 import frc.robot.subsystems.shooter.FeederIOSim;
 import frc.robot.subsystems.shooter.FeederIOTalonFX;
 import frc.robot.subsystems.shooter.FlywheelIOSim;
@@ -123,7 +124,7 @@ public class RobotContainer {
                 new FlywheelIOTalonFX(
                     RobotMap.ShooterIDs.FLYWHEEL_LEFT, RobotMap.ShooterIDs.FLYWHEEL_RIGHT),
                 new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER),
-                new DistanceSensorIO() {});
+                new DistanceSensorIOAnalog());
         elevator =
             new Elevator(
                 new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT));
