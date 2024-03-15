@@ -41,9 +41,10 @@ public class LED_IOCANdle implements LED_IO {
     CANdleConfiguration configs = new CANdleConfiguration();
     // CANdleControlFrame.CANdle_Control_1_General(0x4000);
     configs.stripType = LEDStripType.RGB;
-    configs.brightnessScalar = 0.7;
+    configs.brightnessScalar = 0.8;
 
     candle.configAllSettings(configs);
+    setColor(LED_STATE.OFF);
 
     setColor(ledState);
   }
@@ -71,7 +72,7 @@ public class LED_IOCANdle implements LED_IO {
     // candle.setLEDs(0, 0, 0);
     switch (ledState) {
       case RED:
-        candle.setLEDs(255, 0, 0, 0, 28, 24);
+        candle.setLEDs(255, 0, 0, 0, 39, 24);
         break;
       case BLUE:
         // led.set(Constants.LEDConstants.COLOR_BLUE);
@@ -95,7 +96,7 @@ public class LED_IOCANdle implements LED_IO {
         break;
       case OFF:
         // candle.animate(off);
-        candle.setLEDs(0, 0, 0, 0, 0, 0);
+        candle.setLEDs(0, 0, 0, 0, 0, 57);
         // candle.t
         break;
     }

@@ -20,6 +20,8 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -55,7 +57,7 @@ public class Drive extends SubsystemBase {
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
 
-  private double timeSinceLastCorrection = 6;
+  private double timeSinceLastCorrection = 0;
   private double lasttime = 0;
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
@@ -170,37 +172,48 @@ public class Drive extends SubsystemBase {
     poseEstimator.update(rawGyroRotation, modulePositions);
 
     if (DriverStation.getAlliance().isPresent() && LimelightHelpers.getTV(Constants.LL_ALIGN)) {
-      double timestampSeconds =
-          Timer.getFPGATimestamp()
-              - (LimelightHelpers.getLatency_Capture(Constants.LL_ALIGN) / 1000.)
-              - (LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN) / 1000.);
+    
+      LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LL_ALIGN);
+      Logger.recordOutput("Vision Measuremnet", limelightMeasurement.pose);
+
+      if (limelightMeasurement.tagCount >= 2) {
+        // trust more
+        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(1, 1, 1));
+        addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
+      } else {
+        // trust less
+        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.1, 0.1, 0.1));
+        addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
+      }
+
+      
 
       // timeSinceLastCorrection = timestampSeconds - lasttime;
 
       // lasttime = timestampSeconds;
 
-      if (DriverStation.getAlliance().get() == Alliance.Blue) {
-        Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiBlue(Constants.LL_ALIGN);
-        Logger.recordOutput("Vision Measurement", visionMeasurement);
+      // if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      //   Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiBlue(Constants.LL_ALIGN);
+      //   Logger.recordOutput("Vision Measurement", visionMeasurement);
 
-        if (canCorrect(visionMeasurement, timeSinceLastCorrection)) {
-          timeSinceLastCorrection = timestampSeconds - lasttime;
-          lasttime = timestampSeconds;
+      //   if (canCorrect(visionMeasurement, timeSinceLastCorrection)) {
+      //     timeSinceLastCorrection = timestampSeconds - lasttime;
+      //     lasttime = timestampSeconds;
 
-          addVisionMeasurement(visionMeasurement, timestampSeconds);
-        }
+      //     addVisionMeasurement(visionMeasurement, timestampSeconds);
+      //   }
 
-      } else {
-        Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiRed(Constants.LL_ALIGN);
-        Logger.recordOutput("Vision Measurement", visionMeasurement);
+      // } else {
+      //   Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiBlue(Constants.LL_ALIGN);
+      //   Logger.recordOutput("Vision Measurement", visionMeasurement);
 
-        if (canCorrect(visionMeasurement, timeSinceLastCorrection)) {
-          timeSinceLastCorrection = timestampSeconds - lasttime;
-          lasttime = timestampSeconds;
+      //   if (canCorrect(visionMeasurement, timeSinceLastCorrection)) {
+      //     timeSinceLastCorrection = timestampSeconds - lasttime;
+      //     lasttime = timestampSeconds;
 
-          addVisionMeasurement(visionMeasurement, timestampSeconds);
-        }
-      }
+      //     addVisionMeasurement(visionMeasurement, timestampSeconds);
+      //   }
+      // }
     }
 
     Logger.recordOutput("time since last", timeSinceLastCorrection);
@@ -324,6 +337,10 @@ public class Drive extends SubsystemBase {
    */
   public void addVisionMeasurement(Pose2d visionPose, double timestamp) {
     poseEstimator.addVisionMeasurement(visionPose, timestamp);
+  }
+
+  public void addVisionMeasurementStds(Pose2d visionPose, double timeStamp) {
+    double poseDifference = getPose().getTranslation().getDistance(visionPose.getTranslation());
   }
 
   /** Returns the maximum linear speed in meters per sec. */

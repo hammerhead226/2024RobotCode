@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
@@ -23,7 +22,6 @@ public class AlignToNoteAuto extends Command {
 
   private final LED led;
 
-  private DriverStation.Alliance alliance = null;
   private final PIDController xPID;
   private final PIDController yPID;
 
@@ -79,8 +77,6 @@ public class AlignToNoteAuto extends Command {
   @Override
   public void execute() {
     Logger.recordOutput("TA", LimelightHelpers.getTA(Constants.LL_INTAKE));
-
-    if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
 
     double noteError = drive.getNoteError();
     double distanceError = (startingPositionX + threshold) - drive.getPose().getY();

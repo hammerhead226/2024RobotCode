@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,16 +12,17 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.FieldConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class AngleShooter extends Command {
   /** Creates a new AngleShooter. */
   private final Drive drive;
+
   private final Shooter shooter;
   private final Pivot pivot;
 
   private DriverStation.Alliance alliance = null;
   private double distanceToSpeakerMeter = 0;
-  private double shooterSetpointRPM = 0;
   private double pivotSetpointDeg = 0;
 
   public AngleShooter(Drive drive, Shooter shooter, Pivot pivot) {
@@ -42,16 +43,16 @@ public class AngleShooter extends Command {
   public void execute() {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
 
-    distanceToSpeakerMeter = 0; // TODO distanceToSpeaker = equation;
-    shooter.setFlywheelRPMs(
-        5400,
-        5400);
+    distanceToSpeakerMeter = calculateDistanceToSpeaker();
+    shooter.setFlywheelRPMs(5400, 5400);
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }
 
-
   private double calculatePivotAngleDeg(double distanceToSpeakerMeter) {
     pivotSetpointDeg = (-0.276 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 62);
+    pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 39, 62);
+
+    Logger.recordOutput("pivot target auto", pivotSetpointDeg);
     return pivotSetpointDeg;
   }
 

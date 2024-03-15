@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.AlignToNoteAuto;
+import frc.robot.commands.AngleShooter;
 import frc.robot.commands.AutoPivotIntake;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotIntake;
@@ -403,7 +404,19 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    driveController.b().onTrue(new SetPivotTarget((-0.276 * Math.abs(108 - 36) + 62), pivot));
+    // driveController.x().whileTrue(new TurnToSpeaker(drive, driveController));
+    driveController.x().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
+
+    driveController.b().whileTrue(new AngleShooter(drive, shooter, pivot));
+    driveController
+        .b()
+        .onFalse(
+            new InstantCommand(() -> shooter.setFeedersRPM(1000))
+                .andThen(new WaitCommand(1))
+                .andThen(new InstantCommand(shooter::stopFlywheels))
+                .andThen(new InstantCommand(shooter::stopFeeders)));
+
+    // driveController.b().onTrue(new SetPivotTarget((-0.276 * Math.abs(108 - 36) + 62), pivot));
     driveController
         .a()
         .whileTrue(
@@ -413,13 +426,19 @@ public class RobotContainer {
                 shooter));
     // pivot::pivotStop, pivot));
     // driveController.a().onTrue(new SetPivotTarget(angle.get(), pivot));
-    driveController.rightBumper().onTrue(new AutoPivotIntake(pivot, intake, shooter, 41, false));
+    // driveController.rightBumper().onTrue(new AutoPivotIntake(pivot, intake, shooter, 41, false));
+    driveController.rightBumper().onTrue(new PivotIntake(pivot, intake, shooter, false));
     driveController
         .rightBumper()
         .onFalse(
-            new PositionNoteInFeeder(shooter, intake)
-                .andThen(new InstantCommand(() -> intake.stopRollers(), intake))
-                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
+            new InstantCommand(shooter::stopFeeders)
+                .andThen(new InstantCommand(intake::stopRollers)));
+    // driveController
+    //     .rightBumper()
+    //     .onFalse(
+    //         new PositionNoteInFeeder(shooter, intake)
+    //             .andThen(new InstantCommand(() -> intake.stopRollers(), intake))
+    //             .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
 
     driveController.leftBumper().whileTrue(new AutoPivotIntake(pivot, intake, shooter, 41, true));
     driveController

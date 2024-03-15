@@ -24,10 +24,9 @@ public class PivotIntake extends SequentialCommandGroup {
       addCommands(
           new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
           new WaitUntilCommand(pivot::atSetpoint),
-          new InstantCommand(
-              () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake),
-          new InstantCommand(() -> shooter.setFeedersRPM(1000)));
-      new InstantCommand(shooter::stopFeedWhenSeen, shooter);
+          new IntakeNote(intake, shooter));
+      // new InstantCommand(shooter::stopFeedWhenSeen, shooter));
+      ;
     } else {
       addCommands(
           new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),

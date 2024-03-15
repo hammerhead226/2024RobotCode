@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -26,7 +25,6 @@ public class AlignToNoteTeleop extends Command {
 
   private final XboxController controller;
 
-  private DriverStation.Alliance alliance = null;
   private final PIDController xPID;
   private final PIDController yPID;
 
@@ -76,8 +74,6 @@ public class AlignToNoteTeleop extends Command {
   @Override
   public void execute() {
     Logger.recordOutput("TA", LimelightHelpers.getTA(Constants.LL_INTAKE));
-
-    if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
 
     double noteError = drive.getNoteError();
     double distanceError = LimelightHelpers.getTY(Constants.LL_INTAKE);

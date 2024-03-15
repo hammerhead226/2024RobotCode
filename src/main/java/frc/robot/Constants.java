@@ -79,7 +79,7 @@ public final class Constants {
     public static final boolean FEEDER_CURRENT_LIMIT_ENABLED = true;
 
     public static final double FEEDER_THRESHOLD = 0;
-    public static final double FEEDER_DIST = 0;
+    public static final double FEEDER_DIST = 1300;
 
     public static final double FLYWHEEL_CURRENT_LIMIT = 40;
     public static final boolean FLYWHEEL_CURRENT_LIMIT_ENABLED = true;
