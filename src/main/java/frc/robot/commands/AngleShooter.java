@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,6 +15,7 @@ import frc.robot.util.FieldConstants;
 public class AngleShooter extends Command {
   /** Creates a new AngleShooter. */
   private final Drive drive;
+
   private final Shooter shooter;
   private final Pivot pivot;
 
@@ -43,12 +43,9 @@ public class AngleShooter extends Command {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
 
     distanceToSpeakerMeter = 0; // TODO distanceToSpeaker = equation;
-    shooter.setFlywheelRPMs(
-        5400,
-        5400);
+    shooter.setFlywheelRPMs(5400, 5400);
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }
-
 
   private double calculatePivotAngleDeg(double distanceToSpeakerMeter) {
     pivotSetpointDeg = (-0.276 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 62);

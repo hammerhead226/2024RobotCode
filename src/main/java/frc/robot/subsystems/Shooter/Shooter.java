@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.LED_STATE;
+import frc.robot.subsystems.led.LED;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
@@ -159,7 +159,8 @@ public class Shooter extends SubsystemBase {
     if (sInputs.sustain >= 3) {
       feeder.setVelocityRPS(0, 0);
       dist.resetSustain();
-      //getLed().setColor(LED_STATE.BLUE);
+      LED.getInstance().setColor(LED_STATE.BLUE);
+      // getLed().setColor(LED_STATE.BLUE);
     }
   }
 

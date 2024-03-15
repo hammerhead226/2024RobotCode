@@ -10,11 +10,18 @@ import org.littletonrobotics.junction.Logger;
 
 /** Add your docs here. */
 public class LED extends SubsystemBase {
-  private final LED_IO led;
+  private static LED_IO led;
   private final LED_IOInputsAutoLogged lInputs = new LED_IOInputsAutoLogged();
 
   public LED(LED_IO led) {
     this.led = led;
+  }
+
+  public static LED_IO getInstance() {
+    if (led == null) {
+      led = new LED_IO() {};
+    }
+    return led;
   }
 
   @Override
