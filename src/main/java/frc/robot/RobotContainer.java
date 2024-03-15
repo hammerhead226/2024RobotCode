@@ -668,4 +668,8 @@ public class RobotContainer {
   public Intake getIntake() {
     return intake;
   }
+
+  public LED getLed(){
+    return led;
+  }
 }

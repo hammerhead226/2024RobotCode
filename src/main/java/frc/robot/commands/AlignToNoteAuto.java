@@ -73,6 +73,7 @@ public class AlignToNoteAuto extends Command {
     startingPositionX = drive.getPose().getX();
     Logger.recordOutput("startingpos", startingPositionX);
     xPID.setSetpoint(-4);
+    led.setColor(LED_STATE.GREEN);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -112,6 +113,7 @@ public class AlignToNoteAuto extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    led.setColor(LED_STATE.OFF);
     led.setColor(LED_STATE.BLUE);
   }
 
