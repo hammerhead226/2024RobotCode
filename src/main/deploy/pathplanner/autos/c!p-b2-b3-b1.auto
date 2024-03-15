@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.9509836993996369,
-      "y": 6.534646792546081
+      "x": 1.2671762861357376,
+      "y": 5.574358195791997
     },
-    "rotation": 54.24611274556333
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -18,31 +18,19 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ShootNoteAmp"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "a!p-b1"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "PivotIntake"
+                  "name": "StartFlywheelsCenter"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AutoAlignNote"
+                  "name": "StartFeeders"
                 }
               }
             ]
@@ -51,7 +39,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "a!score b1"
+            "pathName": "p-b2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PivotShootFar"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartFeeders"
           }
         }
       ]

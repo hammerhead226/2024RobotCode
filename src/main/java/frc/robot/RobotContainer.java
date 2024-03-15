@@ -295,57 +295,51 @@ public class RobotContainer {
                         Constants.ElevatorConstants.RETRACT_SETPOINT_INCH, elevator))),
             elevator::isExtended);
 
-    NamedCommands.registerCommand("StopIntakeFeed", new StopIntakeFeed(shooter, intake));
-
+    // PIVOT NAMED COMMANDS
     NamedCommands.registerCommand(
         "PivotShoot", new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
-
-    NamedCommands.registerCommand("PivotShootFar", new SetPivotTarget(41, pivot));
-
+    NamedCommands.registerCommand("PivotShootFar", new SetPivotTarget(41.68, pivot));
     NamedCommands.registerCommand("PivotIntake", new PivotIntake(pivot, intake, shooter, false));
     NamedCommands.registerCommand(
         "AutoPivotIntake", new AutoPivotIntake(pivot, intake, shooter, 41.68, false));
-
     NamedCommands.registerCommand(
         "PivotSubwoofer",
         new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
 
+    // SHOOT NOTE NAMED COMMANDS
     NamedCommands.registerCommand("ShootNoteCenter", new ShootNoteCenter(shooter));
-    // This one
+    NamedCommands.registerCommand("ShootNoteSource", new ShootNoteSource(shooter));
+    NamedCommands.registerCommand("ShootNoteAmp", new ShootNoteAmp(shooter));
+
+    // FLYWHEEL NAMED COMMANDS
     NamedCommands.registerCommand(
         "StartFlywheelsCenter",
         new InstantCommand(() -> shooter.setFlywheelRPMs(4000.0, 4000.0), shooter));
-
     NamedCommands.registerCommand(
         "StartFlywheelsSource", new InstantCommand(() -> shooter.setFlywheelRPMSSource(), shooter));
-
     NamedCommands.registerCommand(
         "StartFlywheelsAmp", new InstantCommand(() -> shooter.setFlywheelRPMSAmp(), shooter));
-
-    NamedCommands.registerCommand("ShootNoteSource", new ShootNoteSource(shooter));
-
-    NamedCommands.registerCommand("ShootNoteAmp", new ShootNoteAmp(shooter));
-
-    NamedCommands.registerCommand(
-        "StopFlywheels", new InstantCommand(shooter::stopFlywheels, shooter));
 
     NamedCommands.registerCommand(
         "StartFeeders", new InstantCommand(() -> shooter.setFeedersRPM(4000), shooter));
 
+    // STOP NAMED COMMANDS
+    NamedCommands.registerCommand("StopIntakeFeed", new StopIntakeFeed(shooter, intake));
+    NamedCommands.registerCommand(
+        "StopFlywheels", new InstantCommand(shooter::stopFlywheels, shooter));
     NamedCommands.registerCommand("StopFeeders", new InstantCommand(shooter::stopFeeders, shooter));
+
+    // OTHER NAMED COMMANDS
     NamedCommands.registerCommand(
         "PositionNoteInFeeder", new PositionNoteInFeeder(shooter, intake));
-
     NamedCommands.registerCommand(
         "RunIntake",
         new InstantCommand(
             () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
 
+    // NOTE ALIGNMENT NAMED COMMANDS
     NamedCommands.registerCommand("AutoAlignNote", new AlignToNoteAuto(drive, led, 1.332));
-
     NamedCommands.registerCommand("AutoAlignNoteAmp", new AlignToNoteAuto(drive, led, 0.75));
-    // NamedCommands.registerCommand("StopIntake", new
-    // InstantCommand(intake::stopRollers, intake));
 
     // Set up auto routines
     autos = new SendableChooser<>();
