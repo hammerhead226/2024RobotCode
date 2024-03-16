@@ -20,9 +20,9 @@ public class LED_IOCANdle implements LED_IO {
   LED_STATE ledState;
 
   CANdle candle;
-  StrobeAnimation flashGreen = new StrobeAnimation(0, 204, 0, 0, 0.01, 56);
-  StrobeAnimation flashRed = new StrobeAnimation(179, 30, 0, 0, 0.01, 56);
-  StrobeAnimation fashYellow = new StrobeAnimation(255, 255, 0, 0, 0.01, 56);
+  StrobeAnimation flashGreen = new StrobeAnimation(0, 204, 0, 0, 0.01, 57);
+  StrobeAnimation flashRed = new StrobeAnimation(204, 0, 0, 0, 0.01, 57);
+  StrobeAnimation fashYellow = new StrobeAnimation(255, 255, 0, 0, 0.01, 57);
 
   ColorFlowAnimation off = new ColorFlowAnimation(0, 0, 0, 0, 0.01, 0, Direction.Forward, 28);
   ColorFlowAnimation wayBlue =
@@ -36,7 +36,7 @@ public class LED_IOCANdle implements LED_IO {
   public LED_IOCANdle(int channel, String CANBUS) {
     // led = new Spark(channel);
     candle = new CANdle(channel, CANBUS);
-    ledState = Constants.LED_STATE.RED;
+    ledState = Constants.LED_STATE.BLUE;
 
     CANdleConfiguration configs = new CANdleConfiguration();
     // CANdleControlFrame.CANdle_Control_1_General(0x4000);
@@ -44,7 +44,7 @@ public class LED_IOCANdle implements LED_IO {
     configs.brightnessScalar = 0.8;
 
     candle.configAllSettings(configs);
-    setColor(LED_STATE.OFF);
+    // setColor(LED_STATE.OFF);
 
     setColor(ledState);
   }
@@ -72,30 +72,37 @@ public class LED_IOCANdle implements LED_IO {
     // candle.setLEDs(0, 0, 0);
     switch (ledState) {
       case RED:
-        candle.setLEDs(255, 0, 0, 0, 39, 24);
+        candle.clearAnimation(0);
+        candle.setLEDs(255, 0, 0, 0, 32, 25);
         break;
       case BLUE:
+        candle.clearAnimation(0);
         // led.set(Constants.LEDConstants.COLOR_BLUE);
-        candle.setLEDs(0, 0, 255, 0, 32, 24);
+        candle.setLEDs(0, 0, 255, 0, 32, 25);
         break;
       case YELLOW:
+        candle.clearAnimation(0);
         // led.set(Constants.LEDConstants.COLOR_YELLOW);
-        candle.setLEDs(255, 255, 0, 0, 28, 28);
+        candle.setLEDs(255, 255, 0, 0, 32, 25);
         break;
       case VIOLET:
         // led.set(Constants.LEDConstants.COLOR_VIOLET);
         break;
       case GREEN:
-        candle.setLEDs(0, 255, 0, 0, 28, 28);
+        candle.clearAnimation(0);
+        candle.setLEDs(0, 255, 0, 0, 32, 25);
         break;
       case FLASHING_GREEN:
+        // candle.clearAnimation(0);
         candle.animate(flashGreen, 0);
         break;
       case FLASHING_RED:
+        // candle.clearAnimation(0);
         candle.animate(flashRed, 0);
         break;
       case OFF:
         // candle.animate(off);
+        candle.clearAnimation(0);
         candle.setLEDs(0, 0, 0, 0, 0, 57);
         // candle.t
         break;

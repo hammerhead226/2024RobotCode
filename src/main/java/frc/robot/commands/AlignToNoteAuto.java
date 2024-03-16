@@ -67,7 +67,7 @@ public class AlignToNoteAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // led.setColor(LED_STATE.FLASHING_GREEN);
+    led.setColor(LED_STATE.FLASHING_GREEN);
     startingPositionX = drive.getPose().getX();
     Logger.recordOutput("startingpos", startingPositionX);
     xPID.setSetpoint(-4);
