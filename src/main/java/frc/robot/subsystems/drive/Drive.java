@@ -184,17 +184,17 @@ public class Drive extends SubsystemBase {
       double poseDifference = getVisionPoseDifference(limelightMeasurement.pose);
 
       if (limelightMeasurement.tagCount >= 2) {
-        xMeterStds = 0.1;
-        yMeterStds = 0.1;
+        xMeterStds = 0.9;
+        yMeterStds = 0.9;
         headingDegStds = 9999999;
       } else if (limelightMeasurement.tagCount == 1 && poseDifference < 0.5) {
-        xMeterStds = 0.5;
-        yMeterStds = 0.5;
-        headingDegStds = 10;
+        xMeterStds = 2;
+        yMeterStds = 2;
+        headingDegStds = 9999999;
       } else if (limelightMeasurement.tagCount == 1 && poseDifference < 1) {
-        xMeterStds = 1;
-        yMeterStds = 1;
-        headingDegStds = 10;
+        xMeterStds = 5;
+        yMeterStds = 5;
+        headingDegStds = 9999999;
       } else return;
 
       poseEstimator.setVisionMeasurementStdDevs(
