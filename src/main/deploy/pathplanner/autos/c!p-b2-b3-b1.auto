@@ -43,19 +43,19 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "StopIntakeFeed"
+                  "name": "PivotShootFar"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "PivotShootFar"
+                  "name": "StopIntakeFeed"
                 }
               }
             ]
@@ -74,59 +74,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignNoteAmp"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "c4!scoreb3-b1"
           }
         },
         {
-          "type": "sequential",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "TurnToSpeaker"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AngleShooter"
-                }
-              }
-            ]
+            "name": "Aimbot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StartFeeders"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "PivotIntake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoAlignNoteAmp"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopIntakeFeed"
+            "name": "AutoAlignNoteAmp"
           }
         },
         {
@@ -136,28 +110,9 @@
           }
         },
         {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "TurnToSpeaker"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AngleShooter"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "StartFeeders"
+            "name": "Aimbot"
           }
         }
       ]

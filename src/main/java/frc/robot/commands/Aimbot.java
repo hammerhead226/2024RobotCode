@@ -81,7 +81,7 @@ public class Aimbot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    led.setColor(LED_STATE.FLASHING_GREEN);
+    led.setColor(LED_STATE.FLASHING_RED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -163,6 +163,8 @@ public class Aimbot extends Command {
                   .getDegrees()
               + 180);
     }
+
+    Logger.recordOutput("Rotation error", pid.getPositionError());
 
     Logger.recordOutput("target angle", targetAngle);
     double linearMagnitude =

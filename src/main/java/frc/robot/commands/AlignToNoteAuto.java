@@ -11,7 +11,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
+import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LoggedTunableNumber;
@@ -21,6 +23,8 @@ public class AlignToNoteAuto extends Command {
   /** Creates a new AlignToNoteTeleop. */
   private final Drive drive;
 
+  private final Pivot pivot;
+  private final Intake intake;
   private final Shooter shooter;
   private final LED led;
 
@@ -36,7 +40,8 @@ public class AlignToNoteAuto extends Command {
   private final LoggedTunableNumber yKp = new LoggedTunableNumber("AlignToNoteAuto/yKp");
   private final LoggedTunableNumber yKd = new LoggedTunableNumber("AlignToNoteAuto/yKd");
 
-  public AlignToNoteAuto(Drive drive, Shooter shooter, LED led, double threshold) {
+  public AlignToNoteAuto(
+      Drive drive, Shooter shooter, Pivot pivot, Intake intake, LED led, double threshold) {
 
     switch (Constants.getMode()) {
       case REAL:
@@ -62,6 +67,8 @@ public class AlignToNoteAuto extends Command {
     yPID.setTolerance(5);
     this.drive = drive;
     this.shooter = shooter;
+    this.pivot = pivot;
+    this.intake = intake;
     this.led = led;
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -70,6 +77,9 @@ public class AlignToNoteAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
+    intake.runRollers(12);
+    shooter.setFeedersRPM(1000);
     led.setColor(LED_STATE.FLASHING_GREEN);
     startingPositionX = drive.getPose().getX();
     Logger.recordOutput("startingpos", startingPositionX);
@@ -111,6 +121,8 @@ public class AlignToNoteAuto extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    intake.stopRollers();
+    shooter.stopFeeders();
     led.setColor(LED_STATE.BLUE);
   }
 

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.290597959227301,
-      "y": 5.539225686154654
+      "x": 1.2671762861357376,
+      "y": 5.609490705429342
     },
     "rotation": 0
   },
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "PivotIntake"
+            "name": "PivotShoot"
           }
         },
         {
@@ -37,7 +37,13 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
+          "data": {
+            "pathName": "New Path"
+          }
+        },
+        {
+          "type": "sequential",
           "data": {
             "commands": [
               {
@@ -62,22 +68,10 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "TurnToSpeaker"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AngleShooter"
+                  "name": "Aimbot"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StartFeeders"
           }
         }
       ]

@@ -32,7 +32,6 @@ import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.Aimbot;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AngleShooter;
-import frc.robot.commands.AutoNotePickup;
 import frc.robot.commands.BellevilleAlignToNoteAuto;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotIntakeAuto;
@@ -306,7 +305,8 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "PivotIntake",
         new PivotIntakeAuto(
-            pivot, intake, shooter, Constants.PivotConstants.STOW_SETPOINT_DEG, false));
+                pivot, intake, shooter, Constants.PivotConstants.STOW_SETPOINT_DEG, false)
+            .withTimeout(2));
     NamedCommands.registerCommand(
         "AutoPivotIntake", new PivotIntakeAuto(pivot, intake, shooter, 41.68, false));
     NamedCommands.registerCommand(
@@ -350,12 +350,12 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "BellevilleAutoAlignNoteAmp", new BellevilleAlignToNoteAuto(drive, led, 0.75));
     NamedCommands.registerCommand(
-        "AutoAlignNoteFar", new AlignToNoteAuto(drive, shooter, led, 2.26));
+        "AutoAlignNoteFar", new AlignToNoteAuto(drive, shooter, pivot, intake, led, 2.26));
 
     NamedCommands.registerCommand(
-        "AutoAlignNoteCenter", new AutoNotePickup(drive, shooter, pivot, intake, led, 1.332));
+        "AutoAlignNoteCenter", new AlignToNoteAuto(drive, shooter, pivot, intake, led, 1.332));
     NamedCommands.registerCommand(
-        "AutoAlignNoteAmp", new AutoNotePickup(drive, shooter, pivot, intake, led, 0.75));
+        "AutoAlignNoteAmp", new AlignToNoteAuto(drive, shooter, pivot, intake, led, 0.75));
 
     // AUTO AIM COMMANDS
     NamedCommands.registerCommand("TurnToSpeaker", new TurnToSpeaker(drive, driveController));
@@ -373,6 +373,12 @@ public class RobotContainer {
     autos.addOption("s!p-c5", AutoBuilder.buildAuto("s!p-c5"));
 
     autos.addOption("a!p-c1", AutoBuilder.buildAuto("a!p-c1"));
+
+    autos.addOption("c!p-b2-b3-b1", AutoBuilder.buildAuto("c!p-b2-b3-b1"));
+
+    autos.addOption("auto alignment test", AutoBuilder.buildAuto("auto alignment test"));
+
+    autos.addOption("New New Auto", AutoBuilder.buildAuto("New New Auto"));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", autos);
 
@@ -415,16 +421,23 @@ public class RobotContainer {
 
     driveController.b().onTrue(new InstantCommand(() -> led.setColor(LED_STATE.RED)));
 
-    driveController.a().onTrue(new InstantCommand(() -> led.setColor(LED_STATE.FLASHING_GREEN)));
+    driveController.a().whileTrue(new AlignToNoteAuto(drive, shooter, pivot, intake, led, 1.332));
 
+    // driveController
+    //     .y()
+    //     .whileTrue(
+    //         Commands.startEnd(
+    //             () -> shooter.setFlywheelRPMs(flywheelSpeed.get(), flywheelSpeed.get()),
+    //             shooter::stopFlywheels,
+    //             shooter));
     // driveController.x().whileTrue(new TurnToSpeaker(drive, driveController));
     // driveController.x().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
     driveController.y().onTrue(new Aimbot(drive, driveController, shooter, pivot, led));
-    driveController
-        .y()
-        .onFalse(
-            new InstantCommand(shooter::stopFeeders)
-                .andThen(new InstantCommand(shooter::stopFlywheels)));
+    // driveController
+    //     .y()
+    //     .onFalse(
+    //         new InstantCommand(shooter::stopFeeders)
+    //             .andThen(new InstantCommand(shooter::stopFlywheels)));
     // driveController.b().whileTrue(new AngleShooter(drive, shooter, pivot));
     // driveController
     //     .b()

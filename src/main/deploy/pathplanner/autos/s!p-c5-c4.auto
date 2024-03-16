@@ -49,12 +49,6 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "PivotIntake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
                   "name": "AutoAlignNoteCenter"
                 }
               }
@@ -74,22 +68,29 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "TurnToSpeaker"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AngleShooter"
+                  "name": "Aimbot"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "StartFeeders"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopFlywheels"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopIntakeFeed"
+                }
+              }
+            ]
           }
         },
         {
@@ -102,12 +103,6 @@
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "PivotIntake"
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -130,22 +125,29 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "TurnToSpeaker"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AngleShooter"
+                  "name": "Aimbot"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "StartFeeders"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopFlywheels"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopIntakeFeed"
+                }
+              }
+            ]
           }
         }
       ]
