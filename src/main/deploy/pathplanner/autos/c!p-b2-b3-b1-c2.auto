@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.857297007033385,
-      "y": 6.522935956000301
+      "x": 1.2671762861357376,
+      "y": 5.574358195791997
     },
-    "rotation": 60.64224645720873
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -24,7 +24,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "StartFlywheelsAmp"
+                  "name": "StartFlywheelsCenter"
                 }
               },
               {
@@ -39,32 +39,44 @@
         {
           "type": "path",
           "data": {
-            "pathName": "a3!c1"
+            "pathName": "c4!p-b2"
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "PivotIntake"
+                  "name": "StopIntakeFeed"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AutoAlignNoteCenter"
+                  "name": "PivotShootFar"
                 }
               }
             ]
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "StartFeeders"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "a3!scorec1"
+            "pathName": "c4!b3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "c4!scoreb3-b1"
           }
         },
         {
@@ -93,13 +105,7 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "a3!b1"
-          }
-        },
-        {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -124,6 +130,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "c4!scoreb1"
+          }
+        },
+        {
           "type": "sequential",
           "data": {
             "commands": [
@@ -149,15 +161,59 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.5
+            "pathName": "c5!c1"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "PivotIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoAlignNoteCenter"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "a3!dash"
+            "pathName": "c5!scorec1"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "TurnToSpeaker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AngleShooter"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartFeeders"
           }
         }
       ]

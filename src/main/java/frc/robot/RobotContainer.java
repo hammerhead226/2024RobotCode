@@ -339,8 +339,9 @@ public class RobotContainer {
             () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
 
     // NOTE ALIGNMENT NAMED COMMANDS
-    NamedCommands.registerCommand("AutoAlignNote", new AlignToNoteAuto(drive, led, 1.332));
+    NamedCommands.registerCommand("AutoAlignNoteCenter", new AlignToNoteAuto(drive, led, 1.332));
     NamedCommands.registerCommand("AutoAlignNoteAmp", new AlignToNoteAuto(drive, led, 0.75));
+    NamedCommands.registerCommand("AutoAlignNoteFar", new AlignToNoteAuto(drive, led, 2.26));
 
     // AUTO AIM COMMANDS
     NamedCommands.registerCommand("TurnToSpeaker", new TurnToSpeaker(drive, driveController));
@@ -348,23 +349,15 @@ public class RobotContainer {
 
     // Set up auto routines
     autos = new SendableChooser<>();
-    autos.addOption("hammertime", AutoBuilder.buildAuto("hammertime"));
-    autos.addOption("4 piece", AutoBuilder.buildAuto("4 piece"));
-
-    autos.addOption("3 note center", AutoBuilder.buildAuto("3 note center"));
 
     autos.addOption("good center 3 piece", AutoBuilder.buildAuto("good center 3 piece"));
 
-    autos.addOption("c!p-b2-b1", AutoBuilder.buildAuto("c!p-b2-b1"));
     autos.addOption("c!p-b2", AutoBuilder.buildAuto("c!p-b2"));
-    autos.addOption("s!p-b3-c4", AutoBuilder.buildAuto("s!p-b3-c4"));
+
 
     autos.addOption("s!p-c5", AutoBuilder.buildAuto("s!p-c5"));
 
     autos.addOption("a!p-c1", AutoBuilder.buildAuto("a!p-c1"));
-    autos.addOption("a!p-b1-c2", AutoBuilder.buildAuto("a!p-b1-c2"));
-
-    autos.addOption("b1 test auto", AutoBuilder.buildAuto("b1 test auto"));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", autos);
 

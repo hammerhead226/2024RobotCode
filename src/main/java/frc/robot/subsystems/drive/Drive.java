@@ -20,6 +20,8 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,6 +31,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -174,62 +177,31 @@ public class Drive extends SubsystemBase {
       LimelightHelpers.PoseEstimate limelightMeasurement =
           LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LL_ALIGN);
 
-      double xStds;
-      double yStds;
-      double headingStds;
+      double xMeterStds;
+      double yMeterStds;
+      double headingDegStds;
 
       double poseDifference = getVisionPoseDifference(limelightMeasurement.pose);
 
       if (limelightMeasurement.tagCount >= 2) {
-        xStds = 0.1;
-        yStds = 0.1;
-        headingStds = 9999999;
-      } else if (limelightMeasurement.tagCount == 1 && poseDifference < 1) {
-        xStds = 1;
-        yStds = 1;
-        headingStds = 10;
+        xMeterStds = 0.1;
+        yMeterStds = 0.1;
+        headingDegStds = 9999999;
       } else if (limelightMeasurement.tagCount == 1 && poseDifference < 0.5) {
-        xStds = 0.5;
-        yStds = 0.5;
-        headingStds = 10;
+        xMeterStds = 0.5;
+        yMeterStds = 0.5;
+        headingDegStds = 10;
+      } else if (limelightMeasurement.tagCount == 1 && poseDifference < 1) {
+        xMeterStds = 1;
+        yMeterStds = 1;
+        headingDegStds = 10;
       } else return;
 
-      // poseEstimator.setVisionMeasurementStdDevs(
-      //     VecBuilder.fill(xStds, yStds, Units.degreesToRadians(headingStds)));
-      Pose2d adjustedVision =
-          new Pose2d(
-              limelightMeasurement.pose.getTranslation(),
-              limelightMeasurement.pose.getRotation().plus(new Rotation2d(180)));
+      poseEstimator.setVisionMeasurementStdDevs(
+          VecBuilder.fill(xMeterStds, yMeterStds, Units.degreesToRadians(headingDegStds)));
 
-      Logger.recordOutput("Vision Measuremnet", limelightMeasurement.pose);
+      Logger.recordOutput("Vision Measurement", limelightMeasurement.pose);
       addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
-
-      // timeSinceLastCorrection = timestampSeconds - lasttime;
-
-      // lasttime = timestampSeconds;
-
-      // if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      //   Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiBlue(Constants.LL_ALIGN);
-      //   Logger.recordOutput("Vision Measurement", visionMeasurement);
-
-      //   if (canCorrect(visionMeasurement, timeSinceLastCorrection)) {
-      //     timeSinceLastCorrection = timestampSeconds - lasttime;
-      //     lasttime = timestampSeconds;
-
-      //     addVisionMeasurement(visionMeasurement, timestampSeconds);
-      //   }
-
-      // } else {
-      //   Pose2d visionMeasurement = LimelightHelpers.getBotPose2d_wpiBlue(Constants.LL_ALIGN);
-      //   Logger.recordOutput("Vision Measurement", visionMeasurement);
-
-      //   if (canCorrect(visionMeasurement, timeSinceLastCorrection)) {
-      //     timeSinceLastCorrection = timestampSeconds - lasttime;
-      //     lasttime = timestampSeconds;
-
-      //     addVisionMeasurement(visionMeasurement, timestampSeconds);
-      //   }
-      // }
     }
   }
 

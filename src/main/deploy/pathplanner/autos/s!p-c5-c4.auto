@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.857297007033385,
-      "y": 6.522935956000301
+      "x": 0.8338753339418218,
+      "y": 4.532093743217444
     },
-    "rotation": 60.64224645720873
+    "rotation": -60.46121774044192
   },
   "command": {
     "type": "sequential",
@@ -24,7 +24,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "StartFlywheelsAmp"
+                  "name": "StartFlywheelsSource"
                 }
               },
               {
@@ -39,11 +39,11 @@
         {
           "type": "path",
           "data": {
-            "pathName": "a3!c1"
+            "pathName": "s3!p-c5"
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -64,7 +64,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "a3!scorec1"
+            "pathName": "s3!score c5"
           }
         },
         {
@@ -95,11 +95,11 @@
         {
           "type": "path",
           "data": {
-            "pathName": "a3!b1"
+            "pathName": "s3!c4"
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -111,16 +111,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AutoAlignNoteAmp"
+                  "name": "AutoAlignNoteCenter"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "StopIntakeFeed"
+            "pathName": "s3!score c4"
           }
         },
         {
@@ -146,18 +146,6 @@
           "type": "named",
           "data": {
             "name": "StartFeeders"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "a3!dash"
           }
         }
       ]

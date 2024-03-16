@@ -1,0 +1,88 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.290597959227301,
+      "y": 5.539225686154654
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "PivotIntake"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartFlywheelsCenter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartFeeders"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "PivotIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoAlignNoteFar"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "TurnToSpeaker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AngleShooter"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartFeeders"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "autos",
+  "choreoAuto": false
+}
