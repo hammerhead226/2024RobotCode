@@ -12,16 +12,14 @@ import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.led.LED;
-import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
-public class AlignToNoteAuto extends Command {
+public class BellevilleAlignToNoteAuto extends Command {
   /** Creates a new AlignToNoteTeleop. */
   private final Drive drive;
 
-  private final Shooter shooter;
   private final LED led;
 
   private final PIDController xPID;
@@ -36,7 +34,7 @@ public class AlignToNoteAuto extends Command {
   private final LoggedTunableNumber yKp = new LoggedTunableNumber("AlignToNoteAuto/yKp");
   private final LoggedTunableNumber yKd = new LoggedTunableNumber("AlignToNoteAuto/yKd");
 
-  public AlignToNoteAuto(Drive drive, Shooter shooter, LED led, double threshold) {
+  public BellevilleAlignToNoteAuto(Drive drive, LED led, double threshold) {
 
     switch (Constants.getMode()) {
       case REAL:
@@ -61,7 +59,6 @@ public class AlignToNoteAuto extends Command {
     xPID.setTolerance(5);
     yPID.setTolerance(5);
     this.drive = drive;
-    this.shooter = shooter;
     this.led = led;
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -117,6 +114,6 @@ public class AlignToNoteAuto extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(startingPositionX - drive.getPose().getX()) > threshold || shooter.seesNote();
+    return Math.abs(startingPositionX - drive.getPose().getX()) > threshold;
   }
 }

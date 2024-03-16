@@ -30,6 +30,8 @@ public class Pivot extends SubsystemBase {
   double currTarget;
   double lastTarget;
 
+  double goal;
+
   private ArmFeedforward pivotFFModel;
 
   /** Creates a new Pivot. */
@@ -82,6 +84,10 @@ public class Pivot extends SubsystemBase {
     return (Math.abs(getPivotError()) <= Constants.PivotConstants.THRESHOLD);
   }
 
+  public boolean atGoal() {
+    return (Math.abs(pInputs.positionDegs - goal) <= Constants.PivotConstants.THRESHOLD);
+  }
+
   private double getPivotError() {
     return pInputs.positionSetpointDegs - pInputs.positionDegs;
   }
@@ -97,6 +103,7 @@ public class Pivot extends SubsystemBase {
   }
 
   public void setPivotGoal(double setpoint) {
+    goal = setpoint;
     pivotGoal = new TrapezoidProfile.State(setpoint, 0);
   }
 

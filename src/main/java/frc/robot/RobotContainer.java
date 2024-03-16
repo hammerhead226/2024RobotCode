@@ -32,6 +32,8 @@ import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.Aimbot;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AngleShooter;
+import frc.robot.commands.AutoNotePickup;
+import frc.robot.commands.BellevilleAlignToNoteAuto;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotIntakeAuto;
 import frc.robot.commands.PivotIntakeTele;
@@ -343,14 +345,23 @@ public class RobotContainer {
             () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
 
     // NOTE ALIGNMENT NAMED COMMANDS
-    NamedCommands.registerCommand("AutoAlignNoteCenter", new AlignToNoteAuto(drive, led, 1.332));
-    NamedCommands.registerCommand("AutoAlignNoteAmp", new AlignToNoteAuto(drive, led, 0.75));
-    NamedCommands.registerCommand("AutoAlignNoteFar", new AlignToNoteAuto(drive, led, 2.26));
+    NamedCommands.registerCommand(
+        "BellevilleAutoAlignNoteCenter", new BellevilleAlignToNoteAuto(drive, led, 1.332));
+    NamedCommands.registerCommand(
+        "BellevilleAutoAlignNoteAmp", new BellevilleAlignToNoteAuto(drive, led, 0.75));
+    NamedCommands.registerCommand(
+        "AutoAlignNoteFar", new AlignToNoteAuto(drive, shooter, led, 2.26));
+
+    NamedCommands.registerCommand(
+        "AutoAlignNoteCenter", new AutoNotePickup(drive, shooter, pivot, intake, led, 1.332));
+    NamedCommands.registerCommand(
+        "AutoAlignNoteAmp", new AutoNotePickup(drive, shooter, pivot, intake, led, 0.75));
 
     // AUTO AIM COMMANDS
     NamedCommands.registerCommand("TurnToSpeaker", new TurnToSpeaker(drive, driveController));
     NamedCommands.registerCommand("AngleShooter", new AngleShooter(drive, shooter, pivot));
-    NamedCommands.registerCommand("Aimbot", new Aimbot(drive, driveController, shooter, pivot, led));
+    NamedCommands.registerCommand(
+        "Aimbot", new Aimbot(drive, driveController, shooter, pivot, led));
 
     // Set up auto routines
     autos = new SendableChooser<>();

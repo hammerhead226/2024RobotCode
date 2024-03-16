@@ -172,36 +172,44 @@ public class Drive extends SubsystemBase {
     poseEstimator.update(rawGyroRotation, modulePositions);
 
     if (DriverStation.getAlliance().isPresent() && LimelightHelpers.getTV(Constants.LL_ALIGN)) {
-
-      LimelightHelpers.PoseEstimate limelightMeasurement =
-          LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LL_ALIGN);
-
-      double xMeterStds;
-      double yMeterStds;
-      double headingDegStds;
-
-      double poseDifference = getVisionPoseDifference(limelightMeasurement.pose);
-
-      if (limelightMeasurement.tagCount >= 2) {
-        xMeterStds = 0.9;
-        yMeterStds = 0.9;
-        headingDegStds = 9999999;
-      } else if (limelightMeasurement.tagCount == 1 && poseDifference < 0.5) {
-        xMeterStds = 2;
-        yMeterStds = 2;
-        headingDegStds = 9999999;
-      } else if (limelightMeasurement.tagCount == 1 && poseDifference < 1) {
-        xMeterStds = 5;
-        yMeterStds = 5;
-        headingDegStds = 9999999;
-      } else return;
-
-      poseEstimator.setVisionMeasurementStdDevs(
-          VecBuilder.fill(xMeterStds, yMeterStds, Units.degreesToRadians(headingDegStds)));
-
-      Logger.recordOutput("Vision Measurement", limelightMeasurement.pose);
-      addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
+      visionLogic();
     }
+  }
+
+  public void visionLogic() {
+    LimelightHelpers.PoseEstimate limelightMeasurement =
+        LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LL_ALIGN);
+
+    double xMeterStds;
+    double yMeterStds;
+    double headingDegStds;
+
+    double poseDifference = getVisionPoseDifference(limelightMeasurement.pose);
+
+    if (limelightMeasurement.tagCount >= 2) {
+      xMeterStds = 0.9;
+      yMeterStds = 0.9;
+      headingDegStds = 0.9;
+    } else if (limelightMeasurement.tagCount == 1 && poseDifference < 0.5) {
+      xMeterStds = 2;
+      yMeterStds = 2;
+      headingDegStds = 30;
+    } else if (limelightMeasurement.tagCount == 1 && poseDifference < 3) {
+      xMeterStds = 11.43;
+      yMeterStds = 11.43;
+      headingDegStds = 9999;
+    } else return;
+
+    Logger.recordOutput("number of tags", limelightMeasurement.tagCount);
+
+    poseEstimator.setVisionMeasurementStdDevs(
+        VecBuilder.fill(xMeterStds, yMeterStds, Units.degreesToRadians(headingDegStds)));
+
+    Logger.recordOutput("Vision Measurement", limelightMeasurement.pose);
+    Logger.recordOutput("limelilght latency", limelightMeasurement.latency);
+    addVisionMeasurement(
+        limelightMeasurement.pose,
+        limelightMeasurement.timestampSeconds - (limelightMeasurement.latency / 1000.));
   }
 
   public double getVisionPoseDifference(Pose2d visionPose) {

@@ -52,7 +52,7 @@ public class Aimbot extends Command {
 
     switch (Constants.currentMode) {
       case REAL:
-        gains[0] = 7;
+        gains[0] = 2.5;
         gains[1] = 0;
         gains[2] = 0;
         break;
@@ -74,7 +74,7 @@ public class Aimbot extends Command {
     }
 
     pid = new PIDController(gains[0], gains[1], gains[2], 0.02);
-    pid.setTolerance(0);
+    pid.setTolerance(3);
     pid.enableContinuousInput(-180, 180);
   }
 
@@ -93,14 +93,24 @@ public class Aimbot extends Command {
 
   public void angleShooter() {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
-
+    Logger.recordOutput("distance to speak", Units.metersToFeet(distanceToSpeakerMeter));
     distanceToSpeakerMeter = calculateDistanceToSpeaker();
-    shooter.setFlywheelRPMs(5400, 5400);
+    if (Units.metersToFeet(distanceToSpeakerMeter) > 9) {
+      double shootingSpeed =
+          MathUtil.clamp(
+              calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter)), 3175, 5400);
+      shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed);
+    } else shooter.setFlywheelRPMs(5400, 5400);
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }
 
+  private double calculateShooterSpeed(double distanceToSpeakerFeet) {
+    // return -556.25 * distanceToSpeakerFeet + 10406;
+    return -600. * distanceToSpeakerFeet + 10406;
+  }
+
   private double calculatePivotAngleDeg(double distanceToSpeakerMeter) {
-    pivotSetpointDeg = (-0.32 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 62);
+    pivotSetpointDeg = (-0.272 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 62);
     pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 39, 62);
 
     Logger.recordOutput("pivot target auto", pivotSetpointDeg);
@@ -180,12 +190,12 @@ public class Aimbot extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setFeedersRPM(1000);
-    led.setColor(LED_STATE.FLASHING_GREEN);
+    led.setColor(LED_STATE.BLUE);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atSetpoint();
+    return pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atGoal();
   }
 }
