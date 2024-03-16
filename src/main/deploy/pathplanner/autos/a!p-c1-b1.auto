@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2671762861357376,
-      "y": 5.574358195791997
+      "x": 0.857297007033385,
+      "y": 6.522935956000301
     },
-    "rotation": 0
+    "rotation": 60.64224645720873
   },
   "command": {
     "type": "sequential",
@@ -24,7 +24,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "StartFlywheelsCenter"
+                  "name": "StartFlywheelsAmp"
                 }
               },
               {
@@ -39,44 +39,32 @@
         {
           "type": "path",
           "data": {
-            "pathName": "c4!p-b2"
+            "pathName": "a3!c1"
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "StopIntakeFeed"
+                  "name": "PivotIntake"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "PivotShootFar"
+                  "name": "AutoAlignNote"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "StartFeeders"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "c4!b3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "c4!scoreb3-b1"
+            "pathName": "a3!scorec1"
           }
         },
         {
@@ -105,7 +93,13 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
+          "data": {
+            "pathName": "a3!b1"
+          }
+        },
+        {
+          "type": "sequential",
           "data": {
             "commands": [
               {
@@ -130,12 +124,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "c4!scoreb1"
-          }
-        },
-        {
           "type": "sequential",
           "data": {
             "commands": [
@@ -158,6 +146,18 @@
           "type": "named",
           "data": {
             "name": "StartFeeders"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "a3!dash"
           }
         }
       ]

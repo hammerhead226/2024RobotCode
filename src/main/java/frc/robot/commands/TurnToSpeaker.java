@@ -73,25 +73,29 @@ public class TurnToSpeaker extends Command {
     if (alliance == DriverStation.Alliance.Red) {
       targetAngle =
           new Rotation2d(
-                  FieldConstants.fieldLength - drive.getPose().getX(),
-                  FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
-              .getDegrees();
+                      FieldConstants.fieldLength - drive.getPose().getX(),
+                      FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
+                  .getDegrees()
+              + 180;
       pid.setSetpoint(
           new Rotation2d(
-                  FieldConstants.fieldLength - drive.getPose().getX(),
-                  FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
-              .getDegrees());
+                      FieldConstants.fieldLength - drive.getPose().getX(),
+                      FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
+                  .getDegrees()
+              + 180);
     } else {
       targetAngle =
           new Rotation2d(
-                  -drive.getPose().getX(),
-                  FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
-              .getDegrees();
+                      -drive.getPose().getX(),
+                      FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
+                  .getDegrees()
+              + 180;
       pid.setSetpoint(
           new Rotation2d(
-                  -drive.getPose().getX(),
-                  FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
-              .getDegrees());
+                      -drive.getPose().getX(),
+                      FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
+                  .getDegrees()
+              + 180);
     }
 
     Logger.recordOutput("target angle", targetAngle);

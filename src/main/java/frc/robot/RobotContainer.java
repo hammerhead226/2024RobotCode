@@ -44,6 +44,7 @@ import frc.robot.commands.ShootNoteAmp;
 import frc.robot.commands.ShootNoteCenter;
 import frc.robot.commands.ShootNoteSource;
 import frc.robot.commands.StopIntakeFeed;
+import frc.robot.commands.TurnToSpeaker;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
 import frc.robot.subsystems.drive.Drive;
@@ -341,6 +342,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutoAlignNote", new AlignToNoteAuto(drive, led, 1.332));
     NamedCommands.registerCommand("AutoAlignNoteAmp", new AlignToNoteAuto(drive, led, 0.75));
 
+    // AUTO AIM COMMANDS
+    NamedCommands.registerCommand("TurnToSpeaker", new TurnToSpeaker(drive, driveController));
+    NamedCommands.registerCommand("AngleShooter", new AngleShooter(drive, shooter, pivot));
+
     // Set up auto routines
     autos = new SendableChooser<>();
     autos.addOption("hammertime", AutoBuilder.buildAuto("hammertime"));
@@ -398,8 +403,8 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // driveController.x().whileTrue(new TurnToSpeaker(drive, driveController));
-    driveController.x().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
+    driveController.x().whileTrue(new TurnToSpeaker(drive, driveController));
+    // driveController.x().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
 
     driveController.b().whileTrue(new AngleShooter(drive, shooter, pivot));
     driveController
@@ -410,14 +415,23 @@ public class RobotContainer {
                 .andThen(new InstantCommand(shooter::stopFlywheels))
                 .andThen(new InstantCommand(shooter::stopFeeders)));
 
-    // driveController.b().onTrue(new SetPivotTarget((-0.276 * Math.abs(108 - 36) + 62), pivot));
+    driveController.a().onTrue(new PivotSource(pivot, intake, shooter, led));
     driveController
         .a()
-        .whileTrue(
-            Commands.startEnd(
-                () -> shooter.setFlywheelRPMs(flywheelSpeed.get(), flywheelSpeed.get()),
-                shooter::stopFlywheels,
-                shooter));
+        .onFalse(
+            new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)
+                .andThen(new InstantCommand(shooter::stopFeeders))
+                .andThen(new InstantCommand(shooter::stopFlywheels)));
+    // driveController.b().onTrue(new SetPivotTarget((-0.276 * Math.abs(108 - 36) + 62), pivot));
+    // driveController.a().whileTrue(new AlignToNoteTeleop(drive, led, shooter, driveController));
+    // driveController.a().onFalse(new InstantCommand(() -> led.setColor(LED_STATE.OFF)));
+    // driveController
+    //     .a()
+    //     .whileTrue(
+    //         Commands.startEnd(
+    //             () -> shooter.setFlywheelRPMs(flywheelSpeed.get(), flywheelSpeed.get()),
+    //             shooter::stopFlywheels,
+    //             shooter));
     // pivot::pivotStop, pivot));
     // driveController.a().onTrue(new SetPivotTarget(angle.get(), pivot));
     // driveController.rightBumper().onTrue(new AutoPivotIntake(pivot, intake, shooter, 41, false));
@@ -425,8 +439,10 @@ public class RobotContainer {
     driveController
         .rightBumper()
         .onFalse(
-            new InstantCommand(shooter::stopFeeders)
-                .andThen(new InstantCommand(intake::stopRollers)));
+            new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)
+                .andThen(
+                    new InstantCommand(shooter::stopFeeders)
+                        .andThen(new InstantCommand(intake::stopRollers))));
     // driveController
     //     .rightBumper()
     //     .onFalse(

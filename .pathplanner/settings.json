@@ -3,10 +3,12 @@
   "robotLength": 0.66,
   "holonomicMode": true,
   "pathFolders": [
-    "c!p-b2-b3-b1",
+    "s!p-c5-c4",
     "a!p-c1",
+    "a!p-c1-b1",
     "c!p-b2",
     "c!p-b2-b1",
+    "c!p-b2-b3-b1",
     "s!p-c5"
   ],
   "autoFolders": [

@@ -20,7 +20,6 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,7 +29,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -175,7 +173,7 @@ public class Drive extends SubsystemBase {
 
       LimelightHelpers.PoseEstimate limelightMeasurement =
           LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LL_ALIGN);
-      Logger.recordOutput("Vision Measuremnet", limelightMeasurement.pose);
+
       double xStds;
       double yStds;
       double headingStds;
@@ -196,8 +194,14 @@ public class Drive extends SubsystemBase {
         headingStds = 10;
       } else return;
 
-      poseEstimator.setVisionMeasurementStdDevs(
-          VecBuilder.fill(xStds, yStds, Units.degreesToRadians(headingStds)));
+      // poseEstimator.setVisionMeasurementStdDevs(
+      //     VecBuilder.fill(xStds, yStds, Units.degreesToRadians(headingStds)));
+      Pose2d adjustedVision =
+          new Pose2d(
+              limelightMeasurement.pose.getTranslation(),
+              limelightMeasurement.pose.getRotation().plus(new Rotation2d(180)));
+
+      Logger.recordOutput("Vision Measuremnet", limelightMeasurement.pose);
       addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
 
       // timeSinceLastCorrection = timestampSeconds - lasttime;

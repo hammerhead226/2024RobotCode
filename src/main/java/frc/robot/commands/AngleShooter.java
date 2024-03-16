@@ -49,7 +49,7 @@ public class AngleShooter extends Command {
   }
 
   private double calculatePivotAngleDeg(double distanceToSpeakerMeter) {
-    pivotSetpointDeg = (-0.276 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 62);
+    pivotSetpointDeg = (-0.32 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 62);
     pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 39, 62);
 
     Logger.recordOutput("pivot target auto", pivotSetpointDeg);
@@ -78,6 +78,6 @@ public class AngleShooter extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return pivot.atSetpoint();
   }
 }
