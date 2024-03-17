@@ -206,8 +206,10 @@ public class RobotContainer {
                     CLIMB_STATES.RETRACT_CLIMB,
                     // new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_TWO_DEG, pivot)
                     //     .andThen(climbStateMachine::advanceTargetState, elevator)),
-                    new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_ONE_DEG, pivot)
-                        .andThen(new SetElevatorTarget(1, elevator))
+                    new ParallelCommandGroup(
+                            new SetPivotTarget(
+                                Constants.PivotConstants.CLIMB_SETPOINT_ONE_DEG, pivot),
+                            new SetElevatorTarget(1, elevator))
                         .andThen(climbStateMachine::advanceTargetState, elevator)),
                 Map.entry(
                     CLIMB_STATES.SCORE_TRAP,
