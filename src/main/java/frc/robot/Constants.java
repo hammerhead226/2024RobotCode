@@ -116,7 +116,7 @@ public final class Constants {
 
     public static final double SOURCE_SETPOINT_DEG = 113;
     public static final double CLIMB_SETPOINT_ONE_DEG = 50;
-    public static final double CLIMB_SETPOINT_TWO_DEG = 110;
+    public static final double CLIMB_SETPOINT_TWO_DEG = 100;
 
     public static final double THRESHOLD = 2;
 

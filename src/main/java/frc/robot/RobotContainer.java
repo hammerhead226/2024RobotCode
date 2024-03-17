@@ -214,10 +214,12 @@ public class RobotContainer {
                 Map.entry(
                     CLIMB_STATES.SCORE_TRAP,
                     // new SequentialCommandGroup(
-                    //     new SetElevatorTarget(19, elevator),
-                    //     new WaitCommand(1),
-                    //     new SetPivotTarget(100, pivot))),
+                    //         new SetElevatorTarget(19, elevator),
+                    //         new WaitCommand(1),
+                    //         new SetPivotTarget(110, pivot))
+                    // new SetElevatorTarget(19, elevator)
                     new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_TWO_DEG, pivot)
+                        .andThen(new SetElevatorTarget(20.9, elevator))
                         .andThen(climbStateMachine::advanceTargetState, elevator)),
                 Map.entry(CLIMB_STATES.DONE, new PrintCommand("hi"))),
             this::climbSelect);
