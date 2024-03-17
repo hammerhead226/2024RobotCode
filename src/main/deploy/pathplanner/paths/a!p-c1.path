@@ -3,66 +3,66 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.492762434882929,
-        "y": 2.576384040071932
+        "x": 1.5365255266887123,
+        "y": 6.991369417831561
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.075751212843366,
-        "y": 2.17821559751536
+        "x": 1.7824530941501242,
+        "y": 7.553489572029072
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.08490900006051,
-        "y": 1.4638545682226887
+        "x": 2.8598500563620233,
+        "y": 7.729152120215796
       },
       "prevControl": {
-        "x": 5.939800067902561,
-        "y": 1.428722058585343
+        "x": 1.8598500563620233,
+        "y": 7.729152120215796
       },
       "nextControl": {
-        "x": 4.23001793221846,
-        "y": 1.4989870778600343
+        "x": 3.8598500563620233,
+        "y": 7.729152120215796
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.5553683061717036,
-        "y": 3.4781184540971077
+        "x": 6.982064520477115,
+        "y": 7.412959533479694
       },
       "prevControl": {
-        "x": 3.5156569029257883,
-        "y": 2.447564838068335
+        "x": 5.046210518954561,
+        "y": 7.559344990301963
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "s3!scorec4 end"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -40.81508387488151,
+    "velocity": 2.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "s!p-c5-c4",
+  "folder": "a!p-c1-c2",
   "previewStartingState": {
-    "rotation": 43.451842301022054,
+    "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

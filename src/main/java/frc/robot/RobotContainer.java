@@ -372,9 +372,15 @@ public class RobotContainer {
 
     autos.addOption("s!p-c5", AutoBuilder.buildAuto("s!p-c5"));
 
+    autos.addOption("s!p-c5-c4", AutoBuilder.buildAuto("s!p-c5-c4"));
+
     autos.addOption("a!p-c1", AutoBuilder.buildAuto("a!p-c1"));
 
+    autos.addOption("a!p-c1-c2", AutoBuilder.buildAuto("a!p-c1-c2"));
+
     autos.addOption("c!p-b2-b3-b1", AutoBuilder.buildAuto("c!p-b2-b3-b1"));
+
+    autos.addOption("c!p-b2-b3", AutoBuilder.buildAuto("c!p-b2-b3"));
 
     autos.addOption("auto alignment test", AutoBuilder.buildAuto("auto alignment test"));
 

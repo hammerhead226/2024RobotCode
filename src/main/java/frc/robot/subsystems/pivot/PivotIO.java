@@ -9,7 +9,7 @@ public interface PivotIO {
     public double positionDegs = 0;
     public double currentAmps = 0;
     public double appliedVolts = 0;
-    public double positionSetpointDegs = 0;
+    public double positionSetpointDegs;
 
     public boolean gyroConnected = false;
     public double pitch = 0;

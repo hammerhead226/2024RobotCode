@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.pivot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -69,7 +70,8 @@ public class Pivot extends SubsystemBase {
         new TrapezoidProfile.Constraints(maxVelocityDegPerSec, maxAccelerationDegPerSecSquared);
     pivotProfile = new TrapezoidProfile(pivotConstraints);
 
-    setPivotGoal(90);
+    // setPivotGoal(90);
+    // setPivotCurrent(getPivotPositionDegs());
     pivotCurrent = pivotProfile.calculate(0, pivotCurrent, pivotGoal);
 
     pivot.configurePID(kP, 0, 0);
@@ -93,6 +95,7 @@ public class Pivot extends SubsystemBase {
   }
 
   public void setPositionDegs(double positionDegs, double velocityDegsPerSec) {
+    positionDegs = MathUtil.clamp(positionDegs, 39, 120);
     pivot.setPositionSetpointDegs(
         positionDegs,
         pivotFFModel.calculate(Math.toRadians(positionDegs), Math.toRadians(velocityDegsPerSec)));
@@ -107,6 +110,10 @@ public class Pivot extends SubsystemBase {
     pivotGoal = new TrapezoidProfile.State(setpoint, 0);
   }
 
+  public void setPivotCurrent(double current) {
+    pivotCurrent = new TrapezoidProfile.State(current, 0);
+  }
+
   @Override
   public void periodic() {
     pivot.updateInputs(pInputs);
@@ -117,6 +124,8 @@ public class Pivot extends SubsystemBase {
 
     Logger.processInputs("Pivot", pInputs);
     Logger.recordOutput("pivot error", getPivotError());
+
+    Logger.recordOutput("pivot goal", goal);
     // This method will be called once per scheduler run
   }
 }

@@ -1,0 +1,73 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.5365255266887123,
+      "y": 6.991369417831561
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Aimbot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "a!p-c1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignNoteCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "a!score c1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aimbot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "a!c2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignNoteCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "a!scorec2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aimbot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "autos",
+  "choreoAuto": false
+}
