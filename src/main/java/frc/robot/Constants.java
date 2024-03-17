@@ -95,7 +95,7 @@ public final class Constants {
     public static final boolean CURRENT_LIMIT_ENABLED = true;
 
     public static final double RETRACT_SETPOINT_INCH = 0;
-    public static final double EXTEND_SETPOINT_INCH = 0;
+    public static final double EXTEND_SETPOINT_INCH = 20.9;
     public static final double THRESHOLD = 3;
 
     public static final double[] PID = {0, 0, 0};

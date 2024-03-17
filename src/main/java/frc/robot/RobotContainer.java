@@ -200,7 +200,7 @@ public class RobotContainer {
                         .andThen(climbStateMachine::advanceTargetState, elevator)),
                 Map.entry(
                     CLIMB_STATES.PIVOT_CLIMB,
-                    new SetElevatorTarget(19, elevator)
+                    new SetElevatorTarget(20.969, elevator)
                         .andThen(climbStateMachine::advanceTargetState, elevator)),
                 Map.entry(
                     CLIMB_STATES.RETRACT_CLIMB,
@@ -427,7 +427,10 @@ public class RobotContainer {
 
     driveController.b().onTrue(new InstantCommand(() -> led.setColor(LED_STATE.RED)));
 
-    driveController.a().whileTrue(new AlignToNoteAuto(drive, shooter, pivot, intake, led, 1.332));
+    driveController.a().onTrue(climbCommands);
+
+    // driveController.a().whileTrue(new AlignToNoteAuto(drive, shooter, pivot, intake, led,
+    // 1.332));
 
     // driveController
     //     .y()
