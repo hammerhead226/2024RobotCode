@@ -52,7 +52,7 @@ public final class Constants {
     public static final double TRACK_WIDTH_Y = Units.inchesToMeters(26.0);
     public static final double DRIVE_BASE_RADIUS =
         Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
-    public static final double MAX_ANGULAR_SPEED = 0.6 * MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+    public static final double MAX_ANGULAR_SPEED = 0.45 * MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
     public static final double OPEN_LOOP_RAMP_SEC = 0.5;
   }
 
@@ -69,7 +69,7 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int CURRENT_LIMIT = 30;
+    public static final int CURRENT_LIMIT = 40;
     public static final int APPLIED_VOLTAGE = 12;
     public static final boolean CURRENT_LIMIT_ENABLED = true;
   }

@@ -33,6 +33,8 @@ public class Pivot extends SubsystemBase {
 
   double goal;
 
+  boolean isAimbot;
+
   private ArmFeedforward pivotFFModel;
 
   /** Creates a new Pivot. */
@@ -61,6 +63,8 @@ public class Pivot extends SubsystemBase {
         kP = 1.123;
         break;
     }
+
+    isAimbot = true;
 
     maxVelocityDegPerSec = 150;
     maxAccelerationDegPerSecSquared = 226;
@@ -112,6 +116,14 @@ public class Pivot extends SubsystemBase {
 
   public void setPivotCurrent(double current) {
     pivotCurrent = new TrapezoidProfile.State(current, 0);
+  }
+
+  public boolean isAimbot() {
+    return isAimbot;
+  }
+
+  public void setAimbot(boolean isAimbot) {
+    this.isAimbot = isAimbot;
   }
 
   @Override

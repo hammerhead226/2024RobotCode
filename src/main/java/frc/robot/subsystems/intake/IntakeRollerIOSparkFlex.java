@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import frc.robot.Constants;
 
 public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
   private final CANSparkFlex rollers;
@@ -14,7 +15,7 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
     // rollers.setIdleMode(IdleMode.kCoast);
     // rollers.setInverted(true);
 
-    // rollers.setSmartCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT);
+    rollers.setSmartCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT);
     rollers.setCANTimeout(250);
 
     rollers.burnFlash();

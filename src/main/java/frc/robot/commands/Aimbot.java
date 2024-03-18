@@ -81,7 +81,7 @@ public class Aimbot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    led.setColor(LED_STATE.FLASHING_RED);
+    led.setColor(LED_STATE.GREEN);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

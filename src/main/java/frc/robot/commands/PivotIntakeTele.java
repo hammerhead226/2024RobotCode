@@ -25,6 +25,7 @@ public class PivotIntakeTele extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     if (!outtake) {
       addCommands(
+          // new InstantCommand(() -> led.setColor(LED_STATE.VIOLET)),
           new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
           new WaitUntilCommand(pivot::atSetpoint),
           new IntakeNote(intake, shooter),

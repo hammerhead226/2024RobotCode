@@ -27,10 +27,6 @@ public class PivotSource extends SequentialCommandGroup {
         new SetPivotTarget(Constants.PivotConstants.SOURCE_SETPOINT_DEG, pivot),
         new WaitUntilCommand(pivot::atSetpoint),
         new InstantCommand(() -> shooter.setFlywheelRPMs(-2000, -2000), shooter),
-        new InstantCommand(() -> shooter.setFeedersRPM(-1000)),
-        new WaitUntilCommand(shooter::seesNote),
-        // new WaitCommand(0.5),
-        new InstantCommand(shooter::stopFlywheels),
-        new InstantCommand(shooter::stopFeeders));
+        new InstantCommand(() -> shooter.setFeedersRPM(-1000)));
   }
 }

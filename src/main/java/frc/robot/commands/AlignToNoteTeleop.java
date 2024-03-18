@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
+import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LoggedTunableNumber;
@@ -22,6 +24,8 @@ public class AlignToNoteTeleop extends Command {
   /** Creates a new AlignToNoteTeleop. */
   private final Drive drive;
 
+  private final Pivot pivot;
+  private final Intake intake;
   private final Shooter shooter;
   private final LED led;
 
@@ -37,11 +41,16 @@ public class AlignToNoteTeleop extends Command {
   private final LoggedTunableNumber yKd = new LoggedTunableNumber("AlignToNoteAuto/yKd");
 
   public AlignToNoteTeleop(
-      Drive drive, LED led, Shooter shooter, CommandXboxController controller) {
+      Drive drive,
+      Shooter shooter,
+      Pivot pivot,
+      Intake intake,
+      LED led,
+      CommandXboxController controller) {
 
     switch (Constants.getMode()) {
       case REAL:
-        xKp.initDefault(0.07);
+        xKp.initDefault(0.012);
         xKd.initDefault(0);
 
         yKp.initDefault(0.08);
@@ -59,6 +68,8 @@ public class AlignToNoteTeleop extends Command {
     xPID.setTolerance(5);
     yPID.setTolerance(5);
     this.drive = drive;
+    this.pivot = pivot;
+    this.intake = intake;
     this.shooter = shooter;
     this.led = led;
     this.controller = controller;
@@ -69,7 +80,10 @@ public class AlignToNoteTeleop extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    led.setColor(LED_STATE.OFF);
+    pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
+    intake.runRollers(12);
+    shooter.setFeedersRPM(1000);
+    led.setColor(LED_STATE.FLASHING_GREEN);
     yPID.setSetpoint(-13);
     xPID.setSetpoint(-9);
   }
@@ -82,23 +96,43 @@ public class AlignToNoteTeleop extends Command {
       double noteError = drive.getNoteError();
       double distanceError = LimelightHelpers.getTY(Constants.LL_INTAKE);
 
-      double rotationPIDEffort =
+      double xPIDEffort =
           MathUtil.clamp(
               xPID.calculate(noteError),
-              -Constants.SwerveConstants.MAX_ANGULAR_SPEED,
-              Constants.SwerveConstants.MAX_ANGULAR_SPEED);
+              -Constants.SwerveConstants.MAX_LINEAR_SPEED,
+              Constants.SwerveConstants.MAX_LINEAR_SPEED);
+
       double yPIDEffort =
           MathUtil.clamp(
               yPID.calculate(LimelightHelpers.getTY(Constants.LL_INTAKE)),
               -Constants.SwerveConstants.MAX_LINEAR_SPEED,
               Constants.SwerveConstants.MAX_LINEAR_SPEED);
 
+      // drive.runVelocity(
+      //     new ChassisSpeeds(
+      //         -controller.getLeftY() * Constants.SwerveConstants.MAX_LINEAR_SPEED, xPIDEffort,
+      // 0));
+
       drive.runVelocity(
           new ChassisSpeeds(
-              -controller.getLeftY() * Constants.SwerveConstants.MAX_LINEAR_SPEED,
-              -controller.getLeftX() * Constants.SwerveConstants.MAX_LINEAR_SPEED,
-              rotationPIDEffort));
+              0
+                  + ChassisSpeeds.fromFieldRelativeSpeeds(
+                          controller.getLeftX() * Constants.SwerveConstants.MAX_LINEAR_SPEED,
+                          controller.getLeftY() * Constants.SwerveConstants.MAX_LINEAR_SPEED,
+                          0,
+                          drive.getPose().getRotation())
+                      .vxMetersPerSecond,
+              xPIDEffort
+                  + ChassisSpeeds.fromFieldRelativeSpeeds(
+                          controller.getLeftX() * Constants.SwerveConstants.MAX_LINEAR_SPEED,
+                          controller.getLeftY() * Constants.SwerveConstants.MAX_LINEAR_SPEED,
+                          0,
+                          drive.getPose().getRotation())
+                      .vyMetersPerSecond,
+              0));
 
+      // drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(null, null));
+      // ChassisSpeeds.from
       Logger.recordOutput("Distance Error", distanceError);
 
       Logger.recordOutput("Note Error", noteError);
@@ -106,7 +140,7 @@ public class AlignToNoteTeleop extends Command {
       Logger.recordOutput("at xPID", xPID.atSetpoint());
       Logger.recordOutput("at yPID", yPID.atSetpoint());
 
-      Logger.recordOutput("xPIDEffort", rotationPIDEffort);
+      Logger.recordOutput("xPIDEffort", xPIDEffort);
       Logger.recordOutput("yPIDEffort", yPIDEffort);
     }
   }
@@ -114,7 +148,9 @@ public class AlignToNoteTeleop extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    led.setColor(LED_STATE.OFF);
+    intake.stopRollers();
+    shooter.stopFeeders();
+    led.setColor(LED_STATE.BLUE);
   }
 
   // Returns true when the command should end.

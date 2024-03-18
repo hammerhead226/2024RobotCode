@@ -13,8 +13,20 @@ public class Intake extends SubsystemBase {
 
   private final IntakeRollerIOInputsAutoLogged rInputs = new IntakeRollerIOInputsAutoLogged();
 
+  private boolean isAutoAlign;
+
   public Intake(IntakeRollerIO roller) {
     this.roller = roller;
+
+    isAutoAlign = false;
+  }
+
+  public boolean isAutoAlign() {
+    return isAutoAlign;
+  }
+
+  public void toggleAutoAlign() {
+    this.isAutoAlign = !this.isAutoAlign;
   }
 
   public void runRollers(double volts) {

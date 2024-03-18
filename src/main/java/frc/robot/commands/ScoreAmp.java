@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pivot.Pivot;
@@ -29,9 +28,8 @@ public class ScoreAmp extends SequentialCommandGroup {
     addCommands(
         new SetElevatorTarget(8, elevator),
         new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
-        new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter),
-        // new WaitUntilCommand(pivot::atSetpoint),
-        new WaitCommand(1),
-        new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
+        new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter));
+    // new WaitUntilCommand(pivot::atSetpoint),
+
   }
 }

@@ -232,12 +232,11 @@ public class Drive extends SubsystemBase {
 
   public void toggleLowSpeed() {
     if (!toggle) {
-      toggle = !toggle;
       multiplier = 0.4;
     } else {
-      toggle = !toggle;
       multiplier = 1;
     }
+    toggle = !toggle;
   }
 
   /**
