@@ -97,8 +97,8 @@ public class AlignToNoteAuto extends Command {
     double xPIDEffort =
         MathUtil.clamp(
             xPID.calculate(noteError),
-            -Constants.SwerveConstants.MAX_LINEAR_SPEED,
-            Constants.SwerveConstants.MAX_LINEAR_SPEED);
+            -0.5 * Constants.SwerveConstants.MAX_LINEAR_SPEED,
+            0.5 * Constants.SwerveConstants.MAX_LINEAR_SPEED);
     double yPIDEffort =
         MathUtil.clamp(
             yPID.calculate(distanceError),

@@ -44,7 +44,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
-  private static final double MAX_LINEAR_SPEED = Constants.SwerveConstants.MAX_LINEAR_SPEED * 0.75;
+  private static final double MAX_LINEAR_SPEED = Constants.SwerveConstants.MAX_LINEAR_SPEED * 0.8;
   private static final double TRACK_WIDTH_X = Constants.SwerveConstants.TRACK_WIDTH_X;
   private static final double TRACK_WIDTH_Y = Constants.SwerveConstants.TRACK_WIDTH_Y;
   private static final double DRIVE_BASE_RADIUS = Constants.SwerveConstants.DRIVE_BASE_RADIUS;
@@ -186,6 +186,10 @@ public class Drive extends SubsystemBase {
 
     double poseDifference = getVisionPoseDifference(limelightMeasurement.pose);
 
+    boolean isFlipped =
+        DriverStation.getAlliance().isPresent()
+            && DriverStation.getAlliance().get() == Alliance.Red;
+
     if (limelightMeasurement.tagCount >= 2) {
       xMeterStds = 0.9;
       yMeterStds = 0.9;
@@ -205,11 +209,16 @@ public class Drive extends SubsystemBase {
     poseEstimator.setVisionMeasurementStdDevs(
         VecBuilder.fill(xMeterStds, yMeterStds, Units.degreesToRadians(headingDegStds)));
 
+    Pose2d pose = limelightMeasurement.pose;
+
+    if (isFlipped) {
+      pose.getRotation().plus(new Rotation2d(Math.PI));
+    }
+
     Logger.recordOutput("Vision Measurement", limelightMeasurement.pose);
     Logger.recordOutput("limelilght latency", limelightMeasurement.latency);
     addVisionMeasurement(
-        limelightMeasurement.pose,
-        limelightMeasurement.timestampSeconds - (limelightMeasurement.latency / 1000.));
+        pose, limelightMeasurement.timestampSeconds - (limelightMeasurement.latency / 1000.));
   }
 
   public double getVisionPoseDifference(Pose2d visionPose) {

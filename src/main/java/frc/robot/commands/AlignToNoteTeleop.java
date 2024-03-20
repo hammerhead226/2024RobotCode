@@ -6,8 +6,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
@@ -17,15 +21,13 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LoggedTunableNumber;
-
-import java.util.function.BooleanSupplier;
-
 import org.littletonrobotics.junction.Logger;
 
-public class AlignToNoteTele extends Command {
+public class AlignToNoteTeleop extends Command {
   /** Creates a new AlignToNoteTeleop. */
   private final Drive drive;
 
+  private final CommandXboxController controller;
   private final Pivot pivot;
   private final Intake intake;
   private final Shooter shooter;
@@ -35,7 +37,6 @@ public class AlignToNoteTele extends Command {
   private final PIDController yPID;
 
   private double startingPositionX;
-  private final double threshold;
 
   private final LoggedTunableNumber xKp = new LoggedTunableNumber("AlignToNoteAuto/xKp");
   private final LoggedTunableNumber xKd = new LoggedTunableNumber("AlignToNoteAuto/xKd");
@@ -43,8 +44,13 @@ public class AlignToNoteTele extends Command {
   private final LoggedTunableNumber yKp = new LoggedTunableNumber("AlignToNoteAuto/yKp");
   private final LoggedTunableNumber yKd = new LoggedTunableNumber("AlignToNoteAuto/yKd");
 
-  public AlignToNoteTele(
-      Drive drive, Shooter shooter, Pivot pivot, Intake intake, LED led, BooleanSupplier pressed) {
+  public AlignToNoteTeleop(
+      Drive drive,
+      Shooter shooter,
+      Pivot pivot,
+      Intake intake,
+      LED led,
+      CommandXboxController controller) {
 
     switch (Constants.getMode()) {
       case REAL:
@@ -72,6 +78,7 @@ public class AlignToNoteTele extends Command {
     this.pivot = pivot;
     this.intake = intake;
     this.led = led;
+    this.controller = controller;
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -81,7 +88,7 @@ public class AlignToNoteTele extends Command {
   public void initialize() {
     pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
     intake.runRollers(12);
-    shooter.setFeedersRPM(1000);
+    shooter.setFeedersRPM(750);
     led.setColor(LED_STATE.FLASHING_GREEN);
     startingPositionX = drive.getPose().getX();
     Logger.recordOutput("startingpos", startingPositionX);
@@ -94,30 +101,43 @@ public class AlignToNoteTele extends Command {
     Logger.recordOutput("TA", LimelightHelpers.getTA(Constants.LL_INTAKE));
 
     double noteError = drive.getNoteError();
-    double distanceError = (startingPositionX + threshold) - drive.getPose().getY();
 
     double xPIDEffort =
         MathUtil.clamp(
             xPID.calculate(noteError),
-            -Constants.SwerveConstants.MAX_LINEAR_SPEED,
-            Constants.SwerveConstants.MAX_LINEAR_SPEED);
-    double yPIDEffort =
-        MathUtil.clamp(
-            yPID.calculate(distanceError),
-            -Constants.SwerveConstants.MAX_LINEAR_SPEED,
-            Constants.SwerveConstants.MAX_LINEAR_SPEED);
+            -0.5 * Constants.SwerveConstants.MAX_LINEAR_SPEED,
+            0.5 * Constants.SwerveConstants.MAX_LINEAR_SPEED);
 
-    drive.runVelocity(new ChassisSpeeds(1, xPIDEffort, 0));
+    boolean isFlipped =
+        DriverStation.getAlliance().isPresent()
+            && DriverStation.getAlliance().get() == Alliance.Red;
 
-    Logger.recordOutput("Distance Error", distanceError);
+    double forwardSpeed =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+                -0.5 * controller.getLeftY() * drive.getMaxLinearSpeedMetersPerSec(),
+                -0.5 * controller.getLeftX() * drive.getMaxLinearSpeedMetersPerSec(),
+                0,
+                isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation())
+            .vxMetersPerSecond;
+
+    double sidewaysSpeed =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+                -0.5 * controller.getLeftY() * drive.getMaxLinearSpeedMetersPerSec(),
+                -0.5 * controller.getLeftX() * drive.getMaxLinearSpeedMetersPerSec(),
+                0,
+                isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation())
+            .vyMetersPerSecond;
+
+    drive.runVelocity(new ChassisSpeeds(forwardSpeed, sidewaysSpeed + xPIDEffort, 0));
+
+    Logger.recordOutput("Forward Speed", forwardSpeed);
+    Logger.recordOutput("Sideways Speed", sidewaysSpeed);
 
     Logger.recordOutput("Note Error", noteError);
 
     Logger.recordOutput("at xPID", xPID.atSetpoint());
-    Logger.recordOutput("at yPID", yPID.atSetpoint());
 
     Logger.recordOutput("xPIDEffort", xPIDEffort);
-    Logger.recordOutput("yPIDEffort", yPIDEffort);
   }
 
   // Called once the command ends or is interrupted.
@@ -131,6 +151,6 @@ public class AlignToNoteTele extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(startingPositionX - drive.getPose().getX()) > threshold || shooter.seesNote();
+    return shooter.seesNote();
   }
 }

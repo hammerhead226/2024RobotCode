@@ -26,11 +26,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.Aimbot;
 import frc.robot.commands.AlignToNoteAuto;
+import frc.robot.commands.AlignToNoteTeleop;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.BellevilleAlignToNoteAuto;
 import frc.robot.commands.DriveCommands;
@@ -217,15 +217,30 @@ public class RobotContainer {
     intakeCommands =
         new SelectCommand<>(
             Map.ofEntries(
-                Map.entry(false, new PivotIntakeTele(pivot, intake, shooter, led, false)),
-                Map.entry(true, new AlignToNoteAuto(drive, shooter, pivot, intake, led, 100000))),
+                Map.entry(
+                    false,
+                    DriveCommands.intakeCommand(
+                        drive,
+                        shooter,
+                        pivot,
+                        intake,
+                        led,
+                        driveController,
+                        () -> -driveController.getLeftY(),
+                        () -> -driveController.getLeftX(),
+                        () -> -driveController.getRightX(),
+                        () -> driveController.getLeftTriggerAxis(),
+                        isAutoAlign())),
+                Map.entry(
+                    true,
+                    new AlignToNoteTeleop(drive, shooter, pivot, intake, led, driveController))),
             this::isAutoAlign);
 
     shootCommands =
         new SelectCommand<>(
             Map.ofEntries(
                 Map.entry(false, new InstantCommand(() -> shooter.setFeedersRPM(1000))),
-                Map.entry(true, new Aimbot(drive, driveController, shooter, pivot, led))),
+                Map.entry(true, new Aimbot(drive, driveController, shooter, pivot, led, intake))),
             this::isAimbot);
 
     climbCommands =
@@ -402,7 +417,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("TurnToSpeaker", new TurnToSpeaker(drive, driveController));
     NamedCommands.registerCommand("AngleShooter", new AngleShooter(drive, shooter, pivot));
     NamedCommands.registerCommand(
-        "Aimbot", new Aimbot(drive, driveController, shooter, pivot, led));
+        "Aimbot", new Aimbot(drive, driveController, shooter, pivot, led, intake));
 
     // Set up auto routines
     autos = new SendableChooser<>();
@@ -482,7 +497,7 @@ public class RobotContainer {
     //             shooter));
     // driveController.x().whileTrue(new TurnToSpeaker(drive, driveController));
     // driveController.x().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
-    driveController.y().onTrue(new Aimbot(drive, driveController, shooter, pivot, led));
+    driveController.y().onTrue(new Aimbot(drive, driveController, shooter, pivot, led, intake));
     // driveController
     //     .y()
     //     .onFalse(
@@ -551,7 +566,7 @@ public class RobotContainer {
             Commands.runOnce(
                     () ->
                         drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d(Math.PI))),
+                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
 
@@ -560,6 +575,7 @@ public class RobotContainer {
         .rightBumper()
         .onFalse(
             new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)
+                .andThen(new PositionNoteInFeeder(shooter, intake))
                 .andThen(
                     new InstantCommand(shooter::stopFeeders)
                         .andThen(
@@ -670,13 +686,10 @@ public class RobotContainer {
         .x()
         .onFalse(
             new InstantCommand(() -> led.setColor(LED_STATE.BLUE), led)
+                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
                 .andThen(
-                    new InstantCommand(() -> shooter.setFeedersRPM(100), shooter)
-                        .andThen(new WaitCommand(0.5))
-                        .andThen(
-                            new InstantCommand(shooter::stopFeeders, shooter)
-                                .andThen(new InstantCommand(() -> pivot.setAimbot(true)))
-                                .andThen(new InstantCommand(shooter::stopFlywheels, shooter)))));
+                    new InstantCommand(shooter::stopFeeders, shooter)
+                        .andThen(new InstantCommand(shooter::stopFlywheels, shooter))));
   }
 
   /**

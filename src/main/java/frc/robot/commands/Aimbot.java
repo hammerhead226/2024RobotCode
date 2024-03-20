@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
@@ -25,7 +26,10 @@ import frc.robot.util.FieldConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class Aimbot extends Command {
+
+  private LED_STATE intakeState;
   private final Drive drive;
+  private final Intake intake;
   private final Shooter shooter;
   private final Pivot pivot;
   private final LED led;
@@ -39,9 +43,15 @@ public class Aimbot extends Command {
   private double pivotSetpointDeg = 0;
   /** Creates a new Aimbot. */
   public Aimbot(
-      Drive drive, CommandXboxController controller, Shooter shooter, Pivot pivot, LED led) {
+      Drive drive,
+      CommandXboxController controller,
+      Shooter shooter,
+      Pivot pivot,
+      LED led,
+      Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
+    this.intake = intake;
     this.shooter = shooter;
     this.pivot = pivot;
     this.led = led;
@@ -81,6 +91,8 @@ public class Aimbot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (intake.isAutoAlign()) intakeState = LED_STATE.YELLOW;
+    else intakeState = LED_STATE.BLUE;
     led.setColor(LED_STATE.GREEN);
   }
 
@@ -192,7 +204,7 @@ public class Aimbot extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setFeedersRPM(1000);
-    led.setColor(LED_STATE.BLUE);
+    led.setColor(intakeState);
   }
 
   // Returns true when the command should end.

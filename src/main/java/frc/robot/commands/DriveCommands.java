@@ -23,7 +23,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.led.LED;
+import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.shooter.Shooter;
 import java.util.function.DoubleSupplier;
 
 public class DriveCommands {
@@ -31,6 +37,26 @@ public class DriveCommands {
 
   private DriveCommands() {}
 
+  public static Command intakeCommand(
+      Drive drive,
+      Shooter shooter,
+      Pivot pivot,
+      Intake intake,
+      LED led,
+      CommandXboxController controller,
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier,
+      DoubleSupplier omegaSupplier,
+      DoubleSupplier speedSupplier,
+      boolean autoAlign) {
+    if (autoAlign) {
+      return new AlignToNoteAuto(drive, shooter, pivot, intake, led, 1000);
+    } else {
+      return new ParallelCommandGroup(
+          joystickDrive(drive, xSupplier, ySupplier, omegaSupplier, speedSupplier),
+          new PivotIntakeTele(pivot, intake, shooter, led, false));
+    }
+  }
   /**
    * Field relative drive command using two joysticks (controlling linear and angular velocities).
    */
@@ -52,8 +78,8 @@ public class DriveCommands {
           double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
 
           if (speedSupplier.getAsDouble() > 0.2) {
-            linearMagnitude *= 0.4;
-            omega *= 0.4;
+            linearMagnitude *= 0.7;
+            omega *= 0.7;
           }
 
           // Square values
