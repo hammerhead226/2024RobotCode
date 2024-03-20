@@ -35,7 +35,7 @@ public class ClimbStateMachine {
     NONE,
     PIVOT_CLIMB,
     RETRACT_CLIMB,
-    SCORE_TRAP,
+    DISENGAGE_UPPER_SHOOTER_HOOKS,
     DONE
   }
 
@@ -100,9 +100,9 @@ public class ClimbStateMachine {
         break;
       case RETRACT_CLIMB:
         // trap scoring sequence
-        targetState = CLIMB_STATES.SCORE_TRAP;
+        targetState = CLIMB_STATES.DISENGAGE_UPPER_SHOOTER_HOOKS;
         break;
-      case SCORE_TRAP:
+      case DISENGAGE_UPPER_SHOOTER_HOOKS:
         // do nothing lol
         targetState = CLIMB_STATES.DONE;
         break;

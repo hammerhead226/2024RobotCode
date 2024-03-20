@@ -264,14 +264,19 @@ public class RobotContainer {
                             new SetElevatorTarget(1, elevator))
                         .andThen(climbStateMachine::advanceTargetState, elevator)),
                 Map.entry(
-                    CLIMB_STATES.SCORE_TRAP,
+                    CLIMB_STATES.DISENGAGE_UPPER_SHOOTER_HOOKS,
                     // new SequentialCommandGroup(
                     //         new SetElevatorTarget(19, elevator),
                     //         new WaitCommand(1),
                     //         new SetPivotTarget(110, pivot))
                     // new SetElevatorTarget(19, elevator)
-                    new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_TWO_DEG, pivot)
-                        .andThen(new SetElevatorTarget(20.9, elevator))
+
+                    // new SetPivotTarget(Constants.PivotConstants.CLIMB_SETPOINT_TWO_DEG, pivot)
+                    //     .andThen(new SetElevatorTarget(15.1, elevator))
+                    new SetElevatorTarget(15.1, elevator)
+                        .andThen(
+                            new SetPivotTarget(
+                                Constants.PivotConstants.CLIMB_SETPOINT_TWO_DEG, pivot))
                         .andThen(climbStateMachine::advanceTargetState, elevator)),
                 Map.entry(CLIMB_STATES.DONE, new PrintCommand("hi"))),
             this::climbSelect);
@@ -597,7 +602,7 @@ public class RobotContainer {
             new InstantCommand(() -> shooter.stopFeeders(), shooter)
                 .andThen(new InstantCommand(shooter::stopFlywheels)));
 
-    // driveController.a().onTrue(climbCommands);
+    driveController.a().onTrue(climbCommands);
 
     // driveController.x().onTrue(elevatorCommands);
 
@@ -690,6 +695,19 @@ public class RobotContainer {
                 .andThen(
                     new InstantCommand(shooter::stopFeeders, shooter)
                         .andThen(new InstantCommand(shooter::stopFlywheels, shooter))));
+
+    manipController
+        .rightBumper()
+        .whileTrue(
+            new ParallelCommandGroup(
+                new SetPivotTarget(45, pivot), new SetShooterTargetRPM(6000, 6000, shooter)));
+
+    manipController
+        .rightBumper()
+        .onFalse(
+            new ParallelCommandGroup(
+                new InstantCommand(shooter::stopFlywheels, shooter),
+                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
   }
 
   /**

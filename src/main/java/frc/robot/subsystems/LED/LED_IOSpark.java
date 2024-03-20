@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.led;
 
+import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -13,6 +14,7 @@ import frc.robot.Constants.LED_STATE;
 public class LED_IOSpark implements LED_IO {
   LED_STATE ledState;
   Spark led;
+  CANdle candle;
 
   public LED_IOSpark(int channel) {
     led = new Spark(channel);
