@@ -80,7 +80,7 @@ public class AlignToNoteAuto extends Command {
     pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
     intake.runRollers(12);
     shooter.setFeedersRPM(1000);
-    led.setColor(LED_STATE.FLASHING_GREEN);
+    led.setState(LED_STATE.FLASHING_GREEN);
     startingPositionX = drive.getPose().getX();
     Logger.recordOutput("startingpos", startingPositionX);
     xPID.setSetpoint(-4);
@@ -123,7 +123,7 @@ public class AlignToNoteAuto extends Command {
   public void end(boolean interrupted) {
     intake.stopRollers();
     shooter.stopFeeders();
-    led.setColor(LED_STATE.BLUE);
+    led.setState(LED_STATE.AUTO_ALIGN);
   }
 
   // Returns true when the command should end.

@@ -91,9 +91,7 @@ public class Aimbot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (intake.isAutoAlign()) intakeState = LED_STATE.YELLOW;
-    else intakeState = LED_STATE.BLUE;
-    led.setColor(LED_STATE.GREEN);
+    led.setState(LED_STATE.GREEN);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -204,7 +202,7 @@ public class Aimbot extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setFeedersRPM(1000);
-    led.setColor(intakeState);
+    led.setState(intake.getIntakeState());
   }
 
   // Returns true when the command should end.

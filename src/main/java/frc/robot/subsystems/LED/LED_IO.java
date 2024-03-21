@@ -18,5 +18,5 @@ public interface LED_IO {
 
   public default void noBumpersPressed() {}
 
-  public default void setColor(LED_STATE state) {}
+  public default void setLEDState(LED_STATE state) {}
 }

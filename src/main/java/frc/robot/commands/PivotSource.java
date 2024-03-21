@@ -23,7 +23,6 @@ public class PivotSource extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new InstantCommand(() -> led.setColor(LED_STATE.YELLOW), led),
         new SetPivotTarget(Constants.PivotConstants.SOURCE_SETPOINT_DEG, pivot),
         new WaitUntilCommand(pivot::atSetpoint),
         new InstantCommand(() -> shooter.setFlywheelRPMs(-2000, -2000), shooter),

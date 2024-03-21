@@ -21,7 +21,7 @@ public class LED extends SubsystemBase {
   public void periodic() {
     led.updateInputs(lInputs);
 
-    setColor(lInputs.ledState);
+    setState(lInputs.ledState);
 
     Logger.processInputs("LED Inputs", lInputs);
   }
@@ -30,8 +30,8 @@ public class LED extends SubsystemBase {
     led.noBumpersPressed();
   }
 
-  public void setColor(LED_STATE state) {
-    led.setColor(state);
+  public void setState(LED_STATE state) {
+    led.setLEDState(state);
     Logger.recordOutput("Set State", state);
   }
 }

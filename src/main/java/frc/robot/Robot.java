@@ -16,6 +16,8 @@ package frc.robot;
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.LED_STATE;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -110,7 +112,9 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.getLED().setState(LED_STATE.RAINBOW);
+  }
 
   /** This function is called periodically when disabled. */
   @Override
@@ -145,6 +149,7 @@ public class Robot extends LoggedRobot {
       autonomousCommand.cancel();
     }
 
+    m_robotContainer.getLED().setState(m_robotContainer.getIntake().getIntakeState());
     m_robotContainer.getPivot().setPivotCurrent(m_robotContainer.getPivot().getPivotPositionDegs());
     m_robotContainer.getPivot().setPivotGoal(Constants.PivotConstants.STOW_SETPOINT_DEG);
     m_robotContainer.getShooter().stopFlywheels();

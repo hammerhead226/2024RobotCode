@@ -210,9 +210,8 @@ public class RobotContainer {
     intakeLEDCommands =
         new SelectCommand<>(
             Map.ofEntries(
-                Map.entry(
-                    false, new InstantCommand(() -> led.setColor(LED_STATE.FLASHING_RED), led)),
-                Map.entry(true, new InstantCommand(() -> led.setColor(LED_STATE.YELLOW), led))),
+                Map.entry(false, new InstantCommand(() -> led.setState(LED_STATE.NORMAL_INTAKE), led)),
+                Map.entry(true, new InstantCommand(() -> led.setState(LED_STATE.AUTO_ALIGN), led))),
             this::isAutoAlign);
 
     intakeCommands =
@@ -288,7 +287,7 @@ public class RobotContainer {
                 Map.entry(
                     CLIMB_STATES.ALIGN_TO_TRAP,
                     new SequentialCommandGroup(
-                            new SetElevatorTarget(20.696, 1.5, elevator),
+                            new SetElevatorTarget(20.696, .5, elevator),
                             new SetPivotTarget(107, pivot),
                             new SetShooterTargetRPM(502, 502, shooter))
                         .andThen(new InstantCommand(climbStateMachine::advanceTargetState))),
@@ -500,9 +499,9 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    driveController.x().onTrue(new InstantCommand(() -> led.setColor(LED_STATE.BLUE)));
+    driveController.x().onTrue(new InstantCommand(() -> led.setState(LED_STATE.AUTO_ALIGN)));
 
-    driveController.b().onTrue(new InstantCommand(() -> led.setColor(LED_STATE.RED)));
+    driveController.b().onTrue(new InstantCommand(() -> led.setState(LED_STATE.RED)));
 
     driveController.a().onTrue(climbCommands);
 
@@ -601,7 +600,7 @@ public class RobotContainer {
                     new InstantCommand(shooter::stopFeeders)
                         .andThen(
                             new InstantCommand(intake::stopRollers)
-                                .andThen(new InstantCommand(() -> led.setColor(LED_STATE.BLUE))))));
+                                .andThen(new InstantCommand(() -> led.setState(intake.getIntakeState()))))));
 
     driveController.leftBumper().whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true));
     driveController
@@ -706,7 +705,7 @@ public class RobotContainer {
     manipController
         .x()
         .onFalse(
-            new InstantCommand(() -> led.setColor(LED_STATE.BLUE), led)
+            new InstantCommand(() -> led.setState(LED_STATE.AUTO_ALIGN), led)
                 .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
                 .andThen(
                     new InstantCommand(shooter::stopFeeders, shooter)
@@ -745,5 +744,9 @@ public class RobotContainer {
 
   public Intake getIntake() {
     return intake;
+  }
+
+  public LED getLED() {
+    return led;
   }
 }

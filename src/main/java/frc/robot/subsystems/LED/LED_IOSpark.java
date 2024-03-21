@@ -18,7 +18,7 @@ public class LED_IOSpark implements LED_IO {
 
   public LED_IOSpark(int channel) {
     led = new Spark(channel);
-    ledState = Constants.LED_STATE.BLUE;
+    ledState = Constants.LED_STATE.AUTO_ALIGN;
   }
 
   @Override
@@ -29,7 +29,7 @@ public class LED_IOSpark implements LED_IO {
   @Override
   public void noBumpersPressed() {
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      ledState = LED_STATE.BLUE;
+      ledState = LED_STATE.AUTO_ALIGN;
       led.set(Constants.LEDConstants.COLOR_BLUE);
     } else {
       ledState = LED_STATE.RED;
@@ -38,16 +38,16 @@ public class LED_IOSpark implements LED_IO {
   }
 
   @Override
-  public void setColor(LED_STATE state) {
+  public void setLEDState(LED_STATE state) {
     ledState = state;
     switch (ledState) {
       case RED:
         led.set(Constants.LEDConstants.COLOR_RED);
         break;
-      case BLUE:
+      case AUTO_ALIGN:
         led.set(Constants.LEDConstants.COLOR_BLUE);
         break;
-      case YELLOW:
+      case NORMAL_INTAKE:
         led.set(Constants.LEDConstants.COLOR_YELLOW);
         break;
       case VIOLET:

@@ -89,7 +89,7 @@ public class AlignToNoteTeleop extends Command {
     pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
     intake.runRollers(12);
     shooter.setFeedersRPM(750);
-    led.setColor(LED_STATE.FLASHING_GREEN);
+    led.setState(LED_STATE.FLASHING_GREEN);
     startingPositionX = drive.getPose().getX();
     Logger.recordOutput("startingpos", startingPositionX);
     xPID.setSetpoint(-4);
@@ -145,7 +145,7 @@ public class AlignToNoteTeleop extends Command {
   public void end(boolean interrupted) {
     intake.stopRollers();
     shooter.stopFeeders();
-    led.setColor(LED_STATE.BLUE);
+    led.setState(intake.getIntakeState());
   }
 
   // Returns true when the command should end.

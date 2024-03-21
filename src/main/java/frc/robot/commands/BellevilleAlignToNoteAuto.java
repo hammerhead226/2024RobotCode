@@ -67,7 +67,7 @@ public class BellevilleAlignToNoteAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    led.setColor(LED_STATE.FLASHING_GREEN);
+    led.setState(LED_STATE.FLASHING_GREEN);
     startingPositionX = drive.getPose().getX();
     Logger.recordOutput("startingpos", startingPositionX);
     xPID.setSetpoint(-4);
@@ -108,7 +108,7 @@ public class BellevilleAlignToNoteAuto extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    led.setColor(LED_STATE.BLUE);
+    led.setState(LED_STATE.AUTO_ALIGN);
   }
 
   // Returns true when the command should end.

@@ -5,6 +5,7 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LED_STATE;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -35,6 +36,10 @@ public class Intake extends SubsystemBase {
 
   public void stopRollers() {
     roller.stop();
+  }
+
+  public LED_STATE getIntakeState() {
+    return isAutoAlign() ? LED_STATE.AUTO_ALIGN : LED_STATE.NORMAL_INTAKE;
   }
 
   @Override
