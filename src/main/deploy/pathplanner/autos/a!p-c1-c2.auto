@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "a!p-c1"
@@ -42,6 +48,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "a!c2"
@@ -63,6 +75,12 @@
           "type": "named",
           "data": {
             "name": "Aimbot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
           }
         }
       ]

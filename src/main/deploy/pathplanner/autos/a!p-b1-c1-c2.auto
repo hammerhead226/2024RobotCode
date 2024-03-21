@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2671762861357376,
-      "y": 5.574358195791997
+      "x": 1.5058699175694323,
+      "y": 6.948451565064565
     },
     "rotation": 0
   },
@@ -14,80 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "PivotShoot"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartFlywheelsCenter"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartFeeders"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "c4!p-b2"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "PivotShootFar"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopIntakeFeed"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StartFeeders"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "c4!b3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoAlignNoteAmp"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "c4!scoreb3-b1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Aimbot"
           }
         },
@@ -98,15 +24,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "AutoAlignNoteAmp"
+            "pathName": "a4!p-b1"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "c4!scoreb1"
+            "name": "AutoAlignNoteAmp"
           }
         },
         {
@@ -124,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "c5!c2"
+            "pathName": "a4!c1"
           }
         },
         {
@@ -136,7 +62,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "c5!scorec2"
+            "pathName": "a4!scorec1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aimbot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "a4!c2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignNoteCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "a4!scorec2"
           }
         },
         {

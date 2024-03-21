@@ -19,7 +19,7 @@ public class Intake extends SubsystemBase {
   public Intake(IntakeRollerIO roller) {
     this.roller = roller;
 
-    isAutoAlign = false;
+    isAutoAlign = true;
   }
 
   public boolean isAutoAlign() {
