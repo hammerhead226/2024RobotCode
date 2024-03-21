@@ -16,6 +16,8 @@ package frc.robot;
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.LED_STATE;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -34,6 +36,8 @@ public class Robot extends LoggedRobot {
   // TODO:: in teleop init disable all shooter feeder intake
   private Command autonomousCommand;
   private RobotContainer m_robotContainer;
+
+  // private LED led = new LED(new LED_IOCANdle(20, Constants.CANBUS));
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -110,7 +114,9 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.getLED().setColor(LED_STATE.BLUE);
+  }
 
   /** This function is called periodically when disabled. */
   @Override
