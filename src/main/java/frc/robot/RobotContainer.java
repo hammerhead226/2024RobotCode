@@ -210,8 +210,8 @@ public class RobotContainer {
         new SelectCommand<>(
             Map.ofEntries(
                 Map.entry(
-                    false, new InstantCommand(() -> led.setColor(LED_STATE.FLASHING_RED), led)),
-                Map.entry(true, new InstantCommand(() -> led.setColor(LED_STATE.YELLOW), led))),
+                    false, new InstantCommand(() -> led.setColor(LED_STATE.YELLOW), led)),
+                Map.entry(true, new InstantCommand(() -> led.setColor(LED_STATE.BLUE), led))),
             this::isAutoAlign);
 
     intakeCommands =

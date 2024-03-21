@@ -141,6 +141,7 @@ public final class Constants {
     GREEN,
     FLASHING_GREEN,
     FLASHING_RED,
+    RAINBOW,
     OFF
   }
 }

@@ -8,6 +8,7 @@ import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.ColorFlowAnimation;
+import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.led.StrobeAnimation;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -32,6 +33,8 @@ public class LED_IOCANdle implements LED_IO {
   ColorFlowAnimation wayRed = new ColorFlowAnimation(240, 0, 0, 0, 0.01, 28, Direction.Forward, 28);
   ColorFlowAnimation wayGreen =
       new ColorFlowAnimation(0, 240, 0, 0, 0.01, 28, Direction.Forward, 28);
+
+  RainbowAnimation rainbow = new RainbowAnimation(1.0, 0.5, 56);
 
   public LED_IOCANdle(int channel, String CANBUS) {
     // led = new Spark(channel);
@@ -93,11 +96,11 @@ public class LED_IOCANdle implements LED_IO {
         candle.setLEDs(0, 255, 0, 0, 32, 25);
         break;
       case FLASHING_GREEN:
-        // candle.clearAnimation(0);
+        candle.clearAnimation(0);
         candle.animate(flashGreen, 0);
         break;
       case FLASHING_RED:
-        // candle.clearAnimation(0);
+        candle.clearAnimation(0);
         candle.animate(flashRed, 0);
         break;
       case OFF:
@@ -106,6 +109,15 @@ public class LED_IOCANdle implements LED_IO {
         candle.setLEDs(0, 0, 0, 0, 0, 57);
         // candle.t
         break;
+
+      case RAINBOW:
+        candle.clearAnimation(0);
+        candle.animate(rainbow, 0);
+        break;
+      default:
+       candle.clearAnimation(0);
+       candle.animate(flashRed, 0);
+       break; 
     }
   }
 }
