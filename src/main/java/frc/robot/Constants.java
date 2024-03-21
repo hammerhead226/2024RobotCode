@@ -91,7 +91,7 @@ public final class Constants {
   }
 
   public static class ElevatorConstants {
-    public static final double CURRENT_LIMIT = 30.0;
+    public static final double CURRENT_LIMIT = 40.0;
     public static final boolean CURRENT_LIMIT_ENABLED = true;
 
     public static final double RETRACT_SETPOINT_INCH = 0;
@@ -116,7 +116,7 @@ public final class Constants {
 
     public static final double SOURCE_SETPOINT_DEG = 113;
     public static final double CLIMB_SETPOINT_ONE_DEG = 50;
-    public static final double CLIMB_SETPOINT_TWO_DEG = 100;
+    public static final double CLIMB_SETPOINT_TWO_DEG = 95;
 
     public static final double THRESHOLD = 2;
 

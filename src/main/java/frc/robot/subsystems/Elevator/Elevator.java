@@ -28,6 +28,8 @@ public class Elevator extends SubsystemBase {
   private TrapezoidProfile.State extenderGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State extenderCurrent = new TrapezoidProfile.State();
 
+  private double goal;
+
   private final ElevatorFeedforward elevatorFFModel;
 
   public Elevator(ElevatorIO elevator) {
@@ -36,11 +38,11 @@ public class Elevator extends SubsystemBase {
     switch (Constants.getMode()) {
       case REAL:
         kS.initDefault(0);
-        kG.initDefault(0.13);
+        kG.initDefault(0.25);
         kV.initDefault(0);
         kA.initDefault(0);
 
-        kP.initDefault(0.35);
+        kP.initDefault(0.44);
         kI.initDefault(0);
         break;
       case REPLAY:
@@ -80,6 +82,10 @@ public class Elevator extends SubsystemBase {
     elevatorFFModel = new ElevatorFeedforward(kS.get(), kG.get(), kV.get(), kA.get());
   }
 
+  public boolean atGoal() {
+    return (Math.abs(eInputs.elevatorPosition - goal) <= Constants.ElevatorConstants.THRESHOLD);
+  }
+
   public double getElevatorPosition() {
     return eInputs.elevatorPosition;
   }
@@ -93,6 +99,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setExtenderGoal(double setpoint) {
+    goal = setpoint;
     extenderGoal = new TrapezoidProfile.State(setpoint, 0);
   }
 

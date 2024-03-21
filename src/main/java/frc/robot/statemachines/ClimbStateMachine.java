@@ -35,7 +35,11 @@ public class ClimbStateMachine {
     NONE,
     PIVOT_CLIMB,
     RETRACT_CLIMB,
-    DISENGAGE_UPPER_SHOOTER_HOOKS,
+    ENGAGE_STATIC_HOOKS,
+    ENGAGE_LOWER_SHOOTER_HOOKS,
+    ENGAGE_LOWER_SHOOTER_HOOKS_PART_TWO,
+    ALIGN_TO_TRAP,
+    SHOOT_NOTE,
     DONE
   }
 
@@ -90,6 +94,10 @@ public class ClimbStateMachine {
     //     break;
     // }
     switch (targetState) {
+
+        //      ENGAGE_LOWER_SHOOTER_HOOKS,
+        // ALIGN_TO_TRAP,
+        // SHOOT_NOTE,
       case NONE:
         // move angle to climbing pivot angle and extend elevator when done
         targetState = CLIMB_STATES.PIVOT_CLIMB;
@@ -100,10 +108,23 @@ public class ClimbStateMachine {
         break;
       case RETRACT_CLIMB:
         // trap scoring sequence
-        targetState = CLIMB_STATES.DISENGAGE_UPPER_SHOOTER_HOOKS;
+        targetState = CLIMB_STATES.ENGAGE_STATIC_HOOKS;
         break;
-      case DISENGAGE_UPPER_SHOOTER_HOOKS:
+      case ENGAGE_STATIC_HOOKS:
+        targetState = CLIMB_STATES.ENGAGE_LOWER_SHOOTER_HOOKS;
+        break;
+      case ENGAGE_LOWER_SHOOTER_HOOKS:
         // do nothing lol
+        targetState = CLIMB_STATES.ENGAGE_LOWER_SHOOTER_HOOKS_PART_TWO;
+        break;
+      case ENGAGE_LOWER_SHOOTER_HOOKS_PART_TWO:
+        // do nothing lol
+        targetState = CLIMB_STATES.ALIGN_TO_TRAP;
+        break;
+      case ALIGN_TO_TRAP:
+        targetState = CLIMB_STATES.SHOOT_NOTE;
+        break;
+      case SHOOT_NOTE:
         targetState = CLIMB_STATES.DONE;
         break;
       case DONE:

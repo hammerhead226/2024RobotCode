@@ -20,7 +20,7 @@ public class PivotClimb extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
-    addCommands(new SetElevatorTarget(19., elevator), new SetPivotTarget(90, pivot));
+    addCommands(new SetElevatorTarget(19., 1, elevator), new SetPivotTarget(90, pivot));
     // addCommands(new SetElevatorTarget(19., elevator));
 
     // climbStateMachine.advanceTargetState();

@@ -26,7 +26,7 @@ public class ScoreAmp extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new SetElevatorTarget(8, elevator),
+        new SetElevatorTarget(8, 1, elevator),
         new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
         new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter),
         new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));

@@ -11,12 +11,14 @@ public class SetElevatorTarget extends Command {
   /** Creates a new ExtendElevator. */
   private final Elevator elevator;
 
+  private double threshold;
   private double setPoint;
 
-  public SetElevatorTarget(double setPoint, Elevator elevator) {
+  public SetElevatorTarget(double setPoint, double threshold, Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
     // addRequirements(elevator);
     this.setPoint = setPoint;
+    this.threshold = threshold;
     this.elevator = elevator;
 
     addRequirements(elevator);
@@ -41,6 +43,6 @@ public class SetElevatorTarget extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.elevatorAtSetpoint();
+    return Math.abs(elevator.getElevatorPosition() - setPoint) <= threshold;
   }
 }
