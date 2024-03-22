@@ -190,7 +190,9 @@ public class Drive extends SubsystemBase {
         DriverStation.getAlliance().isPresent()
             && DriverStation.getAlliance().get() == Alliance.Red;
 
-    if (limelightMeasurement.tagCount >= 2) {
+    Logger.recordOutput("avg area", limelightMeasurement.avgTagArea);
+
+    if (limelightMeasurement.tagCount >= 2 && limelightMeasurement.avgTagArea > 0.04) {
       xMeterStds = 0.9;
       yMeterStds = 0.9;
       headingDegStds = 0.9;
