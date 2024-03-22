@@ -389,7 +389,7 @@ public class RobotContainer {
         new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
 
     // PIVOT NAMED COMMANDS (to speed up autoaim)
-    NamedCommands.registerCommand("Pivot40", new SetPivotTarget(40, pivot));
+    NamedCommands.registerCommand("Pivot39", new SetPivotTarget(39, pivot));
     NamedCommands.registerCommand("Pivot45", new SetPivotTarget(45, pivot));
     NamedCommands.registerCommand("Pivot50", new SetPivotTarget(50, pivot));
 

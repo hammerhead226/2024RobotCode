@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.6778362345962368,
-        "y": 6.341037256065544
+        "x": 3.382099983573187,
+        "y": 5.89385383898973
       },
       "prevControl": {
-        "x": 4.800632381533822,
-        "y": 6.497492456868322
+        "x": 4.504896130510774,
+        "y": 6.050309039792508
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,16 +30,34 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.1,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Pivot39"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 3.1415,
     "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 10.954062643398244,
+    "rotation": 12.528807709151307,
     "rotateFast": false
   },
   "reversed": false,
