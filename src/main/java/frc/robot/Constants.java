@@ -134,9 +134,9 @@ public final class Constants {
   }
 
   public static enum LED_STATE {
-    AUTO_ALIGN,
+    BLUE,
     RED,
-    NORMAL_INTAKE,
+    YELLOW,
     VIOLET,
     GREEN,
     FLASHING_GREEN,

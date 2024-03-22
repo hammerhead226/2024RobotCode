@@ -39,7 +39,7 @@ public class Intake extends SubsystemBase {
   }
 
   public LED_STATE getIntakeState() {
-    return isAutoAlign() ? LED_STATE.AUTO_ALIGN : LED_STATE.NORMAL_INTAKE;
+    return isAutoAlign() ? LED_STATE.BLUE : LED_STATE.YELLOW;
   }
 
   @Override

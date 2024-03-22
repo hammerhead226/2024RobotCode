@@ -99,6 +99,14 @@ public class Aimbot extends Command {
   public void execute() {
     turnToSpeaker();
     angleShooter();
+
+    Logger.recordOutput("distance from speak", calculateDistanceToSpeaker());
+
+    if (Units.metersToFeet(calculateDistanceToSpeaker()) > 12) {
+      led.setState(LED_STATE.FLASHING_RED);
+    } else {
+      led.setState(LED_STATE.GREEN);
+    }
   }
 
   public void angleShooter() {
@@ -106,17 +114,23 @@ public class Aimbot extends Command {
     Logger.recordOutput("distance to speak", Units.metersToFeet(distanceToSpeakerMeter));
     distanceToSpeakerMeter = calculateDistanceToSpeaker();
     if (Units.metersToFeet(distanceToSpeakerMeter) > 9) {
-      double shootingSpeed =
-          MathUtil.clamp(
-              calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter)), 3175, 5400);
+      // double shootingSpeed =
+      //     MathUtil.clamp(
+      //         calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter)), 3250, 5400);
+      double shootingSpeed = calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter));
+
       shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed);
     } else shooter.setFlywheelRPMs(5400, 5400);
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }
 
   private double calculateShooterSpeed(double distanceToSpeakerFeet) {
+
+    if (distanceToSpeakerFeet >= 11) {
+      return -430.7 * distanceToSpeakerFeet + 8815;
+    } else return -600. * distanceToSpeakerFeet + 10406;
     // return -556.25 * distanceToSpeakerFeet + 10406;
-    return -600. * distanceToSpeakerFeet + 10406;
+
   }
 
   private double calculatePivotAngleDeg(double distanceToSpeakerMeter) {

@@ -32,12 +32,6 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoAlignNoteAmp"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Aimbot"
           }
         },

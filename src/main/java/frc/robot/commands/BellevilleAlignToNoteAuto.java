@@ -108,7 +108,7 @@ public class BellevilleAlignToNoteAuto extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    led.setState(LED_STATE.AUTO_ALIGN);
+    led.setState(LED_STATE.BLUE);
   }
 
   // Returns true when the command should end.

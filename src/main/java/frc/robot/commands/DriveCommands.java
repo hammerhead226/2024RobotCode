@@ -47,15 +47,11 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
-      DoubleSupplier speedSupplier,
-      boolean autoAlign) {
-    if (autoAlign) {
-      return new AlignToNoteAuto(drive, shooter, pivot, intake, led, 1000);
-    } else {
-      return new ParallelCommandGroup(
-          joystickDrive(drive, xSupplier, ySupplier, omegaSupplier, speedSupplier),
-          new PivotIntakeTele(pivot, intake, shooter, led, false));
-    }
+      DoubleSupplier speedSupplier) {
+
+    return new ParallelCommandGroup(
+        joystickDrive(drive, xSupplier, ySupplier, omegaSupplier, speedSupplier),
+        new PivotIntakeTele(pivot, intake, shooter, led, false));
   }
   /**
    * Field relative drive command using two joysticks (controlling linear and angular velocities).

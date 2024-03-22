@@ -123,7 +123,7 @@ public class AlignToNoteAuto extends Command {
   public void end(boolean interrupted) {
     intake.stopRollers();
     shooter.stopFeeders();
-    led.setState(LED_STATE.AUTO_ALIGN);
+    led.setState(LED_STATE.BLUE);
   }
 
   // Returns true when the command should end.
