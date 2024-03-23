@@ -100,7 +100,7 @@ public class Aimbot extends Command {
     turnToSpeaker();
     angleShooter();
 
-    Logger.recordOutput("distance from speak", calculateDistanceToSpeaker());
+    Logger.recordOutput("distance from speak", Units.metersToFeet(calculateDistanceToSpeaker()));
 
     if (Units.metersToFeet(calculateDistanceToSpeaker()) > 12) {
       led.setState(LED_STATE.FLASHING_RED);
@@ -111,7 +111,7 @@ public class Aimbot extends Command {
 
   public void angleShooter() {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
-    Logger.recordOutput("distance to speak", Units.metersToFeet(distanceToSpeakerMeter));
+    // Logger.recordOutput("distance to speak", Units.metersToFeet(distanceToSpeakerMeter));
     distanceToSpeakerMeter = calculateDistanceToSpeaker();
     if (Units.metersToFeet(distanceToSpeakerMeter) > 9) {
       // double shootingSpeed =
