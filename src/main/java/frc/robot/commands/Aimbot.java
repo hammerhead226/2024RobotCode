@@ -134,9 +134,12 @@ public class Aimbot extends Command {
   }
 
   private double calculatePivotAngleDeg(double distanceToSpeakerMeter) {
-    pivotSetpointDeg = (-0.272 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 62);
+    pivotSetpointDeg = (-0.272 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 60);
     pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 39, 62);
 
+    if (Units.metersToFeet(distanceToSpeakerMeter) >= 9.098) {
+      return 39;
+    }
     Logger.recordOutput("pivot target auto", pivotSetpointDeg);
     return pivotSetpointDeg;
   }

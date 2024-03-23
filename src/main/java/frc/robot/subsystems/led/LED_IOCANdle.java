@@ -83,12 +83,14 @@ public class LED_IOCANdle implements LED_IO {
       case BLUE:
         candle.clearAnimation(0);
         // led.set(Constants.LEDConstants.COLOR_BLUE);
-        candle.setLEDs(0, 0, 255, 0, 32, 25);
+        // candle.setLEDs(0, 0, 255, 0, 32, 25);
+        candle.setLEDs(0, 0, 255, 0, 0, 57);
         break;
       case YELLOW:
         candle.clearAnimation(0);
         // led.set(Constants.LEDConstants.COLOR_YELLOW);
-        candle.setLEDs(255, 255, 0, 0, 32, 25);
+        // candle.setLEDs(255, 255, 0, 0, 32, 25);
+        candle.setLEDs(255, 255, 0, 0, 0, 57);
         break;
       case VIOLET:
         // led.set(Constants.LEDConstants.COLOR_VIOLET);

@@ -376,7 +376,7 @@ public class RobotContainer {
     // PIVOT NAMED COMMANDS
     NamedCommands.registerCommand(
         "PivotShoot", new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot));
-    NamedCommands.registerCommand("PivotShootFar", new SetPivotTarget(41.68, pivot));
+    NamedCommands.registerCommand("PivotShootFar", new SetPivotTarget(39.4, pivot));
     NamedCommands.registerCommand(
         "PivotIntake",
         new PivotIntakeAuto(

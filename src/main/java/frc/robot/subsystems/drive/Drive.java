@@ -174,6 +174,11 @@ public class Drive extends SubsystemBase {
     if (DriverStation.getAlliance().isPresent() && LimelightHelpers.getTV(Constants.LL_ALIGN)) {
       visionLogic();
     }
+
+    Logger.recordOutput(
+        "limelilght alig latency", LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN));
+    Logger.recordOutput(
+        "limelight intake latency", LimelightHelpers.getLatency_Pipeline(Constants.LL_INTAKE));
   }
 
   public void visionLogic() {
@@ -218,7 +223,6 @@ public class Drive extends SubsystemBase {
     }
 
     Logger.recordOutput("Vision Measurement", limelightMeasurement.pose);
-    Logger.recordOutput("limelilght latency", limelightMeasurement.latency);
 
     addVisionMeasurement(
         pose, limelightMeasurement.timestampSeconds - (limelightMeasurement.latency / 1000.));
