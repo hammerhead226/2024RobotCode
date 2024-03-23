@@ -111,31 +111,25 @@ public class AlignToNoteTeleop extends Command {
             -0.5 * Constants.SwerveConstants.MAX_LINEAR_SPEED,
             0.5 * Constants.SwerveConstants.MAX_LINEAR_SPEED);
 
-      double linearMagnitude =
-         MathUtil.applyDeadband(
-            Math.hypot(-controller.getLeftX(), -controller.getLeftY()), 0.1);
-      Rotation2d linearDirection =
-              new Rotation2d(-controller.getLeftX(), -controller.getLeftY());
-        
+    double linearMagnitude =
+        MathUtil.applyDeadband(Math.hypot(-controller.getLeftX(), -controller.getLeftY()), 0.1);
+    Rotation2d linearDirection = new Rotation2d(-controller.getLeftX(), -controller.getLeftY());
 
-          
+    // Square values
+    linearMagnitude = linearMagnitude * linearMagnitude;
 
-          // Square values
-          linearMagnitude = linearMagnitude * linearMagnitude;
-         
-
-          // Calcaulate new linear velocity
-          Translation2d linearVelocity =
-              new Pose2d(new Translation2d(), linearDirection)
-                  .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
-                  .getTranslation();
+    // Calcaulate new linear velocity
+    Translation2d linearVelocity =
+        new Pose2d(new Translation2d(), linearDirection)
+            .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
+            .getTranslation();
 
     boolean isFlipped =
         DriverStation.getAlliance().isPresent()
             && DriverStation.getAlliance().get() == Alliance.Red;
 
     double forwardSpeed =
-      ChassisSpeeds.fromFieldRelativeSpeeds(
+        ChassisSpeeds.fromFieldRelativeSpeeds(
                 -0.5 * linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                 -0.5 * linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                 0,
@@ -155,7 +149,8 @@ public class AlignToNoteTeleop extends Command {
     //             -0.5 * controller.getLeftY() * drive.getMaxLinearSpeedMetersPerSec(),
     //             -0.5 * controller.getLeftX() * drive.getMaxLinearSpeedMetersPerSec(),
     //             0,
-    //             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation())
+    //             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) :
+    // drive.getRotation())
     //         .vxMetersPerSecond;
 
     // double sidewaysSpeed =
@@ -163,7 +158,8 @@ public class AlignToNoteTeleop extends Command {
     //             -0.5 * controller.getLeftY() * drive.getMaxLinearSpeedMetersPerSec(),
     //             -0.5 * controller.getLeftX() * drive.getMaxLinearSpeedMetersPerSec(),
     //             0,
-    //             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation())
+    //             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) :
+    // drive.getRotation())
     //         .vyMetersPerSecond;
 
     drive.runVelocity(new ChassisSpeeds(forwardSpeed, sidewaysSpeed + xPIDEffort, 0));

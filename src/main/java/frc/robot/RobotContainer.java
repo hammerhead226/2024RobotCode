@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.Aimbot;
@@ -660,7 +661,10 @@ public class RobotContainer {
     manipController
         .a()
         .onFalse(
-            new InstantCommand(() -> shooter.stopFlywheels(), shooter)
+            new InstantCommand(() -> shooter.setFeedersRPM(200), shooter)
+                .andThen(new WaitCommand(2))
+                .andThen(new InstantCommand(() -> shooter.stopFlywheels(), shooter))
+
                 // .andThen(new SetElevatorTarget(10, elevator))
                 .andThen(new SetElevatorTarget(0, 1.5, elevator))
                 .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
