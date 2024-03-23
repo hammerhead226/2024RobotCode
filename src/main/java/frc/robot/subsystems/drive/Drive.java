@@ -341,6 +341,16 @@ public class Drive extends SubsystemBase {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }
 
+  /** Resets the current odometry pose. */
+  // public void setGyroPose(Pose2d pose) {
+  //   if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
+  //     // pose.getRotation().plus(new Rotation2d(Math.PI));
+  //     this.rawGyroRotation = rawGyroRotation.plus(new Rotation2d(Math.PI));
+  //   }
+  //   Logger.recordOutput("reset pose", pose);
+  //   poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+  // }
+
   /**
    * Adds a vision measurement to the pose estimator.
    *

@@ -233,7 +233,15 @@ public class RobotContainer {
                         () -> driveController.getLeftTriggerAxis())),
                 Map.entry(
                     true,
-                    new AlignToNoteTeleop(drive, shooter, pivot, intake, led, driveController))),
+                    new AlignToNoteTeleop(
+                        drive,
+                        shooter,
+                        pivot,
+                        intake,
+                        led,
+                        driveController,
+                        () -> -driveController.getLeftX(),
+                        () -> -driveController.getLeftY()))),
             this::isAutoAlign);
 
     shootCommands =
@@ -287,8 +295,8 @@ public class RobotContainer {
                 Map.entry(
                     CLIMB_STATES.ALIGN_TO_TRAP,
                     new SequentialCommandGroup(
-                            new SetElevatorTarget(20.696, .5, elevator),
-                            new SetPivotTarget(107, pivot),
+                            new SetElevatorTarget(20.75, .5, elevator),
+                            new SetPivotTarget(110, pivot),
                             new SetShooterTargetRPM(502, 502, shooter))
                         .andThen(new InstantCommand(climbStateMachine::advanceTargetState))),
                 Map.entry(
@@ -633,7 +641,7 @@ public class RobotContainer {
 
     driveController.a().onTrue(climbCommands);
 
-    // driveController.x().onTrue(elevatorCommands);
+    driveController.x().onTrue(elevatorCommands);
 
     // driveController.y().onTrue(new AutoPivotIntake(pivot, intake, shooter, 41, false));
     // driveController.y().onFalse(new InstantCommand(intake::stopRollers));

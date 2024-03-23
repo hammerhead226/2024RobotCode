@@ -24,6 +24,7 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LoggedTunableNumber;
+import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class AlignToNoteTeleop extends Command {
@@ -47,13 +48,18 @@ public class AlignToNoteTeleop extends Command {
   private final LoggedTunableNumber yKp = new LoggedTunableNumber("AlignToNoteAuto/yKp");
   private final LoggedTunableNumber yKd = new LoggedTunableNumber("AlignToNoteAuto/yKd");
 
+  private DoubleSupplier xSupplier;
+  private DoubleSupplier ySupplier;
+
   public AlignToNoteTeleop(
       Drive drive,
       Shooter shooter,
       Pivot pivot,
       Intake intake,
       LED led,
-      CommandXboxController controller) {
+      CommandXboxController controller,
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier) {
 
     switch (Constants.getMode()) {
       case REAL:
@@ -72,7 +78,10 @@ public class AlignToNoteTeleop extends Command {
     Logger.recordOutput("startingpos", startingPositionX);
 
     yPID = new PIDController(0.055, 0, 0);
-    xPID = new PIDController(xKp.get(), 0, xKd.get());
+    xPID = new PIDController(0.042, 0, 0);
+
+    this.xSupplier = xSupplier;
+    this.ySupplier = ySupplier;
 
     xPID.setTolerance(5);
     yPID.setTolerance(5);
@@ -110,10 +119,12 @@ public class AlignToNoteTeleop extends Command {
             xPID.calculate(noteError),
             -0.5 * Constants.SwerveConstants.MAX_LINEAR_SPEED,
             0.5 * Constants.SwerveConstants.MAX_LINEAR_SPEED);
+    // xSupplier = () -> -controller.getLeftX();
+    // ySupplier = () -> -controller.getLeftY();
 
     double linearMagnitude =
-        MathUtil.applyDeadband(Math.hypot(-controller.getLeftX(), -controller.getLeftY()), 0.1);
-    Rotation2d linearDirection = new Rotation2d(-controller.getLeftX(), -controller.getLeftY());
+        MathUtil.applyDeadband(Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), 0.1);
+    Rotation2d linearDirection = new Rotation2d(ySupplier.getAsDouble(), xSupplier.getAsDouble());
 
     // Square values
     linearMagnitude = linearMagnitude * linearMagnitude;
@@ -124,22 +135,24 @@ public class AlignToNoteTeleop extends Command {
             .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
             .getTranslation();
 
+    Logger.recordOutput("linear velocity auto align", linearVelocity);
+
     boolean isFlipped =
         DriverStation.getAlliance().isPresent()
             && DriverStation.getAlliance().get() == Alliance.Red;
 
     double forwardSpeed =
         ChassisSpeeds.fromFieldRelativeSpeeds(
-                -0.5 * linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                -0.5 * linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                 0,
                 isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation())
             .vxMetersPerSecond;
 
     double sidewaysSpeed =
         ChassisSpeeds.fromFieldRelativeSpeeds(
-                -0.5 * controller.getLeftY() * drive.getMaxLinearSpeedMetersPerSec(),
-                -0.5 * controller.getLeftX() * drive.getMaxLinearSpeedMetersPerSec(),
+                linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                 0,
                 isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation())
             .vyMetersPerSecond;
