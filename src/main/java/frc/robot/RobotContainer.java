@@ -296,7 +296,7 @@ public class RobotContainer {
                     CLIMB_STATES.ALIGN_TO_TRAP,
                     new SequentialCommandGroup(
                             new SetElevatorTarget(20.75, .5, elevator),
-                            new SetPivotTarget(110, pivot),
+                            new SetPivotTarget(111, pivot),
                             new SetShooterTargetRPM(502, 502, shooter))
                         .andThen(new InstantCommand(climbStateMachine::advanceTargetState))),
                 Map.entry(
@@ -470,6 +470,8 @@ public class RobotContainer {
     autos.addOption("a!p-b1-c1-c2", AutoBuilder.buildAuto("a!p-b1-c1-c2"));
 
     autos.addOption("c!p-b2-b3-b1", AutoBuilder.buildAuto("c!p-b2-b3-b1"));
+
+    autos.addOption("aac!p-b2-b3-b1", AutoBuilder.buildAuto("aac!p-b2-b3-b1"));
 
     autos.addOption("c!p-b2-b3", AutoBuilder.buildAuto("c!p-b2-b3"));
 

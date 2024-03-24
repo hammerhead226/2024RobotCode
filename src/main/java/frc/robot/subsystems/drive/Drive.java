@@ -31,6 +31,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -51,6 +53,9 @@ public class Drive extends SubsystemBase {
   private static final double MAX_ANGULAR_SPEED = Constants.SwerveConstants.MAX_ANGULAR_SPEED;
   private static double multiplier = 1.0;
   private static boolean toggle = false;
+
+  private NetworkTable limelightintake =
+      NetworkTableInstance.getDefault().getTable(Constants.LL_INTAKE);
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -177,8 +182,7 @@ public class Drive extends SubsystemBase {
 
     Logger.recordOutput(
         "limelilght alig latency", LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN));
-    Logger.recordOutput(
-        "limelight intake latency", LimelightHelpers.getLatency_Pipeline(Constants.LL_INTAKE));
+    Logger.recordOutput("limelight intake hb", limelightintake.getEntry("hb").getDouble(0.0));
   }
 
   public void visionLogic() {

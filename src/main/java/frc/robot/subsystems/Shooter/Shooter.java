@@ -149,7 +149,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean seesNote() {
-    if (sInputs.distance > Constants.ShooterConstants.FEEDER_DIST && sInputs.distance < 2200)
+    if (sInputs.distance > Constants.ShooterConstants.FEEDER_DIST && sInputs.distance < 2000)
+      // if (sInputs.distance > Constants.ShooterConstants.FEEDER_DIST && sInputs.distance < 2200)
       return true;
     else return false;
   }

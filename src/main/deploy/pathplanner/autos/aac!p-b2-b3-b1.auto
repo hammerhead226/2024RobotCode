@@ -12,12 +12,6 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "PivotShoot"
@@ -36,7 +30,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.3
+                  "waitTime": 0.5
                 }
               },
               {
@@ -51,32 +45,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "c4!p-b2"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "PivotShootFar"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopIntakeFeed"
-                }
-              }
-            ]
+            "pathName": "aac!p-b3"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StartFeeders"
+            "name": "AutoAlignNoteAmp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aimbot"
           }
         },
         {
@@ -94,7 +75,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "score b3 podium"
+            "pathName": "c4!scoreb3-b1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aimbot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignNoteAmp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "c4!scoreb1"
           }
         },
         {
