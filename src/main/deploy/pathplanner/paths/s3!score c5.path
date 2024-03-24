@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.157199863615132,
-        "y": 3.688913511921175
+        "x": 1.9496767063709568,
+        "y": 4.149989528049232
       },
       "prevControl": {
-        "x": 3.187753479643905,
-        "y": 2.7637574248044356
+        "x": 2.6388647514137133,
+        "y": 3.0255248229794707
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,25 @@
   "constraintZones": [],
   "eventMarkers": [
     {
+      "name": "setpivot",
+      "waypointRelativePos": 0.25,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Pivot45"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
       "name": "intake",
-      "waypointRelativePos": 0.05,
+      "waypointRelativePos": 0.1,
       "command": {
         "type": "sequential",
         "data": {
@@ -49,16 +66,22 @@
       }
     },
     {
-      "name": "stop intake feed",
-      "waypointRelativePos": 0.55,
+      "name": "stop intake position note",
+      "waypointRelativePos": 0.35,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
                 "name": "StopIntakeFeed"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PositionNoteInFeeder"
               }
             }
           ]

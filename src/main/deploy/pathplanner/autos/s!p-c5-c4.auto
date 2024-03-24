@@ -28,6 +28,12 @@
                 }
               },
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.2
+                }
+              },
+              {
                 "type": "named",
                 "data": {
                   "name": "StartFeeders"
@@ -122,12 +128,6 @@
           "type": "wait",
           "data": {
             "waitTime": 0.1
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "s3!gas"
           }
         }
       ]

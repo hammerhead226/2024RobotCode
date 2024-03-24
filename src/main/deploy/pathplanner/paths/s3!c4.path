@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.157199863615132,
-        "y": 3.688913511921175
+        "x": 1.9496767063709568,
+        "y": 4.149989528049232
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.316572681647502,
-        "y": 2.7520465882586542
+        "x": 2.865571345177778,
+        "y": 2.8350912842176568
       },
       "isLocked": false,
       "linkedName": "s3!scorec5 end"
@@ -60,7 +60,7 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 2.0,
+    "velocity": 0.5,
     "rotation": 11.97613244420345,
     "rotateFast": false
   },
