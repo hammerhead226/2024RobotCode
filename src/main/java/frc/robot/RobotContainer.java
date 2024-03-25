@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.Aimbot;
+import frc.robot.commands.AlignToAmp;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AlignToNoteTeleop;
 import frc.robot.commands.AngleShooter;
@@ -443,6 +444,8 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Aimbot", new Aimbot(drive, driveController, shooter, pivot, led, intake));
 
+    NamedCommands.registerCommand("Align to amp", new AlignToAmp(drive, driveController, led));
+
     // Set up auto routines
     autos = new SendableChooser<>();
 
@@ -468,6 +471,7 @@ public class RobotContainer {
 
     autos.addOption("New New Auto", AutoBuilder.buildAuto("New New Auto"));
 
+    autos.addOption("align to amp ", AutoBuilder.buildAuto("alignAmpPls"));
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", autos);
 
     configureButtonBindings();
@@ -481,7 +485,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     driverControls();
-    manipControls();
+    // manipControls();
 
     // testControls();
   }
@@ -579,59 +583,61 @@ public class RobotContainer {
 
   // TODO:: change drive controls to match changed test controls
   private void driverControls() {
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive,
-            () -> -driveController.getLeftY(),
-            () -> -driveController.getLeftX(),
-            () -> -driveController.getRightX(),
-            () -> driveController.getLeftTriggerAxis()));
+    /*
+        drive.setDefaultCommand(
+            DriveCommands.joystickDrive(
+                drive,
+                () -> -driveController.getLeftY(),
+                () -> -driveController.getLeftX(),
+                () -> -driveController.getRightX(),
+                () -> driveController.getLeftTriggerAxis()));
 
-    driveController
-        .back()
-        .onTrue(new InstantCommand(intake::toggleAutoAlign, intake).andThen(intakeLEDCommands));
+        driveController
+            .back()
+            .onTrue(new InstantCommand(intake::toggleAutoAlign, intake).andThen(intakeLEDCommands));
 
-    driveController
-        .start()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                    drive)
-                .ignoringDisable(true));
+        driveController
+            .start()
+            .onTrue(
+                Commands.runOnce(
+                        () ->
+                            drive.setPose(
+                                new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                        drive)
+                    .ignoringDisable(true));
 
-    driveController.rightBumper().onTrue(intakeCommands);
-    driveController
-        .rightBumper()
-        .onFalse(
-            new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)
-                .andThen(new PositionNoteInFeeder(shooter, intake))
-                .andThen(
-                    new InstantCommand(shooter::stopFeeders)
-                        .andThen(
-                            new InstantCommand(intake::stopRollers)
-                                .andThen(
-                                    new InstantCommand(
-                                        () -> led.setState(intake.getIntakeState()))))));
+        driveController.rightBumper().onTrue(intakeCommands);
+        driveController
+            .rightBumper()
+            .onFalse(
+                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)
+                    .andThen(new PositionNoteInFeeder(shooter, intake))
+                    .andThen(
+                        new InstantCommand(shooter::stopFeeders)
+                            .andThen(
+                                new InstantCommand(intake::stopRollers)
+                                    .andThen(
+                                        new InstantCommand(
+                                            () -> led.setState(intake.getIntakeState()))))));
 
-    driveController.leftBumper().whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true));
-    driveController
-        .leftBumper()
-        .onFalse(
-            new InstantCommand(intake::stopRollers)
-                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
-                .andThen(new InstantCommand(() -> shooter.stopFeeders())));
+        driveController.leftBumper().whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true));
+        driveController
+            .leftBumper()
+            .onFalse(
+                new InstantCommand(intake::stopRollers)
+                    .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+                    .andThen(new InstantCommand(() -> shooter.stopFeeders())));
 
-    driveController.rightTrigger().onTrue(shootCommands);
-    driveController
-        .rightTrigger()
-        .onFalse(
-            new InstantCommand(() -> shooter.stopFeeders(), shooter)
-                .andThen(new InstantCommand(shooter::stopFlywheels)));
+        driveController.rightTrigger().onTrue(shootCommands);
+        driveController
+            .rightTrigger()
+            .onFalse(
+                new InstantCommand(() -> shooter.stopFeeders(), shooter)
+                    .andThen(new InstantCommand(shooter::stopFlywheels)));
 
-    driveController.a().onTrue(climbCommands);
-
+        driveController.a().onTrue(climbCommands);
+    */
+    driveController.x().onTrue(new AlignToAmp(drive, driveController, led));
     // driveController.x().onTrue(elevatorCommands);
 
     // driveController.y().onTrue(new AutoPivotIntake(pivot, intake, shooter, 41, false));
