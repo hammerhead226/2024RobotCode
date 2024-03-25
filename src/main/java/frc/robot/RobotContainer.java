@@ -415,6 +415,8 @@ public class RobotContainer {
         "StartFlywheelsSource", new InstantCommand(() -> shooter.setFlywheelRPMSSource(), shooter));
     NamedCommands.registerCommand(
         "StartFlywheelsAmp", new InstantCommand(() -> shooter.setFlywheelRPMSAmp(), shooter));
+    NamedCommands.registerCommand(
+        "StartFlySlower", new InstantCommand(() -> shooter.setFlywheelRPMs(4050, 4050)));
 
     NamedCommands.registerCommand(
         "StartFeeders", new InstantCommand(() -> shooter.setFeedersRPM(4000), shooter));

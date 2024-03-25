@@ -100,7 +100,7 @@ public class AlignToNoteTeleop extends Command {
   public void initialize() {
     pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
     intake.runRollers(12);
-    shooter.setFeedersRPM(750);
+    shooter.setFeedersRPM(500);
     led.setState(LED_STATE.FLASHING_GREEN);
     startingPositionX = drive.getPose().getX();
     Logger.recordOutput("startingpos", startingPositionX);

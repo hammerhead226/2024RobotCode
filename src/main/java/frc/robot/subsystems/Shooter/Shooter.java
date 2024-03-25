@@ -149,16 +149,22 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean seesNote() {
-    if (sInputs.distance > Constants.ShooterConstants.FEEDER_DIST && sInputs.distance < 2000)
-      // if (sInputs.distance > Constants.ShooterConstants.FEEDER_DIST && sInputs.distance < 2200)
+    if ((sInputs.distance > Constants.ShooterConstants.FEEDER_DIST && sInputs.distance < 2150)) {
+      // || feedInputs.currentAmps > 13.5
       return true;
+    }
+    // if (feedInputs.currentAmps > 15) {
+    // return true;
+    // }
+    // if (sInputs.distance > Constants.ShooterConstants.FEEDER_DIST && sInputs.distance < 2200)
+
     else return false;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
+    Logger.recordOutput("see note", seesNote());
     flywheels.updateInputs(flyInputs);
     feeder.updateInputs(feedInputs);
     dist.updateInputs(sInputs);

@@ -32,46 +32,6 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "intake",
-      "waypointRelativePos": 0.05,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "PivotIntake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "stop intake psition note",
-      "waypointRelativePos": 0.2,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StopIntakeFeed"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "PositionNoteInFeeder"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "name": "pivot",
       "waypointRelativePos": 0.25,
       "command": {
