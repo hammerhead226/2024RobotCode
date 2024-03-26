@@ -33,6 +33,7 @@ import frc.robot.commands.Aimbot;
 import frc.robot.commands.AlignToAmp;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AlignToNoteTeleop;
+import frc.robot.commands.AmpScoringSequence;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.BellevilleAlignToNoteAuto;
 import frc.robot.commands.DriveCommands;
@@ -444,7 +445,9 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Aimbot", new Aimbot(drive, driveController, shooter, pivot, led, intake));
 
-    NamedCommands.registerCommand("Align to amp", new AlignToAmp(drive, driveController, led));
+    NamedCommands.registerCommand(
+        "Align to amp",
+        new AmpScoringSequence(shooter, drive, led, driveController, elevator, pivot));
 
     // Set up auto routines
     autos = new SendableChooser<>();

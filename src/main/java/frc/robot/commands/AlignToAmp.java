@@ -8,7 +8,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,7 +15,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.led.LED;
@@ -30,7 +28,7 @@ public class AlignToAmp extends Command {
   private final LED led;
 
   private final CommandXboxController controller;
-  private final PIDController pid;
+
   private double[] gains = new double[3];
   private DriverStation.Alliance alliance = null;
 
@@ -47,32 +45,7 @@ public class AlignToAmp extends Command {
 
     addRequirements(drive, led);
 
-    switch (Constants.currentMode) {
-      case REAL:
-        gains[0] = 0;
-        gains[1] = 0;
-        gains[2] = 0;
-        break;
-      case REPLAY:
-        gains[0] = 0;
-        gains[1] = 0;
-        gains[2] = 0;
-        break;
-      case SIM:
-        gains[0] = 0;
-        gains[1] = 0;
-        gains[2] = 0;
-        break;
-      default:
-        gains[0] = 0;
-        gains[1] = 0;
-        gains[2] = 0;
-        break;
-    }
-
-    pid = new PIDController(gains[0], gains[1], gains[2], 0.02);
-    pid.setTolerance(3);
-    pid.enableContinuousInput(-180, 180);
+    targetRotation = drive.getRotation();
   }
 
   // Called when the command is initially scheduled.
@@ -86,14 +59,14 @@ public class AlignToAmp extends Command {
   @Override
   public void execute() {
     if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-      targetRotation = new Rotation2d(Units.degreesToRadians(270));
+      targetRotation = new Rotation2d(90);
       List<Translation2d> pointsToAmp =
           PathPlannerPath.bezierFromPoses(
               new Pose2d(
                   drive.getPose().getX(), drive.getPose().getY(), drive.getPose().getRotation()),
               new Pose2d(
                   FieldConstants.ampCenter.getX(),
-                  FieldConstants.ampCenter.getY(),
+                  FieldConstants.ampCenter.getY() - 0.5,
                   targetRotation));
       PathPlannerPath path =
           new PathPlannerPath(
@@ -101,20 +74,24 @@ public class AlignToAmp extends Command {
               new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720)),
               new GoalEndState(0, targetRotation));
 
-      path.preventFlipping = true;
-
       AutoBuilder.followPath(path).schedule();
+
+      // pathfindingCommand.schedule();
     }
 
     if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-      targetRotation = new Rotation2d(Units.degreesToRadians(90));
+      targetRotation = new Rotation2d(90);
+
       List<Translation2d> pointsToAmpRed =
           PathPlannerPath.bezierFromPoses(
               new Pose2d(
                   FieldConstants.fieldLength - drive.getPose().getX(),
                   drive.getPose().getY(),
                   drive.getPose().getRotation()),
-              new Pose2d(FieldConstants.ampCenter, targetRotation));
+              new Pose2d(
+                  FieldConstants.fieldLength - FieldConstants.ampCenter.getX(),
+                  FieldConstants.ampCenter.getY() - 0.5,
+                  targetRotation));
 
       PathPlannerPath pathRed =
           new PathPlannerPath(
