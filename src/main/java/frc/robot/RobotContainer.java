@@ -30,10 +30,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.Aimbot;
-import frc.robot.commands.AlignToAmp;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AlignToNoteTeleop;
-import frc.robot.commands.AmpScoringSequence;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.BellevilleAlignToNoteAuto;
 import frc.robot.commands.DriveCommands;
@@ -446,8 +444,7 @@ public class RobotContainer {
         "Aimbot", new Aimbot(drive, driveController, shooter, pivot, led, intake));
 
     NamedCommands.registerCommand(
-        "Align to amp",
-        new AmpScoringSequence(shooter, drive, led, driveController, elevator, pivot));
+        "Align to amp", new ScoreAmp(elevator, pivot, shooter, drive, led));
 
     // Set up auto routines
     autos = new SendableChooser<>();
@@ -640,7 +637,7 @@ public class RobotContainer {
 
         driveController.a().onTrue(climbCommands);
     */
-    driveController.x().onTrue(new AlignToAmp(drive, driveController, led));
+    // driveController.x().onTrue(new AlignToAmp(drive, driveController, led));
     // driveController.x().onTrue(elevatorCommands);
 
     // driveController.y().onTrue(new AutoPivotIntake(pivot, intake, shooter, 41, false));
@@ -665,7 +662,7 @@ public class RobotContainer {
   }
 
   private void manipControls() {
-    manipController.a().onTrue(new ScoreAmp(elevator, pivot, shooter));
+    manipController.a().onTrue(new ScoreAmp(elevator, pivot, shooter, drive, led));
     manipController
         .a()
         .onFalse(

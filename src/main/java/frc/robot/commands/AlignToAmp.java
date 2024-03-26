@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.led.LED;
@@ -27,21 +26,18 @@ public class AlignToAmp extends Command {
 
   private final LED led;
 
-  private final CommandXboxController controller;
-
   private double[] gains = new double[3];
   private DriverStation.Alliance alliance = null;
 
+  private boolean isPathFinished = false;
   private Rotation2d targetRotation = new Rotation2d();
   private Pose2d TargetPos = new Pose2d(FieldConstants.ampCenter, targetRotation);
   /** Creates a new AlignToAmp. */
-  public AlignToAmp(Drive drive, CommandXboxController controller, LED led) {
+  public AlignToAmp(Drive drive, LED led) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
 
     this.led = led;
-
-    this.controller = controller;
 
     addRequirements(drive, led);
 
@@ -72,10 +68,10 @@ public class AlignToAmp extends Command {
           new PathPlannerPath(
               pointsToAmp,
               new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720)),
-              new GoalEndState(0, targetRotation));
+              new GoalEndState(0, targetRotation, true));
 
       AutoBuilder.followPath(path).schedule();
-
+      isPathFinished = (AutoBuilder.followPath(path).isFinished() == true);
       // pathfindingCommand.schedule();
     }
 
@@ -97,11 +93,12 @@ public class AlignToAmp extends Command {
           new PathPlannerPath(
               pointsToAmpRed,
               new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720)),
-              new GoalEndState(0, targetRotation));
+              new GoalEndState(0, targetRotation, true));
 
       pathRed.preventFlipping = true;
 
       AutoBuilder.followPath(pathRed).schedule();
+      isPathFinished = (AutoBuilder.followPath(pathRed).isFinished() == true);
     }
   }
 
