@@ -110,7 +110,7 @@ public class RobotContainer {
 
   private final LoggedDashboardNumber x = new LoggedDashboardNumber("x", 5);
   private final LoggedDashboardNumber y = new LoggedDashboardNumber("y", 5);
- 
+
   private CLIMB_STATES climbSelect() {
     return climbStateMachine.getTargetState();
   }

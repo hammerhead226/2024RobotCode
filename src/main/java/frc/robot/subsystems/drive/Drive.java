@@ -262,9 +262,11 @@ public class Drive extends SubsystemBase {
   public void driveTo(Translation2d coord) {
     Translation2d translationErr = coord.minus(getPose().getTranslation());
 
+    Logger.recordOutput("note location err", translationErr);
+
     Translation2d power = new Translation2d(translationErr.getNorm(), translationErr.getAngle());
 
-    runVelocity(new ChassisSpeeds(power.getX(), power.getY(), 0));
+    runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(power.getX(), power.getY(), 0), rawGyroRotation));
   }
 
   /**

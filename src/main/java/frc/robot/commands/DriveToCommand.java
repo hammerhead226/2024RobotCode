@@ -12,7 +12,9 @@ import frc.robot.subsystems.drive.Drive;
 public class DriveToCommand extends Command {
   /** Creates a new DriveToCommand. */
   Translation2d target;
+
   Drive drive;
+
   public DriveToCommand(Translation2d target, Drive drive) {
     this.target = target;
     this.drive = drive;
