@@ -259,6 +259,14 @@ public class Drive extends SubsystemBase {
     toggle = !toggle;
   }
 
+  public void driveTo(Translation2d coord) {
+    Translation2d translationErr = coord.minus(getPose().getTranslation());
+
+    Translation2d power = new Translation2d(translationErr.getNorm(), translationErr.getAngle());
+
+    runVelocity(new ChassisSpeeds(power.getX(), power.getY(), 0));
+  }
+
   /**
    * Runs the drive at the desired velocity.
    *

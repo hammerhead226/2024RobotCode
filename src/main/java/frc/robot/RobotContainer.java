@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -36,6 +37,7 @@ import frc.robot.commands.AlignToNoteTeleop;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.BellevilleAlignToNoteAuto;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.DriveToCommand;
 import frc.robot.commands.PivotIntakeAuto;
 import frc.robot.commands.PivotIntakeTele;
 import frc.robot.commands.PivotSource;
@@ -106,6 +108,9 @@ public class RobotContainer {
 
   private final LoggedDashboardNumber flywheelSpeed = new LoggedDashboardNumber("fly soeed", 5400);
 
+  private final LoggedDashboardNumber x = new LoggedDashboardNumber("x", 5);
+  private final LoggedDashboardNumber y = new LoggedDashboardNumber("y", 5);
+ 
   private CLIMB_STATES climbSelect() {
     return climbStateMachine.getTargetState();
   }
@@ -493,10 +498,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driverControls();
-    manipControls();
+    // driverControls();
+    // manipControls();
 
-    // testControls();
+    testControls();
   }
 
   private void testControls() {
@@ -517,6 +522,8 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
+
+    driveController.x().onTrue(new DriveToCommand(new Translation2d(15, 5), drive));
 
     // driveController.x().onTrue(new InstantCommand(() -> led.setState(LED_STATE.AUTO_ALIGN)));
 
