@@ -4,10 +4,12 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
@@ -18,13 +20,20 @@ import frc.robot.subsystems.shooter.Shooter;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PivotSource extends SequentialCommandGroup {
   /** Creates a new PivotIntake. */
-  public PivotSource(Pivot pivot, Intake intake, Shooter shooter, LED led) {
+  private final Drive drive;
+
+  private Rotation2d targetRotation = new Rotation2d();
+
+  public PivotSource(Pivot pivot, Intake intake, Shooter shooter, LED led, Drive drive) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    this.drive = drive;
     addCommands(
         new SetPivotTarget(Constants.PivotConstants.SOURCE_SETPOINT_DEG, pivot),
         new WaitUntilCommand(pivot::atSetpoint),
         new InstantCommand(() -> shooter.setFlywheelRPMs(-2000, -2000), shooter),
         new InstantCommand(() -> shooter.setFeedersRPM(-1000)));
   }
+
+  public void alignToSource() {}
 }

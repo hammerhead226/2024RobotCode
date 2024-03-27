@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
@@ -50,6 +51,7 @@ public class ScoreAmp extends SequentialCommandGroup {
             new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
             new SetElevatorTarget(8, 1, elevator),
             new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter)),
+        new WaitCommand(1),
         new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
 
     // new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
@@ -64,7 +66,7 @@ public class ScoreAmp extends SequentialCommandGroup {
               (Units.degreesToRadians(
                   new Rotation2d(FieldConstants.ampCenter.getX(), FieldConstants.ampCenter.getY())
                           .getDegrees()
-                      + 14)));
+                      + 13)));
       List<Translation2d> pointsToAmp =
           PathPlannerPath.bezierFromPoses(
               new Pose2d(

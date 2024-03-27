@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.271155311541392,
-      "y": 5.4377818157345725
+      "x": 1.1929595159638755,
+      "y": 1.7394137030426529
     },
-    "rotation": 9.727578551401566
+    "rotation": 173.2338251774469
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Align to amp"
+            "name": "Turn to Source"
           }
         }
       ]
