@@ -46,6 +46,9 @@ public final class Constants {
   public static final String LL_ALIGN = "limelight-align";
   public static final String LL_INTAKE = "limelight-intake";
 
+  public static final double INTAKE_LL_ANGLE = 20;
+  public static final double INTAKE_LL_HEIGHT_METERS = 0.5;
+
   public static class SwerveConstants {
     public static final double MAX_LINEAR_SPEED = 5.56;
     public static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);
