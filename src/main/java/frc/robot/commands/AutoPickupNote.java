@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -41,10 +42,10 @@ public class AutoPickupNote extends SequentialCommandGroup {
         new InstantCommand(() -> intake.runRollers(12)),
         new InstantCommand(() -> shooter.setFeedersRPM(500)),
         new InstantCommand(() -> led.setState(LED_STATE.FLASHING_BLUE)),
-        new InstantCommand(() -> AlignToNote(led), drive));
+        AlignToNote(led));
   }
 
-  public void AlignToNote(LED led) {
+  public Command AlignToNote(LED led) {
     Translation2d cachedNoteT2d = drive.getCachedNoteLocation();
     if (drive.NoteImageIsNew()) {
       targetRotation =
@@ -62,10 +63,10 @@ public class AutoPickupNote extends SequentialCommandGroup {
               new PathConstraints(1, 1, Units.degreesToRadians(180), Units.degreesToRadians(270)),
               new GoalEndState(0.2, targetRotation, true));
 
-      AutoBuilder.followPath(path).schedule();
+      return AutoBuilder.followPath(path);
 
     } else {
-      (new InstantCommand(() -> led.setState(LED_STATE.FLASHING_RED))).schedule();
+      return new InstantCommand(() -> led.setState(LED_STATE.FLASHING_RED));
     }
   }
 }

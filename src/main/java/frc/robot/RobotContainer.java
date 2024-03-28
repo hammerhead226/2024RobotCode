@@ -36,6 +36,7 @@ import frc.robot.commands.AlignToAmp;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AlignToNoteTeleop;
 import frc.robot.commands.AngleShooter;
+import frc.robot.commands.AutoPickupNote;
 import frc.robot.commands.BellevilleAlignToNoteAuto;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriveToCommand;
@@ -660,6 +661,8 @@ public class RobotContainer {
     driveController.a().onTrue(climbCommands);
 
     driveController.x().onTrue(elevatorCommands);
+
+    driveController.y().onTrue(new AutoPickupNote(intake, pivot, shooter, drive, led));
 
     // driveController.y().onTrue(new AutoPivotIntake(pivot, intake, shooter, 41, false));
     // driveController.y().onFalse(new InstantCommand(intake::stopRollers));
