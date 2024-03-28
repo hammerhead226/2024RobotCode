@@ -3,17 +3,9 @@
   "robotLength": 0.66,
   "holonomicMode": true,
   "pathFolders": [
-    "a!p-b1-c1-c2",
-    "a!p-c1",
-    "a!p-c1-b1",
-    "a!p-c1-c2",
-    "c!p-b2",
-    "c!p-b2-b1",
-    "c!p-b2-b3",
-    "c!p-b2-b3-b1",
-    "c!p-b2-b3-b1-c2",
-    "s!p-c5",
-    "s!p-c5-c4"
+    "New Folder",
+    "prathik source side three note",
+    "shoot on the move auto"
   ],
   "autoFolders": [
     "autos"

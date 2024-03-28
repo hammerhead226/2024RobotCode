@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.1917574483297118,
+        "y": 6.992094822152607
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.6059710107028113,
+        "y": 6.992094822152607
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.0395092567841617,
+        "y": 6.992094822152607
+      },
+      "prevControl": {
+        "x": 1.3605760184064888,
+        "y": 6.992094822152607
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "sotm-end-b1"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Run Intake",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotIntake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 2.0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "shoot on the move auto",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

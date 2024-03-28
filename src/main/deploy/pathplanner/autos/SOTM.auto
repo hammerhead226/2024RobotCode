@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.5058699175694323,
-      "y": 6.948451565064565
-    },
-    "rotation": 0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -18,75 +12,45 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.1
+            "pathName": "sotm-b1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "a4!p-b1"
+            "pathName": "sotm-c1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Aimbot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.1
+            "name": "AutoAlignNoteAmp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "a4!c1"
+            "pathName": "sotm-c2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AutoAlignNoteCenter"
+            "name": "AutoAlignNoteAmp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "a4!scorec1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Aimbot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.1
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "a4!c2"
+            "pathName": "sotm-shoot-c2"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "AutoAlignNoteCenter"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "a4!scorec2"
           }
         },
         {

@@ -1,0 +1,108 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.0395092567841617,
+        "y": 6.992094822152607
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.157543245534057,
+        "y": 6.992094822152607
+      },
+      "isLocked": false,
+      "linkedName": "sotm-end-b1"
+    },
+    {
+      "anchor": {
+        "x": 7.578388110742743,
+        "y": 7.424093085085733
+      },
+      "prevControl": {
+        "x": 6.057697478168178,
+        "y": 7.424093085085733
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "sotm-end-c1"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.05,
+      "rotationDegrees": 30.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 0.3,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 270.0,
+        "maxAngularAcceleration": 240.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFlywheelsAmp"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotShootFar"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.2,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootNoteAmp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "shoot on the move auto",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

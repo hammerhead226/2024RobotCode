@@ -1,0 +1,141 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.578388110742743,
+        "y": 7.424093085085733
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.460354121992848,
+        "y": 7.424093085085733
+      },
+      "isLocked": false,
+      "linkedName": "sotm-end-c1"
+    },
+    {
+      "anchor": {
+        "x": 3.9953720700745623,
+        "y": 6.236024310658519
+      },
+      "prevControl": {
+        "x": 3.863045708260267,
+        "y": 6.488027499344664
+      },
+      "nextControl": {
+        "x": 4.213303999298577,
+        "y": 5.820993319645193
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.4388200077346305,
+        "y": 5.753696132574215
+      },
+      "prevControl": {
+        "x": 5.162891228256984,
+        "y": 6.9455738747722044
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 10.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.85,
+      "maxWaypointRelativePos": 1.2,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Pivot39"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFlywheelsCenter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Start Feeders",
+      "waypointRelativePos": 0.95,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFeeders"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stops Feeders",
+      "waypointRelativePos": 1.55,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopFeeders"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "shoot on the move auto",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}
