@@ -3,51 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.1917574483297118,
-        "y": 6.992094822152607
+        "x": 8.285398363009245,
+        "y": 4.1008392415256445
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6059710107028113,
-        "y": 6.992094822152607
+        "x": 4.434861116811026,
+        "y": 3.8579117414785045
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0395092567841617,
-        "y": 6.992094822152607
+        "x": 2.056654499044078,
+        "y": 5.541240374693268
       },
       "prevControl": {
-        "x": 1.3605760184064888,
-        "y": 6.992094822152607
+        "x": 3.5773451316186327,
+        "y": 5.541240374693268
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "sotm-end-b1"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Run Intake",
-      "waypointRelativePos": 0.3,
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.1,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "PivotIntake"
+                "name": "Pivot39"
               }
             }
           ]
@@ -57,20 +51,17 @@
   ],
   "globalConstraints": {
     "maxVelocity": 2.0,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 2.0,
+    "velocity": 0,
     "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "shoot on the move auto",
-  "previewStartingState": {
-    "rotation": 45.0,
-    "velocity": 0
-  },
+  "folder": "prathik center",
+  "previewStartingState": null,
   "useDefaultConstraints": false
 }

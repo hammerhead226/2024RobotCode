@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.578388110742743,
-        "y": 7.424093085085733
+        "x": 2.8981542306243275,
+        "y": 5.548529140180551
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.460354121992848,
-        "y": 7.424093085085733
-      },
-      "isLocked": false,
-      "linkedName": "sotm-end-c1"
-    },
-    {
-      "anchor": {
-        "x": 3.9953720700745623,
-        "y": 6.236024310658519
-      },
-      "prevControl": {
-        "x": 3.863045708260267,
-        "y": 6.488027499344664
-      },
-      "nextControl": {
-        "x": 4.213303999298577,
-        "y": 5.820993319645193
+        "x": 3.843154432124003,
+        "y": 4.798773805153141
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.4388200077346305,
-        "y": 5.753696132574215
+        "x": 7.5164100919541,
+        "y": 4.1113256589686396
       },
       "prevControl": {
-        "x": 5.162891228256984,
-        "y": 6.9455738747722044
+        "x": 5.995719459379547,
+        "y": 4.1113256589686396
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,19 +30,19 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 10.0,
+      "waypointRelativePos": 0.35,
+      "rotationDegrees": -10.0,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.85,
-      "maxWaypointRelativePos": 1.2,
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.35,
       "constraints": {
         "maxVelocity": 1.0,
-        "maxAcceleration": 1.0,
+        "maxAcceleration": 0.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
       }
@@ -67,7 +51,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.3,
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -75,13 +59,13 @@
             {
               "type": "named",
               "data": {
-                "name": "Pivot39"
+                "name": "SOTMStartFlywheelsCenter"
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "StartFlywheelsCenter"
+                "name": "Pivot39"
               }
             }
           ]
@@ -89,10 +73,10 @@
       }
     },
     {
-      "name": "Start Feeders",
-      "waypointRelativePos": 0.95,
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.2,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
@@ -106,10 +90,10 @@
       }
     },
     {
-      "name": "Stops Feeders",
-      "waypointRelativePos": 1.65,
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.4,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
@@ -124,18 +108,18 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 0.5,
     "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "shoot on the move auto",
+  "folder": "prathik center",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

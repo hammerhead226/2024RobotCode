@@ -1,0 +1,68 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "PivotShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootNoteCenter"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "prathik center b2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignNoteCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "prathik center c3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignNoteCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "prathik center shoot c3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aimbot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
