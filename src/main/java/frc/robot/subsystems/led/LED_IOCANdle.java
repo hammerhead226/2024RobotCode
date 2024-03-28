@@ -23,6 +23,7 @@ public class LED_IOCANdle implements LED_IO {
   CANdle candle;
   StrobeAnimation flashGreen = new StrobeAnimation(0, 204, 0, 0, 0.01, 57);
   StrobeAnimation flashRed = new StrobeAnimation(204, 0, 0, 0, 0.01, 57);
+  StrobeAnimation flashBlue = new StrobeAnimation(0, 0, 255, 0, 0.01, 57);
   StrobeAnimation fashYellow = new StrobeAnimation(255, 255, 0, 0, 0.01, 57);
 
   FireAnimation rainbow = new FireAnimation(0.3, 0.03, 57, 0.1, 0.1);
@@ -106,6 +107,10 @@ public class LED_IOCANdle implements LED_IO {
       case FLASHING_RED:
         // candle.clearAnimation(0);
         candle.animate(flashRed, 0);
+        break;
+      case FLASHING_BLUE:
+        // candle.clearAnimation(0);
+        candle.animate(flashBlue, 0);
         break;
       case RAINBOW:
         candle.animate(rainbow, 0);

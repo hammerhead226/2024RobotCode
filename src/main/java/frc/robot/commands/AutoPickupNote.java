@@ -35,32 +35,16 @@ public class AutoPickupNote extends SequentialCommandGroup {
   public AutoPickupNote(Intake intake, Pivot pivot, Shooter shooter, Drive drive, LED led) {
 
     this.drive = drive;
-    // new SetElevatorTarget(8, elevator)
-    //             .andThen(new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot))
-    //             .andThen(new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter))
-    //             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(200), shooter)));
 
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        // new ParallelCommandGroup(
         new InstantCommand(() -> pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG)),
         new InstantCommand(() -> intake.runRollers(12)),
         new InstantCommand(() -> shooter.setFeedersRPM(500)),
-        new InstantCommand(() -> led.setState(LED_STATE.FLASHING_GREEN)),
-        new InstantCommand(() -> AlignToNote(), drive)
-        //     new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
-        //     new SetElevatorTarget(8, 1, elevator),
-        //     new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter)),
-        // new WaitCommand(1),
-        // new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
-        );
-    // new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
-    // new WaitUntilCommand(pivot::atSetpoint),
-
+        new InstantCommand(() -> led.setState(LED_STATE.FLASHING_BLUE)),
+        new InstantCommand(() -> AlignToNote(led), drive));
   }
 
-  public void AlignToNote() {
+  public void AlignToNote(LED led) {
     Translation2d cachedNoteT2d = drive.getCachedNoteLocation();
     if (drive.NoteImageIsNew()) {
       targetRotation =
@@ -81,7 +65,7 @@ public class AutoPickupNote extends SequentialCommandGroup {
       AutoBuilder.followPath(path).schedule();
 
     } else {
-      // Set LEDs to red?
+      (new InstantCommand(() -> led.setState(LED_STATE.FLASHING_RED))).schedule();
     }
   }
 }
