@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.intake.Intake;
@@ -25,7 +26,10 @@ public class PivotIntakeAuto extends SequentialCommandGroup {
       addCommands(
           new SetPivotTarget(setpoint, pivot),
           new WaitUntilCommand(pivot::atSetpoint),
-          new IntakeNote(intake, shooter));
+          new IntakeNote(intake, shooter),
+          new InstantCommand(() -> shooter.setFeedersRPM(150)),
+          new WaitCommand(0.5),
+          new InstantCommand(shooter::stopFeeders));
       // new InstantCommand(shooter::stopFeedWhenSeen, shooter));
       ;
     } else {

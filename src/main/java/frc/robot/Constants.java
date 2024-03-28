@@ -38,7 +38,7 @@ public final class Constants {
     };
   }
 
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
   public static final boolean tuningMode = true;
   public static final String CANBUS = "CAN Bus 2";
   public static final double LOOP_PERIOD_SECS = 0.02;
@@ -46,7 +46,7 @@ public final class Constants {
   public static final String LL_ALIGN = "limelight-align";
   public static final String LL_INTAKE = "limelight-intake";
 
-  public static final double INTAKE_LL_ANGLE = 20;
+  public static final double INTAKE_LL_ANGLE = -20;
   public static final double INTAKE_LL_HEIGHT_METERS = 0.5;
 
   public static class SwerveConstants {

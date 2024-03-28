@@ -15,7 +15,8 @@ public class VisionIONote implements VisionIO {
 
   private double getY() {
     // might need to mess around with intake ll angle if ty is -
-    double theta = Constants.INTAKE_LL_ANGLE + LimelightHelpers.getTY(Constants.LL_INTAKE);
+    double theta =
+        Math.abs(Constants.INTAKE_LL_ANGLE + LimelightHelpers.getTY(Constants.LL_INTAKE));
     return Constants.INTAKE_LL_HEIGHT_METERS / Math.atan(theta);
   }
 }

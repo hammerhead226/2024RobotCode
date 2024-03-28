@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.Aimbot;
+import frc.robot.commands.AlignToAmp;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AlignToNoteTeleop;
 import frc.robot.commands.AngleShooter;
@@ -51,6 +52,7 @@ import frc.robot.commands.ShootNoteAmp;
 import frc.robot.commands.ShootNoteCenter;
 import frc.robot.commands.ShootNoteSource;
 import frc.robot.commands.StopIntakeFeed;
+import frc.robot.commands.TurnToSource;
 import frc.robot.commands.TurnToSpeaker;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
@@ -498,10 +500,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // driverControls();
-    // manipControls();
+    driverControls();
+    manipControls();
 
-    testControls();
+    // testControls();
   }
 
   private void testControls() {
@@ -525,6 +527,11 @@ public class RobotContainer {
 
     driveController.x().onTrue(new DriveToCommand(new Translation2d(15, 5), drive));
 
+    driveController.a().whileTrue(new AlignToAmp(drive));
+    // driveController.a().onTrue(new SetPivotTarget(90, pivot));
+
+    driveController.b().whileTrue(new TurnToSource(drive, driveController));
+
     // driveController.x().onTrue(new InstantCommand(() -> led.setState(LED_STATE.AUTO_ALIGN)));
 
     // driveController.b().onTrue(new InstantCommand(() -> led.setState(LED_STATE.RED)));
@@ -545,8 +552,8 @@ public class RobotContainer {
     // driveController.x().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
     driveController.y().onTrue(new Aimbot(drive, driveController, shooter, pivot, led, intake));
 
-    driveController.a().onTrue(new TurnToSpeaker(drive, driveController));
-    driveController.a().onTrue(new SetPivotTarget(40, pivot));
+    // driveController.a().onTrue(new TurnToSpeaker(drive, driveController));
+    // driveController.a().onTrue(new SetPivotTarget(40, pivot));
 
     // drive
     // driveController

@@ -13,6 +13,8 @@ import org.littletonrobotics.junction.Logger;
 public class Vision extends SubsystemBase {
   VisionIO io;
   VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
+
+  Translation2d lastNoteCoord;
   /** Creates a new Vision. */
   public Vision(VisionIO io) {
     this.io = io;

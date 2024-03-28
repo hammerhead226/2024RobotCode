@@ -30,8 +30,8 @@ public class PivotIntakeTele extends SequentialCommandGroup {
           new WaitUntilCommand(pivot::atSetpoint),
           new IntakeNote(intake, shooter),
           new InstantCommand(() -> led.setState(LED_STATE.FLASHING_GREEN)),
-          new InstantCommand(() -> shooter.setFeedersRPM(-100)),
-          new WaitCommand(0.7),
+          new InstantCommand(() -> shooter.setFeedersRPM(150)),
+          new WaitCommand(0.5),
           new InstantCommand(shooter::stopFeeders),
           new WaitCommand(2),
           new InstantCommand(() -> led.setState(intake.getIntakeState())));

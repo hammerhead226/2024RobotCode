@@ -30,7 +30,7 @@ public class DriveToCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drive.driveTo(target);
+    drive.driveTo(target, drive.getRotation());
   }
 
   // Called once the command ends or is interrupted.

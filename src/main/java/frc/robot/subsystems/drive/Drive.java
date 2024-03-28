@@ -21,6 +21,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -61,6 +62,8 @@ public class Drive extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
+
+  private final PIDController rotationController;
 
   private double timeSinceLastCorrection = 0;
   private double lasttime = 0;
@@ -130,6 +133,11 @@ public class Drive extends SubsystemBase {
                 this));
 
     lasttime = Timer.getFPGATimestamp();
+
+    rotationController = new PIDController(0.1, 0, 0);
+
+    rotationController.setTolerance(5);
+    rotationController.enableContinuousInput(-180, 180);
   }
 
   public void periodic() {
@@ -259,14 +267,25 @@ public class Drive extends SubsystemBase {
     toggle = !toggle;
   }
 
-  public void driveTo(Translation2d coord) {
+  public void driveTo(Translation2d coord, Rotation2d angle) {
     Translation2d translationErr = coord.minus(getPose().getTranslation());
+
+    Rotation2d rotationErr = angle.minus(getPose().getRotation());
+
+    rotationController.setSetpoint(angle.getDegrees());
 
     Logger.recordOutput("note location err", translationErr);
 
     Translation2d power = new Translation2d(translationErr.getNorm(), translationErr.getAngle());
 
-    runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(power.getX(), power.getY(), 0), rawGyroRotation));
+    Rotation2d rotPower = new Rotation2d(rotationErr.getRadians());
+
+    double angularSpeed = rotationController.calculate(getPose().getRotation().getDegrees());
+
+    runVelocity(
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            new ChassisSpeeds(-power.getX(), -power.getY(), rotPower.getDegrees()),
+            rawGyroRotation));
   }
 
   /**
