@@ -211,7 +211,7 @@ public class Drive extends SubsystemBase {
     updatePoseBuffer();
     if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
       double taThreshold = 0;
-      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold) {
+      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold ) {
         lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
         lastNoteLocT2d.time = Timer.getFPGATimestamp();
       }
@@ -466,14 +466,14 @@ public class Drive extends SubsystemBase {
 
     double distInch = (1 / (40 - ((30) * getIntakeLLTy() / 23)) * 1000); // Convert degrees to inch
     double noteYawAngleDeg = -getIntakeLLTx() - 3; // account for static offset, reverse to be CCW+
-    double radius = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDeg));
+    double radiusInch = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDeg));
     Logger.recordOutput("NoteTracking/distInch", distInch);
     Logger.recordOutput("NoteTracking/noteYawAngleDeg", noteYawAngleDeg);
-    Logger.recordOutput("NoteTracking/radius", radius);
+    Logger.recordOutput("NoteTracking/radius", radiusInch);
 
     // camera relative -> bot relative -> field relative
     Translation2d camRelNoteLocT2d =
-        new Translation2d(radius, Rotation2d.fromDegrees(noteYawAngleDeg));
+        new Translation2d(Units.inchesToMeters(radiusInch), Rotation2d.fromDegrees(noteYawAngleDeg));
     Logger.recordOutput("NoteTracking/camRelNoteLocT2d", camRelNoteLocT2d);
 
     Translation2d roboRelNoteLocT2d =
