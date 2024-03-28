@@ -14,15 +14,15 @@ public class Conversions {
    * @param radians
    * @return degrees
    */
-  public static double radiansToDegrees(double radians ) {
-    return radians * 180.0/Math.PI;
+  public static double radiansToDegrees(double radians) {
+    return radians * 180.0 / Math.PI;
   }
   /**
    * @param degrees
    * @return radians
    */
-  public static double degreesToRadians(double degrees ) {
-    return degrees*Math.PI/180.0;
+  public static double degreesToRadians(double degrees) {
+    return degrees * Math.PI / 180.0;
   }
   /**
    * @param degrees Degrees of rotation of Mechanism

@@ -82,15 +82,18 @@ public class Drive extends SubsystemBase {
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
   TimestampedT2d lastNoteLocT2d;
 
-  public class TimestampedPose2d{
+  public class TimestampedPose2d {
     Pose2d pose;
     double time;
-}
-  public class TimestampedT2d{
+  }
+
+  public class TimestampedT2d {
     Translation2d translation;
     double time;
-}
-CircularBuffer<TimestampedPose2d> robotPoseBuffer;
+  }
+
+  CircularBuffer<TimestampedPose2d> robotPoseBuffer;
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -149,6 +152,7 @@ CircularBuffer<TimestampedPose2d> robotPoseBuffer;
 
     rotationController.setTolerance(5);
     rotationController.enableContinuousInput(-180, 180);
+    robotPoseBuffer = new CircularBuffer<>(11);
   }
 
   public void periodic() {
@@ -203,39 +207,38 @@ CircularBuffer<TimestampedPose2d> robotPoseBuffer;
         "limelilght alig latency", LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN));
     Logger.recordOutput("limelight intake hb", limelightintake.getEntry("hb").getDouble(0.0));
 
-    //Note Pose estimating
+    // Note Pose estimating
     updatePoseBuffer();
-    if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0 ){
+    if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
       double taThreshold = 0;
-      if(LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold){
+      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold) {
         lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
         lastNoteLocT2d.time = Timer.getFPGATimestamp();
       }
-      
     }
-
   }
 
-
-  private void updatePoseBuffer(){
-    TimestampedPose2d now  = new TimestampedPose2d();
+  private void updatePoseBuffer() {
+    TimestampedPose2d now = new TimestampedPose2d();
     now.pose = getPose();
     now.time = Timer.getFPGATimestamp();
     robotPoseBuffer.addFirst(now);
-}
-  private Pose2d posePicker(double time){
-    TimestampedPose2d prev = robotPoseBuffer.getFirst(); 
-    for(int i = 0; i < robotPoseBuffer.size(); i++){
-        TimestampedPose2d next = robotPoseBuffer.get(i);
-        double delta = next.time - time;
-        if(delta < 0){
-            double t =  ((time - next.time) / (prev.time - next.time));
-            return next.pose.interpolate(prev.pose, t);
-        }
+  }
+
+  private Pose2d posePicker(double time) {
+    TimestampedPose2d prev = robotPoseBuffer.getFirst();
+    for (int i = 0; i < robotPoseBuffer.size(); i++) {
+      TimestampedPose2d next = robotPoseBuffer.get(i);
+      double delta = next.time - time;
+      if (delta < 0) {
+        double t = ((time - next.time) / (prev.time - next.time));
+        return next.pose.interpolate(prev.pose, t);
+      }
     }
-    //if the time is before everything in the buffer return the oldest thing
+    // if the time is before everything in the buffer return the oldest thing
     return robotPoseBuffer.getLast().pose;
-}
+  }
+
   public void visionLogic() {
     LimelightHelpers.PoseEstimate limelightMeasurement =
         LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LL_ALIGN);
@@ -450,42 +453,56 @@ CircularBuffer<TimestampedPose2d> robotPoseBuffer;
   public double getNoteError() {
     return getIntakeLLTx();
   }
+
   public double getIntakeLLTx() {
     return LimelightHelpers.getTX("limelight-intake");
   }
+
   public double getIntakeLLTy() {
     return LimelightHelpers.getTY("limelight-intake");
   }
 
   public Translation2d calculateNotePositionFieldRelative() {
 
-        double distInch =  (1/(40-((30)*getIntakeLLTy()/23))*1000); //Convert degrees to inch
-        double noteYawAngleDeg = -getIntakeLLTx()-3; //account for static offset, reverse to be CCW+
-        double radius = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDeg));
-        Logger.recordOutput("NoteTracking/distInch", distInch);
-        Logger.recordOutput("NoteTracking/noteYawAngleDeg", noteYawAngleDeg);
-        Logger.recordOutput("NoteTracking/radius", radius);
+    double distInch = (1 / (40 - ((30) * getIntakeLLTy() / 23)) * 1000); // Convert degrees to inch
+    double noteYawAngleDeg = -getIntakeLLTx() - 3; // account for static offset, reverse to be CCW+
+    double radius = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDeg));
+    Logger.recordOutput("NoteTracking/distInch", distInch);
+    Logger.recordOutput("NoteTracking/noteYawAngleDeg", noteYawAngleDeg);
+    Logger.recordOutput("NoteTracking/radius", radius);
 
-        //camera relative -> bot relative -> field relative
-        Translation2d camRelNoteLocT2d = new Translation2d(radius, Rotation2d.fromDegrees(noteYawAngleDeg));
-        Logger.recordOutput("NoteTracking/camRelNoteLocT2d", camRelNoteLocT2d);
+    // camera relative -> bot relative -> field relative
+    Translation2d camRelNoteLocT2d =
+        new Translation2d(radius, Rotation2d.fromDegrees(noteYawAngleDeg));
+    Logger.recordOutput("NoteTracking/camRelNoteLocT2d", camRelNoteLocT2d);
 
-        Translation2d roboRelNoteLocT2d = camRelNoteLocT2d.rotateBy(Rotation2d.fromDegrees(0)).plus(new Translation2d(Units.inchesToMeters(12),0));
-        Logger.recordOutput("NoteTracking/roboRelNoteLocT2d", roboRelNoteLocT2d);
-        Pose2d pickedRobotPose = posePicker(Timer.getFPGATimestamp()-LimelightHelpers.getLatency_Pipeline(Constants.LL_INTAKE)-LimelightHelpers.getLatency_Capture(Constants.LL_INTAKE));
-        Translation2d fieldRelNoteLocT2d = roboRelNoteLocT2d.rotateBy(pickedRobotPose.getRotation()).plus(pickedRobotPose.getTranslation());
-        Logger.recordOutput("NoteTracking/fieldRelNoteLocT2d", fieldRelNoteLocT2d);
-      
+    Translation2d roboRelNoteLocT2d =
+        camRelNoteLocT2d
+            .rotateBy(Rotation2d.fromDegrees(0))
+            .plus(new Translation2d(Units.inchesToMeters(12), 0));
+    Logger.recordOutput("NoteTracking/roboRelNoteLocT2d", roboRelNoteLocT2d);
+    Pose2d pickedRobotPose =
+        posePicker(
+            Timer.getFPGATimestamp()
+                - LimelightHelpers.getLatency_Pipeline(Constants.LL_INTAKE)
+                - LimelightHelpers.getLatency_Capture(Constants.LL_INTAKE));
+    Translation2d fieldRelNoteLocT2d =
+        roboRelNoteLocT2d
+            .rotateBy(pickedRobotPose.getRotation())
+            .plus(pickedRobotPose.getTranslation());
+    Logger.recordOutput("NoteTracking/fieldRelNoteLocT2d", fieldRelNoteLocT2d);
+
     return fieldRelNoteLocT2d;
   }
-  public Translation2d getCachedNoteLocation(){
-    return lastNoteLocT2d.translation;
-}
 
-public boolean NoteImageIsNew(){
-  double maxNoteAge = 5.0; // seconds
+  public Translation2d getCachedNoteLocation() {
+    return lastNoteLocT2d.translation;
+  }
+
+  public boolean NoteImageIsNew() {
+    double maxNoteAge = 1.0; // seconds
     return Timer.getFPGATimestamp() - lastNoteLocT2d.time < maxNoteAge;
-}
+  }
 
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
