@@ -101,15 +101,15 @@ public class LED_IOCANdle implements LED_IO {
         candle.setLEDs(0, 255, 0, 0, 32, 25);
         break;
       case FLASHING_GREEN:
-        // candle.clearAnimation(0);
+        candle.clearAnimation(0);
         candle.animate(flashGreen, 0);
         break;
       case FLASHING_RED:
-        // candle.clearAnimation(0);
+        candle.clearAnimation(0);
         candle.animate(flashRed, 0);
         break;
       case FLASHING_BLUE:
-        // candle.clearAnimation(0);
+        candle.clearAnimation(0);
         candle.animate(flashBlue, 0);
         break;
       case RAINBOW:
