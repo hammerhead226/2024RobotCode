@@ -56,6 +56,8 @@ public class LED_IOSpark implements LED_IO {
       case OFF:
         led.close();
         break;
+      default:
+        break;
     }
   }
 }

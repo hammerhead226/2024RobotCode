@@ -142,10 +142,15 @@ public final class Constants {
     YELLOW,
     VIOLET,
     GREEN,
+    GREY,
+    PAPAYA_ORANGE,
+    WILLIAMS_BLUE,
+    HALF_FLASH_RED_HALF_FLASH_WHITE,
+    FLASHING_WHITE,
     FLASHING_GREEN,
     FLASHING_RED,
     FLASHING_BLUE,
-    RAINBOW,
+    FIRE,
     OFF
   }
 }

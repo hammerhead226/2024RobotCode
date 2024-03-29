@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
@@ -27,9 +26,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Aimbot extends Command {
 
-  private LED_STATE intakeState;
   private final Drive drive;
-  private final Intake intake;
   private final Shooter shooter;
   private final Pivot pivot;
   private final LED led;
@@ -43,15 +40,9 @@ public class Aimbot extends Command {
   private double pivotSetpointDeg = 0;
   /** Creates a new Aimbot. */
   public Aimbot(
-      Drive drive,
-      CommandXboxController controller,
-      Shooter shooter,
-      Pivot pivot,
-      LED led,
-      Intake intake) {
+      Drive drive, CommandXboxController controller, Shooter shooter, Pivot pivot, LED led) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
-    this.intake = intake;
     this.shooter = shooter;
     this.pivot = pivot;
     this.led = led;
@@ -91,7 +82,7 @@ public class Aimbot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    led.setState(LED_STATE.GREEN);
+    led.setState(LED_STATE.FLASHING_GREEN);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -102,11 +93,11 @@ public class Aimbot extends Command {
 
     Logger.recordOutput("distance from speak", Units.metersToFeet(calculateDistanceToSpeaker()));
 
-    if (Units.metersToFeet(calculateDistanceToSpeaker()) > 12) {
-      led.setState(LED_STATE.FLASHING_RED);
-    } else {
-      led.setState(LED_STATE.GREEN);
-    }
+    // if (Units.metersToFeet(calculateDistanceToSpeaker()) > 12) {
+    //   led.setState(LED_STATE.FLASHING_RED);
+    // } else {
+    //   led.setState(LED_STATE.GREEN);
+    // }
   }
 
   public void angleShooter() {
@@ -219,7 +210,7 @@ public class Aimbot extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setFeedersRPM(1000);
-    led.setState(intake.getIntakeState());
+    led.setState(LED_STATE.GREY);
   }
 
   // Returns true when the command should end.

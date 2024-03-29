@@ -112,7 +112,7 @@ public class Robot extends LoggedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    m_robotContainer.getLED().setState(LED_STATE.RAINBOW);
+    m_robotContainer.getLED().setState(LED_STATE.RED);
   }
 
   /** This function is called periodically when disabled. */

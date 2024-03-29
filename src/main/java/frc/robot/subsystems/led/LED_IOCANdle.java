@@ -25,6 +25,8 @@ public class LED_IOCANdle implements LED_IO {
   StrobeAnimation flashRed = new StrobeAnimation(204, 0, 0, 0, 0.01, 57);
   StrobeAnimation flashBlue = new StrobeAnimation(0, 0, 255, 0, 0.01, 57);
   StrobeAnimation fashYellow = new StrobeAnimation(255, 255, 0, 0, 0.01, 57);
+  StrobeAnimation flashWhite = new StrobeAnimation(255, 255, 255, 255, 0.01, 57);
+  StrobeAnimation halfFlashWhite = new StrobeAnimation(255, 255, 255, 255, 0.01, 29, 28);
 
   FireAnimation rainbow = new FireAnimation(0.3, 0.03, 57, 0.1, 0.1);
   // ColorFlowAnimation rainbow = new ColorFlowAnimation(0, 0, 255, 0, 0.343, 57,
@@ -78,13 +80,13 @@ public class LED_IOCANdle implements LED_IO {
     // candle.setLEDs(0, 0, 0);
     switch (ledState) {
       case RED:
+        // TODO:: MANUAL INTAKE
         candle.clearAnimation(0);
-        candle.setLEDs(255, 0, 0, 0, 32, 25);
+        candle.setLEDs(255, 0, 0, 0, 0, 57);
         break;
       case BLUE:
+        // TODO:: DEFAULT COLOR
         candle.clearAnimation(0);
-        // led.set(Constants.LEDConstants.COLOR_BLUE);
-        // candle.setLEDs(0, 0, 255, 0, 32, 25);
         candle.setLEDs(0, 0, 255, 0, 0, 57);
         break;
       case YELLOW:
@@ -96,30 +98,51 @@ public class LED_IOCANdle implements LED_IO {
       case VIOLET:
         // led.set(Constants.LEDConstants.COLOR_VIOLET);
         break;
+      case GREY:
+        // TODO:: SHOOT NOTE
+        candle.clearAnimation(0);
+        candle.setLEDs(137, 129, 123);
+        break;
       case GREEN:
+        // TODO:: SENSOR SEES NOTE
         candle.clearAnimation(0);
         candle.setLEDs(0, 255, 0, 0, 32, 25);
         break;
+      case PAPAYA_ORANGE:
+        candle.clearAnimation(0);
+        candle.setLEDs(255, 30, 0);
+        break;
+      case WILLIAMS_BLUE:
+        candle.clearAnimation(0);
+        candle.setLEDs(0, 160, 222);
+        break;
+      case HALF_FLASH_RED_HALF_FLASH_WHITE:
+        // TODO:: INTAKING FROM SOURCE
+        candle.animate(halfFlashWhite);
+        candle.setLEDs(255, 0, 0, 0, 28, 28);
+        break;
+      case FLASHING_WHITE:
+        // TODO:: SIGNAL TO HUMAN PLAYER
+        candle.animate(flashWhite, 0);
+        break;
       case FLASHING_GREEN:
-        // candle.clearAnimation(0);
+        // TODO:: AIMBOT 
         candle.animate(flashGreen, 0);
         break;
       case FLASHING_RED:
-        // candle.clearAnimation(0);
+        // TODO:: TRAJECTORY INTAKE
         candle.animate(flashRed, 0);
         break;
       case FLASHING_BLUE:
-        // candle.clearAnimation(0);
         candle.animate(flashBlue, 0);
         break;
-      case RAINBOW:
+      case FIRE:
+        // TODO:: DISABLED
         candle.animate(rainbow, 0);
         break;
       case OFF:
-        // candle.animate(off);
         candle.clearAnimation(0);
         candle.setLEDs(0, 0, 0, 0, 0, 57);
-        // candle.t
         break;
       default:
         break;

@@ -23,8 +23,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
@@ -50,8 +52,9 @@ public class DriveCommands {
       DoubleSupplier speedSupplier) {
 
     return new ParallelCommandGroup(
-        joystickDrive(drive, xSupplier, ySupplier, omegaSupplier, speedSupplier),
-        new PivotIntakeTele(pivot, intake, shooter, led, false));
+            joystickDrive(drive, xSupplier, ySupplier, omegaSupplier, speedSupplier),
+            new PivotIntakeTele(pivot, intake, shooter, led, false))
+        .andThen(new InstantCommand(() -> led.setState(LED_STATE.RED)));
   }
   /**
    * Field relative drive command using two joysticks (controlling linear and angular velocities).

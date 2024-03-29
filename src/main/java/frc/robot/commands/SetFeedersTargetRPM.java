@@ -36,7 +36,6 @@ public class SetFeedersTargetRPM extends Command {
   public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
-  // TODO needs to be implemented
   @Override
   public boolean isFinished() {
     return shooter.atFeederSetpoint();

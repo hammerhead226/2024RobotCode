@@ -46,6 +46,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
@@ -75,9 +76,6 @@ public class Drive extends SubsystemBase {
   private final SysIdRoutine sysId;
 
   private final PIDController rotationController;
-
-  private double timeSinceLastCorrection = 0;
-  private double lasttime = 0;
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -164,8 +162,6 @@ public class Drive extends SubsystemBase {
                 },
                 null,
                 this));
-
-    lasttime = Timer.getFPGATimestamp();
 
     rotationController = new PIDController(0.1, 0, 0);
 
@@ -557,6 +553,7 @@ public class Drive extends SubsystemBase {
     Rotation2d targetRotation;
     Logger.recordOutput("note timeess", getCachedNoteTime());
     if (getCachedNoteTime() != -1) {
+      led.setState(LED_STATE.FLASHING_RED);
       Translation2d cachedNoteT2d = getCachedNoteLocation();
       Logger.recordOutput("better translate", cachedNoteT2d);
       if (noteImageIsNew()) {
@@ -591,17 +588,15 @@ public class Drive extends SubsystemBase {
                 new PathConstraints(
                     2, 1.5, Units.degreesToRadians(100), Units.degreesToRadians(180)),
                 new GoalEndState(0.5, targetRotation, true));
-        // PathPlannerLogging.logActivePath(path);
-        // return AutoBuilder.followPath(path);
-        // Logger.recordOutput("epic path", path);
+
         path.preventFlipping = true;
         AutoBuilder.followPath(path).schedule();
-        // return new InstantCommand(() -> led.setState(LED_STATE.RED));
-
       } else {
+        led.setState(LED_STATE.PAPAYA_ORANGE);
         // return new InstantCommand(() -> led.setState(LED_STATE.FLASHING_RED));
       }
     } else {
+      led.setState(LED_STATE.WILLIAMS_BLUE);
       // return new InstantCommand(() -> led.setState(LED_STATE.FLASHING_GREEN));
     }
   }

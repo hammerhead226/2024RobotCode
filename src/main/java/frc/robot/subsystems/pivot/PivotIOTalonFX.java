@@ -27,7 +27,6 @@ public class PivotIOTalonFX implements PivotIO {
   private double startAngleDegs;
 
   private final StatusSignal<Double> leaderPositionDegs;
-  private final StatusSignal<Double> followPositionDegs;
   private final StatusSignal<Double> velocityDegsPerSec;
   private final StatusSignal<Double> appliedVolts;
   private final StatusSignal<Double> currentAmps;
@@ -60,7 +59,6 @@ public class PivotIOTalonFX implements PivotIO {
         Conversions.degreesToFalcon(startAngleDegs, Constants.PivotConstants.REDUCTION));
 
     leaderPositionDegs = leader.getPosition();
-    followPositionDegs = follower.getPosition();
     velocityDegsPerSec = leader.getVelocity();
     appliedVolts = leader.getMotorVoltage();
     currentAmps = leader.getStatorCurrent();

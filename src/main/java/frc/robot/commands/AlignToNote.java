@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
@@ -44,6 +45,8 @@ public class AlignToNote extends Command {
   public void end(boolean interrupted) {
     shooter.stopFeeders();
     intake.stopRollers();
+    intake.stopRollers();
+    led.setState(LED_STATE.BLUE);
   }
 
   // Returns true when the command should end.

@@ -5,20 +5,24 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.shooter.Shooter;
 
 public class IntakeNote extends Command {
   /** Creates a new IntakeNote. */
   private final Intake intake;
 
+  private final LED led;
   private final Shooter shooter;
 
-  public IntakeNote(Intake intake, Shooter shooter) {
+  public IntakeNote(Intake intake, Shooter shooter, LED led) {
     this.intake = intake;
     this.shooter = shooter;
+    this.led = led;
 
-    addRequirements(intake, shooter);
+    addRequirements(intake, shooter, led);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -38,6 +42,7 @@ public class IntakeNote extends Command {
   public void end(boolean interrupted) {
     shooter.setFeedersRPM(0);
     intake.stopRollers();
+    led.setState(LED_STATE.GREEN);
   }
 
   // Returns true when the command should end.

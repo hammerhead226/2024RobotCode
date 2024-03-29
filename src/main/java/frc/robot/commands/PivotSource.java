@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
+import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
@@ -22,6 +23,7 @@ public class PivotSource extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+        new InstantCommand(() -> led.setState(LED_STATE.HALF_FLASH_RED_HALF_FLASH_WHITE)),
         new SetPivotTarget(Constants.PivotConstants.SOURCE_SETPOINT_DEG, pivot),
         new WaitUntilCommand(pivot::atSetpoint),
         new InstantCommand(() -> shooter.setFlywheelRPMs(-2000, -2000), shooter),
