@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
@@ -31,7 +30,6 @@ public class AlignToNoteTeleop extends Command {
   /** Creates a new AlignToNoteTeleop. */
   private final Drive drive;
 
-  private final CommandXboxController controller;
   private final Pivot pivot;
   private final Intake intake;
   private final Shooter shooter;
@@ -57,7 +55,6 @@ public class AlignToNoteTeleop extends Command {
       Pivot pivot,
       Intake intake,
       LED led,
-      CommandXboxController controller,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier) {
 
@@ -90,7 +87,6 @@ public class AlignToNoteTeleop extends Command {
     this.pivot = pivot;
     this.intake = intake;
     this.led = led;
-    this.controller = controller;
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
   }

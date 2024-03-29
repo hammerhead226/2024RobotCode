@@ -80,12 +80,12 @@ public class LED_IOCANdle implements LED_IO {
     // candle.setLEDs(0, 0, 0);
     switch (ledState) {
       case RED:
-        // TODO:: MANUAL INTAKE
+        // TODO:: MANUAL INTAKE | RED
         candle.clearAnimation(0);
         candle.setLEDs(255, 0, 0, 0, 0, 57);
         break;
       case BLUE:
-        // TODO:: DEFAULT COLOR
+        // TODO:: DEFAULT COLOR | BLUE
         candle.clearAnimation(0);
         candle.setLEDs(0, 0, 255, 0, 0, 57);
         break;
@@ -99,12 +99,12 @@ public class LED_IOCANdle implements LED_IO {
         // led.set(Constants.LEDConstants.COLOR_VIOLET);
         break;
       case GREY:
-        // TODO:: SHOOT NOTE
+        // TODO:: SHOOT NOTE | GREY
         candle.clearAnimation(0);
         candle.setLEDs(137, 129, 123);
         break;
       case GREEN:
-        // TODO:: SENSOR SEES NOTE
+        // TODO:: SENSOR SEES NOTE | GREEN
         candle.clearAnimation(0);
         candle.setLEDs(0, 255, 0, 0, 32, 25);
         break;
@@ -117,27 +117,27 @@ public class LED_IOCANdle implements LED_IO {
         candle.setLEDs(0, 160, 222);
         break;
       case HALF_FLASH_RED_HALF_FLASH_WHITE:
-        // TODO:: INTAKING FROM SOURCE
+        // TODO:: INTAKING FROM SOURCE | HALF_FLASH_RED_HALF_FLASH_WHITE
         candle.animate(halfFlashWhite);
         candle.setLEDs(255, 0, 0, 0, 28, 28);
         break;
       case FLASHING_WHITE:
-        // TODO:: SIGNAL TO HUMAN PLAYER
+        // TODO:: SIGNAL TO HUMAN PLAYER | FLASHING WHITE
         candle.animate(flashWhite, 0);
         break;
       case FLASHING_GREEN:
-        // TODO:: AIMBOT 
+        // TODO:: AIMBOT | FLASHING GREEN
         candle.animate(flashGreen, 0);
         break;
       case FLASHING_RED:
-        // TODO:: TRAJECTORY INTAKE
+        // TODO:: TRAJECTORY INTAKE | FLASHING RED
         candle.animate(flashRed, 0);
         break;
       case FLASHING_BLUE:
         candle.animate(flashBlue, 0);
         break;
       case FIRE:
-        // TODO:: DISABLED
+        // TODO:: DISABLED | FIRE
         candle.animate(rainbow, 0);
         break;
       case OFF:
