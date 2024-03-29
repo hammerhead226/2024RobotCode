@@ -340,27 +340,6 @@ public class Drive extends SubsystemBase {
     toggle = !toggle;
   }
 
-  public void driveTo(Translation2d coord, Rotation2d angle) {
-    Translation2d translationErr = coord.minus(getPose().getTranslation());
-
-    Rotation2d rotationErr = angle.minus(getPose().getRotation());
-
-    rotationController.setSetpoint(angle.getDegrees());
-
-    Logger.recordOutput("note location err", translationErr);
-
-    Translation2d power = new Translation2d(translationErr.getNorm(), translationErr.getAngle());
-
-    Rotation2d rotPower = new Rotation2d(rotationErr.getRadians());
-
-    double angularSpeed = rotationController.calculate(getPose().getRotation().getDegrees());
-
-    runVelocity(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-            new ChassisSpeeds(-power.getX(), -power.getY(), rotPower.getDegrees()),
-            rawGyroRotation));
-  }
-
   /**
    * Runs the drive at the desired velocity.
    *
@@ -570,7 +549,7 @@ public class Drive extends SubsystemBase {
     AutoBuilder.followPath(path).schedule();
   }
 
-  public void AlignToNote(Intake intake, Pivot pivot, Shooter shooter, LED led) {
+  public void alignToNote(Intake intake, Pivot pivot, Shooter shooter, LED led) {
     intake.runRollers(12);
     pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
     shooter.setFeedersRPM(500);

@@ -32,7 +32,7 @@ public class AlignToNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drive.AlignToNote(intake, pivot, shooter, led);
+    drive.alignToNote(intake, pivot, shooter, led);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -41,7 +41,10 @@ public class AlignToNote extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    shooter.stopFeeders();
+    intake.stopRollers();
+  }
 
   // Returns true when the command should end.
   @Override

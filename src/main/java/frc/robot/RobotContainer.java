@@ -32,14 +32,12 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.Aimbot;
-import frc.robot.commands.AlignToAmp;
 import frc.robot.commands.AlignToNote;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AlignToNoteTeleop;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.BellevilleAlignToNoteAuto;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.DriveToCommand;
 import frc.robot.commands.PivotIntakeAuto;
 import frc.robot.commands.PivotIntakeTele;
 import frc.robot.commands.PivotSource;
@@ -526,9 +524,6 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    driveController.x().onTrue(new DriveToCommand(new Translation2d(15, 5), drive));
-
-    driveController.a().whileTrue(new AlignToAmp(drive));
     // driveController.a().onTrue(new SetPivotTarget(90, pivot));
 
     driveController.b().whileTrue(new TurnToSource(drive, driveController));
