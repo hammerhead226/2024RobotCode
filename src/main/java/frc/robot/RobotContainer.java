@@ -438,6 +438,7 @@ public class RobotContainer {
         "AutoAlignNoteCenter", new AlignToNoteAuto(drive, shooter, pivot, intake, led, 1.332));
     NamedCommands.registerCommand(
         "AutoAlignNoteAmp", new AlignToNoteAuto(drive, shooter, pivot, intake, led, 0.75));
+    NamedCommands.registerCommand("AlignToNote", new AlignToNote(intake, pivot, shooter, led, drive));
 
     // AUTO AIM COMMANDS
     NamedCommands.registerCommand("TurnToSpeaker", new TurnToSpeaker(drive, driveController));

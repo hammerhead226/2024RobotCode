@@ -3,6 +3,7 @@
   "robotLength": 0.66,
   "holonomicMode": true,
   "pathFolders": [
+    "$c!p-c2-c3-c1",
     "a!p-b1-c1-c2",
     "a!p-c1",
     "a!p-c1-b1",
@@ -16,6 +17,7 @@
     "s!p-c5-c4"
   ],
   "autoFolders": [
+    "states autos",
     "autos"
   ],
   "defaultMaxVel": 2.0,

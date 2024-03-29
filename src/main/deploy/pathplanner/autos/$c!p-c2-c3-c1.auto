@@ -1,0 +1,104 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2437546130441748,
+      "y": 5.539225686154654
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "PivotShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartFlywheelsCenter"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartFeeders"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$c!c2-c3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$c!score c3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aimbot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$c!score c1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aimbot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "states autos",
+  "choreoAuto": false
+}
