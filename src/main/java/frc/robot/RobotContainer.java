@@ -30,10 +30,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
-import frc.robot.commands.Aimbot;
+import frc.robot.commands.AimbotAuto;
+import frc.robot.commands.AimbotTele;
 import frc.robot.commands.AlignToNote;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AngleShooter;
+import frc.robot.commands.AngleShooterShoot;
 import frc.robot.commands.BellevilleAlignToNoteAuto;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotIntakeAuto;
@@ -239,7 +241,7 @@ public class RobotContainer {
         new SelectCommand<>(
             Map.ofEntries(
                 Map.entry(false, new InstantCommand(() -> shooter.setFeedersRPM(1000))),
-                Map.entry(true, new Aimbot(drive, driveController, shooter, pivot, led))),
+                Map.entry(true, new AimbotTele(drive, driveController, shooter, pivot, led))),
             this::isAimbot);
 
     climbCommands =
@@ -438,13 +440,23 @@ public class RobotContainer {
         "AutoAlignNoteCenter", new AlignToNoteAuto(drive, shooter, pivot, intake, led, 1.332));
     NamedCommands.registerCommand(
         "AutoAlignNoteAmp", new AlignToNoteAuto(drive, shooter, pivot, intake, led, 0.75));
-    NamedCommands.registerCommand("AlignToNote", new AlignToNote(intake, pivot, shooter, led, drive));
+    NamedCommands.registerCommand(
+        "AlignToNote", new AlignToNote(intake, pivot, shooter, led, drive));
 
     // AUTO AIM COMMANDS
     NamedCommands.registerCommand("TurnToSpeaker", new TurnToSpeaker(drive, driveController));
     NamedCommands.registerCommand("AngleShooter", new AngleShooter(drive, shooter, pivot));
     NamedCommands.registerCommand(
-        "Aimbot", new Aimbot(drive, driveController, shooter, pivot, led));
+        "AngleShooterShoot",
+        new AngleShooterShoot(drive, shooter, pivot)
+            .andThen(
+                new WaitCommand(1.5).andThen(new InstantCommand(() -> shooter.stopFeeders()))));
+    NamedCommands.registerCommand(
+        "Aimbot", new AimbotTele(drive, driveController, shooter, pivot, led));
+    NamedCommands.registerCommand("AimbotAuto", new AimbotAuto(drive, shooter, pivot, led));
+
+    NamedCommands.registerCommand("EnableOverride", new InstantCommand(() -> drive.enabledOverride()));
+    NamedCommands.registerCommand("DisableOverride", new InstantCommand(() -> drive.disableOverride()));
 
     // Set up auto routines
     autos = new SendableChooser<>();
@@ -472,6 +484,10 @@ public class RobotContainer {
     autos.addOption("auto alignment test", AutoBuilder.buildAuto("auto alignment test"));
 
     autos.addOption("New New Auto", AutoBuilder.buildAuto("New New Auto"));
+
+    autos.addOption("test path", AutoBuilder.buildAuto("test path"));
+
+    autos.addOption("$s!p-c5-c4", AutoBuilder.buildAuto("$s!p-c5-c4"));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", autos);
 
@@ -532,7 +548,7 @@ public class RobotContainer {
     //             shooter));
     // driveController.x().whileTrue(new TurnToSpeaker(drive, driveController));
     // driveController.x().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
-    driveController.y().onTrue(new Aimbot(drive, driveController, shooter, pivot, led));
+    driveController.y().onTrue(new AimbotTele(drive, driveController, shooter, pivot, led));
 
     // driveController.a().onTrue(new TurnToSpeaker(drive, driveController));
     // driveController.a().onTrue(new SetPivotTarget(40, pivot));
@@ -731,6 +747,7 @@ public class RobotContainer {
                 .andThen(new InstantCommand(() -> pivot.setAimbot(true))));
 
     manipController.rightTrigger().onTrue(new SetFeedersTargetRPM(1000, shooter));
+
     manipController
         .rightTrigger()
         .onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));

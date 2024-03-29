@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.297877331865775,
+        "y": 5.5300514351028704
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.3978773318657751,
+        "y": 5.5300514351028704
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.3249301498603,
+        "y": 5.5300514351028704
+      },
+      "prevControl": {
+        "x": 2.2249301498603,
+        "y": 5.5300514351028704
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0.5,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "prathik center",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

@@ -16,6 +16,7 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -55,6 +56,7 @@ import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LocalADStarAK;
 import java.util.List;
+import java.util.Optional;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -66,6 +68,8 @@ public class Drive extends SubsystemBase {
   private static final double MAX_ANGULAR_SPEED = Constants.SwerveConstants.MAX_ANGULAR_SPEED;
   private static double multiplier = 1.0;
   private static boolean toggle = false;
+
+  private boolean overridePathplanner = false;
 
   private NetworkTable limelightintake =
       NetworkTableInstance.getDefault().getTable(Constants.LL_INTAKE);
@@ -145,6 +149,8 @@ public class Drive extends SubsystemBase {
         (targetPose) -> {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
+
+    PPHolonomicDriveController.setRotationTargetOverride(this::turnToSpeakerAngle);
 
     // Configure SysId
     sysId =
@@ -515,6 +521,38 @@ public class Drive extends SubsystemBase {
 
   public double getCachedNoteTime() {
     return lastNoteLocT2d.time;
+  }
+
+  public void enabledOverride() {
+    overridePathplanner = true;
+  }
+
+  public void disableOverride() {
+    overridePathplanner = false;
+  }
+
+  public Optional<Rotation2d> turnToSpeakerAngle() {
+    double targetAngle;
+    if (overridePathplanner) {
+      if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+        targetAngle =
+            new Rotation2d(
+                        FieldConstants.fieldLength - getPose().getX(),
+                        FieldConstants.Speaker.speakerCenterY - getPose().getY())
+                    .getDegrees()
+                + 180;
+
+      } else {
+        targetAngle =
+            new Rotation2d(
+                        -getPose().getX(), FieldConstants.Speaker.speakerCenterY - getPose().getY())
+                    .getDegrees()
+                + 180;
+      }
+      return Optional.of(Rotation2d.fromDegrees(targetAngle));
+    }
+
+    return Optional.empty();
   }
 
   public PathPlannerPath generateTrajectory(
