@@ -33,10 +33,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.Aimbot;
 import frc.robot.commands.AlignToAmp;
+import frc.robot.commands.AlignToNote;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AlignToNoteTeleop;
 import frc.robot.commands.AngleShooter;
-import frc.robot.commands.AutoPickupNote;
 import frc.robot.commands.BellevilleAlignToNoteAuto;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriveToCommand;
@@ -662,7 +662,11 @@ public class RobotContainer {
 
     driveController.x().onTrue(elevatorCommands);
 
-    driveController.y().onTrue(new AutoPickupNote(intake, pivot, shooter, drive, led));
+    driveController.y().whileTrue(new AlignToNote(intake, pivot, shooter, led, drive));
+    driveController.y().onFalse(new InstantCommand(() -> drive.stop()));
+
+    // driveController.y().onTrue(new FollowPath(drive, drive.generateTrajectory(new Pose2d(16, 7,
+    // new Rotation2d()), 1, 1, 180, 180, 0)));
 
     // driveController.y().onTrue(new AutoPivotIntake(pivot, intake, shooter, 41, false));
     // driveController.y().onFalse(new InstantCommand(intake::stopRollers));

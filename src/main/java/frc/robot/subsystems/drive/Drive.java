@@ -16,8 +16,12 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.VecBuilder;
@@ -42,8 +46,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.led.LED;
+import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LocalADStarAK;
+import java.util.List;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -80,7 +90,7 @@ public class Drive extends SubsystemBase {
       };
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
-  TimestampedT2d lastNoteLocT2d;
+  TimestampedT2d lastNoteLocT2d = new TimestampedT2d(new Translation2d(0, 0), -1.);
 
   public class TimestampedPose2d {
     Pose2d pose;
@@ -90,6 +100,11 @@ public class Drive extends SubsystemBase {
   public class TimestampedT2d {
     Translation2d translation;
     double time;
+
+    public TimestampedT2d(Translation2d translation, double time) {
+      this.translation = translation;
+      this.time = time;
+    }
   }
 
   CircularBuffer<TimestampedPose2d> robotPoseBuffer;
@@ -113,7 +128,11 @@ public class Drive extends SubsystemBase {
         () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new HolonomicPathFollowerConfig(
-            MAX_LINEAR_SPEED, DRIVE_BASE_RADIUS, new ReplanningConfig()),
+            new PIDConstants(5),
+            new PIDConstants(1.5),
+            MAX_LINEAR_SPEED,
+            DRIVE_BASE_RADIUS,
+            new ReplanningConfig()),
         () ->
             DriverStation.getAlliance().isPresent()
                 && DriverStation.getAlliance().get() == Alliance.Red,
@@ -207,15 +226,23 @@ public class Drive extends SubsystemBase {
         "limelilght alig latency", LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN));
     Logger.recordOutput("limelight intake hb", limelightintake.getEntry("hb").getDouble(0.0));
 
+    // Logger.recordOutput("note time", getCachedNoteTime());
     // Note Pose estimating
     updatePoseBuffer();
     if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
       double taThreshold = 0;
-      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold ) {
+      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold) {
         lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
         lastNoteLocT2d.time = Timer.getFPGATimestamp();
       }
     }
+
+    Logger.recordOutput(
+        "rotation for note",
+        new Rotation2d(
+                getCachedNoteLocation().getX() - getPose().getX(),
+                getCachedNoteLocation().getY() - getPose().getY())
+            .getDegrees());
   }
 
   private void updatePoseBuffer() {
@@ -473,7 +500,8 @@ public class Drive extends SubsystemBase {
 
     // camera relative -> bot relative -> field relative
     Translation2d camRelNoteLocT2d =
-        new Translation2d(Units.inchesToMeters(radiusInch), Rotation2d.fromDegrees(noteYawAngleDeg));
+        new Translation2d(
+            Units.inchesToMeters(radiusInch), Rotation2d.fromDegrees(noteYawAngleDeg));
     Logger.recordOutput("NoteTracking/camRelNoteLocT2d", camRelNoteLocT2d);
 
     Translation2d roboRelNoteLocT2d =
@@ -491,17 +519,112 @@ public class Drive extends SubsystemBase {
             .rotateBy(pickedRobotPose.getRotation())
             .plus(pickedRobotPose.getTranslation());
     Logger.recordOutput("NoteTracking/fieldRelNoteLocT2d", fieldRelNoteLocT2d);
-
+    Logger.recordOutput(
+        "distance from center of robot",
+        Units.metersToInches(fieldRelNoteLocT2d.getDistance(getPose().getTranslation())));
     return fieldRelNoteLocT2d;
   }
 
   public Translation2d getCachedNoteLocation() {
+    // if (lastNoteLocT2d.translation.equals(null)) {
+    // return new Translation2d(0, 0);
+    // } else {
     return lastNoteLocT2d.translation;
+    // }
   }
 
-  public boolean NoteImageIsNew() {
+  public boolean noteImageIsNew() {
     double maxNoteAge = 1.0; // seconds
     return Timer.getFPGATimestamp() - lastNoteLocT2d.time < maxNoteAge;
+  }
+
+  public double getCachedNoteTime() {
+    return lastNoteLocT2d.time;
+  }
+
+  public PathPlannerPath generateTrajectory(
+      Pose2d target,
+      double maxVelMetersPerSec,
+      double maxAccelMetersPerSecSquared,
+      double maxAngVelDegPerSec,
+      double maxAngAccelDegPerSecSquared,
+      double endVelMetersPerSec) {
+    List<Translation2d> points =
+        PathPlannerPath.bezierFromPoses(
+            new Pose2d(getPose().getY(), getPose().getX(), getPose().getRotation()),
+            new Pose2d(target.getY(), target.getX(), target.getRotation()));
+    PathPlannerPath path =
+        new PathPlannerPath(
+            points,
+            new PathConstraints(
+                maxAngVelDegPerSec,
+                maxAccelMetersPerSecSquared,
+                Units.degreesToRadians(maxAngVelDegPerSec),
+                Units.degreesToRadians(maxAngAccelDegPerSecSquared)),
+            new GoalEndState(endVelMetersPerSec, target.getRotation(), true));
+
+    return path;
+  }
+
+  public void runPath(PathPlannerPath path) {
+    AutoBuilder.followPath(path).schedule();
+  }
+
+  public void AlignToNote(Intake intake, Pivot pivot, Shooter shooter, LED led) {
+    intake.runRollers(12);
+    pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
+    shooter.setFeedersRPM(500);
+
+    Rotation2d targetRotation;
+    Logger.recordOutput("note timeess", getCachedNoteTime());
+    if (getCachedNoteTime() != -1) {
+      Translation2d cachedNoteT2d = getCachedNoteLocation();
+      Logger.recordOutput("better translate", cachedNoteT2d);
+      if (noteImageIsNew()) {
+
+        targetRotation =
+            new Rotation2d(
+                cachedNoteT2d.getX() - getPose().getX(), cachedNoteT2d.getY() - getPose().getY());
+        List<Translation2d> pointsToNote;
+        if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
+          Logger.recordOutput(
+              "goal point blue",
+              new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+          pointsToNote =
+              PathPlannerPath.bezierFromPoses(
+                  new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
+                  new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+        } else {
+          Logger.recordOutput(
+              "goal point red",
+              new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+          pointsToNote =
+              PathPlannerPath.bezierFromPoses(
+                  new Pose2d(
+                      FieldConstants.fieldLength - getPose().getX(),
+                      getPose().getY(),
+                      getPose().getRotation()),
+                  new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+        }
+        PathPlannerPath path =
+            new PathPlannerPath(
+                pointsToNote,
+                new PathConstraints(
+                    2, 1.5, Units.degreesToRadians(100), Units.degreesToRadians(180)),
+                new GoalEndState(0.5, targetRotation, true));
+        // PathPlannerLogging.logActivePath(path);
+        // return AutoBuilder.followPath(path);
+        // Logger.recordOutput("epic path", path);
+        path.preventFlipping = true;
+        AutoBuilder.followPath(path).schedule();
+        // return new InstantCommand(() -> led.setState(LED_STATE.RED));
+
+      } else {
+        // return new InstantCommand(() -> led.setState(LED_STATE.FLASHING_RED));
+      }
+    } else {
+      // return new InstantCommand(() -> led.setState(LED_STATE.FLASHING_GREEN));
+    }
   }
 
   /** Returns an array of module translations. */
