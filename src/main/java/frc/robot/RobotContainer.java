@@ -455,35 +455,19 @@ public class RobotContainer {
         "Aimbot", new AimbotTele(drive, driveController, shooter, pivot, led));
     NamedCommands.registerCommand("AimbotAuto", new AimbotAuto(drive, shooter, pivot, led));
 
-    NamedCommands.registerCommand("EnableOverride", new InstantCommand(() -> drive.enabledOverride()));
-    NamedCommands.registerCommand("DisableOverride", new InstantCommand(() -> drive.disableOverride()));
+    NamedCommands.registerCommand(
+        "EnableOverride", new InstantCommand(() -> drive.enabledOverride()));
+    NamedCommands.registerCommand(
+        "DisableOverride", new InstantCommand(() -> drive.disableOverride()));
 
     // Set up auto routines
     autos = new SendableChooser<>();
 
-    autos.addOption("good center 3 piece", AutoBuilder.buildAuto("good center 3 piece"));
+    autos.addOption("$s!p-b3-c5-c4", AutoBuilder.buildAuto("$s!p-b3-c5-c4"));
 
-    autos.addOption("c!p-b2", AutoBuilder.buildAuto("c!p-b2"));
+    autos.addOption("$a!p-b1-c1-c2", AutoBuilder.buildAuto("$a!p-b1-c1-c2"));
 
-    autos.addOption("s!p-c5", AutoBuilder.buildAuto("s!p-c5"));
-
-    autos.addOption("s!p-c5-c4", AutoBuilder.buildAuto("s!p-c5-c4"));
-
-    autos.addOption("a!p-c1", AutoBuilder.buildAuto("a!p-c1"));
-
-    autos.addOption("a!p-c1-c2", AutoBuilder.buildAuto("a!p-c1-c2"));
-
-    autos.addOption("a!p-b1-c1-c2", AutoBuilder.buildAuto("a!p-b1-c1-c2"));
-
-    autos.addOption("c!p-b2-b3-b1", AutoBuilder.buildAuto("c!p-b2-b3-b1"));
-
-    autos.addOption("aac!p-b2-b3-b1", AutoBuilder.buildAuto("aac!p-b2-b3-b1"));
-
-    autos.addOption("c!p-b2-b3", AutoBuilder.buildAuto("c!p-b2-b3"));
-
-    autos.addOption("auto alignment test", AutoBuilder.buildAuto("auto alignment test"));
-
-    autos.addOption("New New Auto", AutoBuilder.buildAuto("New New Auto"));
+    autos.addOption("$c!p-b3-b2-b1", AutoBuilder.buildAuto("$c!p-b3-b2-b1"));
 
     autos.addOption("test path", AutoBuilder.buildAuto("test path"));
 

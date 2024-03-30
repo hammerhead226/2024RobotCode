@@ -36,6 +36,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "DisableOverride"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "$apb1c(12)!c2"
@@ -51,6 +57,12 @@
           "type": "path",
           "data": {
             "pathName": "$apb1c(12)!score c2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DisableOverride"
           }
         }
       ]
