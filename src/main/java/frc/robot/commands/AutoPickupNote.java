@@ -4,25 +4,33 @@
 
 package frc.robot.commands;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
+import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
 import org.littletonrobotics.junction.Logger;
 
-public class AlignToNoteAuto extends Command {
+public class AutoPickupNote extends Command {
   /** Creates a new AlignToNote. */
   LED led;
 
   Drive drive;
+  Pivot pivot;
+  Intake intake;
   Shooter shooter;
   Command pathCommand;
 
   private boolean finished;
 
-  public AlignToNoteAuto(LED led, Drive drive, Shooter shooter) {
+  public AutoPickupNote(LED led, Drive drive, Shooter shooter, Intake intake, Pivot pivot) {
     this.shooter = shooter;
+    this.pivot = pivot;
+    this.intake = intake;
     this.led = led;
     this.drive = drive;
     finished = false;
@@ -33,23 +41,31 @@ public class AlignToNoteAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    Logger.recordOutput("auto pickup init", "true");
+    intake.runRollers(12);
+    shooter.setFeedersRPM(500);
+    pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
     // this.pathCommand = drive.alignToNote();
     // pathCommand.schedule();
-    drive.alignToNote();
+    pathCommand = AutoBuilder.followPath(drive.generatePathToNote());
+    pathCommand.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Logger.recordOutput("path is finished", pathCommand.isFinished());
 
     finished = shooter.seesNote();
+    pathCommand.execute();
+    Logger.recordOutput("path is finished", finished);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     led.setState(LED_STATE.PAPAYA_ORANGE);
+    intake.stopRollers();
+    shooter.stopFeeders();
     // pathCommand.cancel();
   }
 

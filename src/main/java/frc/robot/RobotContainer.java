@@ -33,10 +33,10 @@ import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.AimbotAuto;
 import frc.robot.commands.AimbotTele;
 import frc.robot.commands.AlignToNote;
-import frc.robot.commands.AlignToNoteAuto;
+import frc.robot.commands.AlignToNoteDuringAuto;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.AngleShooterShoot;
-import frc.robot.commands.BellevilleAlignToNoteAuto;
+import frc.robot.commands.AutoPickupNote;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotIntakeAuto;
 import frc.robot.commands.PivotIntakeTele;
@@ -123,7 +123,7 @@ public class RobotContainer {
 
   private final Command climbCommands;
 
-  private final Command intakeLEDCommands;
+  //   private final Command intakeLEDCommands;
 
   private final Command shootCommands;
 
@@ -211,12 +211,12 @@ public class RobotContainer {
 
     climbStateMachine = new ClimbStateMachine(elevator, shooter, pivot);
 
-    intakeLEDCommands =
-        new SelectCommand<>(
-            Map.ofEntries(
-                Map.entry(false, new InstantCommand(() -> led.setState(LED_STATE.YELLOW), led)),
-                Map.entry(true, new InstantCommand(() -> led.setState(LED_STATE.BLUE), led))),
-            this::isAutoAlign);
+    // intakeLEDCommands =
+    //     new SelectCommand<>(
+    //         Map.ofEntries(
+    //             Map.entry(false, new InstantCommand(() -> led.setState(LED_STATE.YELLOW), led)),
+    //             Map.entry(true, new InstantCommand(() -> led.setState(LED_STATE.BLUE), led))),
+    //         this::isAutoAlign);
 
     intakeCommands =
         new SelectCommand<>(
@@ -234,7 +234,7 @@ public class RobotContainer {
                         () -> -driveController.getLeftX(),
                         () -> -driveController.getRightX(),
                         () -> driveController.getLeftTriggerAxis())),
-                Map.entry(true, new AlignToNote(intake, pivot, shooter, led, drive))),
+                Map.entry(true, new AlignToNote(intake, pivot, shooter, drive))),
             this::isAutoAlign);
 
     shootCommands =
@@ -410,6 +410,8 @@ public class RobotContainer {
         "StartFlywheelsAmp", new InstantCommand(() -> shooter.setFlywheelRPMSAmp(), shooter));
     NamedCommands.registerCommand(
         "StartFlySlower", new InstantCommand(() -> shooter.setFlywheelRPMs(4050, 4050)));
+    NamedCommands.registerCommand(
+        "StopFlywheels", new InstantCommand(() -> shooter.stopFlywheels()));
 
     NamedCommands.registerCommand(
         "StartFeeders", new InstantCommand(() -> shooter.setFeedersRPM(4000), shooter));
@@ -430,19 +432,28 @@ public class RobotContainer {
 
     // NOTE ALIGNMENT NAMED COMMANDS
     NamedCommands.registerCommand(
-        "BellevilleAutoAlignNoteCenter", new BellevilleAlignToNoteAuto(drive, led, 1.332));
-    NamedCommands.registerCommand(
-        "BellevilleAutoAlignNoteAmp", new BellevilleAlignToNoteAuto(drive, led, 0.75));
-    NamedCommands.registerCommand(
-        "AutoAlignNoteFar", new AlignToNoteAuto(drive, shooter, pivot, intake, led, 2.26));
+        "AlignToNote2",
+        new AlignToNoteDuringAuto(led, pivot, intake, shooter)
+            .withTimeout(2.5)
+            .andThen(
+                new InstantCommand(() -> shooter.setFeedersRPM(150))
+                    .andThen(new WaitCommand(0.1))
+                    .andThen(new InstantCommand(shooter::stopFeeders)))
+            .andThen(
+                new ParallelCommandGroup(
+                    new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
+                    new InstantCommand(() -> led.setState(LED_STATE.BLUE)),
+                    new InstantCommand(() -> intake.stopRollers()))));
 
+    // NamedCommands.registerCommand("AlignToNote4", new AlignToNote(intake, pivot, shooter,
+    // drive));
     NamedCommands.registerCommand(
-        "AutoAlignNoteCenter", new AlignToNoteAuto(drive, shooter, pivot, intake, led, 1.332));
-    NamedCommands.registerCommand(
-        "AutoAlignNoteAmp", new AlignToNoteAuto(drive, shooter, pivot, intake, led, 0.75));
-    NamedCommands.registerCommand(
-        "AlignToNote", new AlignToNote(intake, pivot, shooter, led, drive));
-
+        "AlignToNote5",
+        // new AlignToNoteDuringAuto(pivot, intake, shooter)
+        // .andThen(
+        new AutoPickupNote(led, drive, shooter, intake, pivot)
+            .until(() -> shooter.seesNote())
+            .andThen(new InstantCommand(() -> intake.stopRollers())));
     // AUTO AIM COMMANDS
     NamedCommands.registerCommand("TurnToSpeaker", new TurnToSpeaker(drive, driveController));
     NamedCommands.registerCommand("AngleShooter", new AngleShooter(drive, shooter, pivot));
@@ -472,6 +483,8 @@ public class RobotContainer {
     autos.addOption("test path", AutoBuilder.buildAuto("test path"));
 
     autos.addOption("$s!p-c5-c4", AutoBuilder.buildAuto("$s!p-c5-c4"));
+
+    autos.addOption("New Auto", AutoBuilder.buildAuto("New Auto"));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", autos);
 
@@ -598,9 +611,7 @@ public class RobotContainer {
             () -> -driveController.getRightX(),
             () -> driveController.getLeftTriggerAxis()));
 
-    driveController
-        .back()
-        .onTrue(new InstantCommand(intake::toggleAutoAlign, intake).andThen(intakeLEDCommands));
+    driveController.back().onTrue(new InstantCommand(intake::toggleAutoAlign, intake));
 
     driveController
         .start()
@@ -617,14 +628,12 @@ public class RobotContainer {
         .rightBumper()
         .onFalse(
             new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)
-                .andThen(new PositionNoteInFeeder(shooter, intake))
+                // .andThen(new PositionNoteInFeeder(shooter, intake))
                 .andThen(
                     new InstantCommand(shooter::stopFeeders)
                         .andThen(
                             new InstantCommand(intake::stopRollers)
-                                .andThen(
-                                    new InstantCommand(
-                                        () -> led.setState(intake.getIntakeState()))))));
+                                .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE))))));
 
     driveController.leftBumper().whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true));
     driveController
@@ -647,8 +656,13 @@ public class RobotContainer {
 
     driveController.x().onTrue(elevatorCommands);
 
-    driveController.y().whileTrue(new AlignToNote(intake, pivot, shooter, led, drive));
-    driveController.y().onFalse(new InstantCommand(() -> drive.stop()));
+    driveController.y().whileTrue(new AlignToNote(intake, pivot, shooter, drive));
+    driveController
+        .y()
+        .onFalse(
+            new InstantCommand(() -> shooter.setFeedersRPM(150))
+                .andThen(new WaitCommand(0.7))
+                .andThen(new InstantCommand(shooter::stopFeeders)));
 
     // driveController.y().onTrue(new FollowPath(drive, drive.generateTrajectory(new Pose2d(16, 7,
     // new Rotation2d()), 1, 1, 180, 180, 0)));

@@ -44,14 +44,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.Constants.LED_STATE;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.led.LED;
-import frc.robot.subsystems.pivot.Pivot;
-import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LocalADStarAK;
@@ -228,7 +224,7 @@ public class Drive extends SubsystemBase {
         "limelilght alig latency", LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN));
     Logger.recordOutput("limelight intake hb", limelightintake.getEntry("hb").getDouble(0.0));
 
-    // Logger.recordOutput("note time", getCachedNoteTime());
+    Logger.recordOutput("note time", getCachedNoteTime());
     // Note Pose estimating
     updatePoseBuffer();
     if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
@@ -583,15 +579,19 @@ public class Drive extends SubsystemBase {
     AutoBuilder.followPath(path).schedule();
   }
 
-  public void alignToNote(Intake intake, Pivot pivot, Shooter shooter, LED led) {
-    intake.runRollers(12);
-    pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
-    shooter.setFeedersRPM(500);
+  public PathPlannerPath generatePathToNote() {
+    if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
+      double taThreshold = 0;
+      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold) {
+        lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
+        lastNoteLocT2d.time = Timer.getFPGATimestamp();
+      }
+    }
 
     Rotation2d targetRotation;
     Logger.recordOutput("note timeess", getCachedNoteTime());
     if (getCachedNoteTime() != -1) {
-      led.setState(LED_STATE.FLASHING_RED);
+      // led.setState(LED_STATE.FLASHING_RED);
       Translation2d cachedNoteT2d = getCachedNoteLocation();
       Logger.recordOutput("better translate", cachedNoteT2d);
       if (noteImageIsNew()) {
@@ -628,14 +628,94 @@ public class Drive extends SubsystemBase {
                 new GoalEndState(0.5, targetRotation, true));
 
         path.preventFlipping = true;
-        AutoBuilder.followPath(path).schedule();
+        // AutoBuilder.followPath(path).schedule();
+        Logger.recordOutput("follow path", true);
+        return path;
       } else {
-        led.setState(LED_STATE.PAPAYA_ORANGE);
-        // return new InstantCommand(() -> led.setState(LED_STATE.FLASHING_RED));
+        // return;
+        // led.setState(LED_STATE.PAPAYA_ORANGE);
+        return new PathPlannerPath(
+            PathPlannerPath.bezierFromPoses(
+                new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
+                new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation())),
+            new PathConstraints(0.1, 1.5, Units.degreesToRadians(100), Units.degreesToRadians(180)),
+            new GoalEndState(0.5, getPose().getRotation(), true));
       }
     } else {
-      led.setState(LED_STATE.WILLIAMS_BLUE);
-      // return new InstantCommand(() -> led.setState(LED_STATE.FLASHING_GREEN));
+      // return;
+      // led.setState(LED_STATE.WILLIAMS_BLUE);
+      return new PathPlannerPath(
+          PathPlannerPath.bezierFromPoses(
+              new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
+              new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation())),
+          new PathConstraints(0.1, 1.5, Units.degreesToRadians(100), Units.degreesToRadians(180)),
+          new GoalEndState(0.5, getPose().getRotation(), true));
+    }
+  }
+  // }
+  // }
+  public Command alignToNote() {
+
+    if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
+      double taThreshold = 0;
+      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold) {
+        lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
+        lastNoteLocT2d.time = Timer.getFPGATimestamp();
+      }
+    }
+
+    Rotation2d targetRotation;
+    Logger.recordOutput("note timeess", getCachedNoteTime());
+    if (getCachedNoteTime() != -1) {
+      // led.setState(LED_STATE.FLASHING_RED);
+      Translation2d cachedNoteT2d = getCachedNoteLocation();
+      Logger.recordOutput("better translate", cachedNoteT2d);
+      if (noteImageIsNew()) {
+
+        targetRotation =
+            new Rotation2d(
+                cachedNoteT2d.getX() - getPose().getX(), cachedNoteT2d.getY() - getPose().getY());
+        List<Translation2d> pointsToNote;
+        if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
+          Logger.recordOutput(
+              "goal point blue",
+              new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+          pointsToNote =
+              PathPlannerPath.bezierFromPoses(
+                  new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
+                  new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+        } else {
+          Logger.recordOutput(
+              "goal point red",
+              new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+          pointsToNote =
+              PathPlannerPath.bezierFromPoses(
+                  new Pose2d(
+                      FieldConstants.fieldLength - getPose().getX(),
+                      getPose().getY(),
+                      getPose().getRotation()),
+                  new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+        }
+        PathPlannerPath path =
+            new PathPlannerPath(
+                pointsToNote,
+                new PathConstraints(
+                    2, 1.5, Units.degreesToRadians(100), Units.degreesToRadians(180)),
+                new GoalEndState(0.5, targetRotation, true));
+
+        path.preventFlipping = true;
+        // AutoBuilder.followPath(path).schedule();
+        Logger.recordOutput("follow path", true);
+        return AutoBuilder.followPath(path);
+      } else {
+        // return;
+        // led.setState(LED_STATE.PAPAYA_ORANGE);
+        return new InstantCommand(() -> Logger.recordOutput("BAD FALSE ALARM 1", 1));
+      }
+    } else {
+      // return;
+      // led.setState(LED_STATE.WILLIAMS_BLUE);
+      return new InstantCommand(() -> Logger.recordOutput("BAD FALSE ALARM 1", 21));
     }
   }
 

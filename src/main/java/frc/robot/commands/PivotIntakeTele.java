@@ -29,11 +29,12 @@ public class PivotIntakeTele extends SequentialCommandGroup {
           new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
           new WaitUntilCommand(pivot::atSetpoint),
           new IntakeNote(intake, shooter, led),
+          new InstantCommand(() -> led.setState(LED_STATE.GREEN)),
           new InstantCommand(() -> shooter.setFeedersRPM(150)),
-          new WaitCommand(1),
-          new InstantCommand(shooter::stopFeeders),
-          new WaitCommand(2),
-          new InstantCommand(() -> led.setState(LED_STATE.BLUE)));
+          new WaitCommand(0.7),
+          new InstantCommand(shooter::stopFeeders));
+      //  new WaitCommand(2)
+      // new InstantCommand(() -> led.setState(LED_STATE.BLUE))
       // new InstantCommand(shooter::stopFeedWhenSeen, shooter));
       ;
     } else {

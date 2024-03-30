@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.shooter.Shooter;
@@ -42,7 +41,7 @@ public class IntakeNote extends Command {
   public void end(boolean interrupted) {
     shooter.setFeedersRPM(0);
     intake.stopRollers();
-    led.setState(LED_STATE.GREEN);
+    // if (shooter.seesNote()) ;
   }
 
   // Returns true when the command should end.

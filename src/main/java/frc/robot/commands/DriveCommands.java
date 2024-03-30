@@ -51,10 +51,11 @@ public class DriveCommands {
       DoubleSupplier omegaSupplier,
       DoubleSupplier speedSupplier) {
 
-    return new ParallelCommandGroup(
-            joystickDrive(drive, xSupplier, ySupplier, omegaSupplier, speedSupplier),
-            new PivotIntakeTele(pivot, intake, shooter, led, false))
-        .andThen(new InstantCommand(() -> led.setState(LED_STATE.RED)));
+    return new InstantCommand(() -> led.setState(LED_STATE.RED))
+        .andThen(
+            new ParallelCommandGroup(
+                joystickDrive(drive, xSupplier, ySupplier, omegaSupplier, speedSupplier),
+                new PivotIntakeTele(pivot, intake, shooter, led, false)));
   }
   /**
    * Field relative drive command using two joysticks (controlling linear and angular velocities).

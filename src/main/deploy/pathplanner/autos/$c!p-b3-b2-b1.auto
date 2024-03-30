@@ -38,6 +38,12 @@
                 "data": {
                   "name": "StartFeeders"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopFlywheels"
+                }
               }
             ]
           }
@@ -87,7 +93,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "$cpb(321)!c1"
+            "pathName": "$cpb(321)!b1"
           }
         },
         {
