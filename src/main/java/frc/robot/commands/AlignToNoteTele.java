@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
@@ -13,66 +12,56 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
-import org.littletonrobotics.junction.Logger;
 
-public class AutoPickupNote extends Command {
+public class AlignToNoteTele extends Command {
   /** Creates a new AlignToNote. */
-  LED led;
-
-  Drive drive;
-  Pivot pivot;
   Intake intake;
+
+  Pivot pivot;
   Shooter shooter;
+  LED led;
+  Drive drive;
   Command pathCommand;
 
-  private boolean finished;
-
-  public AutoPickupNote(LED led, Drive drive, Shooter shooter, Intake intake, Pivot pivot) {
-    this.shooter = shooter;
-    this.pivot = pivot;
+  public AlignToNoteTele(Intake intake, Pivot pivot, Shooter shooter, Drive drive, LED led) {
     this.intake = intake;
+    this.pivot = pivot;
+    this.shooter = shooter;
     this.led = led;
     this.drive = drive;
-    finished = false;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drive, shooter, led);
+    addRequirements(drive, intake, pivot, shooter, led);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Logger.recordOutput("auto pickup init", "true");
+    this.pathCommand = drive.alignToNote(led);
+    pathCommand.initialize();
     intake.runRollers(12);
     shooter.setFeedersRPM(500);
     pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
-    // this.pathCommand = drive.alignToNote();
-    // pathCommand.schedule();
-    pathCommand = AutoBuilder.followPath(drive.generatePathToNote());
-    pathCommand.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    finished = shooter.seesNote();
     pathCommand.execute();
-    Logger.recordOutput("path is finished", finished);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    led.setState(LED_STATE.PAPAYA_ORANGE);
     intake.stopRollers();
     shooter.stopFeeders();
-    // pathCommand.cancel();
+    pivot.setPivotGoal(Constants.PivotConstants.STOW_SETPOINT_DEG);
+    pathCommand.cancel();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    Logger.recordOutput("isFinished align note", shooter.seesNote());
-    return shooter.seesNote() || finished;
+    if (shooter.seesNote()) led.setState(LED_STATE.GREEN);
+    return shooter.seesNote();
   }
 }

@@ -1,14 +1,32 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.297877331865775,
+      "y": 5.5300514351028704
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "New Path"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "AlignToNote5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aimbot"
           }
         }
       ]

@@ -48,6 +48,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Constants.LED_STATE;
+import frc.robot.subsystems.led.LED;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LocalADStarAK;
@@ -545,6 +547,8 @@ public class Drive extends SubsystemBase {
                     .getDegrees()
                 + 180;
       }
+
+      Logger.recordOutput("target angle for tts", targetAngle);
       return Optional.of(Rotation2d.fromDegrees(targetAngle));
     }
 
@@ -654,7 +658,7 @@ public class Drive extends SubsystemBase {
   }
   // }
   // }
-  public Command alignToNote() {
+  public Command alignToNote(LED led) {
 
     if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
       double taThreshold = 0;
@@ -667,7 +671,7 @@ public class Drive extends SubsystemBase {
     Rotation2d targetRotation;
     Logger.recordOutput("note timeess", getCachedNoteTime());
     if (getCachedNoteTime() != -1) {
-      // led.setState(LED_STATE.FLASHING_RED);
+      led.setState(LED_STATE.FLASHING_RED);
       Translation2d cachedNoteT2d = getCachedNoteLocation();
       Logger.recordOutput("better translate", cachedNoteT2d);
       if (noteImageIsNew()) {
@@ -704,18 +708,13 @@ public class Drive extends SubsystemBase {
                 new GoalEndState(0.5, targetRotation, true));
 
         path.preventFlipping = true;
-        // AutoBuilder.followPath(path).schedule();
         Logger.recordOutput("follow path", true);
         return AutoBuilder.followPath(path);
       } else {
-        // return;
-        // led.setState(LED_STATE.PAPAYA_ORANGE);
-        return new InstantCommand(() -> Logger.recordOutput("BAD FALSE ALARM 1", 1));
+        return new InstantCommand(() -> led.setState(LED_STATE.PAPAYA_ORANGE));
       }
     } else {
-      // return;
-      // led.setState(LED_STATE.WILLIAMS_BLUE);
-      return new InstantCommand(() -> Logger.recordOutput("BAD FALSE ALARM 1", 21));
+      return new InstantCommand(() -> led.setState(LED_STATE.WILLIAMS_BLUE));
     }
   }
 
