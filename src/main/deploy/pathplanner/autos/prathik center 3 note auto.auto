@@ -33,7 +33,7 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoAlignNoteCenter"
+            "name": "AlignToNote"
           }
         },
         {
@@ -45,7 +45,7 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoAlignNoteCenter"
+            "name": "AlignToNote"
           }
         },
         {
@@ -57,7 +57,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Aimbot"
+            "name": "AimbotStatic"
           }
         }
       ]

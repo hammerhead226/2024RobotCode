@@ -371,7 +371,8 @@ public class RobotContainer {
         // .andThen(
         new AlignToNoteAuto(led, drive, shooter, intake, pivot)
             .until(() -> shooter.seesNote())
-            .andThen(new InstantCommand(() -> intake.stopRollers()))
+            .andThen(new InstantCommand(() -> intake.stopRollers())
+            .andThen(new InstantCommand(() -> shooter.stopFeeders())))
             .andThen(new InstantCommand(drive::stop)));
 
     // AUTO AIM COMMANDS

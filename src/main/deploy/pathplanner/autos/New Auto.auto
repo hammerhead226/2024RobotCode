@@ -20,13 +20,13 @@
         {
           "type": "named",
           "data": {
-            "name": "AlignToNote5"
+            "name": "AlignToNote"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Aimbot"
+            "name": "AimbotStatic"
           }
         }
       ]
