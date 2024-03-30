@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.5248146901429311,
+      "y": 7.003080254377342
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$apb1c(12)!score b1 c1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$apb1c(12)!score c1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$apb1c(12)!c2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$apb1c(12)!score c2"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "limelight autos",
+  "choreoAuto": false
+}

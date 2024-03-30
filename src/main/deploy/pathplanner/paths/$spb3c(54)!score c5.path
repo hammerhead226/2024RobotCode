@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.28662099463937,
+        "y": 0.7553899314494391
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.16858700588948,
+        "y": 0.7553899314494392
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.895784391095711,
+        "y": 4.173867969278879
+      },
+      "prevControl": {
+        "x": 1.895784391095711,
+        "y": 2.650364006252672
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "pss-end-c5"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.75,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AimbotAuto"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -35.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "$s!p-b3-c5-c4",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

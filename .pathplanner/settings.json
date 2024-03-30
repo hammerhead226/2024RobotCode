@@ -3,9 +3,10 @@
   "robotLength": 0.66,
   "holonomicMode": true,
   "pathFolders": [
+    "$a!p-b1-c1-c2",
     "$c!p-b3-b2-b1",
     "$s!p-c5-c4",
-    "$a!p-b1-c1-c2"
+    "$s!p-b3-c5-c4"
   ],
   "autoFolders": [
     "NO limelight autos",

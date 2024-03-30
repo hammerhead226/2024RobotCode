@@ -45,7 +45,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "$c!b3"
+            "pathName": "$cpb(321)!b3"
           }
         },
         {
@@ -57,7 +57,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "$c!score b3"
+            "pathName": "$cpb(321)!score b3"
           }
         },
         {
@@ -81,7 +81,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "$c!c1"
+            "pathName": "$cpb(321)!c1"
           }
         },
         {
