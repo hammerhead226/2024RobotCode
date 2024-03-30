@@ -4,22 +4,11 @@
   "holonomicMode": true,
   "pathFolders": [
     "$c!p-c2-c3-c1",
-    "$s!p-c5-c4",
-    "a!p-b1-c1-c2",
-    "a!p-c1",
-    "a!p-c1-b1",
-    "a!p-c1-c2",
-    "c!p-b2",
-    "c!p-b2-b1",
-    "c!p-b2-b3",
-    "c!p-b2-b3-b1",
-    "c!p-b2-b3-b1-c2",
-    "s!p-c5",
-    "s!p-c5-c4"
+    "$s!p-c5-c4"
   ],
   "autoFolders": [
-    "states autos",
-    "autos"
+    "NO limelight autos",
+    "limelight autos"
   ],
   "defaultMaxVel": 2.0,
   "defaultMaxAccel": 2.0,
