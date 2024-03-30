@@ -43,6 +43,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "$c!b3"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "AlignToNote"
@@ -51,25 +57,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "$c!c2-c3"
+            "pathName": "$c!score b3"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AlignToNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "$c!score c3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Aimbot"
+            "name": "AimbotAuto"
           }
         },
         {
@@ -87,13 +81,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "$c!score c1"
+            "pathName": "$c!c1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Aimbot"
+            "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimbotAuto"
           }
         }
       ]

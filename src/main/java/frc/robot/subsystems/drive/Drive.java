@@ -132,7 +132,7 @@ public class Drive extends SubsystemBase {
         new HolonomicPathFollowerConfig(
             new PIDConstants(5),
             new PIDConstants(1.5),
-            MAX_LINEAR_SPEED,
+            Constants.SwerveConstants.MAX_LINEAR_SPEED,
             DRIVE_BASE_RADIUS,
             new ReplanningConfig()),
         () ->

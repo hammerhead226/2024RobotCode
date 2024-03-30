@@ -152,6 +152,6 @@ public class AimbotAuto extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atGoal();
+    return Math.abs(drive.turnToSpeakerAngle().get().getDegrees() - drive.getRotation().getDegrees()) <= 10 &&shooter.atFlywheelSetpoints() && pivot.atGoal();
   }
 }
