@@ -344,10 +344,10 @@ public class RobotContainer {
     // NOTE ALIGNMENT NAMED COMMANDS
     NamedCommands.registerCommand(
         "AlignToNote",
-        // new AlignToNoteDuringAuto(pivot, intake, shooter)
-        // .andThen(
         new AlignToNoteAuto(led, drive, shooter, intake, pivot)
             .until(() -> shooter.seesNote())
+            // TODO:: adjust this delay
+            .andThen(new InstantCommand(() -> shooter.setFeedersRPM(150))).andThen(new WaitCommand(0.7))
             .andThen(
                 new InstantCommand(() -> intake.stopRollers())
                     .andThen(new InstantCommand(() -> shooter.stopFeeders())))

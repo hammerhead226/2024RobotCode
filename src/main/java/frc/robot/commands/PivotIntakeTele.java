@@ -31,6 +31,7 @@ public class PivotIntakeTele extends SequentialCommandGroup {
           new IntakeNote(intake, shooter, led),
           new InstantCommand(() -> led.setState(LED_STATE.GREEN)),
           new InstantCommand(() -> shooter.setFeedersRPM(150)),
+          // TODO:: adjust this delay
           new WaitCommand(0.7),
           new InstantCommand(shooter::stopFeeders));
       //  new WaitCommand(2)
