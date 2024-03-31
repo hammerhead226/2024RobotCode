@@ -154,9 +154,11 @@ public class AimbotAuto extends Command {
   public boolean isFinished() {
     Logger.recordOutput("i want to be here!!", drive.turnToSpeakerAngle().get().getDegrees());
     Logger.recordOutput("i am currently here!!", drive.getRotation().getDegrees());
-    Logger.recordOutput("current angle difference", drive.turnToSpeakerAngle().get().minus(drive.getRotation()).getDegrees());
+    Logger.recordOutput(
+        "current angle difference",
+        drive.turnToSpeakerAngle().get().minus(drive.getRotation()).getDegrees());
     return Math.abs(drive.turnToSpeakerAngle().get().minus(drive.getRotation()).getDegrees()) <= 10
-    && shooter.atFlywheelSetpoints()
-    && pivot.atGoal();
+        && shooter.atFlywheelSetpoints()
+        && pivot.atGoal();
   }
 }
