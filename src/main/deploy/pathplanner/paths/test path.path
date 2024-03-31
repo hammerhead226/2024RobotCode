@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.290597959227301,
-        "y": 5.550936522700434
+        "x": 3.9355271535655185,
+        "y": 6.819606105579925
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.290597959227301,
-        "y": 5.550936522700434
+        "x": 4.935527153565517,
+        "y": 6.819606105579925
       },
       "isLocked": false,
       "linkedName": null
@@ -51,7 +51,7 @@
       "name": "New Event Marker",
       "waypointRelativePos": 0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -79,7 +79,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 0.7977575805679741,
     "velocity": 0
   },
   "useDefaultConstraints": false

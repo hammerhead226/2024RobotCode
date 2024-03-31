@@ -32,10 +32,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.commands.AimbotAuto;
 import frc.robot.commands.AimbotTele;
+import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AlignToNoteTele;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.AngleShooterShoot;
-import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotIntakeAuto;
 import frc.robot.commands.PivotIntakeTele;
@@ -371,8 +371,9 @@ public class RobotContainer {
         // .andThen(
         new AlignToNoteAuto(led, drive, shooter, intake, pivot)
             .until(() -> shooter.seesNote())
-            .andThen(new InstantCommand(() -> intake.stopRollers())
-            .andThen(new InstantCommand(() -> shooter.stopFeeders())))
+            .andThen(
+                new InstantCommand(() -> intake.stopRollers())
+                    .andThen(new InstantCommand(() -> shooter.stopFeeders())))
             .andThen(new InstantCommand(drive::stop)));
 
     // AUTO AIM COMMANDS
@@ -385,10 +386,7 @@ public class RobotContainer {
                 new WaitCommand(1.5).andThen(new InstantCommand(() -> shooter.stopFeeders()))));
     NamedCommands.registerCommand(
         "AimbotStatic", new AimbotTele(drive, driveController, shooter, pivot, led));
-    NamedCommands.registerCommand("AimbotAuto", new AimbotAuto(drive, shooter, pivot, led));
-    NamedCommands.registerCommand(
-        "AimbotMoving", new AimbotTele(drive, driveController, shooter, pivot, led));
-    NamedCommands.registerCommand("AimbotAuto", new AimbotAuto(drive, shooter, pivot, led));
+    NamedCommands.registerCommand("AimbotMoving", new AimbotAuto(drive, shooter, pivot, led));
 
     NamedCommands.registerCommand(
         "EnableOverride", new InstantCommand(() -> drive.enabledOverride()));
@@ -584,10 +582,11 @@ public class RobotContainer {
     driveController
         .y()
         .onFalse(
-            new InstantCommand(() -> led.setState(LED_STATE.BLUE)).andThen( new InstantCommand(() -> shooter.setFeedersRPM(150))
-                .andThen(new WaitCommand(0.7))
-                .andThen(new InstantCommand(shooter::stopFeeders)))
-           );
+            new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+                .andThen(
+                    new InstantCommand(() -> shooter.setFeedersRPM(150))
+                        .andThen(new WaitCommand(0.7))
+                        .andThen(new InstantCommand(shooter::stopFeeders))));
   }
 
   private void manipControls() {

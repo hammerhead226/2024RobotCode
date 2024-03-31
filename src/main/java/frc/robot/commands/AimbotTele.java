@@ -216,6 +216,7 @@ public class AimbotTele extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    Logger.recordOutput("i am currently this angle", drive.getRotation().getDegrees());
     return pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atGoal();
   }
 }

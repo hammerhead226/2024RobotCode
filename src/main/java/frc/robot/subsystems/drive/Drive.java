@@ -205,6 +205,8 @@ public class Drive extends SubsystemBase {
       lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
     }
 
+    Logger.recordOutput("override", overridePathplanner);
+
     // Update gyro angle
     if (gyroInputs.connected) {
       // Use the real gyro angle
