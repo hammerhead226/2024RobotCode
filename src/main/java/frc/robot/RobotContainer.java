@@ -128,7 +128,7 @@ public class RobotContainer {
 
   private final Command intakeCommands;
 
-  private Command elevatorCommands;
+  private Command goBackClimbCommands;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -296,18 +296,16 @@ public class RobotContainer {
                 Map.entry(CLIMB_STATES.DONE, new PrintCommand("hi"))),
             this::climbSelect);
 
-    elevatorCommands =
+    goBackClimbCommands =
         new SelectCommand<>(
             Map.ofEntries(
                 Map.entry(
-                    false,
-                    new SetElevatorTarget(
-                        Constants.ElevatorConstants.EXTEND_SETPOINT_INCH, 1.5, elevator)),
+                    CLIMB_STATES.PIVOT_CLIMB,
+                    new SetElevatorTarget(0, 1.5, elevator).andThen(new InstantCommand(climbStateMachine::goBackState))),
                 Map.entry(
-                    true,
-                    new SetElevatorTarget(
-                        Constants.ElevatorConstants.RETRACT_SETPOINT_INCH, 1.5, elevator))),
-            elevator::isExtended);
+                    CLIMB_STATES.RETRACT_CLIMB,
+                    new SetElevatorTarget(20.969, 1.5, elevator).andThen(new SetPivotTarget(90, pivot)).andThen(new InstantCommand(climbStateMachine::goBackState)))),
+            this::climbSelect);
 
     // PIVOT NAMED COMMANDS
     NamedCommands.registerCommand(
@@ -576,7 +574,7 @@ public class RobotContainer {
 
     driveController.a().onTrue(climbCommands);
 
-    driveController.x().onTrue(elevatorCommands);
+    driveController.x().onTrue(goBackClimbCommands);
 
     driveController.y().whileTrue(new AlignToNoteTele(intake, pivot, shooter, drive, led));
     driveController
