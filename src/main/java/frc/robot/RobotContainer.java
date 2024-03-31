@@ -447,7 +447,7 @@ public class RobotContainer {
 
     // driveController.a().onTrue(new SetPivotTarget(90, pivot));
 
-    driveController.b().whileTrue(new TurnToAmpCorner(drive, driveController));
+    driveController.b().whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
 
     // driveController.x().onTrue(new InstantCommand(() -> led.setState(LED_STATE.AUTO_ALIGN)));
 
