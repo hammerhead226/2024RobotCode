@@ -13,7 +13,6 @@ public class Intake extends SubsystemBase {
 
   private final IntakeRollerIOInputsAutoLogged rInputs = new IntakeRollerIOInputsAutoLogged();
 
-
   public Intake(IntakeRollerIO roller) {
     this.roller = roller;
   }

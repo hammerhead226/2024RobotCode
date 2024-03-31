@@ -122,7 +122,6 @@ public class RobotContainer {
 
   private final Command shootCommands;
 
-
   private Command goBackClimbCommands;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -347,7 +346,8 @@ public class RobotContainer {
         new AlignToNoteAuto(led, drive, shooter, intake, pivot)
             .until(() -> shooter.seesNote())
             // TODO:: adjust this delay
-            .andThen(new InstantCommand(() -> shooter.setFeedersRPM(150))).andThen(new WaitCommand(0.7))
+            .andThen(new InstantCommand(() -> shooter.setFeedersRPM(150)))
+            .andThen(new WaitCommand(0.7))
             .andThen(
                 new InstantCommand(() -> intake.stopRollers())
                     .andThen(new InstantCommand(() -> shooter.stopFeeders())))
@@ -424,6 +424,19 @@ public class RobotContainer {
     // driveController.a().onTrue(new SetPivotTarget(90, pivot));
 
     driveController.b().whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
+
+     driveController.a().onTrue(new ScoreAmp(elevator, pivot, shooter, drive));
+    driveController
+        .a()
+        .onFalse(
+            new InstantCommand(() -> shooter.setFeedersRPM(200), shooter)
+                .andThen(new WaitCommand(2))
+                .andThen(new InstantCommand(() -> shooter.stopFlywheels(), shooter))
+
+                // .andThen(new SetElevatorTarget(10, elevator))
+                .andThen(new SetElevatorTarget(0, 1.5, elevator))
+                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+                .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
 
     // driveController.x().onTrue(new InstantCommand(() -> led.setState(LED_STATE.AUTO_ALIGN)));
 
@@ -577,7 +590,7 @@ public class RobotContainer {
   }
 
   private void manipControls() {
-    manipController.a().onTrue(new ScoreAmp(elevator, pivot, shooter));
+    manipController.a().onTrue(new ScoreAmp(elevator, pivot, shooter, drive));
     manipController
         .a()
         .onFalse(
@@ -654,8 +667,7 @@ public class RobotContainer {
     manipController
         .rightBumper()
         .whileTrue(
-            new ParallelCommandGroup(
-                new SetPivotTarget(45, pivot), new SetShooterTargetRPM(6000, 6000, shooter)));
+            new TurnToAmpCorner(drive, pivot, shooter, driveController));
 
     manipController
         .rightBumper()
@@ -663,6 +675,9 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new InstantCommand(shooter::stopFlywheels, shooter),
                 new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
+
+    manipController.leftBumper().onTrue(new InstantCommand(() -> led.setState(LED_STATE.FLASHING_WHITE)));
+    manipController.leftBumper().onFalse(new InstantCommand(() -> led.setState(LED_STATE.BLUE)));
   }
 
   /**

@@ -5,8 +5,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
@@ -16,20 +19,19 @@ import frc.robot.subsystems.shooter.Shooter;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ScoreAmp extends SequentialCommandGroup {
   /** Creates a new ScoreAmp. */
-  public ScoreAmp(Elevator elevator, Pivot pivot, Shooter shooter) {
 
-    // new SetElevatorTarget(8, elevator)
-    //             .andThen(new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot))
-    //             .andThen(new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter))
-    //             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(200), shooter)));
+  public ScoreAmp(Elevator elevator, Pivot pivot, Shooter shooter, Drive drive) {
 
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
-        new SetElevatorTarget(8, 1, elevator),
-        new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter));
-    // new WaitUntilCommand(pivot::atSetpoint),
+        new ParallelCommandGroup(
+            new AlignToAmp(drive),
+            new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
+            new SetElevatorTarget(8, 1, elevator),
+            new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter)),
+        new WaitCommand(1),
+        new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
 
   }
+
+  
 }
