@@ -70,7 +70,7 @@ public class ClimbStateMachine {
   }
 
   public void goBackState() {
-    switch(targetState) {
+    switch (targetState) {
       case PIVOT_CLIMB:
         targetState = CLIMB_STATES.NONE;
         break;

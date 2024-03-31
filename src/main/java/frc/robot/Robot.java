@@ -32,7 +32,6 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  */
 public class Robot extends LoggedRobot {
 
-  // TODO:: in teleop init disable all shooter feeder intake
   private Command autonomousCommand;
   private RobotContainer m_robotContainer;
 
@@ -148,7 +147,7 @@ public class Robot extends LoggedRobot {
       autonomousCommand.cancel();
     }
 
-    m_robotContainer.getLED().setState(m_robotContainer.getIntake().getIntakeState());
+    m_robotContainer.getLED().setState(LED_STATE.BLUE);
     m_robotContainer.getPivot().setPivotCurrent(m_robotContainer.getPivot().getPivotPositionDegs());
     m_robotContainer.getPivot().setPivotGoal(Constants.PivotConstants.STOW_SETPOINT_DEG);
     m_robotContainer.getShooter().stopFlywheels();

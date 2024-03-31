@@ -48,13 +48,12 @@ public class DriveCommands {
       CommandXboxController controller,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier,
-      DoubleSupplier speedSupplier) {
+      DoubleSupplier omegaSupplier) {
 
     return new InstantCommand(() -> led.setState(LED_STATE.RED))
         .andThen(
             new ParallelCommandGroup(
-                joystickDrive(drive, xSupplier, ySupplier, omegaSupplier, speedSupplier),
+                joystickDrive(drive, xSupplier, ySupplier, omegaSupplier),
                 new PivotIntakeTele(pivot, intake, shooter, led, false)));
   }
   /**
@@ -64,8 +63,7 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier,
-      DoubleSupplier speedSupplier) {
+      DoubleSupplier omegaSupplier) {
     return Commands.run(
         () -> {
 
@@ -76,11 +74,6 @@ public class DriveCommands {
           Rotation2d linearDirection =
               new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
           double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
-
-          if (speedSupplier.getAsDouble() > 0.2) {
-            linearMagnitude *= 0.7;
-            omega *= 0.7;
-          }
 
           // Square values
           linearMagnitude = linearMagnitude * linearMagnitude;

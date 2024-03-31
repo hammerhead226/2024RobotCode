@@ -116,17 +116,12 @@ public class RobotContainer {
     return pivot.isAimbot();
   }
 
-  private boolean isAutoAlign() {
-    return intake.isAutoAlign();
-  }
-
   private final Command climbCommands;
 
   //   private final Command intakeLEDCommands;
 
   private final Command shootCommands;
 
-  private final Command intakeCommands;
 
   private Command goBackClimbCommands;
 
@@ -217,25 +212,6 @@ public class RobotContainer {
     //             Map.entry(true, new InstantCommand(() -> led.setState(LED_STATE.BLUE), led))),
     //         this::isAutoAlign);
 
-    intakeCommands =
-        new SelectCommand<>(
-            Map.ofEntries(
-                Map.entry(
-                    false,
-                    DriveCommands.intakeCommand(
-                        drive,
-                        shooter,
-                        pivot,
-                        intake,
-                        led,
-                        driveController,
-                        () -> -driveController.getLeftY(),
-                        () -> -driveController.getLeftX(),
-                        () -> -driveController.getRightX(),
-                        () -> driveController.getLeftTriggerAxis())),
-                Map.entry(true, new AlignToNoteTele(intake, pivot, shooter, drive, led))),
-            this::isAutoAlign);
-
     shootCommands =
         new SelectCommand<>(
             Map.ofEntries(
@@ -301,10 +277,13 @@ public class RobotContainer {
             Map.ofEntries(
                 Map.entry(
                     CLIMB_STATES.PIVOT_CLIMB,
-                    new SetElevatorTarget(0, 1.5, elevator).andThen(new InstantCommand(climbStateMachine::goBackState))),
+                    new SetElevatorTarget(0, 1.5, elevator)
+                        .andThen(new InstantCommand(climbStateMachine::goBackState))),
                 Map.entry(
                     CLIMB_STATES.RETRACT_CLIMB,
-                    new SetElevatorTarget(20.969, 1.5, elevator).andThen(new SetPivotTarget(90, pivot)).andThen(new InstantCommand(climbStateMachine::goBackState)))),
+                    new SetElevatorTarget(20.969, 1.5, elevator)
+                        .andThen(new SetPivotTarget(90, pivot))
+                        .andThen(new InstantCommand(climbStateMachine::goBackState)))),
             this::climbSelect);
 
     // PIVOT NAMED COMMANDS
@@ -430,8 +409,7 @@ public class RobotContainer {
             drive,
             () -> -driveController.getLeftY(),
             () -> -driveController.getLeftX(),
-            () -> -driveController.getRightX(),
-            () -> driveController.getLeftTriggerAxis()));
+            () -> -driveController.getRightX()));
 
     driveController
         .start()
@@ -528,10 +506,7 @@ public class RobotContainer {
             drive,
             () -> -driveController.getLeftY(),
             () -> -driveController.getLeftX(),
-            () -> -driveController.getRightX(),
-            () -> driveController.getLeftTriggerAxis()));
-
-    driveController.back().onTrue(new InstantCommand(intake::toggleAutoAlign, intake));
+            () -> -driveController.getRightX()));
 
     driveController
         .start()
@@ -543,9 +518,21 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    driveController.rightBumper().onTrue(intakeCommands);
     driveController
-        .rightBumper()
+        .leftBumper()
+        .onTrue(
+            DriveCommands.intakeCommand(
+                drive,
+                shooter,
+                pivot,
+                intake,
+                led,
+                driveController,
+                () -> -driveController.getLeftY(),
+                () -> -driveController.getLeftX(),
+                () -> -driveController.getRightX()));
+    driveController
+        .leftBumper()
         .onFalse(
             new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)
                 // .andThen(new PositionNoteInFeeder(shooter, intake))
@@ -555,9 +542,9 @@ public class RobotContainer {
                             new InstantCommand(intake::stopRollers)
                                 .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE))))));
 
-    driveController.leftBumper().whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true));
+    driveController.leftTrigger().whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true));
     driveController
-        .leftBumper()
+        .leftTrigger()
         .onFalse(
             new InstantCommand(intake::stopRollers)
                 .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
@@ -576,9 +563,11 @@ public class RobotContainer {
 
     driveController.x().onTrue(goBackClimbCommands);
 
-    driveController.y().whileTrue(new AlignToNoteTele(intake, pivot, shooter, drive, led));
     driveController
-        .y()
+        .rightBumper()
+        .whileTrue(new AlignToNoteTele(intake, pivot, shooter, drive, led));
+    driveController
+        .rightBumper()
         .onFalse(
             new InstantCommand(() -> led.setState(LED_STATE.BLUE))
                 .andThen(

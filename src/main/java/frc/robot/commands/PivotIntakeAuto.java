@@ -29,11 +29,10 @@ public class PivotIntakeAuto extends SequentialCommandGroup {
           new SetPivotTarget(setpoint, pivot),
           new WaitUntilCommand(pivot::atSetpoint),
           new IntakeNote(intake, shooter, led),
+          new InstantCommand(() -> led.setState(LED_STATE.GREEN)),
           new InstantCommand(() -> shooter.setFeedersRPM(150)),
           new WaitCommand(1),
-          new InstantCommand(shooter::stopFeeders),
-          new WaitCommand(2),
-          new InstantCommand(() -> led.setState(LED_STATE.BLUE)));
+          new InstantCommand(shooter::stopFeeders));
       // new InstantCommand(shooter::stopFeedWhenSeen, shooter));
       ;
     } else {

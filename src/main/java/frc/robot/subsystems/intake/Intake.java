@@ -5,7 +5,6 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.LED_STATE;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -14,20 +13,9 @@ public class Intake extends SubsystemBase {
 
   private final IntakeRollerIOInputsAutoLogged rInputs = new IntakeRollerIOInputsAutoLogged();
 
-  private boolean isAutoAlign;
 
   public Intake(IntakeRollerIO roller) {
     this.roller = roller;
-
-    isAutoAlign = true;
-  }
-
-  public boolean isAutoAlign() {
-    return isAutoAlign;
-  }
-
-  public void toggleAutoAlign() {
-    this.isAutoAlign = !this.isAutoAlign;
   }
 
   public void runRollers(double volts) {
@@ -36,10 +24,6 @@ public class Intake extends SubsystemBase {
 
   public void stopRollers() {
     roller.stop();
-  }
-
-  public LED_STATE getIntakeState() {
-    return isAutoAlign() ? LED_STATE.BLUE : LED_STATE.YELLOW;
   }
 
   @Override

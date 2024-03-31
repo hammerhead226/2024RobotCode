@@ -30,7 +30,8 @@ public class TurnToAmpCorner extends Command {
   private double[] gains = new double[3];
   private DriverStation.Alliance alliance = null;
   /** Creates a new TurnToSpeaker. */
-  public TurnToAmpCorner(Drive drive, Pivot pivot, Shooter shooter, CommandXboxController controller) {
+  public TurnToAmpCorner(
+      Drive drive, Pivot pivot, Shooter shooter, CommandXboxController controller) {
     this.drive = drive;
     this.pivot = pivot;
     this.shooter = shooter;
