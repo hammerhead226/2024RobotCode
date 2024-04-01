@@ -425,7 +425,7 @@ public class RobotContainer {
 
     driveController.b().whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
 
-     driveController.a().onTrue(new ScoreAmp(elevator, pivot, shooter, drive));
+    driveController.a().onTrue(new ScoreAmp(elevator, pivot, shooter, drive));
     driveController
         .a()
         .onFalse(
@@ -666,8 +666,7 @@ public class RobotContainer {
 
     manipController
         .rightBumper()
-        .whileTrue(
-            new TurnToAmpCorner(drive, pivot, shooter, driveController));
+        .whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
 
     manipController
         .rightBumper()
@@ -676,7 +675,9 @@ public class RobotContainer {
                 new InstantCommand(shooter::stopFlywheels, shooter),
                 new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
 
-    manipController.leftBumper().onTrue(new InstantCommand(() -> led.setState(LED_STATE.FLASHING_WHITE)));
+    manipController
+        .leftBumper()
+        .onTrue(new InstantCommand(() -> led.setState(LED_STATE.FLASHING_WHITE)));
     manipController.leftBumper().onFalse(new InstantCommand(() -> led.setState(LED_STATE.BLUE)));
   }
 
