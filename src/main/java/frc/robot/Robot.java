@@ -147,7 +147,7 @@ public class Robot extends LoggedRobot {
       autonomousCommand.cancel();
     }
 
-    m_robotContainer.getLED().setState(LED_STATE.BLUE);
+    m_robotContainer.getLED().setState(LED_STATE.FIRE);
     m_robotContainer.getPivot().setPivotCurrent(m_robotContainer.getPivot().getPivotPositionDegs());
     m_robotContainer.getPivot().setPivotGoal(Constants.PivotConstants.STOW_SETPOINT_DEG);
     m_robotContainer.getShooter().stopFlywheels();

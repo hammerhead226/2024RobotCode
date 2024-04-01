@@ -346,12 +346,12 @@ public class RobotContainer {
         new AlignToNoteAuto(led, drive, shooter, intake, pivot)
             .until(() -> shooter.seesNote())
             // TODO:: adjust this delay
+            .andThen(new InstantCommand(drive::stop))
             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(150)))
-            .andThen(new WaitCommand(0.7))
+            .andThen(new WaitCommand(0.5))
             .andThen(
                 new InstantCommand(() -> intake.stopRollers())
-                    .andThen(new InstantCommand(() -> shooter.stopFeeders())))
-            .andThen(new InstantCommand(drive::stop)));
+                    .andThen(new InstantCommand(() -> shooter.stopFeeders()))));
 
     // AUTO AIM COMMANDS
     NamedCommands.registerCommand("TurnToSpeaker", new TurnToSpeaker(drive, driveController));
@@ -397,10 +397,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // driverControls();
-    // manipControls();
+    driverControls();
+    manipControls();
 
-    testControls();
+    // testControls();
   }
 
   private void testControls() {
@@ -548,9 +548,9 @@ public class RobotContainer {
         .leftBumper()
         .onFalse(
             new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)
-                // .andThen(new PositionNoteInFeeder(shooter, intake))
                 .andThen(
-                    new InstantCommand(shooter::stopFeeders)
+                    new InstantCommand(() -> shooter.setFeedersRPM(150))
+                        .andThen(new WaitCommand(0.5))
                         .andThen(
                             new InstantCommand(intake::stopRollers)
                                 .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE))))));
@@ -585,7 +585,7 @@ public class RobotContainer {
             new InstantCommand(() -> led.setState(LED_STATE.BLUE))
                 .andThen(
                     new InstantCommand(() -> shooter.setFeedersRPM(150))
-                        .andThen(new WaitCommand(0.7))
+                        .andThen(new WaitCommand(0.5))
                         .andThen(new InstantCommand(shooter::stopFeeders))));
   }
 
