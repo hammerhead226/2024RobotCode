@@ -144,7 +144,7 @@ public class AimbotAuto extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drive.disableOverride();
+    // drive.disableOverride();
     shooter.setFeedersRPM(1000);
     led.setState(LED_STATE.GREY);
   }

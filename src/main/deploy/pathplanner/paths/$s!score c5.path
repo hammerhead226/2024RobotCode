@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.375654069425114,
+        "x": 7.356811289942123,
         "y": 0.7612043754757987
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.724426116469921,
-        "y": 0.5621201541975123
+        "x": 5.8783817116658845,
+        "y": 1.4822826607008033
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.969826478882628,
-        "y": 3.7708893677416455
+        "x": 2.9066934025451485,
+        "y": 2.915998299899595
       },
       "prevControl": {
-        "x": 2.8481392198162414,
-        "y": 2.728624915167091
+        "x": 4.258325305854784,
+        "y": 2.256763372910183
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,40 +32,11 @@
     {
       "waypointRelativePos": 0.75,
       "rotationDegrees": -43.60000000000002,
-      "rotateFast": false
+      "rotateFast": true
     }
   ],
-  "constraintZones": [
-    {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.75,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 2.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
-    {
-      "name": "pivot shooter and start flys",
-      "waypointRelativePos": 0.85,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "AimbotMoving"
-              }
-            }
-          ]
-        }
-      }
-    },
     {
       "name": "pivot39",
       "waypointRelativePos": 0.4,
@@ -85,14 +56,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.26,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -43.60000000000002,
+    "rotation": -45.000000000000036,
     "rotateFast": false
   },
   "reversed": false,

@@ -42,6 +42,7 @@ public class AlignToNoteAuto extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput("auto pickup init", "true");
+    led.setState(LED_STATE.FLASHING_RED);
     intake.runRollers(12);
     shooter.setFeedersRPM(500);
     pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
@@ -63,7 +64,7 @@ public class AlignToNoteAuto extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    led.setState(LED_STATE.PAPAYA_ORANGE);
+    led.setState(LED_STATE.BLUE);
     intake.stopRollers();
     shooter.stopFeeders();
     // pathCommand.cancel();

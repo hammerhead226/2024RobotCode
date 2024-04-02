@@ -14,7 +14,37 @@
         {
           "type": "named",
           "data": {
+            "name": "AimbotStatic"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.14
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "get the note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimbotStatic"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
           }
         },
         {
@@ -38,7 +68,13 @@
         {
           "type": "named",
           "data": {
-            "name": "DisableOverride"
+            "name": "AimbotStatic"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
           }
         },
         {
