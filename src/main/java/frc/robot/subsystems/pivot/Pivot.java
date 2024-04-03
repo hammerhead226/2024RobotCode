@@ -99,7 +99,7 @@ public class Pivot extends SubsystemBase {
   }
 
   public void setPositionDegs(double positionDegs, double velocityDegsPerSec) {
-    positionDegs = MathUtil.clamp(positionDegs, 39, 120);
+    positionDegs = MathUtil.clamp(positionDegs, 33, 120);
     pivot.setPositionSetpointDegs(
         positionDegs,
         pivotFFModel.calculate(Math.toRadians(positionDegs), Math.toRadians(velocityDegsPerSec)));

@@ -104,7 +104,7 @@ public class AimbotTele extends Command {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
     // Logger.recordOutput("distance to speak", Units.metersToFeet(distanceToSpeakerMeter));
     distanceToSpeakerMeter = calculateDistanceToSpeaker();
-    if (Units.metersToFeet(distanceToSpeakerMeter) > 9) {
+    if (Units.metersToFeet(distanceToSpeakerMeter) > 12) {
       // double shootingSpeed =
       //     MathUtil.clamp(
       //         calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter)), 3250, 5400);
@@ -116,20 +116,23 @@ public class AimbotTele extends Command {
   }
 
   private double calculateShooterSpeed(double distanceToSpeakerFeet) {
-
-    if (distanceToSpeakerFeet >= 11) {
-      return -430.7 * distanceToSpeakerFeet + 8815;
-    } else return -600. * distanceToSpeakerFeet + 10406;
-    // return -556.25 * distanceToSpeakerFeet + 10406;
-
+    double shooterSpeed = -986.49 * distanceToSpeakerFeet + 17294.6;
+    // shooterSpeed = MathUtil.clamp(shooterSpeed, 3850, 5400);
+    shooterSpeed = MathUtil.clamp(shooterSpeed, 4000, 5400);
+    // if (distanceToSpeakerFeet >= 11) {
+    // return -430.7 * distanceToSpeakerFeet + 8815;
+    // } else return -600. * distanceToSpeakerFeet + 10406;
+    return shooterSpeed;
   }
 
   private double calculatePivotAngleDeg(double distanceToSpeakerMeter) {
-    pivotSetpointDeg = (-0.272 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 60);
-    pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 39, 62);
+    // pivotSetpointDeg = (-0.272 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) +
+    // 60);
+    pivotSetpointDeg = (-0.253 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 60);
+    pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 34, 62);
 
-    if (Units.metersToFeet(distanceToSpeakerMeter) >= 9.098) {
-      return 39;
+    if (Units.metersToFeet(distanceToSpeakerMeter) > 12) {
+      return 34;
     }
     Logger.recordOutput("pivot target auto", pivotSetpointDeg);
     return pivotSetpointDeg;

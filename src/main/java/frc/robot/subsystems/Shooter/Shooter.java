@@ -151,7 +151,7 @@ public class Shooter extends SubsystemBase {
   public boolean seesNote() {
     Logger.recordOutput("i callewd sees note!", 63);
     if ((sInputs.distance > Constants.ShooterConstants.FEEDER_DIST && sInputs.distance < 2150)
-        || feedInputs.currentAmps > 13.5) {
+        || feedInputs.currentAmps > 12.9) {
       Logger.recordOutput("i callewd sees note!", 37);
       return true;
 

@@ -424,22 +424,22 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // driveController.a().onTrue(new SetPivotTarget(90, pivot));
+    driveController.a().onTrue(new SetPivotTarget(33, pivot));
 
-    driveController.b().whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
+    // driveController.b().whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
 
-    driveController.a().onTrue(new ScoreAmp(elevator, pivot, shooter, drive));
-    driveController
-        .a()
-        .onFalse(
-            new InstantCommand(() -> shooter.setFeedersRPM(200), shooter)
-                .andThen(new WaitCommand(2))
-                .andThen(new InstantCommand(() -> shooter.stopFlywheels(), shooter))
+    // driveController.a().onTrue(new ScoreAmp(elevator, pivot, shooter, drive));
+    // driveController
+    //     .a()
+    //     .onFalse(
+    //         new InstantCommand(() -> shooter.setFeedersRPM(200), shooter)
+    //             .andThen(new WaitCommand(2))
+    //             .andThen(new InstantCommand(() -> shooter.stopFlywheels(), shooter))
 
-                // .andThen(new SetElevatorTarget(10, elevator))
-                .andThen(new SetElevatorTarget(0, 1.5, elevator))
-                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
-                .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
+    //             // .andThen(new SetElevatorTarget(10, elevator))
+    //             .andThen(new SetElevatorTarget(0, 1.5, elevator))
+    //             .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+    //             .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
 
     // driveController.x().onTrue(new InstantCommand(() -> led.setState(LED_STATE.AUTO_ALIGN)));
 
@@ -491,7 +491,9 @@ public class RobotContainer {
     driveController
         .rightBumper()
         .onFalse(
-            new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)
+            new InstantCommand(() -> shooter.setFeedersRPM(500))
+                .andThen(new WaitCommand(0.15))
+                .andThen(new InstantCommand(shooter::stopFeeders))
                 .andThen(
                     new InstantCommand(shooter::stopFeeders)
                         .andThen(new InstantCommand(intake::stopRollers))));
@@ -508,7 +510,7 @@ public class RobotContainer {
 
     driveController
         .rightTrigger()
-        .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(5400, 5400)));
+        .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(4000, 4000)));
     driveController.rightTrigger().onFalse(new InstantCommand(() -> shooter.stopFlywheels()));
 
     driveController.leftTrigger().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
