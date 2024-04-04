@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.util.FieldConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class TurnToSource extends Command {
@@ -56,7 +55,7 @@ public class TurnToSource extends Command {
     }
 
     pid = new PIDController(gains[0], gains[1], gains[2], 0.02);
-    pid.setTolerance(0);
+    pid.setTolerance(2.5);
     pid.enableContinuousInput(-180, 180);
   }
 
@@ -71,28 +70,16 @@ public class TurnToSource extends Command {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
 
     if (alliance == DriverStation.Alliance.Red) {
-      targetAngle =
-          new Rotation2d(
-                      FieldConstants.Subwoofer.sourceFaceCorner.getX(),
-                      FieldConstants.Subwoofer.sourceFaceCorner.getY())
-                  .getDegrees()
-              - 140
-              + 120;
+      targetAngle = 135;
       pid.setSetpoint(targetAngle);
     } else {
-      targetAngle =
-          new Rotation2d(
-                      FieldConstants.Subwoofer.sourceFaceCorner.getX(),
-                      FieldConstants.Subwoofer.sourceFaceCorner.getY())
-                  .getDegrees()
-              - 140;
-      targetAngle =
-          -new Rotation2d(
-                      FieldConstants.Subwoofer.sourceFaceCorner.getX(),
-                      FieldConstants.Subwoofer.sourceFaceCorner.getY())
-                  .getDegrees()
-              - 37
-              + 90;
+      // targetAngle =
+      //     new Rotation2d(
+      //                 FieldConstants.Subwoofer.sourceFaceCorner.getX(),
+      //                 FieldConstants.Subwoofer.sourceFaceCorner.getY())
+      //             .getDegrees()
+      //         - 140;
+      targetAngle = 45;
       pid.setSetpoint(targetAngle);
     }
 
@@ -125,6 +112,6 @@ public class TurnToSource extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pid.atSetpoint();
+    return false;
   }
 }

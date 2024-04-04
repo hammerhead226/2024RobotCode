@@ -26,7 +26,7 @@ public class LED_IOCANdle implements LED_IO {
   StrobeAnimation flashBlue = new StrobeAnimation(0, 0, 255, 0, 0.01, 57 + 24);
   StrobeAnimation fashYellow = new StrobeAnimation(255, 255, 0, 0, 0.01, 57 + 24);
   StrobeAnimation flashWhite = new StrobeAnimation(255, 255, 255, 255, 0.01, 57 + 24);
-  StrobeAnimation halfFlashWhite = new StrobeAnimation(255, 255, 255, 255, 0.01, 29, 28 + 24);
+  StrobeAnimation halfFlashWhite = new StrobeAnimation(255, 255, 255, 255, 0.01, 28 + 24, 0);
 
   FireAnimation rainbow = new FireAnimation(0.3, 0.03, 57 + 24, 0.1, 0.1);
   // ColorFlowAnimation rainbow = new ColorFlowAnimation(0, 0, 255, 0, 0.343, 57,
@@ -106,7 +106,7 @@ public class LED_IOCANdle implements LED_IO {
       case GREEN:
         // TODO:: SENSOR SEES NOTE | GREEN
         candle.clearAnimation(0);
-        candle.setLEDs(0, 255, 0, 0, 32, 25 + 24);
+        candle.setLEDs(0, 255, 0, 0, 0, 57 + 24);
         break;
       case PAPAYA_ORANGE:
         candle.clearAnimation(0);
@@ -118,8 +118,10 @@ public class LED_IOCANdle implements LED_IO {
         break;
       case HALF_FLASH_RED_HALF_FLASH_WHITE:
         // TODO:: INTAKING FROM SOURCE | HALF_FLASH_RED_HALF_FLASH_WHITE
+        candle.clearAnimation(0);
         candle.animate(halfFlashWhite);
-        candle.setLEDs(255, 0, 0, 0, 0, 28);
+        // candle.setLEDs(255, 0, 0, 0, 32, 28);
+        candle.setLEDs(255, 0, 0, 0, 32, 25);
         break;
       case FLASHING_WHITE:
         // TODO:: SIGNAL TO HUMAN PLAYER | FLASHING WHITE

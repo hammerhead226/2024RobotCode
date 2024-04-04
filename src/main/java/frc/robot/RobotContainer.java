@@ -51,6 +51,7 @@ import frc.robot.commands.ShootNoteCenter;
 import frc.robot.commands.ShootNoteSource;
 import frc.robot.commands.StopIntakeFeed;
 import frc.robot.commands.TurnToAmpCorner;
+import frc.robot.commands.TurnToSource;
 import frc.robot.commands.TurnToSpeaker;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
@@ -656,18 +657,21 @@ public class RobotContainer {
         .rightTrigger()
         .onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
 
-    manipController.x().onTrue(new PivotSource(pivot, intake, shooter, led));
+    manipController
+        .x()
+        .onTrue(
+            new PivotSource(pivot, intake, shooter, led));
 
     manipController
         .x()
         .onFalse(
             new InstantCommand(() -> led.setState(LED_STATE.BLUE), led)
+                .andThen(new InstantCommand(shooter::stopFeeders, shooter))
                 .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+                .andThen(new InstantCommand(shooter::stopFlywheels, shooter))
                 .andThen(new InstantCommand(() -> shooter.setFeedersRPM(100)))
                 .andThen(new WaitCommand(1))
-                .andThen(
-                    new InstantCommand(shooter::stopFeeders, shooter)
-                        .andThen(new InstantCommand(shooter::stopFlywheels, shooter))));
+                .andThen(new InstantCommand(shooter::stopFeeders, shooter)));
 
     manipController
         .rightBumper()
