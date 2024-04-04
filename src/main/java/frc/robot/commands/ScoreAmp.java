@@ -5,9 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
@@ -20,14 +18,17 @@ import frc.robot.subsystems.shooter.Shooter;
 public class ScoreAmp extends SequentialCommandGroup {
   /** Creates a new ScoreAmp. */
   public ScoreAmp(Elevator elevator, Pivot pivot, Shooter shooter, Drive drive) {
-
     addCommands(
-        new ParallelCommandGroup(
-            new AlignToAmp(drive),
-            new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
-            new SetElevatorTarget(8, 1, elevator),
-            new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter)),
-        new WaitCommand(1),
-        new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
+        new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
+        new SetElevatorTarget(8, 1, elevator),
+        new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter));
+    // addCommands(
+    //     new ParallelCommandGroup(
+    //         // new AlignToAmp(drive),
+    //         new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
+    //         new SetElevatorTarget(8, 1, elevator),
+    //         new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter)));
+    //     // new WaitCommand(1),
+    //     // new InstantCommand(() -> shooter.setFeedersRPM(200), shooter));
   }
 }

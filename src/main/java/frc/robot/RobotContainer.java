@@ -51,7 +51,6 @@ import frc.robot.commands.ShootNoteCenter;
 import frc.robot.commands.ShootNoteSource;
 import frc.robot.commands.StopIntakeFeed;
 import frc.robot.commands.TurnToAmpCorner;
-import frc.robot.commands.TurnToSource;
 import frc.robot.commands.TurnToSpeaker;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
@@ -657,10 +656,7 @@ public class RobotContainer {
         .rightTrigger()
         .onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
 
-    manipController
-        .x()
-        .onTrue(
-            new PivotSource(pivot, intake, shooter, led));
+    manipController.x().onTrue(new PivotSource(pivot, intake, shooter, led));
 
     manipController
         .x()
