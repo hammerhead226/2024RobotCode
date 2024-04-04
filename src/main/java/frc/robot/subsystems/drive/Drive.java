@@ -245,6 +245,8 @@ public class Drive extends SubsystemBase {
                 getCachedNoteLocation().getX() - getPose().getX(),
                 getCachedNoteLocation().getY() - getPose().getY())
             .getDegrees());
+
+    Logger.recordOutput("dist speaker drive", calculateDistanceToSpeaker());
   }
 
   private void updatePoseBuffer() {
@@ -556,6 +558,22 @@ public class Drive extends SubsystemBase {
 
     return Optional.empty();
   }
+
+  private double calculateDistanceToSpeaker() {
+    double x = 0;
+    double y = 0;
+
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+      x = FieldConstants.fieldLength - getPose().getX();
+      y = FieldConstants.Speaker.speakerCenterY - getPose().getY();
+    } else {
+      x = -getPose().getX();
+      y = FieldConstants.Speaker.speakerCenterY - getPose().getY();
+    }
+
+    return Math.hypot(x, y);
+  }
+
 
   public PathPlannerPath generateTrajectory(
       Pose2d target,
