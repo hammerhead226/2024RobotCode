@@ -70,7 +70,7 @@ public class TurnToSource extends Command {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
 
     if (alliance == DriverStation.Alliance.Red) {
-      targetAngle = 135;
+      targetAngle = 60 + 180;
       pid.setSetpoint(targetAngle);
     } else {
       // targetAngle =
@@ -79,7 +79,7 @@ public class TurnToSource extends Command {
       //                 FieldConstants.Subwoofer.sourceFaceCorner.getY())
       //             .getDegrees()
       //         - 140;
-      targetAngle = 45;
+      targetAngle = 120 + 180;
       pid.setSetpoint(targetAngle);
     }
 
@@ -112,6 +112,7 @@ public class TurnToSource extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    // return pid.atSetpoint();
+    return pid.atSetpoint();
   }
 }

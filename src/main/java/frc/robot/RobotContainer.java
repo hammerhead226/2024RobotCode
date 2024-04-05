@@ -51,6 +51,7 @@ import frc.robot.commands.ShootNoteCenter;
 import frc.robot.commands.ShootNoteSource;
 import frc.robot.commands.StopIntakeFeed;
 import frc.robot.commands.TurnToAmpCorner;
+import frc.robot.commands.TurnToSource;
 import frc.robot.commands.TurnToSpeaker;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
@@ -215,7 +216,11 @@ public class RobotContainer {
         new SelectCommand<>(
             Map.ofEntries(
                 Map.entry(false, new InstantCommand(() -> shooter.setFeedersRPM(1000))),
-                Map.entry(true, new AimbotTele(drive, driveController, shooter, pivot, led))),
+                Map.entry(
+                    true,
+                    new SequentialCommandGroup(
+                        new SetElevatorTarget(0, 1.5, elevator),
+                        new AimbotTele(drive, driveController, shooter, pivot, led)))),
             this::isAimbot);
 
     climbCommands =
@@ -383,6 +388,7 @@ public class RobotContainer {
     autos.addOption("test path", AutoBuilder.buildAuto("test path"));
 
     autos.addOption("$s!p-c5-c4", AutoBuilder.buildAuto("$s!p-c5-c4"));
+    autos.addOption("Copy of $s!p-c5-c4", AutoBuilder.buildAuto("Copy of $s!p-c5-c4"));
 
     autos.addOption("$c!p-b2-c3", AutoBuilder.buildAuto("$c!p-b2-c3"));
 
@@ -424,7 +430,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    driveController.a().onTrue(new SetPivotTarget(33, pivot));
+    driveController.a().whileTrue(new TurnToSource(drive, driveController));
 
     // driveController.b().whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
 
@@ -531,7 +537,7 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                     () ->
-                        drive.setPose(
+                        drive.setGyroPose(
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
@@ -539,16 +545,18 @@ public class RobotContainer {
     driveController
         .leftBumper()
         .onTrue(
-            DriveCommands.intakeCommand(
-                drive,
-                shooter,
-                pivot,
-                intake,
-                led,
-                driveController,
-                () -> -driveController.getLeftY(),
-                () -> -driveController.getLeftX(),
-                () -> -driveController.getRightX()));
+            new SequentialCommandGroup(
+                new SetElevatorTarget(0, 1.5, elevator),
+                DriveCommands.intakeCommand(
+                    drive,
+                    shooter,
+                    pivot,
+                    intake,
+                    led,
+                    driveController,
+                    () -> -driveController.getLeftY(),
+                    () -> -driveController.getLeftX(),
+                    () -> -driveController.getRightX())));
     driveController
         .leftBumper()
         .onFalse(
@@ -582,7 +590,10 @@ public class RobotContainer {
 
     driveController
         .rightBumper()
-        .whileTrue(new AlignToNoteTele(intake, pivot, shooter, drive, led));
+        .whileTrue(
+            new SequentialCommandGroup(
+                new SetElevatorTarget(0, 1.5, elevator),
+                new AlignToNoteTele(intake, pivot, shooter, drive, led)));
     driveController
         .rightBumper()
         .onFalse(
@@ -685,6 +696,8 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(new InstantCommand(() -> led.setState(LED_STATE.FLASHING_WHITE)));
     manipController.leftBumper().onFalse(new InstantCommand(() -> led.setState(LED_STATE.BLUE)));
+
+    manipController.povUp().whileTrue(new TurnToSource(drive, driveController));
   }
 
   /**
