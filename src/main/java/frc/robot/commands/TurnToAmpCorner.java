@@ -63,7 +63,7 @@ public class TurnToAmpCorner extends Command {
     }
 
     pid = new PIDController(gains[0], gains[1], gains[2], 0.02);
-    pid.setTolerance(0);
+    pid.setTolerance(4);
     pid.enableContinuousInput(-180, 180);
   }
 
@@ -81,6 +81,11 @@ public class TurnToAmpCorner extends Command {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
 
     if (alliance == DriverStation.Alliance.Red) {
+      Logger.recordOutput(
+          "trans2",
+          new Translation2d(
+              FieldConstants.fieldLength - drive.getPose().getX(),
+              FieldConstants.fieldWidth - drive.getPose().getY()));
       targetAngle =
           new Rotation2d(
                       FieldConstants.fieldLength - drive.getPose().getX(),
@@ -93,11 +98,26 @@ public class TurnToAmpCorner extends Command {
                       FieldConstants.fieldWidth - drive.getPose().getY())
                   .getDegrees()
               + 180);
+      // pid.setSetpoint(
+      //     new Rotation2d(
+      //                 FieldConstants.fieldLength,
+      //                 FieldConstants.fieldWidth)
+      //             .getDegrees()
+      //         + 180);
     } else {
-      targetAngle =
-          new Rotation2d(-drive.getPose().getX(), 2 - drive.getPose().getY()).getDegrees() + 180;
+      // Logger.recordOutput("trans2", new Translation2d(0, FieldConstants.fieldWidth));
+      targetAngle = new Translation2d(0, FieldConstants.fieldWidth).getAngle().getDegrees();
+      // new Rotation2d(0, FieldConstants.fieldWidth).getDegrees() + 180;
+      // pid.setSetpoint(
+      //     new Rotation2d(0, FieldConstants.fieldWidth).getDegrees()
+      //         + 180);
       pid.setSetpoint(
-          new Rotation2d(-drive.getPose().getX(), 2 - drive.getPose().getY()).getDegrees() + 180);
+          new Rotation2d(
+                      -drive.getPose().getX(), FieldConstants.fieldWidth - drive.getPose().getY())
+                  .getDegrees()
+              + 180);
+      // pid.setSetpoint(
+      // new Translation2d(0, FieldConstants.fieldWidth).getAngle().getDegrees());
     }
 
     Logger.recordOutput("target angle", targetAngle);

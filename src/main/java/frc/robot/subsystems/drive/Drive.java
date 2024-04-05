@@ -571,9 +571,8 @@ public class Drive extends SubsystemBase {
       y = FieldConstants.Speaker.speakerCenterY - getPose().getY();
     }
 
-    return Math.hypot(x, y);
+    return Units.metersToFeet(Math.hypot(x, y));
   }
-
 
   public PathPlannerPath generateTrajectory(
       Pose2d target,
