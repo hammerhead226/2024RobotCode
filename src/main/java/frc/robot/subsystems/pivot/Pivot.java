@@ -82,6 +82,10 @@ public class Pivot extends SubsystemBase {
     pivotFFModel = new ArmFeedforward(0, kG, kV, 0);
   }
 
+  public void setBrakeMode(boolean bool) {
+    pivot.setBrakeMode(bool);
+  }
+
   public double getPivotPositionDegs() {
     return pInputs.positionDegs;
   }

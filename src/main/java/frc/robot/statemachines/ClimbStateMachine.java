@@ -43,7 +43,7 @@ public class ClimbStateMachine {
         targetState = CLIMB_STATES.RETRACT_CLIMB;
         break;
       case RETRACT_CLIMB:
-        targetState = CLIMB_STATES.ENGAGE_STATIC_HOOKS;
+        targetState = CLIMB_STATES.DONE;
         break;
       case ENGAGE_STATIC_HOOKS:
         targetState = CLIMB_STATES.ENGAGE_LOWER_SHOOTER_HOOKS;

@@ -17,6 +17,8 @@ public interface PivotIO {
 
   public default void updateInputs(PivotIOInputs inputs) {}
 
+  public default void setBrakeMode(boolean bool) {}
+
   public default void setPositionSetpointDegs(double positionDegs, double ffVolts) {}
 
   public default void setVoltage(double volts) {}

@@ -4,10 +4,12 @@
   "holonomicMode": true,
   "pathFolders": [
     "$a!p-b1-c1-c2",
+    "$c!p-b2-c3",
     "$c!p-b3-b2-b1",
     "$s!p-b3-c5-c4",
+    "$s!p-c4-c3",
     "$s!p-c5-c4",
-    "$c!p-b2-c3"
+    "$s!p-c3-c5"
   ],
   "autoFolders": [
     "NO limelight autos",

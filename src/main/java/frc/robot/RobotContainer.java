@@ -237,9 +237,11 @@ public class RobotContainer {
                 Map.entry(
                     CLIMB_STATES.RETRACT_CLIMB,
                     new ParallelCommandGroup(
-                            new SetPivotTarget(
-                                Constants.PivotConstants.CLIMB_SETPOINT_ONE_DEG, pivot),
-                            new SetElevatorTarget(0, 1.5, elevator))
+                            // new SetPivotTarget(
+                            //     Constants.PivotConstants.CLIMB_SETPOINT_ONE_DEG, pivot),
+                            new SetElevatorTarget(0, 3, elevator))
+                        .andThen(new InstantCommand(() -> pivot.setBrakeMode(true)))
+                        // .andThen(new SetPivotTarget(90, pivot))
                         .andThen(climbStateMachine::advanceTargetState, elevator)),
                 Map.entry(
                     CLIMB_STATES.ENGAGE_STATIC_HOOKS,
