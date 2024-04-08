@@ -73,6 +73,8 @@ public class PivotIOTalonFX implements PivotIO {
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         100, leaderPositionDegs, velocityDegsPerSec, appliedVolts, currentAmps, pitch);
+
+    // setBrakeMode(false);
   }
 
   @Override

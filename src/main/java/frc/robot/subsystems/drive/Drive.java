@@ -246,7 +246,7 @@ public class Drive extends SubsystemBase {
                 getCachedNoteLocation().getY() - getPose().getY())
             .getDegrees());
 
-    Logger.recordOutput("dist speaker drive", calculateDistanceToSpeaker());
+    // Logger.recordOutput("dist speaker drive", calculateDistanceToSpeaker());
   }
 
   private void updatePoseBuffer() {

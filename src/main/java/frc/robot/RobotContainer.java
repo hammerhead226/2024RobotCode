@@ -391,6 +391,8 @@ public class RobotContainer {
 
     autos.addOption("$s!p-c5-c4", AutoBuilder.buildAuto("$s!p-c5-c4"));
     autos.addOption("Copy of $s!p-c5-c4", AutoBuilder.buildAuto("Copy of $s!p-c5-c4"));
+    autos.addOption("$s!p-c4-c3", AutoBuilder.buildAuto("$s!p-c4-c3"));
+    autos.addOption("$s!p-c3-c5", AutoBuilder.buildAuto("$s!p-c3-c5"));
 
     autos.addOption("$c!p-b2-c3", AutoBuilder.buildAuto("$c!p-b2-c3"));
 
@@ -467,7 +469,8 @@ public class RobotContainer {
     //             shooter));
     // driveController.x().whileTrue(new TurnToSpeaker(drive, driveController));
     // driveController.x().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
-    driveController.y().onTrue(new AimbotTele(drive, driveController, shooter, pivot, led));
+    // driveController.y().onTrue(new AimbotTele(drive, driveController, shooter, pivot, led));
+    driveController.y().onTrue(new SetPivotTarget(39, pivot));
 
     // driveController.a().onTrue(new TurnToSpeaker(drive, driveController));
     // driveController.a().onTrue(new SetPivotTarget(40, pivot));

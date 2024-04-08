@@ -48,12 +48,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Pivot39"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "$spc(43)!c3"
