@@ -693,61 +693,6 @@ public class Drive extends SubsystemBase {
     }
   }
 
-  public Command noteAlignTest(LED led) {
-
-    lastNoteLocT2d.translation = new Translation2d(5, 6);
-    lastNoteLocT2d.time = Timer.getFPGATimestamp();
-
-    Rotation2d targetRotation;
-    Logger.recordOutput("note timeess", getCachedNoteTime());
-    if (getCachedNoteTime() != -1) {
-      led.setState(LED_STATE.FLASHING_RED);
-      Translation2d cachedNoteT2d = new Translation2d(5, 6);
-      Logger.recordOutput("better translate", cachedNoteT2d);
-      if (noteImageIsNew()) {
-
-        targetRotation =
-            new Rotation2d(
-                cachedNoteT2d.getX() - getPose().getX(), cachedNoteT2d.getY() - getPose().getY());
-        List<Translation2d> pointsToNote;
-        if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-          Logger.recordOutput(
-              "goal point blue",
-              new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
-          pointsToNote =
-              PathPlannerPath.bezierFromPoses(
-                  new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
-                  new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
-        } else {
-          Logger.recordOutput(
-              "goal point red",
-              new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
-          pointsToNote =
-              PathPlannerPath.bezierFromPoses(
-                  new Pose2d(
-                      FieldConstants.fieldLength - getPose().getX(),
-                      getPose().getY(),
-                      targetRotation),
-                  new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
-        }
-        PathPlannerPath path =
-            new PathPlannerPath(
-                pointsToNote,
-                new PathConstraints(
-                    2, 1.5, Units.degreesToRadians(100), Units.degreesToRadians(180)),
-                new GoalEndState(0.5, targetRotation, true));
-
-        path.preventFlipping = true;
-        Logger.recordOutput("follow path", true);
-        return AutoBuilder.followPath(path);
-      } else {
-        return new InstantCommand(() -> led.setState(LED_STATE.PAPAYA_ORANGE));
-      }
-    } else {
-      return new InstantCommand(() -> led.setState(LED_STATE.WILLIAMS_BLUE));
-    }
-  }
-
   // }
   // }
   public Command alignToNote(LED led) {

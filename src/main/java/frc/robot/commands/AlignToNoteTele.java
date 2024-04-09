@@ -4,7 +4,10 @@
 
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
@@ -25,6 +28,7 @@ public class AlignToNoteTele extends Command {
   Command pathCommand;
 
   Translation2d noteTranslation2d;
+  boolean pathReplanned = false;
 
   public AlignToNoteTele(Intake intake, Pivot pivot, Shooter shooter, Drive drive, LED led) {
     this.intake = intake;
@@ -50,12 +54,18 @@ public class AlignToNoteTele extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pathCommand.execute();
-    if (drive.getCachedNoteLocation().getDistance(noteTranslation2d) > 0.5) {
-      pathCommand.cancel();
-      this.pathCommand = drive.alignToNote(led);
-      pathCommand.initialize();
+    if (shooter.seesNote()) {
+      end(true);
     }
+    pathCommand.execute();
+    if (drive.getCachedNoteLocation().getDistance(noteTranslation2d) > Units.inchesToMeters(20)) {
+      pathReplanned = true;
+      replanPath();
+    } else {
+      pathReplanned = false;
+    }
+
+    Logger.recordOutput("Path Replanned", pathReplanned);
   }
 
   // Called once the command ends or is interrupted.
@@ -72,5 +82,11 @@ public class AlignToNoteTele extends Command {
   public boolean isFinished() {
     if (shooter.seesNote()) led.setState(LED_STATE.GREEN);
     return shooter.seesNote();
+  }
+
+  public void replanPath() {
+    pathCommand.cancel();
+    this.pathCommand = drive.alignToNote(led);
+    pathCommand.initialize();
   }
 }
