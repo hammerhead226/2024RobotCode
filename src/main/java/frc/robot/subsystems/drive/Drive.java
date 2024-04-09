@@ -220,8 +220,17 @@ public class Drive extends SubsystemBase {
     // Apply odometry update
     poseEstimator.update(rawGyroRotation, modulePositions);
 
+    LimelightHelpers.SetRobotOrientation(
+        Constants.LL_ALIGN,
+        poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
+        0,
+        0,
+        0,
+        0,
+        0);
     if (DriverStation.getAlliance().isPresent() && LimelightHelpers.getTV(Constants.LL_ALIGN)) {
-      visionLogic();
+      mt2TagFiltering();
+      // visionLogic();
     }
 
     Logger.recordOutput(
@@ -268,6 +277,29 @@ public class Drive extends SubsystemBase {
     }
     // if the time is before everything in the buffer return the oldest thing
     return robotPoseBuffer.getLast().pose;
+  }
+
+  public void mt2TagFiltering() {
+    boolean doRejectUpdate = false;
+
+    LimelightHelpers.PoseEstimate mt2 =
+        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN);
+
+    if (Math.abs(gyroInputs.yawVelocityRadPerSec) > Math.toRadians(720)) {
+      doRejectUpdate = true;
+    }
+
+    if (mt2.tagCount == 0) {
+      doRejectUpdate = true;
+    }
+
+    if (!doRejectUpdate) {
+      poseEstimator.setVisionMeasurementStdDevs(
+          VecBuilder.fill(0.7, 0.7, Units.degreesToRadians(9999999)));
+      poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds - (mt2.latency / 1000.));
+    }
+
+    Logger.recordOutput("Vision Measurement", mt2.pose);
   }
 
   public void visionLogic() {
