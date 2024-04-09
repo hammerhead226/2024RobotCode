@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
@@ -23,6 +24,8 @@ public class AlignToNoteTele extends Command {
   Drive drive;
   Command pathCommand;
 
+  Translation2d noteTranslation2d;
+
   public AlignToNoteTele(Intake intake, Pivot pivot, Shooter shooter, Drive drive, LED led) {
     this.intake = intake;
     this.pivot = pivot;
@@ -36,6 +39,7 @@ public class AlignToNoteTele extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    noteTranslation2d = drive.getCachedNoteLocation();
     this.pathCommand = drive.alignToNote(led);
     pathCommand.initialize();
     intake.runRollers(12);
@@ -47,6 +51,11 @@ public class AlignToNoteTele extends Command {
   @Override
   public void execute() {
     pathCommand.execute();
+    if (drive.getCachedNoteLocation().getDistance(noteTranslation2d) > 0.5) {
+      pathCommand.cancel();
+      this.pathCommand = drive.alignToNote(led);
+      pathCommand.initialize();
+    }
   }
 
   // Called once the command ends or is interrupted.
