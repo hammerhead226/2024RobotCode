@@ -51,9 +51,9 @@ public class DriveCommands {
       DoubleSupplier omegaSupplier) {
 
     if (shooter.seesNote()) {
-        return joystickDrive(drive, xSupplier, ySupplier, omegaSupplier);
+      return joystickDrive(drive, xSupplier, ySupplier, omegaSupplier);
     } else {
-        
+
     }
 
     return new InstantCommand(() -> led.setState(LED_STATE.RED))

@@ -125,6 +125,8 @@ public class RobotContainer {
 
   private Command goBackClimbCommands;
 
+  private final Command intakeReleaseCommands;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.getMode()) {
@@ -211,6 +213,27 @@ public class RobotContainer {
     //             Map.entry(false, new InstantCommand(() -> led.setState(LED_STATE.YELLOW), led)),
     //             Map.entry(true, new InstantCommand(() -> led.setState(LED_STATE.BLUE), led))),
     //         this::isAutoAlign);
+
+    intakeReleaseCommands =
+        new SelectCommand<>(
+            Map.ofEntries(
+                Map.entry(
+                    false,
+                    new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+                        .andThen(new InstantCommand(shooter::stopFeeders))
+                        .andThen(
+                            new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))),
+                Map.entry(
+                    true,
+                    new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+                        .andThen(
+                            new InstantCommand(() -> shooter.setFeedersRPM(500))
+                                .andThen(new WaitCommand(0.15))
+                                .andThen(new InstantCommand(shooter::stopFeeders)))
+                        .andThen(
+                            new SetPivotTarget(
+                                Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)))),
+            shooter::inTimeThreshold);
 
     shootCommands =
         new SelectCommand<>(
@@ -562,15 +585,7 @@ public class RobotContainer {
                     () -> -driveController.getLeftY(),
                     () -> -driveController.getLeftX(),
                     () -> -driveController.getRightX())));
-    driveController
-        .leftBumper()
-        .onFalse(
-            new InstantCommand(() -> led.setState(LED_STATE.BLUE))
-                .andThen(
-                    new InstantCommand(() -> shooter.setFeedersRPM(500))
-                        .andThen(new WaitCommand(0.15))
-                        .andThen(new InstantCommand(shooter::stopFeeders)))
-                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
+    driveController.leftBumper().onFalse(intakeReleaseCommands);
 
     driveController.leftTrigger().whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true));
     driveController
@@ -599,15 +614,7 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new SetElevatorTarget(0, 1.5, elevator),
                 new AlignToNoteTele(intake, pivot, shooter, drive, led)));
-    driveController
-        .rightBumper()
-        .onFalse(
-            new InstantCommand(() -> led.setState(LED_STATE.BLUE))
-                .andThen(
-                    new InstantCommand(() -> shooter.setFeedersRPM(500))
-                        .andThen(new WaitCommand(0.15))
-                        .andThen(new InstantCommand(shooter::stopFeeders)))
-                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
+    driveController.rightBumper().onFalse(intakeReleaseCommands);
   }
 
   private void manipControls() {

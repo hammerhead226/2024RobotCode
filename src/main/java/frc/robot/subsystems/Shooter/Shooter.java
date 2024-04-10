@@ -7,6 +7,7 @@ package frc.robot.subsystems.shooter;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
@@ -18,6 +19,8 @@ public class Shooter extends SubsystemBase {
 
   private final FeederIO feeder;
   private DistanceSensorIO dist;
+
+  private double lastSeenNoteTime = 0;
 
   private final FlywheelIOInputsAutoLogged flyInputs = new FlywheelIOInputsAutoLogged();
   private final FeederIOInputsAutoLogged feedInputs = new FeederIOInputsAutoLogged();
@@ -148,11 +151,16 @@ public class Shooter extends SubsystemBase {
     return Math.abs(getFeederError()) <= Constants.ShooterConstants.FEEDER_THRESHOLD;
   }
 
+  public boolean inTimeThreshold() {
+    return Math.abs(Timer.getFPGATimestamp() - lastSeenNoteTime) > 1;
+  }
+
   public boolean seesNote() {
     Logger.recordOutput("i callewd sees note!", 63);
     if ((sInputs.distance > Constants.ShooterConstants.FEEDER_DIST && sInputs.distance < 2150)
         || feedInputs.currentAmps > 12.9) {
       Logger.recordOutput("i callewd sees note!", 37);
+      lastSeenNoteTime = Timer.getFPGATimestamp();
       return true;
 
     } else {
