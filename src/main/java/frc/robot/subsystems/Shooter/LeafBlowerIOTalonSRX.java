@@ -7,9 +7,6 @@ public class LeafBlowerIOTalonSRX implements LeafBlowerIO {
 
   private final TalonSRX leafBlower;
 
-  //    private final double currentAmps;
-  //    private final double appliedVolts;
-
   public LeafBlowerIOTalonSRX(int id) {
 
     leafBlower = new TalonSRX(id);

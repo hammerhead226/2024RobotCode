@@ -161,8 +161,8 @@ public class Shooter extends SubsystemBase {
       lastNoteState = NoteState.SENSOR;
       return NoteState.SENSOR;
 
-      // } else if (feedInputs.currentAmps > 12.9) {
-    } else if (feedInputs.currentAmps > 10000) {
+      } else if (feedInputs.currentAmps > 12.9) {
+    // } else if (feedInputs.currentAmps > 10000) {
       Logger.recordOutput("see note val", "current");
       lastNoteState = NoteState.CURRENT;
       return NoteState.CURRENT;
