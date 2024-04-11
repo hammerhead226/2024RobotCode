@@ -7,7 +7,6 @@ package frc.robot.subsystems.shooter;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.NoteState;
@@ -22,8 +21,6 @@ public class Shooter extends SubsystemBase {
   private final FeederIO feeder;
   private DistanceSensorIO dist;
   private NoteState lastNoteState;
-
-  private double lastSeenNoteTime = 0;
 
   private final FlywheelIOInputsAutoLogged flyInputs = new FlywheelIOInputsAutoLogged();
   private final FeederIOInputsAutoLogged feedInputs = new FeederIOInputsAutoLogged();
@@ -130,13 +127,13 @@ public class Shooter extends SubsystemBase {
   }
 
   public double[] getFlywheelVelocitiesRPM() {
-    return new double[] { flyInputs.leftVelocityRPM, flyInputs.leftVelocityRPM };
+    return new double[] {flyInputs.leftVelocityRPM, flyInputs.leftVelocityRPM};
   }
 
   public double[] getFlywheelErrors() {
     return new double[] {
-        flyInputs.leftVelocitySetpointRPM - getFlywheelVelocitiesRPM()[0],
-        flyInputs.rightVelocitySetpointRPM - getFlywheelVelocitiesRPM()[1]
+      flyInputs.leftVelocitySetpointRPM - getFlywheelVelocitiesRPM()[0],
+      flyInputs.rightVelocitySetpointRPM - getFlywheelVelocitiesRPM()[1]
     };
   }
 

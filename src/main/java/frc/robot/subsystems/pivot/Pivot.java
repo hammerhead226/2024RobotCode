@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.SHOOT_STATE;
 import org.littletonrobotics.junction.Logger;
 
 public class Pivot extends SubsystemBase {
@@ -34,6 +35,7 @@ public class Pivot extends SubsystemBase {
   double goal;
 
   boolean isAimbot;
+  SHOOT_STATE shootState;
 
   private ArmFeedforward pivotFFModel;
 
@@ -65,6 +67,8 @@ public class Pivot extends SubsystemBase {
     }
 
     isAimbot = true;
+
+    shootState = SHOOT_STATE.AIMBOT;
 
     maxVelocityDegPerSec = 150;
     maxAccelerationDegPerSecSquared = 226;
@@ -124,6 +128,14 @@ public class Pivot extends SubsystemBase {
 
   public boolean isAimbot() {
     return isAimbot;
+  }
+
+  public SHOOT_STATE getShootState() {
+    return shootState;
+  }
+
+  public void setShootState(SHOOT_STATE shootState) {
+    this.shootState = shootState;
   }
 
   public void setAimbot(boolean isAimbot) {

@@ -162,4 +162,11 @@ public final class Constants {
     FIRE,
     OFF
   }
+
+  public static enum SHOOT_STATE {
+    PIVOT_PRESET,
+    AIMBOT,
+    AMP,
+    TRAP
+  }
 }
