@@ -36,7 +36,7 @@ public class IntakeNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (shooter.seesNote()) end(true);
+    if (shooter.seesNote() == NoteState.CURRENT || shooter.seesNote() == NoteState.SENSOR) end(true);
   }
 
   // Called once the command ends or is interrupted.

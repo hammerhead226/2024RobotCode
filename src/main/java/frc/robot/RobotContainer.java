@@ -136,8 +136,6 @@ public class RobotContainer {
 
     private Command goBackClimbCommands;
 
-    private final Command intakeReleaseCommands;
-
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -247,26 +245,6 @@ public class RobotContainer {
         // Map.entry(true, new InstantCommand(() -> led.setState(LED_STATE.BLUE),
         // led))),
         // this::isAutoAlign);
-
-        intakeReleaseCommands = new SelectCommand<>(
-                Map.ofEntries(
-                        Map.entry(
-                                false,
-                                new InstantCommand(() -> led.setState(LED_STATE.BLUE))
-                                        .andThen(new InstantCommand(shooter::stopFeeders))
-                                        .andThen(
-                                                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))),
-                        Map.entry(
-                                true,
-                                new InstantCommand(() -> led.setState(LED_STATE.BLUE))
-                                        .andThen(
-                                                new InstantCommand(() -> shooter.setFeedersRPM(500))
-                                                        .andThen(new WaitCommand(0.15))
-                                                        .andThen(new InstantCommand(shooter::stopFeeders)))
-                                        .andThen(
-                                                new SetPivotTarget(
-                                                        Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)))),
-                shooter::inTimeThreshold);
 
         shootCommands = new SelectCommand<>(
                 Map.ofEntries(
