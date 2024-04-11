@@ -84,6 +84,8 @@ import frc.robot.subsystems.shooter.FeederIOTalonFX;
 import frc.robot.subsystems.shooter.FlywheelIOSim;
 import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.util.FieldConstants;
+
 import java.util.Map;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
@@ -410,7 +412,7 @@ public class RobotContainer {
             drive
                 .followPathCommand("c5 check", false)
                 .andThen(new AlignToNoteAuto(led, drive, shooter, intake, pivot)),
-            () -> drive.isNoteAt(new Translation2d(8.2, 0.77))));
+            () -> drive.isNoteAt(FieldConstants.StagingLocations.centerlineTranslations[4])));
 
     // Set up auto routines
     autos = new SendableChooser<>();
