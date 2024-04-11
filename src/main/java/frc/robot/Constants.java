@@ -121,6 +121,8 @@ public final class Constants {
     public static final double CLIMB_SETPOINT_ONE_DEG = 50;
     public static final double CLIMB_SETPOINT_TWO_DEG = 95;
 
+    public static final double TRAP_SETPOINT_DEG = 75;
+
     public static final double THRESHOLD = 1.5;
 
     public static final double[] PID = {0, 0, 0};
