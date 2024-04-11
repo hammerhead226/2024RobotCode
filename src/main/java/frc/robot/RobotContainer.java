@@ -44,6 +44,7 @@ import frc.robot.commands.PivotIntakeTele;
 import frc.robot.commands.PivotSource;
 import frc.robot.commands.PositionNoteInFeeder;
 import frc.robot.commands.ScoreAmp;
+import frc.robot.commands.ScoreTrap;
 import frc.robot.commands.SetElevatorTarget;
 import frc.robot.commands.SetFeedersTargetRPM;
 import frc.robot.commands.SetPivotTarget;
@@ -426,10 +427,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // driverControls();
-    // manipControls();
+    driverControls();
+    manipControls();
 
-    testControls();
+    // testControls();
   }
 
   private void testControls() {
@@ -488,8 +489,14 @@ public class RobotContainer {
     // driveController.y().onTrue(new AimbotTele(drive, driveController, shooter, pivot, led));
     driveController.y().onTrue(new SetPivotTarget(39, pivot));
 
-    driveController.x().onTrue(new InstantCommand(() -> shooter.turnOnFan(), shooter));
-    driveController.x().onFalse(new InstantCommand(() -> shooter.turnOffFan(), shooter));
+    driveController.x().onTrue(new ScoreTrap(shooter, pivot));
+    driveController
+        .x()
+        .onFalse(
+            new InstantCommand(() -> shooter.turnOffFan(), shooter)
+                .andThen(new InstantCommand(shooter::stopFeeders))
+                .andThen(new InstantCommand(shooter::stopFlywheels))
+                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
     // driveController.a().onTrue(new TurnToSpeaker(drive, driveController));
     // driveController.a().onTrue(new SetPivotTarget(40, pivot));
 
@@ -585,12 +592,18 @@ public class RobotContainer {
     driveController
         .leftBumper()
         .onFalse(
-            new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+            new InstantCommand(() -> shooter.setFeedersRPM(500))
                 .andThen(
-                    new InstantCommand(() -> shooter.setFeedersRPM(500))
-                        .andThen(new WaitCommand(0.15))
-                        .andThen(new InstantCommand(shooter::stopFeeders)))
-                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
+                    new ConditionalCommand(
+                        new WaitCommand(0.15),
+                        new WaitCommand(0.05),
+                        () -> (shooter.seesNote() == NoteState.CURRENT)))
+                .andThen(
+                    new ParallelCommandGroup(
+                            new InstantCommand(() -> intake.stopRollers(), intake),
+                            new InstantCommand(() -> shooter.stopFeeders()),
+                            new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+                        .andThen(new PositionNoteInFeeder(shooter, intake))));
 
     driveController.leftTrigger().whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true));
     driveController
@@ -623,22 +636,19 @@ public class RobotContainer {
     driveController
         .rightBumper()
         .onFalse(
-            new ConditionalCommand(
-                    new WaitCommand(0.25),
-                    new InstantCommand(),
-                    () -> (shooter.seesNote() == NoteState.CURRENT))
+            new InstantCommand(() -> shooter.setFeedersRPM(500))
+                .andThen(new WaitCommand(0.04))
                 .andThen(
-                    (new ConditionalCommand(
-                            new WaitCommand(0.10),
-                            new InstantCommand(),
-                            () -> (shooter.seesNote() == NoteState.SENSOR)))
-                        .andThen(
-                            new ParallelCommandGroup(
-                                new InstantCommand(() -> intake.stopRollers(), intake),
-                                new PositionNoteInFeeder(shooter, intake),
-                                new SetPivotTarget(
-                                    Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)))
-                        .andThen(new InstantCommand(() -> shooter.stopFeeders()))));
+                    new ConditionalCommand(
+                        new WaitCommand(0.24),
+                        new WaitCommand(0.06),
+                        () -> (shooter.getLastNoteState() == NoteState.CURRENT)))
+                .andThen(
+                    new ParallelCommandGroup(
+                            new InstantCommand(() -> intake.stopRollers(), intake),
+                            new InstantCommand(() -> shooter.stopFeeders()),
+                            new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+                        .andThen(new PositionNoteInFeeder(shooter, intake))));
   }
 
   private void manipControls() {

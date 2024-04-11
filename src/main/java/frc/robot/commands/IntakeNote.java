@@ -48,6 +48,6 @@ public class IntakeNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooter.seesNote() == NoteState.SENSOR;
+    return shooter.seesNote() == NoteState.SENSOR || shooter.seesNote() == NoteState.CURRENT;
   }
 }

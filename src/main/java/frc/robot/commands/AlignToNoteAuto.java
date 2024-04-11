@@ -75,6 +75,8 @@ public class AlignToNoteAuto extends Command {
   @Override
   public boolean isFinished() {
     Logger.recordOutput("isFinished align note", shooter.seesNote());
-    return shooter.seesNote() == NoteState.SENSOR || finished;
+    return shooter.seesNote() == NoteState.SENSOR
+        || shooter.seesNote() == NoteState.CURRENT
+        || finished;
   }
 }

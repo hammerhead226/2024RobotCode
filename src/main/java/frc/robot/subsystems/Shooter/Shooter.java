@@ -155,19 +155,27 @@ public class Shooter extends SubsystemBase {
   }
 
   public NoteState seesNote() {
-    Logger.recordOutput("I called sees note ", 63);
-    if ((sInputs.distance > Constants.ShooterConstants.FEEDER_DIST && sInputs.distance < 2150)
-        || feedInputs.currentAmps > 12.9) {
-      Logger.recordOutput("Sensor sees Note!", 37);
+    Logger.recordOutput("see note val", "default");
+    if ((sInputs.distance > Constants.ShooterConstants.FEEDER_DIST && sInputs.distance < 2150)) {
+      Logger.recordOutput("see note val", "sensor");
+      lastNoteState = NoteState.SENSOR;
       return NoteState.SENSOR;
 
-    } else if (feedInputs.currentAmps == Constants.ShooterConstants.FEEDER_CURRENT_LIMIT) {
-      Logger.recordOutput("Current Limit Hit!", 37);
+      // } else if (feedInputs.currentAmps > 12.9) {
+    } else if (feedInputs.currentAmps > 10000) {
+      Logger.recordOutput("see note val", "current");
+      lastNoteState = NoteState.CURRENT;
       return NoteState.CURRENT;
+
     } else {
-      Logger.recordOutput("No Note ", 7);
+      Logger.recordOutput("see note val", "no note");
+      lastNoteState = NoteState.NO_NOTE;
       return NoteState.NO_NOTE;
     }
+  }
+
+  public NoteState getLastNoteState() {
+    return lastNoteState;
   }
 
   public void turnOnFan() {
@@ -181,7 +189,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    Logger.recordOutput("see note", seesNote());
+    // Logger.recordOutput("see note", seesNote());
     flywheels.updateInputs(flyInputs);
     feeder.updateInputs(feedInputs);
     dist.updateInputs(sInputs);

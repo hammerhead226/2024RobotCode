@@ -62,7 +62,8 @@ public class AlignToNoteTele extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (shooter.seesNote() == NoteState.SENSOR) led.setState(LED_STATE.GREEN);
-    return shooter.seesNote() == NoteState.SENSOR;
+    if (shooter.seesNote() == NoteState.SENSOR || shooter.seesNote() == NoteState.CURRENT)
+      led.setState(LED_STATE.GREEN);
+    return shooter.seesNote() == NoteState.SENSOR || shooter.seesNote() == NoteState.CURRENT;
   }
 }

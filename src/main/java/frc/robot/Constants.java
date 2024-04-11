@@ -124,6 +124,8 @@ public final class Constants {
     public static final double SUBWOOFER_SETPOINT_DEG = 62.0;
     public static final double REVERSE_SUBWOOFER_SETPOINT_DEG = 118;
 
+    public static final double TRAP_SETPOINT_DEG = 78.5;
+
     public static final double SOURCE_SETPOINT_DEG = 107;
     public static final double CLIMB_SETPOINT_ONE_DEG = 50;
     public static final double CLIMB_SETPOINT_TWO_DEG = 95;
