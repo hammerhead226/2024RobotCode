@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.NoteState;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
@@ -16,8 +17,10 @@ public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   private final FlywheelIO flywheels;
 
+  private final LeafBlowerIO leafBlower;
   private final FeederIO feeder;
   private DistanceSensorIO dist;
+  private NoteState lastNoteState;
 
   private final FlywheelIOInputsAutoLogged flyInputs = new FlywheelIOInputsAutoLogged();
   private final FeederIOInputsAutoLogged feedInputs = new FeederIOInputsAutoLogged();
@@ -34,7 +37,8 @@ public class Shooter extends SubsystemBase {
   private static final LoggedTunableNumber feederkI = new LoggedTunableNumber("feederkI");
   private static final LoggedTunableNumber feederkD = new LoggedTunableNumber("feederkD");
 
-  public Shooter(FlywheelIO flywheels, FeederIO feeder, DistanceSensorIO dist) {
+  public Shooter(
+      FlywheelIO flywheels, FeederIO feeder, DistanceSensorIO dist, LeafBlowerIO leafBlower) {
     switch (Constants.getMode()) {
       case REAL:
         flywheelFFModel = new SimpleMotorFeedforward(0.18, 0.12, 0); // make constant
@@ -48,6 +52,7 @@ public class Shooter extends SubsystemBase {
         feederkP.initDefault(0.23); // make constant
         feederkI.initDefault(5); // make constant
         feederkD.initDefault(0);
+        lastNoteState = NoteState.Init;
         break;
       case REPLAY:
         flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
@@ -77,6 +82,7 @@ public class Shooter extends SubsystemBase {
     this.feeder = feeder;
     feeder.configurePID(feederkP.get(), feederkI.get(), feederkD.get());
 
+    this.leafBlower = leafBlower;
     this.dist = dist;
   }
 
@@ -148,17 +154,28 @@ public class Shooter extends SubsystemBase {
     return Math.abs(getFeederError()) <= Constants.ShooterConstants.FEEDER_THRESHOLD;
   }
 
-  public boolean seesNote() {
-    Logger.recordOutput("i callewd sees note!", 63);
+  public NoteState seesNote() {
+    Logger.recordOutput("I called sees note ", 63);
     if ((sInputs.distance > Constants.ShooterConstants.FEEDER_DIST && sInputs.distance < 2150)
         || feedInputs.currentAmps > 12.9) {
-      Logger.recordOutput("i callewd sees note!", 37);
-      return true;
+      Logger.recordOutput("Sensor sees Note!", 37);
+      return NoteState.SENSOR;
 
+    } else if (feedInputs.currentAmps == Constants.ShooterConstants.FEEDER_CURRENT_LIMIT) {
+      Logger.recordOutput("Current Limit Hit!", 37);
+      return NoteState.CURRENT;
     } else {
-      Logger.recordOutput("i callewd sees note!", 7);
-      return false;
+      Logger.recordOutput("No Note ", 7);
+      return NoteState.NO_NOTE;
     }
+  }
+
+  public void turnOnFan() {
+    leafBlower.setSpeed(-1);
+  }
+
+  public void turnOffFan() {
+    leafBlower.stop();
   }
 
   @Override

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LED_STATE;
+import frc.robot.Constants.NoteState;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.shooter.Shooter;
 
@@ -24,7 +25,7 @@ public class InFeederLEDCheck extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (shooter.seesNote()) {
+    if (shooter.seesNote() == NoteState.SENSOR) {
       led.setState(LED_STATE.GREEN);
     } else led.setState(LED_STATE.BLUE);
   }

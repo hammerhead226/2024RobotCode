@@ -93,6 +93,13 @@ public final class Constants {
     public static final double FLYWHEEL_SHOOT_RPM = 3000;
   }
 
+  public static enum NoteState {
+    Init,
+    NO_NOTE,
+    SENSOR,
+    CURRENT
+  }
+
   public static class ElevatorConstants {
     public static final double CURRENT_LIMIT = 40.0;
     public static final boolean CURRENT_LIMIT_ENABLED = true;

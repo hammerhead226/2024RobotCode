@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
+import frc.robot.Constants.NoteState;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
@@ -61,7 +62,7 @@ public class AlignToNoteTele extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (shooter.seesNote()) led.setState(LED_STATE.GREEN);
-    return shooter.seesNote();
+    if (shooter.seesNote() == NoteState.SENSOR) led.setState(LED_STATE.GREEN);
+    return shooter.seesNote() == NoteState.SENSOR;
   }
 }

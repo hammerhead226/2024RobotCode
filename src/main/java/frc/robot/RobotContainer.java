@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -30,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LED_STATE;
+import frc.robot.Constants.NoteState;
 import frc.robot.commands.AimbotAuto;
 import frc.robot.commands.AimbotTele;
 import frc.robot.commands.AlignToNoteAuto;
@@ -81,6 +83,8 @@ import frc.robot.subsystems.shooter.FeederIOSim;
 import frc.robot.subsystems.shooter.FeederIOTalonFX;
 import frc.robot.subsystems.shooter.FlywheelIOSim;
 import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
+import frc.robot.subsystems.shooter.LeafBlowerIO;
+import frc.robot.subsystems.shooter.LeafBlowerIOTalonSRX;
 import frc.robot.subsystems.shooter.Shooter;
 import java.util.Map;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -142,7 +146,8 @@ public class RobotContainer {
                 new FlywheelIOTalonFX(
                     RobotMap.ShooterIDs.FLYWHEEL_LEFT, RobotMap.ShooterIDs.FLYWHEEL_RIGHT),
                 new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER),
-                new DistanceSensorIOAnalog());
+                new DistanceSensorIOAnalog(),
+                new LeafBlowerIOTalonSRX(18));
         elevator =
             new Elevator(
                 new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT));
@@ -161,7 +166,12 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
-        shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim(), new DistanceSensorIO() {});
+        shooter =
+            new Shooter(
+                new FlywheelIOSim(),
+                new FeederIOSim(),
+                new DistanceSensorIO() {},
+                new LeafBlowerIO() {});
         elevator = new Elevator(new ElevatorIOSim());
         pivot = new Pivot(new PivotIOSim());
         led = new LED(new LED_IOCANdle(20, Constants.CANBUS));
@@ -175,7 +185,12 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         intake = new Intake(new IntakeRollerIOSim());
-        shooter = new Shooter(new FlywheelIOSim(), new FeederIOSim(), new DistanceSensorIO() {});
+        shooter =
+            new Shooter(
+                new FlywheelIOSim(),
+                new FeederIOSim(),
+                new DistanceSensorIO() {},
+                new LeafBlowerIO() {});
         elevator = new Elevator(new ElevatorIOSim());
         pivot = new Pivot(new PivotIOSim());
         led = new LED(new LED_IO() {});
@@ -196,7 +211,8 @@ public class RobotContainer {
                 new FlywheelIOTalonFX(
                     RobotMap.ShooterIDs.FLYWHEEL_LEFT, RobotMap.ShooterIDs.FLYWHEEL_RIGHT),
                 new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER),
-                new DistanceSensorIO() {});
+                new DistanceSensorIO() {},
+                new LeafBlowerIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         pivot = new Pivot(new PivotIO() {});
         led = new LED(new LED_IO() {});
@@ -351,7 +367,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "AlignToNote",
         new AlignToNoteAuto(led, drive, shooter, intake, pivot)
-            .until(() -> shooter.seesNote())
+            .until(() -> shooter.seesNote() == NoteState.SENSOR)
             // TODO:: adjust this delay
             .andThen(new InstantCommand(drive::stop))
             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
@@ -410,10 +426,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driverControls();
-    manipControls();
+    // driverControls();
+    // manipControls();
 
-    // testControls();
+    testControls();
   }
 
   private void testControls() {
@@ -472,6 +488,8 @@ public class RobotContainer {
     // driveController.y().onTrue(new AimbotTele(drive, driveController, shooter, pivot, led));
     driveController.y().onTrue(new SetPivotTarget(39, pivot));
 
+    driveController.x().onTrue(new InstantCommand(() -> shooter.turnOnFan(), shooter));
+    driveController.x().onFalse(new InstantCommand(() -> shooter.turnOffFan(), shooter));
     // driveController.a().onTrue(new TurnToSpeaker(drive, driveController));
     // driveController.a().onTrue(new SetPivotTarget(40, pivot));
 
@@ -521,7 +539,9 @@ public class RobotContainer {
 
     driveController
         .rightTrigger()
-        .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(4000, 4000)));
+        .onTrue(
+            new InstantCommand(
+                () -> shooter.setFlywheelRPMs(flywheelSpeed.get(), flywheelSpeed.get())));
     driveController.rightTrigger().onFalse(new InstantCommand(() -> shooter.stopFlywheels()));
 
     driveController.leftTrigger().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
@@ -599,15 +619,26 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new SetElevatorTarget(0, 1.5, elevator),
                 new AlignToNoteTele(intake, pivot, shooter, drive, led)));
+
     driveController
         .rightBumper()
         .onFalse(
-            new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+            new ConditionalCommand(
+                    new WaitCommand(0.25),
+                    new InstantCommand(),
+                    () -> (shooter.seesNote() == NoteState.CURRENT))
                 .andThen(
-                    new InstantCommand(() -> shooter.setFeedersRPM(500))
-                        .andThen(new WaitCommand(0.15))
-                        .andThen(new InstantCommand(shooter::stopFeeders)))
-                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
+                    (new ConditionalCommand(
+                            new WaitCommand(0.10),
+                            new InstantCommand(),
+                            () -> (shooter.seesNote() == NoteState.SENSOR)))
+                        .andThen(
+                            new ParallelCommandGroup(
+                                new InstantCommand(() -> intake.stopRollers(), intake),
+                                new PositionNoteInFeeder(shooter, intake),
+                                new SetPivotTarget(
+                                    Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)))
+                        .andThen(new InstantCommand(() -> shooter.stopFeeders()))));
   }
 
   private void manipControls() {
