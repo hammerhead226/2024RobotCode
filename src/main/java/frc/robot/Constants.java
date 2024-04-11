@@ -38,7 +38,7 @@ public final class Constants {
     };
   }
 
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode = Mode.SIM;
   public static final boolean tuningMode = true;
   public static final String CANBUS = "CAN Bus 2";
   public static final double LOOP_PERIOD_SECS = 0.02;
@@ -129,6 +129,8 @@ public final class Constants {
     public static final double SOURCE_SETPOINT_DEG = 107;
     public static final double CLIMB_SETPOINT_ONE_DEG = 50;
     public static final double CLIMB_SETPOINT_TWO_DEG = 95;
+
+    public static final double TRAP_SETPOINT_DEG = 75;
 
     public static final double THRESHOLD = 1.5;
 

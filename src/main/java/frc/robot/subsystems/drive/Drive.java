@@ -16,6 +16,7 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -59,7 +60,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
-  private static final double MAX_LINEAR_SPEED = Constants.SwerveConstants.MAX_LINEAR_SPEED * 0.8;
+  private static final double MAX_LINEAR_SPEED = Constants.SwerveConstants.MAX_LINEAR_SPEED * 0.86;
   private static final double TRACK_WIDTH_X = Constants.SwerveConstants.TRACK_WIDTH_X;
   private static final double TRACK_WIDTH_Y = Constants.SwerveConstants.TRACK_WIDTH_Y;
   private static final double DRIVE_BASE_RADIUS = Constants.SwerveConstants.DRIVE_BASE_RADIUS;
@@ -220,8 +221,17 @@ public class Drive extends SubsystemBase {
     // Apply odometry update
     poseEstimator.update(rawGyroRotation, modulePositions);
 
+    LimelightHelpers.SetRobotOrientation(
+        Constants.LL_ALIGN,
+        poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
+        0,
+        0,
+        0,
+        0,
+        0);
     if (DriverStation.getAlliance().isPresent() && LimelightHelpers.getTV(Constants.LL_ALIGN)) {
-      visionLogic();
+      mt2TagFiltering();
+      // visionLogic();
     }
 
     Logger.recordOutput(
@@ -268,6 +278,29 @@ public class Drive extends SubsystemBase {
     }
     // if the time is before everything in the buffer return the oldest thing
     return robotPoseBuffer.getLast().pose;
+  }
+
+  public void mt2TagFiltering() {
+    boolean doRejectUpdate = false;
+
+    LimelightHelpers.PoseEstimate mt2 =
+        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN);
+
+    if (Math.abs(gyroInputs.yawVelocityRadPerSec) > Math.toRadians(720)) {
+      doRejectUpdate = true;
+    }
+
+    if (mt2.tagCount == 0) {
+      doRejectUpdate = true;
+    }
+
+    if (!doRejectUpdate) {
+      poseEstimator.setVisionMeasurementStdDevs(
+          VecBuilder.fill(0.7, 0.7, Units.degreesToRadians(9999999)));
+      poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds - (mt2.latency / 1000.));
+    }
+
+    Logger.recordOutput("Vision Measurement", mt2.pose);
   }
 
   public void visionLogic() {
@@ -559,21 +592,6 @@ public class Drive extends SubsystemBase {
     return Optional.empty();
   }
 
-  private double calculateDistanceToSpeaker() {
-    double x = 0;
-    double y = 0;
-
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-      x = FieldConstants.fieldLength - getPose().getX();
-      y = FieldConstants.Speaker.speakerCenterY - getPose().getY();
-    } else {
-      x = -getPose().getX();
-      y = FieldConstants.Speaker.speakerCenterY - getPose().getY();
-    }
-
-    return Units.metersToFeet(Math.hypot(x, y));
-  }
-
   public PathPlannerPath generateTrajectory(
       Pose2d target,
       double maxVelMetersPerSec,
@@ -629,7 +647,7 @@ public class Drive extends SubsystemBase {
               new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
           pointsToNote =
               PathPlannerPath.bezierFromPoses(
-                  new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
+                  new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
                   new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
         } else {
           Logger.recordOutput(
@@ -640,7 +658,7 @@ public class Drive extends SubsystemBase {
                   new Pose2d(
                       FieldConstants.fieldLength - getPose().getX(),
                       getPose().getY(),
-                      getPose().getRotation()),
+                      targetRotation),
                   new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
         }
         PathPlannerPath path =
@@ -675,6 +693,7 @@ public class Drive extends SubsystemBase {
           new GoalEndState(0.5, getPose().getRotation(), true));
     }
   }
+
   // }
   // }
   public Command alignToNote(LED led) {
@@ -705,7 +724,7 @@ public class Drive extends SubsystemBase {
               new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
           pointsToNote =
               PathPlannerPath.bezierFromPoses(
-                  new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
+                  new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
                   new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
         } else {
           Logger.recordOutput(
@@ -716,7 +735,7 @@ public class Drive extends SubsystemBase {
                   new Pose2d(
                       FieldConstants.fieldLength - getPose().getX(),
                       getPose().getY(),
-                      getPose().getRotation()),
+                      targetRotation),
                   new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
         }
         PathPlannerPath path =
@@ -745,5 +764,77 @@ public class Drive extends SubsystemBase {
       new Translation2d(-TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
       new Translation2d(-TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0)
     };
+  }
+
+  public boolean isNoteAt(Translation2d coord) {
+    // return getCachedNoteLocation().getDistance(coord) < 1.5;
+    return false;
+  }
+
+  public Command followPathCommand(String pathName, boolean lowerPID) {
+    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+    if (lowerPID) {
+      return new FollowPathHolonomic(
+          path,
+          this::getPose, // Robot pose supplier
+          () ->
+              kinematics.toChassisSpeeds(
+                  getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+          new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
+              // in your Constants class
+              new PIDConstants(5.0), // Translation PID constants
+              new PIDConstants(0.5), // Rotation PID constants
+              Constants.SwerveConstants.MAX_LINEAR_SPEED, // Max module speed, in m/s
+              DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to
+              // furthest module.
+              new ReplanningConfig() // Default path replanning config. See the API for the options
+              // here
+              ),
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+          },
+          this // Reference to this subsystem to set requirements
+          );
+    } else {
+      return new FollowPathHolonomic(
+          path,
+          this::getPose, // Robot pose supplier
+          () ->
+              kinematics.toChassisSpeeds(
+                  getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+          new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
+              // in your Constants class
+              new PIDConstants(5.0), // Translation PID constants
+              new PIDConstants(1.5), // Rotation PID constants
+              Constants.SwerveConstants.MAX_LINEAR_SPEED, // Max module speed, in m/s
+              DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to
+              // furthest module.
+              new ReplanningConfig() // Default path replanning config. See the API for the options
+              // here
+              ),
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+          },
+          this // Reference to this subsystem to set requirements
+          );
+    }
   }
 }

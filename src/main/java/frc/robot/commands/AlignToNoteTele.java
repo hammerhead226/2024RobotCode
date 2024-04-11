@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
@@ -13,6 +15,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
+import org.littletonrobotics.junction.Logger;
 
 public class AlignToNoteTele extends Command {
   /** Creates a new AlignToNote. */
@@ -23,6 +26,9 @@ public class AlignToNoteTele extends Command {
   LED led;
   Drive drive;
   Command pathCommand;
+
+  Translation2d noteTranslation2d;
+  boolean pathReplanned = false;
 
   public AlignToNoteTele(Intake intake, Pivot pivot, Shooter shooter, Drive drive, LED led) {
     this.intake = intake;
@@ -37,6 +43,7 @@ public class AlignToNoteTele extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    noteTranslation2d = drive.getCachedNoteLocation();
     this.pathCommand = drive.alignToNote(led);
     pathCommand.initialize();
     intake.runRollers(12);
@@ -47,7 +54,18 @@ public class AlignToNoteTele extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (shooter.seesNote()) {
+      end(true);
+    }
     pathCommand.execute();
+    if (drive.getCachedNoteLocation().getDistance(noteTranslation2d) > Units.inchesToMeters(20)) {
+      pathReplanned = true;
+      replanPath();
+    } else {
+      pathReplanned = false;
+    }
+
+    Logger.recordOutput("Path Replanned", pathReplanned);
   }
 
   // Called once the command ends or is interrupted.
@@ -65,5 +83,11 @@ public class AlignToNoteTele extends Command {
     if (shooter.seesNote() == NoteState.SENSOR || shooter.seesNote() == NoteState.CURRENT)
       led.setState(LED_STATE.GREEN);
     return shooter.seesNote() == NoteState.SENSOR || shooter.seesNote() == NoteState.CURRENT;
+  }
+
+  public void replanPath() {
+    pathCommand.cancel();
+    this.pathCommand = drive.alignToNote(led);
+    pathCommand.initialize();
   }
 }
