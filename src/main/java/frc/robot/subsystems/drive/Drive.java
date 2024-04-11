@@ -719,6 +719,9 @@ public class Drive extends SubsystemBase {
                 cachedNoteT2d.getX() - getPose().getX(), cachedNoteT2d.getY() - getPose().getY());
         List<Translation2d> pointsToNote;
         if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
+          if (Math.abs(targetRotation.minus(Rotation2d.fromDegrees(300)).getDegrees()) <= 5) {
+            targetRotation = Rotation2d.fromDegrees(300);
+          }
           Logger.recordOutput(
               "goal point blue",
               new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
@@ -727,6 +730,9 @@ public class Drive extends SubsystemBase {
                   new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
                   new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
         } else {
+          if (Math.abs(targetRotation.minus(Rotation2d.fromDegrees(240)).getDegrees()) <= 5) {
+            targetRotation = Rotation2d.fromDegrees(240);
+          }
           Logger.recordOutput(
               "goal point red",
               new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
