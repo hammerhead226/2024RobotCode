@@ -110,7 +110,13 @@ public final class Constants {
 
     public static final double[] PID = {0, 0, 0};
 
-    public static final double REDUCTION = (25.0 / 1.0);
+    public static final double REDUCTION = (15.0 / 1.0);
+
+    public static final double AMP_MAX_VELOCITY_METERS_PER_SEC = 35; 
+    public static final double AMP_MAX_ACCELERATION_METERS_PER_SEC_SQUARED = 90; 
+
+    public static final double CLIMB_MAX_VELOCITY_METERS_PER_SEC = 30; 
+    public static final double CLIMB_MAX_ACCELERATION_METERS_PER_SEC_SQUARED = 85; 
   }
 
   public static class PivotConstants {

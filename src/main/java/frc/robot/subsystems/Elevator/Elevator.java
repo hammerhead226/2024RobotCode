@@ -22,9 +22,10 @@ public class Elevator extends SubsystemBase {
   private static final LoggedTunableNumber kV = new LoggedTunableNumber("Elevator/kV");
   private static final LoggedTunableNumber kA = new LoggedTunableNumber("Elevator/kA");
 
-  private final TrapezoidProfile extenderProfile;
-  private final TrapezoidProfile.Constraints extenderConstraints =
-      new TrapezoidProfile.Constraints(30, 85);
+  private TrapezoidProfile extenderProfile;
+  private TrapezoidProfile.Constraints extenderConstraints =
+      new TrapezoidProfile.Constraints(Constants.ElevatorConstants.AMP_MAX_VELOCITY_METERS_PER_SEC, 
+                                       Constants.ElevatorConstants.AMP_MAX_ACCELERATION_METERS_PER_SEC_SQUARED);
   private TrapezoidProfile.State extenderGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State extenderCurrent = new TrapezoidProfile.State();
 
@@ -118,6 +119,11 @@ public class Elevator extends SubsystemBase {
 
   public boolean isExtended() {
     return extenderGoal.position == Constants.ElevatorConstants.EXTEND_SETPOINT_INCH;
+  }
+
+  public void setConstraints(double maxVelocityMetersPerSecond, double maxAccelerationMetersPerSecondSquared) {
+    extenderConstraints = new TrapezoidProfile.Constraints(maxVelocityMetersPerSecond, maxAccelerationMetersPerSecondSquared);
+    extenderProfile = new TrapezoidProfile(extenderConstraints);
   }
 
   @Override

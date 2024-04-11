@@ -17,8 +17,19 @@ import frc.robot.subsystems.shooter.Shooter;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ScoreAmp extends SequentialCommandGroup {
   /** Creates a new ScoreAmp. */
-  public ScoreAmp(Elevator elevator, Pivot pivot, Shooter shooter, Drive drive) {
-    addCommands(
+  public ScoreAmp(Elevator elevator, Pivot pivot, Shooter shooter) {
+
+    // new SetElevatorTarget(8, elevator)
+    //             .andThen(new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot))
+    //             .andThen(new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter))
+    //             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(200), shooter)));
+
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
+    addCommands(new InstantCommand(() -> elevator.setConstraints(Constants.ElevatorConstants.AMP_MAX_VELOCITY_METERS_PER_SEC, 
+    Constants.ElevatorConstants.AMP_MAX_ACCELERATION_METERS_PER_SEC_SQUARED)), 
+        new SetElevatorTarget(8, elevator),
+        new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
         new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter),
         new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
         new SetElevatorTarget(8, 1, elevator));
