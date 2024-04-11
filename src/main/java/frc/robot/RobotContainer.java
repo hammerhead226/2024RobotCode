@@ -595,9 +595,9 @@ public class RobotContainer {
             new InstantCommand(() -> shooter.setFeedersRPM(500))
                 .andThen(
                     new ConditionalCommand(
-                        new WaitCommand(0.15),
-                        new WaitCommand(0.05),
-                        () -> (shooter.seesNote() == NoteState.CURRENT)))
+                        new WaitCommand(0.24),
+                        new WaitCommand(0.06),
+                        () -> (shooter.getLastNoteState() == NoteState.CURRENT)))
                 .andThen(
                     new ParallelCommandGroup(
                             new InstantCommand(() -> intake.stopRollers(), intake),
@@ -637,7 +637,6 @@ public class RobotContainer {
         .rightBumper()
         .onFalse(
             new InstantCommand(() -> shooter.setFeedersRPM(500))
-                .andThen(new WaitCommand(0.04))
                 .andThen(
                     new ConditionalCommand(
                         new WaitCommand(0.24),
