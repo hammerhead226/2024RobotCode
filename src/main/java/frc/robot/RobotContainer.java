@@ -17,11 +17,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -401,6 +403,15 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "DisableOverride", new InstantCommand(() -> drive.disableOverride()));
 
+    NamedCommands.registerCommand(
+        "test",
+        new ConditionalCommand(
+            new AlignToNoteAuto(led, drive, shooter, intake, pivot),
+            drive
+                .followPathCommand("c5 check", false)
+                .andThen(new AlignToNoteAuto(led, drive, shooter, intake, pivot)),
+            () -> drive.isNoteAt(new Translation2d(8.2, 0.77))));
+
     // Set up auto routines
     autos = new SendableChooser<>();
 
@@ -421,6 +432,10 @@ public class RobotContainer {
 
     autos.addOption("New Auto", AutoBuilder.buildAuto("New Auto"));
 
+    autos.addOption("New New Auto", AutoBuilder.buildAuto("New New Auto"));
+
+    autos.addOption("conditional auto", AutoBuilder.buildAuto("conditional auto"));
+
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", autos);
 
     configureButtonBindings();
@@ -433,10 +448,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driverControls();
-    manipControls();
+    // driverControls();
+    // manipControls();
 
-    // testControls();
+    testControls();
   }
 
   private void testControls() {
@@ -544,7 +559,9 @@ public class RobotContainer {
 
     driveController
         .rightTrigger()
-        .onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(4000, 4000)));
+        .onTrue(
+            new InstantCommand(
+                () -> shooter.setFlywheelRPMs(flywheelSpeed.get(), flywheelSpeed.get())));
     driveController.rightTrigger().onFalse(new InstantCommand(() -> shooter.stopFlywheels()));
 
     driveController.leftTrigger().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
