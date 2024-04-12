@@ -126,6 +126,16 @@ public class FieldConstants {
 
     public static final Pose2d center =
         new Pose2d(Units.inchesToMeters(192.55), Units.inchesToMeters(161.638), new Rotation2d());
+
+    public static final class Chains {
+      public static final Pose2d ampChainRed = new Pose2d(10, 10, new Rotation2d());
+      public static final Pose2d farChainRed = new Pose2d(10, 10, new Rotation2d());
+      public static final Pose2d sourceChainRed = new Pose2d(10, 10, new Rotation2d());
+
+      public static final Pose2d ampChainBlue = new Pose2d(4.35, 4.85, Rotation2d.fromDegrees(60));
+      public static final Pose2d farChainBlue = new Pose2d(10, 10, new Rotation2d());
+      public static final Pose2d sourceChainBlue = new Pose2d(10, 10, new Rotation2d());
+    }
   }
 
   public static final double aprilTagWidth = Units.inchesToMeters(6.50);

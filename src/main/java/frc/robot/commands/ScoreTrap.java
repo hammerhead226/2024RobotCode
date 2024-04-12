@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.Constants;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
 
@@ -22,10 +21,12 @@ public class ScoreTrap extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new InstantCommand(() -> shooter.turnOnFan()),
-        new SetPivotTarget(Constants.PivotConstants.TRAP_SETPOINT_DEG, pivot),
-        new InstantCommand(() -> shooter.setFlywheelRPMs(1550, 1550)),
+        // extending elevator way
+        // new SetPivotTarget(78, pivot),
+        new InstantCommand(() -> shooter.setFlywheelRPMs(1050, 1050)),
+        // new InstantCommand(() -> shooter.setFlywheelRPMs(1550, 1550)),
         new WaitUntilCommand(() -> shooter.atFlywheelSetpoints()),
-        new WaitCommand(0.75),
+        new WaitCommand(1.5),
         new InstantCommand(() -> shooter.setFeedersRPM(1000)));
   }
 }

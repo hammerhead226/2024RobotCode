@@ -22,8 +22,8 @@ public class Elevator extends SubsystemBase {
   private static final LoggedTunableNumber kV = new LoggedTunableNumber("Elevator/kV");
   private static final LoggedTunableNumber kA = new LoggedTunableNumber("Elevator/kA");
 
-  private final TrapezoidProfile extenderProfile;
-  private final TrapezoidProfile.Constraints extenderConstraints =
+  private TrapezoidProfile extenderProfile;
+  private TrapezoidProfile.Constraints extenderConstraints =
       new TrapezoidProfile.Constraints(30, 85);
   private TrapezoidProfile.State extenderGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State extenderCurrent = new TrapezoidProfile.State();
@@ -114,6 +114,14 @@ public class Elevator extends SubsystemBase {
   public double calculateAngle() {
     double angle = 0.0;
     return angle;
+  }
+
+  public void setConstraints(
+      double maxVelocityMetersPerSec, double maxAccelerationMetersPerSecSquared) {
+    extenderConstraints =
+        new TrapezoidProfile.Constraints(
+            maxVelocityMetersPerSec, maxAccelerationMetersPerSecSquared);
+    extenderProfile = new TrapezoidProfile(extenderConstraints);
   }
 
   public boolean isExtended() {

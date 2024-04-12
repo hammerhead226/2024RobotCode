@@ -230,8 +230,8 @@ public class Drive extends SubsystemBase {
         0,
         0);
     if (DriverStation.getAlliance().isPresent() && LimelightHelpers.getTV(Constants.LL_ALIGN)) {
-      mt2TagFiltering();
-      // visionLogic();
+      // mt2TagFiltering();
+      visionLogic();
     }
 
     Logger.recordOutput(
@@ -592,7 +592,7 @@ public class Drive extends SubsystemBase {
     return Optional.empty();
   }
 
-  public PathPlannerPath generateTrajectory(
+  public Command generateTrajectory(
       Pose2d target,
       double maxVelMetersPerSec,
       double maxAccelMetersPerSecSquared,
@@ -613,7 +613,7 @@ public class Drive extends SubsystemBase {
                 Units.degreesToRadians(maxAngAccelDegPerSecSquared)),
             new GoalEndState(endVelMetersPerSec, target.getRotation(), true));
 
-    return path;
+    return AutoBuilder.followPath(path);
   }
 
   public void runPath(PathPlannerPath path) {
@@ -694,8 +694,44 @@ public class Drive extends SubsystemBase {
     }
   }
 
-  // }
-  // }
+  public Command createPathFindingCommand(Pose2d target) {
+    Pose2d coord = target;
+    PathConstraints constraints =
+        new PathConstraints(1, 2, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    return AutoBuilder.pathfindToPose(coord, constraints, 0);
+  }
+
+  public Pose2d generateClosestChainCoordinate() {
+    Pose2d[] chainCoords = new Pose2d[3];
+    int closeChainIndex = 0;
+    double minDistance = Double.MAX_VALUE;
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      chainCoords[0] = FieldConstants.Stage.Chains.ampChainBlue;
+      chainCoords[1] = FieldConstants.Stage.Chains.farChainBlue;
+      chainCoords[2] = FieldConstants.Stage.Chains.sourceChainBlue;
+
+      for (int i = 0; i < 3; i++) {
+        if (getPose().getTranslation().getDistance(chainCoords[i].getTranslation()) < minDistance) {
+          minDistance = getPose().getTranslation().getDistance(chainCoords[i].getTranslation());
+          closeChainIndex = i;
+        }
+      }
+    } else {
+      chainCoords[0] = FieldConstants.Stage.Chains.ampChainRed;
+      chainCoords[1] = FieldConstants.Stage.Chains.farChainRed;
+      chainCoords[2] = FieldConstants.Stage.Chains.sourceChainRed;
+
+      for (int i = 0; i < 3; i++) {
+        if (getPose().getTranslation().getDistance(chainCoords[i].getTranslation()) < minDistance) {
+          minDistance = getPose().getTranslation().getDistance(chainCoords[i].getTranslation());
+          closeChainIndex = i;
+        }
+      }
+    }
+
+    return chainCoords[closeChainIndex];
+  }
+
   public Command alignToNote(LED led) {
 
     if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
@@ -718,9 +754,10 @@ public class Drive extends SubsystemBase {
             new Rotation2d(
                 cachedNoteT2d.getX() - getPose().getX(), cachedNoteT2d.getY() - getPose().getY());
         List<Translation2d> pointsToNote;
+        Logger.recordOutput("targetPose before change", targetRotation.getDegrees());
         if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-          if (Math.abs(targetRotation.minus(Rotation2d.fromDegrees(300)).getDegrees()) <= 5) {
-            targetRotation = Rotation2d.fromDegrees(300);
+          if (Math.abs(targetRotation.minus(Rotation2d.fromDegrees(300)).getDegrees()) <= 10) {
+            targetRotation = Rotation2d.fromDegrees(300 + 5);
           }
           Logger.recordOutput(
               "goal point blue",
@@ -730,8 +767,8 @@ public class Drive extends SubsystemBase {
                   new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
                   new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
         } else {
-          if (Math.abs(targetRotation.minus(Rotation2d.fromDegrees(240)).getDegrees()) <= 5) {
-            targetRotation = Rotation2d.fromDegrees(240);
+          if (Math.abs(targetRotation.minus(Rotation2d.fromDegrees(240)).getDegrees()) <= 10) {
+            targetRotation = Rotation2d.fromDegrees(240 - 5);
           }
           Logger.recordOutput(
               "goal point red",
@@ -748,9 +785,9 @@ public class Drive extends SubsystemBase {
             new PathPlannerPath(
                 pointsToNote,
                 new PathConstraints(
-                    2, 1.5, Units.degreesToRadians(100), Units.degreesToRadians(180)),
+                    2, 2.26, Units.degreesToRadians(100), Units.degreesToRadians(180)),
                 new GoalEndState(0.5, targetRotation, true));
-
+        Logger.recordOutput("source snap target", targetRotation.getDegrees());
         path.preventFlipping = true;
         Logger.recordOutput("follow path", true);
         return AutoBuilder.followPath(path);

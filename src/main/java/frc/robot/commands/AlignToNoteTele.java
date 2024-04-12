@@ -58,7 +58,8 @@ public class AlignToNoteTele extends Command {
       end(true);
     }
     pathCommand.execute();
-    if (drive.getCachedNoteLocation().getDistance(noteTranslation2d) > Units.inchesToMeters(20)) {
+    if (drive.getCachedNoteLocation().getDistance(noteTranslation2d)
+        > Units.inchesToMeters(17.26)) {
       pathReplanned = true;
       replanPath();
     } else {
