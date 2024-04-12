@@ -23,7 +23,7 @@ public class TrapStateMachine {
     RETRACT_STOW
   }
 
-  private TRAP_STATES targetState = TRAP_STATES.NONE;
+  private TRAP_STATES targetState = TRAP_STATES.PIVOT;
 
   public TRAP_STATES getTargetState() {
     return targetState;

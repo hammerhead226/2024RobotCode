@@ -44,11 +44,11 @@ public class ClimbStateMachine {
   public void advanceTargetState() {
     switch (targetState) {
       case NONE:
-        targetState = CLIMB_STATES.PIVOT;
-        break;
-      case PIVOT:
         targetState = CLIMB_STATES.EXTEND;
         break;
+        // case PIVOT:
+        //   targetState = CLIMB_STATES.EXTEND;
+        //   break;
       case EXTEND:
         targetState = CLIMB_STATES.RETRACT;
         break;

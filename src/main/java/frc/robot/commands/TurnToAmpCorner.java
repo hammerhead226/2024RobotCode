@@ -41,7 +41,7 @@ public class TurnToAmpCorner extends Command {
 
     switch (Constants.currentMode) {
       case REAL:
-        gains[0] = 7;
+        gains[0] = 4;
         gains[1] = 0;
         gains[2] = 0;
         break;
@@ -71,7 +71,7 @@ public class TurnToAmpCorner extends Command {
   @Override
   public void initialize() {
     pivot.setPivotGoal(45);
-    shooter.setFlywheelRPMs(5800, 5800);
+    shooter.setFlywheelRPMs(5200, 4900);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

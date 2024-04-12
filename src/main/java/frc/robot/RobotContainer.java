@@ -348,18 +348,18 @@ public class RobotContainer {
         new SelectCommand<>(
             Map.ofEntries(
                 Map.entry(
-                    TRAP_STATES.NONE,
+                    TRAP_STATES.PIVOT,
                     new SetPivotTarget(Constants.PivotConstants.TRAP_SETPOINT_DEG, pivot)
                         .andThen(trapStateMachine::advanceTargetState, elevator)),
                 Map.entry(
-                    TRAP_STATES.PIVOT,
+                    TRAP_STATES.EXTEND,
                     new SetElevatorTarget(
                             Constants.ElevatorConstants.EXTEND_SETPOINT_INCH, 1.5, elevator)
                         .andThen(new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.TRAP)))
                         .andThen(trapStateMachine::advanceTargetState, elevator)),
                 Map.entry(
                     TRAP_STATES.RETRACT_STOW,
-                    new SetElevatorTarget(0, 0.5, elevator)
+                    new SetElevatorTarget(0, 1.5, elevator)
                         .andThen(
                             new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
                         .andThen(new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT)))
@@ -719,7 +719,8 @@ public class RobotContainer {
             new InstantCommand(() -> shooter.stopFeeders(), shooter)
                 .andThen(
                     new InstantCommand(shooter::stopFlywheels)
-                        .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE)))));
+                        .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE))))
+                .andThen(new InstantCommand(() -> shooter.turnOffFan(), shooter)));
 
     driveController.a().onTrue(climbCommands);
 
