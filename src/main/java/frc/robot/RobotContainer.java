@@ -34,6 +34,7 @@ import frc.robot.Constants.LED_STATE;
 import frc.robot.Constants.NoteState;
 import frc.robot.Constants.SHOOT_STATE;
 import frc.robot.commands.AimbotAuto;
+import frc.robot.commands.AimbotStatic;
 import frc.robot.commands.AimbotTele;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AlignToNoteTele;
@@ -444,7 +445,7 @@ public class RobotContainer {
             .andThen(
                 new WaitCommand(1.5).andThen(new InstantCommand(() -> shooter.stopFeeders()))));
     NamedCommands.registerCommand(
-        "AimbotStatic", new AimbotTele(drive, driveController, shooter, pivot, led));
+        "AimbotStatic", new AimbotStatic(drive, driveController, shooter, pivot, led));
     NamedCommands.registerCommand("AimbotMoving", new AimbotAuto(drive, shooter, pivot, led));
 
     NamedCommands.registerCommand(
@@ -690,7 +691,8 @@ public class RobotContainer {
     driveController
         .leftBumper()
         .onFalse(
-            new InstantCommand(() -> shooter.setFeedersRPM(500))
+            new InstantCommand(() -> led.setState(LED_STATE.BLUE)).andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
+            
                 .andThen(new WaitCommand(0.02))
                 .andThen(
                     new ConditionalCommand(
@@ -736,7 +738,8 @@ public class RobotContainer {
     driveController
         .rightBumper()
         .onFalse(
-            new InstantCommand(() -> shooter.setFeedersRPM(500))
+            new InstantCommand(() -> led.setState(LED_STATE.BLUE)).andThen( new InstantCommand(() -> shooter.setFeedersRPM(500)))
+           
                 .andThen(new WaitCommand(0.02))
                 .andThen(
                     new ConditionalCommand(
