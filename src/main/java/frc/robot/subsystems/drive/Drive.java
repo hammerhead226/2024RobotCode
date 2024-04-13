@@ -810,8 +810,8 @@ public class Drive extends SubsystemBase {
   }
 
   public boolean isNoteAt(Translation2d coord) {
-    // return getCachedNoteLocation().getDistance(coord) < 1.5;
-    return false;
+    return getCachedNoteLocation().getDistance(coord) < 1;
+    // return false;
   }
 
   public Command followPathCommand(String pathName, boolean lowerPID) {
@@ -878,12 +878,6 @@ public class Drive extends SubsystemBase {
           },
           this // Reference to this subsystem to set requirements
           );
-    }
-  }
-
-  public void setDriveRamp(double seconds) {
-    for (Module mod : modules) {
-      mod.setDriveRamp(seconds);
     }
   }
 }

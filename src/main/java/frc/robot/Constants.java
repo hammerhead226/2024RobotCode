@@ -38,7 +38,7 @@ public final class Constants {
     };
   }
 
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
   public static final boolean tuningMode = true;
   public static final String CANBUS = "CAN Bus 2";
   public static final double LOOP_PERIOD_SECS = 0.02;
@@ -56,7 +56,7 @@ public final class Constants {
     public static final double DRIVE_BASE_RADIUS =
         Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
     public static final double MAX_ANGULAR_SPEED = 0.45 * MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
-    public static final double OPEN_LOOP_RAMP_SEC = 0.5;
+    public static final double OPEN_LOOP_RAMP_SEC = 0.05;
   }
 
   public static class ModuleConstants {

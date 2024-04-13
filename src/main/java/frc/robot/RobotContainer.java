@@ -265,7 +265,7 @@ public class RobotContainer {
                     new SequentialCommandGroup(
                         // trap shoot
                         new InstantCommand(() -> shooter.turnOnFan()),
-                        new InstantCommand(() -> shooter.setFlywheelRPMs(1050, 1050)),
+                        new InstantCommand(() -> shooter.setFlywheelRPMs(850, 850)),
                         new WaitUntilCommand(() -> shooter.atFlywheelSetpoints()),
                         new WaitCommand(1.5),
                         new InstantCommand(() -> shooter.setFeedersRPM(1000))))),
@@ -426,7 +426,10 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "AlignToNote",
         new AlignToNoteAuto(led, drive, shooter, intake, pivot)
-            .until(() -> shooter.seesNote() == NoteState.SENSOR || shooter.seesNote() == NoteState.CURRENT)
+            .until(
+                () ->
+                    shooter.seesNote() == NoteState.SENSOR
+                        || shooter.seesNote() == NoteState.CURRENT)
             // TODO:: adjust this delay
             .andThen(new InstantCommand(drive::stop))
             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
@@ -445,7 +448,9 @@ public class RobotContainer {
             .andThen(
                 new WaitCommand(1.5).andThen(new InstantCommand(() -> shooter.stopFeeders()))));
     NamedCommands.registerCommand(
-        "AimbotStatic", new AimbotStatic(drive, driveController, shooter, pivot, led).andThen(new InstantCommand(()->led.setState(LED_STATE.BLUE))));
+        "AimbotStatic",
+        new AimbotStatic(drive, driveController, shooter, pivot, led)
+            .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE))));
     NamedCommands.registerCommand("AimbotMoving", new AimbotAuto(drive, shooter, pivot, led));
 
     NamedCommands.registerCommand(
@@ -691,8 +696,8 @@ public class RobotContainer {
     driveController
         .leftBumper()
         .onFalse(
-            new InstantCommand(() -> led.setState(LED_STATE.BLUE)).andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
-            
+            new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+                .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
                 .andThen(new WaitCommand(0.02))
                 .andThen(
                     new ConditionalCommand(
@@ -738,8 +743,8 @@ public class RobotContainer {
     driveController
         .rightBumper()
         .onFalse(
-            new InstantCommand(() -> led.setState(LED_STATE.BLUE)).andThen( new InstantCommand(() -> shooter.setFeedersRPM(500)))
-           
+            new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+                .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
                 .andThen(new WaitCommand(0.02))
                 .andThen(
                     new ConditionalCommand(

@@ -23,7 +23,7 @@ public class ScoreTrap extends SequentialCommandGroup {
         new InstantCommand(() -> shooter.turnOnFan()),
         // extending elevator way
         // new SetPivotTarget(78, pivot),
-        new InstantCommand(() -> shooter.setFlywheelRPMs(1050, 1050)),
+        new InstantCommand(() -> shooter.setFlywheelRPMs(750, 750)),
         // new InstantCommand(() -> shooter.setFlywheelRPMs(1550, 1550)),
         new WaitUntilCommand(() -> shooter.atFlywheelSetpoints()),
         new WaitCommand(1.5),

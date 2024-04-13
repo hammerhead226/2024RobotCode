@@ -130,8 +130,6 @@ public class Robot extends LoggedRobot {
     m_robotContainer.getPivot().setPivotCurrent(m_robotContainer.getPivot().getPivotPositionDegs());
     m_robotContainer.getPivot().setPivotGoal(m_robotContainer.getPivot().getPivotPositionDegs());
 
-    m_robotContainer.getDrive().setDriveRamp(0);
-
     // schedule the autonomous command (example)
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
@@ -152,8 +150,6 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
-
-    m_robotContainer.getDrive().setDriveRamp(Constants.SwerveConstants.OPEN_LOOP_RAMP_SEC);
 
     m_robotContainer.getLED().setState(LED_STATE.FIRE);
     m_robotContainer.getPivot().setPivotCurrent(m_robotContainer.getPivot().getPivotPositionDegs());

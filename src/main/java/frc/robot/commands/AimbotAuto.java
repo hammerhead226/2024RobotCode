@@ -103,20 +103,24 @@ public class AimbotAuto extends Command {
       double shootingSpeed = calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter));
       if (alliance == Alliance.Blue) {
         // source side
-        if (drive.getPose().getY() < 4.5) shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 250);
+        if (drive.getPose().getY() < 4.5)
+          shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 250);
         // amp side
-        else if (drive.getPose().getY() > 6.5) shooter.setFlywheelRPMs(shootingSpeed + 250, shootingSpeed);
+        else if (drive.getPose().getY() > 6.5)
+          shooter.setFlywheelRPMs(shootingSpeed + 250, shootingSpeed);
         // center
         else shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed);
       } else {
         // source side
-        if (drive.getPose().getY() < 4.5) shooter.setFlywheelRPMs(shootingSpeed + 250, shootingSpeed);
+        if (drive.getPose().getY() < 4.5)
+          shooter.setFlywheelRPMs(shootingSpeed + 250, shootingSpeed);
         // amp side
-        else if (drive.getPose().getY() > 6.5) shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 250);
+        else if (drive.getPose().getY() > 6.5)
+          shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 250);
         // center
         else shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed);
       }
-      
+
     } else shooter.setFlywheelRPMs(5400, 5400);
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }

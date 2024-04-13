@@ -26,12 +26,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "$s!score c5"
+            "pathName": "Copy of Copy of $s!score c5"
           }
         }
       ]
     }
   },
-  "folder": "limelight autos",
+  "folder": null,
   "choreoAuto": false
 }
