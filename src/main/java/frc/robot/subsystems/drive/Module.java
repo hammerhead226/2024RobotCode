@@ -150,6 +150,10 @@ public class Module {
     }
   }
 
+  public void setDriveRamp(double seconds) {
+    io.setDriveOpenLoopRamp(seconds);
+  }
+
   /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {
     return inputs.drivePositionRad * WHEEL_RADIUS;

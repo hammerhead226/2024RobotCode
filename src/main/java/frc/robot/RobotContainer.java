@@ -895,4 +895,8 @@ public class RobotContainer {
   public LED getLED() {
     return led;
   }
+
+  public Drive getDrive() {
+    return drive;
+  }
 }

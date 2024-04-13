@@ -880,4 +880,10 @@ public class Drive extends SubsystemBase {
           );
     }
   }
+
+  public void setDriveRamp(double seconds) {
+    for (Module mod  : modules) {
+      mod.setDriveRamp(seconds);
+    }
+  }
 }

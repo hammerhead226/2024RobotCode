@@ -179,6 +179,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     var ramping = new OpenLoopRampsConfigs();
 
     ramping.VoltageOpenLoopRampPeriod = seconds;
+    driveTalon.getConfigurator().apply(ramping);
   }
 
   @Override
