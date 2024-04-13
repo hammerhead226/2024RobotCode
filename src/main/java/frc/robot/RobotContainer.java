@@ -426,7 +426,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "AlignToNote",
         new AlignToNoteAuto(led, drive, shooter, intake, pivot)
-            .until(() -> shooter.seesNote() == NoteState.SENSOR)
+            .until(() -> shooter.seesNote() == NoteState.SENSOR || shooter.seesNote() == NoteState.CURRENT)
             // TODO:: adjust this delay
             .andThen(new InstantCommand(drive::stop))
             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
@@ -445,7 +445,7 @@ public class RobotContainer {
             .andThen(
                 new WaitCommand(1.5).andThen(new InstantCommand(() -> shooter.stopFeeders()))));
     NamedCommands.registerCommand(
-        "AimbotStatic", new AimbotStatic(drive, driveController, shooter, pivot, led));
+        "AimbotStatic", new AimbotStatic(drive, driveController, shooter, pivot, led).andThen(new InstantCommand(()->led.setState(LED_STATE.BLUE))));
     NamedCommands.registerCommand("AimbotMoving", new AimbotAuto(drive, shooter, pivot, led));
 
     NamedCommands.registerCommand(
