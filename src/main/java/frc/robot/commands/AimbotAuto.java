@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
@@ -100,8 +101,22 @@ public class AimbotAuto extends Command {
       //     MathUtil.clamp(
       //         calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter)), 3250, 5400);
       double shootingSpeed = calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter));
-
-      shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed);
+      if (alliance == Alliance.Blue) {
+        // source side
+        if (drive.getPose().getY() < 4.5) shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 250);
+        // amp side
+        else if (drive.getPose().getY() > 6.5) shooter.setFlywheelRPMs(shootingSpeed + 250, shootingSpeed);
+        // center
+        else shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed);
+      } else {
+        // source side
+        if (drive.getPose().getY() < 4.5) shooter.setFlywheelRPMs(shootingSpeed + 250, shootingSpeed);
+        // amp side
+        else if (drive.getPose().getY() > 6.5) shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 250);
+        // center
+        else shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed);
+      }
+      
     } else shooter.setFlywheelRPMs(5400, 5400);
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }
