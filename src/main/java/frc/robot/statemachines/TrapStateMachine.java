@@ -29,6 +29,10 @@ public class TrapStateMachine {
     return targetState;
   }
 
+  public void setTargetState(TRAP_STATES state) {
+    targetState = state;
+  }
+
   public void advanceTargetState() {
     switch (targetState) {
       case NONE:
@@ -41,7 +45,7 @@ public class TrapStateMachine {
         targetState = TRAP_STATES.RETRACT_STOW;
         break;
       case RETRACT_STOW:
-        targetState = TRAP_STATES.NONE;
+        targetState = TRAP_STATES.PIVOT;
         break;
       default:
         targetState = TRAP_STATES.NONE;

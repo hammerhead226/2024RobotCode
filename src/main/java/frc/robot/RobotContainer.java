@@ -265,7 +265,7 @@ public class RobotContainer {
                     new SequentialCommandGroup(
                         // trap shoot
                         new InstantCommand(() -> shooter.turnOnFan()),
-                        new InstantCommand(() -> shooter.setFlywheelRPMs(850, 850)),
+                        new InstantCommand(() -> shooter.setFlywheelRPMs(1020, 1020)),
                         new WaitUntilCommand(() -> shooter.atFlywheelSetpoints()),
                         new WaitCommand(1.5),
                         new InstantCommand(() -> shooter.setFeedersRPM(1000))))),
@@ -480,8 +480,11 @@ public class RobotContainer {
 
     autos.addOption("$s!p-c5-c4", AutoBuilder.buildAuto("$s!p-c5-c4"));
     autos.addOption("Copy of $s!p-c5-c4", AutoBuilder.buildAuto("Copy of $s!p-c5-c4"));
+    autos.addOption("$s!p-c4-c5", AutoBuilder.buildAuto("$s!p-c4-c5"));
     autos.addOption("$s!p-c4-c3", AutoBuilder.buildAuto("$s!p-c4-c3"));
+    autos.addOption("$s!p-c3-c4", AutoBuilder.buildAuto("$s!p-c3-c4"));
     autos.addOption("$s!p-c3-c5", AutoBuilder.buildAuto("$s!p-c3-c5"));
+    autos.addOption("$s!p-c5-c3", AutoBuilder.buildAuto("$s!p-c5-c3"));
 
     autos.addOption("$c!p-b2-c3", AutoBuilder.buildAuto("$c!p-b2-c3"));
 
@@ -682,6 +685,8 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(
             new SequentialCommandGroup(
+                new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
+                new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
                 new SetElevatorTarget(0, 1.5, elevator),
                 DriveCommands.intakeCommand(
                     drive,
@@ -737,6 +742,8 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(
             new SequentialCommandGroup(
+                new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
+                new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
                 new SetElevatorTarget(0, 1.5, elevator),
                 new AlignToNoteTele(intake, pivot, shooter, drive, led)));
 

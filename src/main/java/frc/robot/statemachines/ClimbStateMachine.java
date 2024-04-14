@@ -41,6 +41,10 @@ public class ClimbStateMachine {
     return targetState;
   }
 
+  public void setClimbState(CLIMB_STATES state) {
+    targetState = state;
+  }
+
   public void advanceTargetState() {
     switch (targetState) {
       case NONE:
@@ -53,7 +57,7 @@ public class ClimbStateMachine {
         targetState = CLIMB_STATES.RETRACT;
         break;
       case RETRACT:
-        targetState = CLIMB_STATES.EXTEND;
+        targetState = CLIMB_STATES.NONE;
         break;
       default:
         targetState = CLIMB_STATES.NONE;

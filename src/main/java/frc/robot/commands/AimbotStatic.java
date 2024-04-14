@@ -146,7 +146,8 @@ public class AimbotStatic extends Command {
   private double calculatePivotAngleDeg(double distanceToSpeakerMeter) {
     // pivotSetpointDeg = (-0.272 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) +
     // 60);
-    pivotSetpointDeg = (-0.253 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 60);
+    pivotSetpointDeg =
+        (-0.253 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 58.5);
     pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 34, 62);
 
     if (Units.metersToFeet(distanceToSpeakerMeter) > 12) {
@@ -178,26 +179,41 @@ public class AimbotStatic extends Command {
     if (alliance == DriverStation.Alliance.Red) {
       targetAngle =
           new Rotation2d(
-                      FieldConstants.fieldLength - drive.getPose().getX(),
+                      (FieldConstants.fieldLength - Units.inchesToMeters(2))
+                          - drive.getPose().getX(),
                       FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
                   .getDegrees()
               + 180;
+
+      // Logger.recordOutput(
+      //     "speaker target",
+      //     new Translation2d(
+      //         (FieldConstants.fieldLength - Units.inchesToMeters(5)) ,
+      //         FieldConstants.Speaker.speakerCenterY ));
+
       pid.setSetpoint(
           new Rotation2d(
-                      FieldConstants.fieldLength - drive.getPose().getX(),
+                      (FieldConstants.fieldLength - Units.inchesToMeters(2))
+                          - drive.getPose().getX(),
                       FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
                   .getDegrees()
               + 180);
     } else {
       targetAngle =
           new Rotation2d(
-                      -drive.getPose().getX(),
+                      -drive.getPose().getX() + Units.inchesToMeters(2),
                       FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
                   .getDegrees()
               + 180;
+      // Logger.recordOutput(
+      //     "speaker target",
+      //     new Translation2d(
+      //         (FieldConstants.fieldLength - Units.inchesToMeters(5)) ,
+      //         FieldConstants.Speaker.speakerCenterY ));
+
       pid.setSetpoint(
           new Rotation2d(
-                      -drive.getPose().getX(),
+                      -drive.getPose().getX() + Units.inchesToMeters(2),
                       FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
                   .getDegrees()
               + 180);

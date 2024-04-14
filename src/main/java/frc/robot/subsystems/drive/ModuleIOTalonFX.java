@@ -100,7 +100,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         Constants.ModuleConstants.DRIVE_STATOR_CURRENT_LIMIT_ENABLED;
     driveTalon.getConfigurator().apply(driveConfig);
     setDriveBrakeMode(true);
-    setDriveOpenLoopRamp(Constants.SwerveConstants.OPEN_LOOP_RAMP_SEC);
+    // setDriveOpenLoopRamp(Constants.SwerveConstants.OPEN_LOOP_RAMP_SEC);
 
     var turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.StatorCurrentLimit =
@@ -179,7 +179,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     var ramping = new OpenLoopRampsConfigs();
 
     ramping.VoltageOpenLoopRampPeriod = seconds;
-    driveTalon.getConfigurator().apply(ramping);
+    // driveTalon.getConfigurator().apply(ramping);
   }
 
   @Override

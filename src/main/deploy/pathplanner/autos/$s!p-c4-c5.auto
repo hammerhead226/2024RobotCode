@@ -1,0 +1,79 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.407706324685116,
+      "y": 4.1690578102982165
+    },
+    "rotation": -53.13010235415598
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AimbotStatic"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$spc(45)!p-c4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$spc(45)!score c4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimbotStatic"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.15
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$spc(45)!c5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$spc(45)!score c5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimbotStatic"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "limelight autos",
+  "choreoAuto": false
+}

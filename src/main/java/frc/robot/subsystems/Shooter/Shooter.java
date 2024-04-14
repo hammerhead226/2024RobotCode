@@ -45,7 +45,7 @@ public class Shooter extends SubsystemBase {
 
         feederFFModel = new SimpleMotorFeedforward(0, 0, 0);
 
-        flywheelkP.initDefault(0.4); // make constant
+        flywheelkP.initDefault(0.5); // make constant
         flywheelkI.initDefault(0);
         flywheelkD.initDefault(0);
 
