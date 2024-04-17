@@ -161,7 +161,7 @@ public class AimbotTele extends Command {
     if (alliance == DriverStation.Alliance.Red) {
       targetAngle =
           new Rotation2d(
-                      (FieldConstants.fieldLength - Units.inchesToMeters(5))
+                      (FieldConstants.fieldLength)
                           - drive.getPose().getX(),
                       FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
                   .getDegrees()
@@ -175,7 +175,7 @@ public class AimbotTele extends Command {
 
       pid.setSetpoint(
           new Rotation2d(
-                      (FieldConstants.fieldLength - Units.inchesToMeters(5))
+                      (FieldConstants.fieldLength)
                           - drive.getPose().getX(),
                       FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
                   .getDegrees()
@@ -183,7 +183,7 @@ public class AimbotTele extends Command {
     } else {
       targetAngle =
           new Rotation2d(
-                      -drive.getPose().getX() + Units.inchesToMeters(5),
+                      -drive.getPose().getX(),
                       FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
                   .getDegrees()
               + 180;
@@ -195,7 +195,7 @@ public class AimbotTele extends Command {
 
       pid.setSetpoint(
           new Rotation2d(
-                      -drive.getPose().getX() + Units.inchesToMeters(5),
+                      -drive.getPose().getX(),
                       FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
                   .getDegrees()
               + 180);
