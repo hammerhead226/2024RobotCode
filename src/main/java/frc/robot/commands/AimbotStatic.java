@@ -147,7 +147,7 @@ public class AimbotStatic extends Command {
     // pivotSetpointDeg = (-0.272 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) +
     // 60);
     pivotSetpointDeg =
-        (-0.253 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 58.5);
+        (-0.253 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 59.4);
     pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 34, 62);
 
     if (Units.metersToFeet(distanceToSpeakerMeter) > 12) {
@@ -179,8 +179,7 @@ public class AimbotStatic extends Command {
     if (alliance == DriverStation.Alliance.Red) {
       targetAngle =
           new Rotation2d(
-                      (FieldConstants.fieldLength)
-                          - drive.getPose().getX(),
+                      (FieldConstants.fieldLength) - drive.getPose().getX(),
                       FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
                   .getDegrees()
               + 180;
@@ -193,8 +192,7 @@ public class AimbotStatic extends Command {
 
       pid.setSetpoint(
           new Rotation2d(
-                      (FieldConstants.fieldLength)
-                          - drive.getPose().getX(),
+                      (FieldConstants.fieldLength) - drive.getPose().getX(),
                       FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
                   .getDegrees()
               + 180);
