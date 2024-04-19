@@ -147,7 +147,7 @@ public class AimbotStatic extends Command {
     // pivotSetpointDeg = (-0.272 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) +
     // 60);
     pivotSetpointDeg =
-        (-0.253 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 59.4);
+        (-0.253 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 58.9);
     pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 34, 62);
 
     if (Units.metersToFeet(distanceToSpeakerMeter) > 12) {

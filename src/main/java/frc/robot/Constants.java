@@ -120,7 +120,7 @@ public final class Constants {
     public static final double PODIUM_SETPOINT_DEG = 41.45;
     public static final double STOW_SETPOINT_DEG = 50.7;
     public static final double INTAKE_SETPOINT_DEG = 59.0;
-    public static final double AMP_SETPOINT_DEG = 60.0;
+    public static final double AMP_SETPOINT_DEG = 58.6;
     public static final double SUBWOOFER_SETPOINT_DEG = 62.0;
     public static final double REVERSE_SUBWOOFER_SETPOINT_DEG = 118;
 
@@ -130,7 +130,8 @@ public final class Constants {
     public static final double CLIMB_SETPOINT_ONE_DEG = 50;
     public static final double CLIMB_SETPOINT_TWO_DEG = 95;
 
-    public static final double THRESHOLD = 1.5;
+    // public static final double THRESHOLD = 1.5;
+    public static final double THRESHOLD = 1;
 
     public static final double[] PID = {0, 0, 0};
 

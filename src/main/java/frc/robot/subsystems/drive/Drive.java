@@ -508,37 +508,60 @@ public class Drive extends SubsystemBase {
   public Translation2d calculateNotePositionFieldRelative() {
 
     double distInch = (1 / (40 - ((30) * getIntakeLLTy() / 23)) * 1000); // Convert degrees to inch
-    double noteYawAngleDeg = -getIntakeLLTx() - 3; // account for static offset, reverse to be CCW+
-    double radiusInch = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDeg));
+    double noteYawAngleDegCorrected =
+        -getIntakeLLTx() + 4; // account for static offset, reverse to be CCW+
+    double radiusInchCorrected =
+        distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegCorrected));
+
+    double noteYawAngleDegRaw = -getIntakeLLTx(); // account for static offset, reverse to be CCW+
+    double radiusInchRaw = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegRaw));
+
     Logger.recordOutput("NoteTracking/distInch", distInch);
-    Logger.recordOutput("NoteTracking/noteYawAngleDeg", noteYawAngleDeg);
-    Logger.recordOutput("NoteTracking/radius", radiusInch);
+    Logger.recordOutput("NoteTracking/noteYawAngleDegCorrected", noteYawAngleDegCorrected);
+    Logger.recordOutput("NoteTracking/noteYawAngleDegRaw", noteYawAngleDegRaw);
+    Logger.recordOutput("NoteTracking/radiusCorrected", radiusInchCorrected);
 
     // camera relative -> bot relative -> field relative
-    Translation2d camRelNoteLocT2d =
+    Translation2d camRelNoteLocT2dCorrected =
         new Translation2d(
-            Units.inchesToMeters(radiusInch), Rotation2d.fromDegrees(noteYawAngleDeg));
-    Logger.recordOutput("NoteTracking/camRelNoteLocT2d", camRelNoteLocT2d);
+            Units.inchesToMeters(radiusInchCorrected), Rotation2d.fromDegrees(noteYawAngleDegRaw));
+    Logger.recordOutput("NoteTracking/camRelNoteLocT2dCorrected", camRelNoteLocT2dCorrected);
 
-    Translation2d roboRelNoteLocT2d =
-        camRelNoteLocT2d
+    Translation2d camRelNoteLocT2dRaw =
+        new Translation2d(
+            Units.inchesToMeters(radiusInchRaw), Rotation2d.fromDegrees(noteYawAngleDegRaw));
+
+    Translation2d roboRelNoteLocT2dRaw =
+        camRelNoteLocT2dRaw
             .rotateBy(Rotation2d.fromDegrees(0))
             .plus(new Translation2d(Units.inchesToMeters(12), 0));
-    Logger.recordOutput("NoteTracking/roboRelNoteLocT2d", roboRelNoteLocT2d);
+
+    Translation2d roboRelNoteLocT2dCorrected =
+        camRelNoteLocT2dCorrected
+            .rotateBy(Rotation2d.fromDegrees(0))
+            .plus(new Translation2d(Units.inchesToMeters(12), 0));
+    Logger.recordOutput("NoteTracking/roboRelNoteLocT2dCorrected", roboRelNoteLocT2dCorrected);
     Pose2d pickedRobotPose =
         posePicker(
             Timer.getFPGATimestamp()
                 - LimelightHelpers.getLatency_Pipeline(Constants.LL_INTAKE)
                 - LimelightHelpers.getLatency_Capture(Constants.LL_INTAKE));
-    Translation2d fieldRelNoteLocT2d =
-        roboRelNoteLocT2d
+    Translation2d fieldRelNoteLocT2dCorrected =
+        roboRelNoteLocT2dCorrected
             .rotateBy(pickedRobotPose.getRotation())
             .plus(pickedRobotPose.getTranslation());
-    Logger.recordOutput("NoteTracking/fieldRelNoteLocT2d", fieldRelNoteLocT2d);
+
+    Translation2d fieldRelNoteLocT2dRaw =
+        roboRelNoteLocT2dRaw
+            .rotateBy(pickedRobotPose.getRotation())
+            .plus(pickedRobotPose.getTranslation());
+
+    Logger.recordOutput("NoteTracking/fieldRelNoteLocT2dRaw", fieldRelNoteLocT2dRaw);
+    Logger.recordOutput("NoteTracking/fieldRelNoteLocT2dCorrected", fieldRelNoteLocT2dCorrected);
     Logger.recordOutput(
         "distance from center of robot",
-        Units.metersToInches(fieldRelNoteLocT2d.getDistance(getPose().getTranslation())));
-    return fieldRelNoteLocT2d;
+        Units.metersToInches(fieldRelNoteLocT2dCorrected.getDistance(getPose().getTranslation())));
+    return fieldRelNoteLocT2dCorrected;
   }
 
   public Translation2d getCachedNoteLocation() {
