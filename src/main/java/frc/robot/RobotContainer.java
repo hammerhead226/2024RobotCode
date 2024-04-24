@@ -729,9 +729,9 @@ public class RobotContainer {
         .rightTrigger()
         .onFalse(
             new InstantCommand(() -> shooter.stopFeeders(), shooter)
-                .andThen(
-                    new InstantCommand(shooter::stopFlywheels)
-                        .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE))))
+                .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE)))
+                .andThen(new WaitCommand(0.5))
+                .andThen(new InstantCommand(shooter::stopFlywheels))
                 .andThen(new InstantCommand(() -> shooter.turnOffFan(), shooter)));
 
     driveController.a().onTrue(climbCommands);

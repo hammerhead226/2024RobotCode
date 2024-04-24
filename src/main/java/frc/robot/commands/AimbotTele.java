@@ -110,8 +110,8 @@ public class AimbotTele extends Command {
       //         calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter)), 3250, 5400);
       double shootingSpeed = calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter));
 
-      shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed+100);
-    } else shooter.setFlywheelRPMs(5400+100, 5400+200);
+      shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 100);
+    } else shooter.setFlywheelRPMs(5400 + 100, 5400);
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }
 
@@ -129,7 +129,7 @@ public class AimbotTele extends Command {
     // pivotSetpointDeg = (-0.272 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) +
     // 60);
     pivotSetpointDeg =
-        (-0.253 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 58.9);
+        (-0.253 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 57.68);
     pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 34, 62);
 
     if (Units.metersToFeet(distanceToSpeakerMeter) > 12) {

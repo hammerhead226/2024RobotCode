@@ -238,6 +238,8 @@ public class Drive extends SubsystemBase {
         "limelilght alig latency", LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN));
     Logger.recordOutput("limelight intake hb", limelightintake.getEntry("hb").getDouble(0.0));
 
+    Logger.recordOutput("limelight intake tx", limelightintake.getEntry("tx").getDouble(0.0));
+
     Logger.recordOutput("note time", getCachedNoteTime());
     // Note Pose estimating
     updatePoseBuffer();
@@ -509,7 +511,7 @@ public class Drive extends SubsystemBase {
 
     double distInch = (1 / (40 - ((30) * getIntakeLLTy() / 23)) * 1000); // Convert degrees to inch
     double noteYawAngleDegCorrected =
-        -getIntakeLLTx() + 4; // account for static offset, reverse to be CCW+
+        -getIntakeLLTx() - 4; // account for static offset, reverse to be CCW+
     double radiusInchCorrected =
         distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegCorrected));
 
@@ -524,7 +526,8 @@ public class Drive extends SubsystemBase {
     // camera relative -> bot relative -> field relative
     Translation2d camRelNoteLocT2dCorrected =
         new Translation2d(
-            Units.inchesToMeters(radiusInchCorrected), Rotation2d.fromDegrees(noteYawAngleDegRaw));
+            Units.inchesToMeters(radiusInchCorrected),
+            Rotation2d.fromDegrees(noteYawAngleDegCorrected));
     Logger.recordOutput("NoteTracking/camRelNoteLocT2dCorrected", camRelNoteLocT2dCorrected);
 
     Translation2d camRelNoteLocT2dRaw =
