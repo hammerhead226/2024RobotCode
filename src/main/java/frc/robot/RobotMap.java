@@ -20,8 +20,8 @@ public class RobotMap {
 
   public static class PivotIDs {
     public static final int GYRO = 10;
-    // public static final int LEFT = 14;
-    // public static final int RIGHT = 15;
+    // public static final int LEFT = 10000;
+    // public static final int RIGHT = 1324;
     public static final int LEFT = 14;
     public static final int RIGHT = 15;
   }
