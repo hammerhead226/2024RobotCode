@@ -254,6 +254,7 @@ public class RobotContainer {
                     SHOOT_STATE.AIMBOT,
                     new SequentialCommandGroup(
                         new SetElevatorTarget(0, 1.5, elevator),
+                        // new InstantCommand(() -> shooter.setFeedersRPM(1000)))
                         new AimbotTele(drive, driveController, shooter, pivot, led))),
                 Map.entry(
                     SHOOT_STATE.AMP,
@@ -532,21 +533,13 @@ public class RobotContainer {
 
     driveController
         .rightBumper()
-        .onTrue(
+        .whileTrue(
             new SequentialCommandGroup(
                 new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
                 new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
                 new SetElevatorTarget(0, 1.5, elevator),
-                DriveCommands.intakeCommand(
-                    drive,
-                    shooter,
-                    pivot,
-                    intake,
-                    led,
-                    driveController,
-                    () -> -driveController.getLeftY(),
-                    () -> -driveController.getLeftX(),
-                    () -> -driveController.getRightX())));
+                new AlignToNoteTele(intake, pivot, shooter, drive, led)));
+
     driveController
         .rightBumper()
         .onFalse(
@@ -565,9 +558,44 @@ public class RobotContainer {
                             new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
                         .andThen(new PositionNoteInFeeder(shooter, intake))));
 
-    driveController.leftBumper().whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true));
     driveController
         .leftBumper()
+        .onTrue(
+            new SequentialCommandGroup(
+                new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
+                new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
+                new SetElevatorTarget(0, 1.5, elevator),
+                DriveCommands.intakeCommand(
+                    drive,
+                    shooter,
+                    pivot,
+                    intake,
+                    led,
+                    driveController,
+                    () -> -driveController.getLeftY(),
+                    () -> -driveController.getLeftX(),
+                    () -> -driveController.getRightX())));
+    driveController
+        .leftBumper()
+        .onFalse(
+            new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+                .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
+                .andThen(new WaitCommand(0.02))
+                .andThen(
+                    new ConditionalCommand(
+                        new WaitCommand(0.24),
+                        new WaitCommand(0.06),
+                        () -> (shooter.getLastNoteState() == NoteState.CURRENT)))
+                .andThen(
+                    new ParallelCommandGroup(
+                            new InstantCommand(() -> intake.stopRollers(), intake),
+                            new InstantCommand(() -> shooter.stopFeeders()),
+                            new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+                        .andThen(new PositionNoteInFeeder(shooter, intake))));
+
+    driveController.leftTrigger().whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true));
+    driveController
+        .leftTrigger()
         .onFalse(
             new InstantCommand(intake::stopRollers)
                 .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
@@ -610,7 +638,7 @@ public class RobotContainer {
                 new SetElevatorTarget(0, 1.5, elevator),
                 new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.PIVOT_PRESET)),
                 new SetPivotTarget(45, pivot),
-                new InstantCommand(() -> shooter.setFlywheelRPMs(2000, 2800))));
+                new InstantCommand(() -> shooter.setFlywheelRPMs(3200, 3900))));
     driveController
         .b()
         .onFalse(
@@ -619,7 +647,25 @@ public class RobotContainer {
                 .andThen(new InstantCommand(() -> shooter.stopFlywheels()))
                 .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
 
-    driveController.x().onTrue(climbCommands);
+    driveController
+        .x()
+        .onTrue(
+            new ParallelCommandGroup(
+                    new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot),
+                    new SetShooterTargetRPM(
+                        Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM,
+                        Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM,
+                        shooter))
+                .andThen(new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.PIVOT_PRESET))));
+    driveController
+        .x()
+        .onFalse(
+            new ParallelCommandGroup(
+                    new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
+                    new SetShooterTargetRPM(0, 0, shooter))
+                .andThen(new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))));
+
+    // driveController.x().onTrue(climbCommands);
   }
 
   private void testControls() {

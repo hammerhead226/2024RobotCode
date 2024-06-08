@@ -90,7 +90,7 @@ public final class Constants {
     public static final double FLYWHEEL_THRESHOLD = 200;
 
     public static final double FLYWHEEL_AMP_RPM = 600;
-    public static final double FLYWHEEL_SHOOT_RPM = 3000;
+    public static final double FLYWHEEL_SHOOT_RPM = 5400;
   }
 
   public static enum NoteState {
