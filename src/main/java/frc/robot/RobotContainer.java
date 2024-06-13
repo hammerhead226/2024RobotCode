@@ -92,6 +92,8 @@ import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
 import frc.robot.subsystems.shooter.LeafBlowerIO;
 import frc.robot.subsystems.shooter.LeafBlowerIOTalonSRX;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.FieldConstants;
 import java.util.Map;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -149,6 +151,7 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(),
+                new VisionIOLimelight(),
                 new ModuleIOTalonFX(0),
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
@@ -174,6 +177,7 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
+                new VisionIO() {},
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
@@ -193,6 +197,7 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
+                new VisionIO() {},
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
@@ -215,6 +220,7 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
+                new VisionIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},

@@ -14,14 +14,15 @@ public class VisionIOLimelight implements VisionIO {
 
     final double taThreshold = 0.1;
 
-    public VisionIOLimelight(DriverStation.Alliance alliance) {
-        this.alliance = alliance;
+    public VisionIOLimelight() {
+        // this.alliance = alliance;
     }
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
-        if (alliance.equals(DriverStation.Alliance.Blue)) inputs.visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN);
-        else inputs.visionPose = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2(Constants.LL_ALIGN);
+        // if (alliance.equals(DriverStation.Alliance.Blue)) inputs.visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN);
+        // else inputs.visionPose = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2(Constants.LL_ALIGN);
+        inputs.visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LL_ALIGN);
 
         inputs.noteData.yawDegs = -LimelightHelpers.getTX(Constants.LL_INTAKE) - 4;
         inputs.noteData.distanceInches = inputs.noteData.yawDegs / Math.cos(Units.degreesToRadians((1. / (40 - ((30) * LimelightHelpers.getTY(Constants.LL_INTAKE) / 23.)) * 1000)));

@@ -5,6 +5,19 @@ import org.littletonrobotics.junction.AutoLog;
 import frc.robot.util.LimelightHelpers;
 
 public interface VisionIO {
+
+    static class RawLimelightData {
+      public double tx;
+      public double ty;
+      public double ta;
+      public double hb;
+      public boolean tv;
+
+      public RawLimelightData() {
+        
+      }
+    }
+
     static class NoteData {
       public double timestamp;
       public double distanceInches;
