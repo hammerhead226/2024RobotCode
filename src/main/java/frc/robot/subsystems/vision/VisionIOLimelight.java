@@ -9,7 +9,20 @@ public class VisionIOLimelight implements VisionIO {
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
-    inputs.visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN);
+    inputs.visionPose =
+        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN).pose;
+    inputs.timestampSeconds =
+        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN).timestampSeconds;
+    inputs.tagCount =
+        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN).tagCount;
+    inputs.tagSpan =
+        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN).tagSpan;
+    inputs.latency =
+        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN).latency;
+    inputs.avgTagDist =
+        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN).avgTagDist;
+    inputs.avgTagArea =
+        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN).avgTagArea;
 
     // Raw Limelight Data
     inputs.iTX = LimelightHelpers.getTX(Constants.LL_INTAKE);

@@ -37,15 +37,13 @@ public class Vision extends SubsystemBase {
 
   public Translation2d calculateNotePositionFieldRelative(Pose2d robotPose) {
 
-    double distInch =
-        (1 / (40 - ((30) * visionInputs.iTY / 23)) * 1000); // Convert degrees to inch
+    double distInch = (1 / (40 - ((30) * visionInputs.iTY / 23)) * 1000); // Convert degrees to inch
     double noteYawAngleDegCorrected =
         -visionInputs.iTX - 4; // account for static offset, reverse to be CCW+
     double radiusInchCorrected =
         distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegCorrected));
 
-    double noteYawAngleDegRaw =
-        -visionInputs.iTX; // account for static offset, reverse to be CCW+
+    double noteYawAngleDegRaw = -visionInputs.iTX; // account for static offset, reverse to be CCW+
     double radiusInchRaw = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegRaw));
 
     Logger.recordOutput("NoteTracking/distInch", distInch);

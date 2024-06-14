@@ -55,6 +55,8 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOInputsAutoLogged;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers;
+import frc.robot.util.LimelightHelpers.PoseEstimate;
+import frc.robot.util.LimelightHelpers.RawFiducial;
 import frc.robot.util.LocalADStarAK;
 import java.util.List;
 import java.util.Optional;
@@ -286,8 +288,16 @@ public class Drive extends SubsystemBase {
   public void mt2TagFiltering() {
     boolean doRejectUpdate = false;
 
-    LimelightHelpers.PoseEstimate mt2 = visionInputs.visionPose;
-
+    LimelightHelpers.PoseEstimate mt2 =
+        new PoseEstimate(
+            visionInputs.visionPose,
+            visionInputs.timestampSeconds,
+            visionInputs.latency,
+            visionInputs.tagCount,
+            visionInputs.tagSpan,
+            visionInputs.avgTagDist,
+            visionInputs.avgTagArea,
+            new RawFiducial[] {});
     if (Math.abs(gyroInputs.yawVelocityRadPerSec) > Math.toRadians(720)) {
       doRejectUpdate = true;
     }
@@ -306,7 +316,16 @@ public class Drive extends SubsystemBase {
   }
 
   public void visionLogic() {
-    LimelightHelpers.PoseEstimate limelightMeasurement = visionInputs.visionPose;
+    LimelightHelpers.PoseEstimate limelightMeasurement =
+        new PoseEstimate(
+            visionInputs.visionPose,
+            visionInputs.timestampSeconds,
+            visionInputs.latency,
+            visionInputs.tagCount,
+            visionInputs.tagSpan,
+            visionInputs.avgTagDist,
+            visionInputs.avgTagArea,
+            new RawFiducial[] {});
 
     double xMeterStds;
     double yMeterStds;
@@ -496,15 +515,13 @@ public class Drive extends SubsystemBase {
 
   public Translation2d calculateNotePositionFieldRelative() {
 
-    double distInch =
-        (1 / (40 - ((30) * visionInputs.iTY / 23)) * 1000); // Convert degrees to inch
+    double distInch = (1 / (40 - ((30) * visionInputs.iTY / 23)) * 1000); // Convert degrees to inch
     double noteYawAngleDegCorrected =
         -visionInputs.iTX - 4; // account for static offset, reverse to be CCW+
     double radiusInchCorrected =
         distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegCorrected));
 
-    double noteYawAngleDegRaw =
-        -visionInputs.iTX; // account for static offset, reverse to be CCW+
+    double noteYawAngleDegRaw = -visionInputs.iTX; // account for static offset, reverse to be CCW+
     double radiusInchRaw = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegRaw));
 
     Logger.recordOutput("NoteTracking/distInch", distInch);

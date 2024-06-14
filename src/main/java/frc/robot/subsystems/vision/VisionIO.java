@@ -1,15 +1,19 @@
 package frc.robot.subsystems.vision;
 
-import frc.robot.util.LimelightHelpers;
+import edu.wpi.first.math.geometry.Pose2d;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface VisionIO {
 
-
   @AutoLog
   public static class VisionIOInputs {
-    public LimelightHelpers.PoseEstimate visionPose =
-        new LimelightHelpers.PoseEstimate(null, -1, 0, 0, 0, 0, 0, null);
+    public Pose2d visionPose = new Pose2d();
+    public double timestampSeconds;
+    public int tagCount;
+    public double latency;
+    public double tagSpan;
+    public double avgTagDist;
+    public double avgTagArea;
 
     public double iTX;
     public double iTY;
