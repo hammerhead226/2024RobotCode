@@ -1,47 +1,40 @@
 package frc.robot.subsystems.vision;
 
-import org.littletonrobotics.junction.AutoLog;
-
 import frc.robot.util.LimelightHelpers;
+import org.littletonrobotics.junction.AutoLog;
 
 public interface VisionIO {
 
-    static class RawLimelightData {
-      public double tx;
-      public double ty;
-      public double ta;
-      public double hb;
-      public boolean tv;
 
-      public RawLimelightData() {
-        
-      }
-    }
+  @AutoLog
+  public static class VisionIOInputs {
+    public LimelightHelpers.PoseEstimate visionPose =
+        new LimelightHelpers.PoseEstimate(null, -1, 0, 0, 0, 0, 0, null);
 
-    static class NoteData {
-      public double timestamp;
-      public double distanceInches;
-      public double yawDegs;
+    public double iTX;
+    public double iTY;
+    public double iTA;
+    public double iHB;
+    public boolean iTV;
 
-      public NoteData(double timestamp, double distanceInches, double yawDegs) {
-        this.timestamp = timestamp;
-        this.distanceInches = distanceInches;
-        this.yawDegs = yawDegs;
-      }
+    public double iTHOR;
+    public double iTVERT;
 
-      public NoteData() {}
-      
-    }
-    @AutoLog
-    public static class VisionIOInputs {
-        public LimelightHelpers.PoseEstimate visionPose = new LimelightHelpers.PoseEstimate(null, -1, 0, 0, 0, 0, 0, null);
-        public NoteData noteData = new NoteData();
+    public double iPIPELINELATENCY;
+    public double iCAPTURELATENCY;
 
-        public double currentTime;
+    public double aTX;
+    public double aTY;
+    public double aTA;
+    public double aHB;
+    public boolean aTV;
 
-        public boolean aprilTagLimelightConnected = false;
-        public boolean intakeLimelightConnected = false;
-    }
+    public double aTHOR;
+    public double aTVERT;
 
-    public default void updateInputs(VisionIOInputs inputs) {}
+    public double aPIPELINELATENCY;
+    public double aCAPTURELATENCY;
+  }
+
+  public default void updateInputs(VisionIOInputs inputs) {}
 }

@@ -75,10 +75,9 @@ public class Drive extends SubsystemBase {
   private NetworkTable limelightintake =
       NetworkTableInstance.getDefault().getTable(Constants.LL_INTAKE);
 
-
   private final VisionIO visionIO;
   private final VisionIOInputsAutoLogged visionInputs = new VisionIOInputsAutoLogged();
-  
+
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
@@ -237,23 +236,17 @@ public class Drive extends SubsystemBase {
         0,
         0,
         0);
-    if (DriverStation.getAlliance().isPresent() && LimelightHelpers.getTV(Constants.LL_ALIGN)) {
+    if (DriverStation.getAlliance().isPresent() && visionInputs.aTV) {
       // mt2TagFiltering();
       visionLogic();
     }
 
-    Logger.recordOutput(
-        "limelilght alig latency", LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN));
-    Logger.recordOutput("limelight intake hb", limelightintake.getEntry("hb").getDouble(0.0));
-
-    Logger.recordOutput("limelight intake tx", limelightintake.getEntry("tx").getDouble(0.0));
-
     Logger.recordOutput("note time", getCachedNoteTime());
     // Note Pose estimating
     updatePoseBuffer();
-    if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
+    if (visionInputs.iTX != 0.0) {
       double taThreshold = 0;
-      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold) {
+      if (visionInputs.iTA >= taThreshold) {
         lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
         lastNoteLocT2d.time = Timer.getFPGATimestamp();
       }
@@ -293,8 +286,7 @@ public class Drive extends SubsystemBase {
   public void mt2TagFiltering() {
     boolean doRejectUpdate = false;
 
-    LimelightHelpers.PoseEstimate mt2 =
-        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN);
+    LimelightHelpers.PoseEstimate mt2 = visionInputs.visionPose;
 
     if (Math.abs(gyroInputs.yawVelocityRadPerSec) > Math.toRadians(720)) {
       doRejectUpdate = true;
@@ -314,8 +306,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void visionLogic() {
-    LimelightHelpers.PoseEstimate limelightMeasurement =
-        LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LL_ALIGN);
+    LimelightHelpers.PoseEstimate limelightMeasurement = visionInputs.visionPose;
 
     double xMeterStds;
     double yMeterStds;
@@ -503,32 +494,22 @@ public class Drive extends SubsystemBase {
     return MAX_ANGULAR_SPEED;
   }
 
-  public double getNoteError() {
-    return getIntakeLLTx();
-  }
-
-  public double getIntakeLLTx() {
-    return LimelightHelpers.getTX("limelight-intake");
-  }
-
-  public double getIntakeLLTy() {
-    return LimelightHelpers.getTY("limelight-intake");
-  }
-
   public Translation2d calculateNotePositionFieldRelative() {
 
-    // double distInch = visionInputs.noteData.distanceInches; // Convert degrees to inch
+    double distInch =
+        (1 / (40 - ((30) * visionInputs.iTY / 23)) * 1000); // Convert degrees to inch
     double noteYawAngleDegCorrected =
-      visionInputs.noteData.yawDegs; // account for static offset, reverse to be CCW+
+        -visionInputs.iTX - 4; // account for static offset, reverse to be CCW+
     double radiusInchCorrected =
-        visionInputs.noteData.distanceInches;
+        distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegCorrected));
 
-    // double noteYawAngleDegRaw = -getIntakeLLTx(); // account for static offset, reverse to be CCW+
-    // double radiusInchRaw = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegRaw));
+    double noteYawAngleDegRaw =
+        -visionInputs.iTX; // account for static offset, reverse to be CCW+
+    double radiusInchRaw = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegRaw));
 
-    // Logger.recordOutput("NoteTracking/distInch", distInch);
+    Logger.recordOutput("NoteTracking/distInch", distInch);
     Logger.recordOutput("NoteTracking/noteYawAngleDegCorrected", noteYawAngleDegCorrected);
-    // Logger.recordOutput("NoteTracking/noteYawAngleDegRaw", noteYawAngleDegRaw);
+    Logger.recordOutput("NoteTracking/noteYawAngleDegRaw", noteYawAngleDegRaw);
     Logger.recordOutput("NoteTracking/radiusCorrected", radiusInchCorrected);
 
     // camera relative -> bot relative -> field relative
@@ -538,14 +519,14 @@ public class Drive extends SubsystemBase {
             Rotation2d.fromDegrees(noteYawAngleDegCorrected));
     Logger.recordOutput("NoteTracking/camRelNoteLocT2dCorrected", camRelNoteLocT2dCorrected);
 
-    // Translation2d camRelNoteLocT2dRaw =
-    //     new Translation2d(
-    //         Units.inchesToMeters(radiusInchRaw), Rotation2d.fromDegrees(noteYawAngleDegRaw));
+    Translation2d camRelNoteLocT2dRaw =
+        new Translation2d(
+            Units.inchesToMeters(radiusInchRaw), Rotation2d.fromDegrees(noteYawAngleDegRaw));
 
-    // Translation2d roboRelNoteLocT2dRaw =
-    //     camRelNoteLocT2dRaw
-    //         .rotateBy(Rotation2d.fromDegrees(0))
-    //         .plus(new Translation2d(Units.inchesToMeters(12), 0));
+    Translation2d roboRelNoteLocT2dRaw =
+        camRelNoteLocT2dRaw
+            .rotateBy(Rotation2d.fromDegrees(0))
+            .plus(new Translation2d(Units.inchesToMeters(12), 0));
 
     Translation2d roboRelNoteLocT2dCorrected =
         camRelNoteLocT2dCorrected
@@ -562,12 +543,12 @@ public class Drive extends SubsystemBase {
             .rotateBy(pickedRobotPose.getRotation())
             .plus(pickedRobotPose.getTranslation());
 
-    // Translation2d fieldRelNoteLocT2dRaw =
-    //     roboRelNoteLocT2dRaw
-    //         .rotateBy(pickedRobotPose.getRotation())
-    //         .plus(pickedRobotPose.getTranslation());
+    Translation2d fieldRelNoteLocT2dRaw =
+        roboRelNoteLocT2dRaw
+            .rotateBy(pickedRobotPose.getRotation())
+            .plus(pickedRobotPose.getTranslation());
 
-    // Logger.recordOutput("NoteTracking/fieldRelNoteLocT2dRaw", fieldRelNoteLocT2dRaw);
+    Logger.recordOutput("NoteTracking/fieldRelNoteLocT2dRaw", fieldRelNoteLocT2dRaw);
     Logger.recordOutput("NoteTracking/fieldRelNoteLocT2dCorrected", fieldRelNoteLocT2dCorrected);
     Logger.recordOutput(
         "distance from center of robot",
@@ -655,9 +636,9 @@ public class Drive extends SubsystemBase {
   }
 
   public PathPlannerPath generatePathToNote() {
-    if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
+    if (visionInputs.iTX != 0.0) {
       double taThreshold = 0;
-      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold) {
+      if (visionInputs.iTA >= taThreshold) {
         lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
         lastNoteLocT2d.time = Timer.getFPGATimestamp();
       }
@@ -768,9 +749,9 @@ public class Drive extends SubsystemBase {
 
   public Command alignToNote(LED led) {
 
-    if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
+    if (visionInputs.iTX != 0.0) {
       double taThreshold = 0;
-      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold) {
+      if (visionInputs.iTA >= taThreshold) {
         lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
         lastNoteLocT2d.time = Timer.getFPGATimestamp();
       }
