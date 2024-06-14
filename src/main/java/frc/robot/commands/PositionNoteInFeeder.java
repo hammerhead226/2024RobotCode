@@ -29,8 +29,8 @@ public class PositionNoteInFeeder extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new InstantCommand(() -> shooter.setFeedersRPM(-100), shooter),
-        new WaitCommand(0.5),
+        new InstantCommand(() -> shooter.setFeedersRPM(-400), shooter),
+        new WaitCommand(0.723),
         new InstantCommand(shooter::stopFeeders, shooter));
   }
 }
