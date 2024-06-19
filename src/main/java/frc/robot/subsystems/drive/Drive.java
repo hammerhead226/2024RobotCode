@@ -51,7 +51,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.led.LED;
-import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOInputsAutoLogged;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers;
