@@ -14,6 +14,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -33,10 +34,16 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+
+import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
+  private static double error = 0;
+  private static double assistEffort = 0;
+  private static PIDController pid = new PIDController(1, 0, 0);
 
   private DriveCommands() {}
 
@@ -49,10 +56,11 @@ public class DriveCommands {
       CommandXboxController controller,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier) {
+      DoubleSupplier omegaSupplier,
+      BooleanSupplier intakeAssistSupplier) {
 
     if (shooter.seesNote() == NoteState.CURRENT || shooter.seesNote() == NoteState.SENSOR) {
-      return joystickDrive(drive, xSupplier, ySupplier, omegaSupplier);
+      return joystickDrive(drive, xSupplier, ySupplier, omegaSupplier, intakeAssistSupplier);
     } else {
 
     }
@@ -60,7 +68,7 @@ public class DriveCommands {
     return new InstantCommand(() -> led.setState(LED_STATE.RED))
         .andThen(
             new ParallelCommandGroup(
-                joystickDrive(drive, xSupplier, ySupplier, omegaSupplier),
+                joystickDrive(drive, xSupplier, ySupplier, omegaSupplier, intakeAssistSupplier),
                 new PivotIntakeTele(pivot, intake, shooter, led, false)));
   }
   /**
@@ -70,7 +78,8 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier) {
+      DoubleSupplier omegaSupplier,
+      BooleanSupplier intakeAssistSupplier) {
     return Commands.run(
         () -> {
 
@@ -96,15 +105,52 @@ public class DriveCommands {
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
                   && DriverStation.getAlliance().get() == Alliance.Red;
-          drive.runVelocity(
+          
+          error = getNoteDistancePerpToVel(drive.getNotePositionRobotRelative(), xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+          if (intakeAssistSupplier.getAsBoolean()) {
+            assistEffort = pid.calculate(error);
+          } else {
+            assistEffort = 0;
+          }
+
+
+          Logger.recordOutput("Assist Effort", assistEffort);
+          Logger.recordOutput("Note Assist Error", error);
+          
+
+          double forwardSpeed =
+            ChassisSpeeds.fromFieldRelativeSpeeds(
+              linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+              linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+              0,
+              isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation())
+          .vxMetersPerSecond;
+
+          double sidewaysSpeed =
               ChassisSpeeds.fromFieldRelativeSpeeds(
-                  linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                  linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                  omega * drive.getMaxAngularSpeedRadPerSec(),
-                  isFlipped
-                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                      : drive.getRotation()));
+                      linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                      linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                      0,
+                      isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation())
+                  .vyMetersPerSecond;
+
+          double rotationSpeed =
+              ChassisSpeeds.fromFieldRelativeSpeeds(
+                      linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                      linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                      0,
+                      isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation())
+                  .omegaRadiansPerSecond;
+
+          drive.runVelocity(new ChassisSpeeds(forwardSpeed, sidewaysSpeed + assistEffort, rotationSpeed));
         },
         drive);
+  }
+
+  private static double getNoteDistancePerpToVel(
+      Translation2d noteLocRobotRel, double controllerX, double controllerY) {
+    double commandedVelAngle = Math.atan2(controllerY, controllerX);
+    return Math.sin(commandedVelAngle) * noteLocRobotRel.getNorm();
   }
 }

@@ -51,7 +51,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.led.LED;
-import frc.robot.subsystems.vision.VisionIOInputsAutoLogged;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
@@ -189,6 +188,8 @@ public class Drive extends SubsystemBase {
     for (var module : modules) {
       module.periodic();
     }
+
+    Logger.recordOutput("test trans", new Translation2d(2, 4));
 
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
@@ -510,6 +511,45 @@ public class Drive extends SubsystemBase {
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
     return MAX_ANGULAR_SPEED;
+  }
+
+  public Translation2d getNotePositionRobotRelative() {
+    double distInch = (1 / (40 - ((30) * visionInputs.iTY / 23)) * 1000); // Convert degrees to inch
+    double noteYawAngleDegCorrected =
+        -visionInputs.iTX - 4; // account for static offset, reverse to be CCW+
+    double radiusInchCorrected =
+        distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegCorrected));
+
+    double noteYawAngleDegRaw = -visionInputs.iTX; // account for static offset, reverse to be CCW+
+    double radiusInchRaw = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegRaw));
+
+    Logger.recordOutput("NoteTracking/distInch", distInch);
+    Logger.recordOutput("NoteTracking/noteYawAngleDegCorrected", noteYawAngleDegCorrected);
+    Logger.recordOutput("NoteTracking/noteYawAngleDegRaw", noteYawAngleDegRaw);
+    Logger.recordOutput("NoteTracking/radiusCorrected", radiusInchCorrected);
+
+    // camera relative -> bot relative -> field relative
+    Translation2d camRelNoteLocT2dCorrected =
+        new Translation2d(
+            Units.inchesToMeters(radiusInchCorrected),
+            Rotation2d.fromDegrees(noteYawAngleDegCorrected));
+    Logger.recordOutput("NoteTracking/camRelNoteLocT2dCorrected", camRelNoteLocT2dCorrected);
+
+    Translation2d camRelNoteLocT2dRaw =
+        new Translation2d(
+            Units.inchesToMeters(radiusInchRaw), Rotation2d.fromDegrees(noteYawAngleDegRaw));
+
+    Translation2d roboRelNoteLocT2dRaw =
+        camRelNoteLocT2dRaw
+            .rotateBy(Rotation2d.fromDegrees(0))
+            .plus(new Translation2d(Units.inchesToMeters(12), 0));
+
+    Translation2d roboRelNoteLocT2dCorrected =
+        camRelNoteLocT2dCorrected
+            .rotateBy(Rotation2d.fromDegrees(0))
+            .plus(new Translation2d(Units.inchesToMeters(12), 0));
+
+    return roboRelNoteLocT2dCorrected;
   }
 
   public Translation2d calculateNotePositionFieldRelative() {

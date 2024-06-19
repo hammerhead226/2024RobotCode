@@ -524,7 +524,8 @@ public class RobotContainer {
             drive,
             () -> -driveController.getLeftY(),
             () -> -driveController.getLeftX(),
-            () -> -driveController.getRightX()));
+            () -> -driveController.getRightX(),
+            () -> driveController.leftBumper().getAsBoolean()));
 
     driveController
         .start()
@@ -675,7 +676,8 @@ public class RobotContainer {
             drive,
             () -> -driveController.getLeftY(),
             () -> -driveController.getLeftX(),
-            () -> -driveController.getRightX()));
+            () -> -driveController.getRightX(),
+            () -> driveController.leftBumper().getAsBoolean()));
 
     driveController
         .start()
@@ -703,7 +705,8 @@ public class RobotContainer {
                     driveController,
                     () -> -driveController.getLeftY(),
                     () -> -driveController.getLeftX(),
-                    () -> -driveController.getRightX())));
+                    () -> -driveController.getRightX(),
+                    () -> driveController.leftBumper().getAsBoolean())));
     driveController
         .leftBumper()
         .onFalse(
