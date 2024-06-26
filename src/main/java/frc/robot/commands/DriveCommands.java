@@ -118,30 +118,20 @@ public class DriveCommands {
           Logger.recordOutput("Assist Effort", assistEffort);
           Logger.recordOutput("Note Assist Error", error);
           
-
-          double forwardSpeed =
+          ChassisSpeeds chassisSpeeds = 
             ChassisSpeeds.fromFieldRelativeSpeeds(
               linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
               linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-              0,
-              isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation())
-          .vxMetersPerSecond;
+              omega * drive.getMaxAngularSpeedRadPerSec(),
+              isFlipped
+                  ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                  : drive.getRotation());
 
-          double sidewaysSpeed =
-              ChassisSpeeds.fromFieldRelativeSpeeds(
-                      linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                      linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                      0,
-                      isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation())
-                  .vyMetersPerSecond;
+          double forwardSpeed = chassisSpeeds.vxMetersPerSecond;
 
-          double rotationSpeed =
-              ChassisSpeeds.fromFieldRelativeSpeeds(
-                      linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                      linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                      0,
-                      isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation())
-                  .omegaRadiansPerSecond;
+          double sidewaysSpeed = chassisSpeeds.vyMetersPerSecond;
+
+          double rotationSpeed = chassisSpeeds.omegaRadiansPerSecond;
 
           drive.runVelocity(new ChassisSpeeds(forwardSpeed, sidewaysSpeed + assistEffort, rotationSpeed));
         },
@@ -151,6 +141,8 @@ public class DriveCommands {
   private static double getNoteDistancePerpToVel(
       Translation2d noteLocRobotRel, double controllerX, double controllerY) {
     double commandedVelAngle = Math.atan2(controllerY, controllerX);
-    return Math.sin(commandedVelAngle) * noteLocRobotRel.getNorm();
+
+    Rotation2d commandVelRotation = Rotation2d.fromDegrees(commandedVelAngle);
+    return Math.sin(commandVelRotation.minus(new Rotation2d(noteLocRobotRel.getX(), noteLocRobotRel.getY())).getDegrees()) * noteLocRobotRel.getNorm();
   }
 }
