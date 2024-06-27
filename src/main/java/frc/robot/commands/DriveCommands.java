@@ -36,14 +36,13 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
 import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
   private static double error = 0;
   private static double assistEffort = 0;
-  private static PIDController pid = new PIDController(1, 0, 0);
+  private static PIDController pid = new PIDController(1.5, 0, 0);
 
   private DriveCommands() {}
 
@@ -105,8 +104,12 @@ public class DriveCommands {
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
                   && DriverStation.getAlliance().get() == Alliance.Red;
-          
-          error = getNoteDistancePerpToVel(drive.getNotePositionRobotRelative(), xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+          error =
+              getNoteDistancePerpToVel(
+                  drive.getNotePositionRobotRelative(),
+                  xSupplier.getAsDouble(),
+                  ySupplier.getAsDouble());
 
           if (intakeAssistSupplier.getAsBoolean()) {
             assistEffort = pid.calculate(error);
@@ -114,18 +117,17 @@ public class DriveCommands {
             assistEffort = 0;
           }
 
-
           Logger.recordOutput("Assist Effort", assistEffort);
           Logger.recordOutput("Note Assist Error", error);
-          
-          ChassisSpeeds chassisSpeeds = 
-            ChassisSpeeds.fromFieldRelativeSpeeds(
-              linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-              linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-              omega * drive.getMaxAngularSpeedRadPerSec(),
-              isFlipped
-                  ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                  : drive.getRotation());
+
+          ChassisSpeeds chassisSpeeds =
+              ChassisSpeeds.fromFieldRelativeSpeeds(
+                  linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                  linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                  omega * drive.getMaxAngularSpeedRadPerSec(),
+                  isFlipped
+                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                      : drive.getRotation());
 
           double forwardSpeed = chassisSpeeds.vxMetersPerSecond;
 
@@ -133,16 +135,29 @@ public class DriveCommands {
 
           double rotationSpeed = chassisSpeeds.omegaRadiansPerSecond;
 
-          drive.runVelocity(new ChassisSpeeds(forwardSpeed, sidewaysSpeed + assistEffort, rotationSpeed));
+          drive.runVelocity(
+              new ChassisSpeeds(forwardSpeed, sidewaysSpeed + assistEffort, rotationSpeed));
         },
         drive);
   }
 
   private static double getNoteDistancePerpToVel(
       Translation2d noteLocRobotRel, double controllerX, double controllerY) {
-    double commandedVelAngle = Math.atan2(controllerY, controllerX);
-
-    Rotation2d commandVelRotation = Rotation2d.fromDegrees(commandedVelAngle);
-    return Math.sin(commandVelRotation.minus(new Rotation2d(noteLocRobotRel.getX(), noteLocRobotRel.getY())).getDegrees()) * noteLocRobotRel.getNorm();
+    // double commandedVelAngle = Math.atan2(controllerY, controllerX);
+    Rotation2d commandVelRotation = new Rotation2d(controllerX, controllerY);
+    Rotation2d noteVectorRotation2d =
+        new Rotation2d(noteLocRobotRel.getX(), noteLocRobotRel.getY());
+    // Logger.recordOutput("commanded vel rads", commandedVelAngle);
+    // Rotation2d commandVelRotation = Rotation2d.fromRadians(commandedVelAngle);
+    Logger.recordOutput("controller y", Math.sin(commandVelRotation.getRadians()));
+    Logger.recordOutput("controller deg", commandVelRotation.getDegrees());
+    Logger.recordOutput("note vector", noteVectorRotation2d.getDegrees());
+    Logger.recordOutput("note norm", noteLocRobotRel.getNorm());
+    Logger.recordOutput(
+        "note minus", Math.sin(commandVelRotation.minus(noteVectorRotation2d).getRadians()));
+    double error =
+        Math.sin(commandVelRotation.minus(noteVectorRotation2d).getRadians())
+            * noteLocRobotRel.getNorm();
+    return error;
   }
 }

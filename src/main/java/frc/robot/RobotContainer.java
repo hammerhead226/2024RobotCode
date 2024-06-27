@@ -37,7 +37,6 @@ import frc.robot.commands.AimbotAuto;
 import frc.robot.commands.AimbotStatic;
 import frc.robot.commands.AimbotTele;
 import frc.robot.commands.AlignToNoteAuto;
-import frc.robot.commands.AlignToNoteTele;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.AngleShooterShoot;
 import frc.robot.commands.DriveCommands;
@@ -521,7 +520,7 @@ public class RobotContainer {
   private void testControls() {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
-            drive, 
+            drive,
             () -> -driveController.getLeftY(),
             () -> -driveController.getLeftX(),
             () -> -driveController.getRightX(),
@@ -797,7 +796,8 @@ public class RobotContainer {
     //                 new ParallelCommandGroup(
     //                         new InstantCommand(() -> intake.stopRollers(), intake),
     //                         new InstantCommand(() -> shooter.stopFeeders()),
-    //                         new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+    //                         new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG,
+    // pivot))
     //                     .andThen(new PositionNoteInFeeder(shooter, intake))));
   }
 
