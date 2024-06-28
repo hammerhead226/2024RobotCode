@@ -147,7 +147,7 @@ public class DriveCommands {
     // double commandedVelAngle = Math.atan2(controllerY, controllerX);
     Rotation2d commandVelRotation = new Rotation2d(controllerX, controllerY);
     Rotation2d noteVectorRotation2d =
-        new Rotation2d(2, 1);
+        new Rotation2d(noteLocRobotRel.getX(), noteLocRobotRel.getY());
     // Logger.recordOutput("commanded vel rads", commandedVelAngle);
     // Rotation2d commandVelRotation = Rotation2d.fromRadians(commandedVelAngle);
     Logger.recordOutput("controller y", Math.sin(commandVelRotation.getRadians()));
@@ -158,7 +158,7 @@ public class DriveCommands {
         "note minus", Math.sin(commandVelRotation.minus(noteVectorRotation2d).getRadians()));
     double error =
         Math.sin(commandVelRotation.minus(noteVectorRotation2d).getRadians())
-            * 1;
+            * noteLocRobotRel.getNorm();
     return error;
   }
 }
