@@ -7,7 +7,8 @@ public interface VisionIO {
 
   @AutoLog
   public static class VisionIOInputs {
-    public Pose2d visionPose = new Pose2d();
+    public Pose2d mt2VisionPose = new Pose2d();
+    public Pose2d mt1VisionPose = new Pose2d();
     public double timestampSeconds;
     public int tagCount;
     public double latency;

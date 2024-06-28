@@ -9,8 +9,10 @@ public class VisionIOLimelight implements VisionIO {
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
-    inputs.visionPose =
+    inputs.mt2VisionPose =
         LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN).pose;
+    inputs.mt1VisionPose = 
+        LimelightHelpers.getBotPose2d_wpiBlue(Constants.LL_ALIGN);
     inputs.timestampSeconds =
         LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN).timestampSeconds;
     inputs.tagCount =

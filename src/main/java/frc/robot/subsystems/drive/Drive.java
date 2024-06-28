@@ -292,7 +292,7 @@ public class Drive extends SubsystemBase {
 
     LimelightHelpers.PoseEstimate mt2 =
         new PoseEstimate(
-            visionInputs.visionPose,
+            visionInputs.mt2VisionPose,
             visionInputs.timestampSeconds,
             visionInputs.latency,
             visionInputs.tagCount,
@@ -320,7 +320,7 @@ public class Drive extends SubsystemBase {
   public void visionLogic() {
     LimelightHelpers.PoseEstimate limelightMeasurement =
         new PoseEstimate(
-            visionInputs.visionPose,
+            visionInputs.mt1VisionPose,
             visionInputs.timestampSeconds,
             visionInputs.latency,
             visionInputs.tagCount,
