@@ -241,8 +241,8 @@ public class Drive extends SubsystemBase {
         0,
         0);
     if (DriverStation.getAlliance().isPresent() && visionInputs.aTV) {
-      // mt2TagFiltering();
-      visionLogic();
+      mt2TagFiltering();
+      // visionLogic();
     }
 
     Logger.recordOutput("note time", getCachedNoteTime());
@@ -308,6 +308,10 @@ public class Drive extends SubsystemBase {
       doRejectUpdate = true;
     }
 
+    if (mt2.pose.getTranslation().getDistance(new Translation2d(7.9, 4.1)) < 0.4) {
+      doRejectUpdate = true;
+    }
+
     if (!doRejectUpdate) {
       poseEstimator.setVisionMeasurementStdDevs(
           VecBuilder.fill(0.7, 0.7, Units.degreesToRadians(9999999)));
@@ -315,6 +319,7 @@ public class Drive extends SubsystemBase {
     }
 
     Logger.recordOutput("Vision Measurement", mt2.pose);
+    Logger.recordOutput("Rejecting Tags", doRejectUpdate);
   }
 
   public void visionLogic() {
@@ -889,68 +894,36 @@ public class Drive extends SubsystemBase {
 
   public Command followPathCommand(String pathName, boolean lowerPID) {
     PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-    if (lowerPID) {
-      return new FollowPathHolonomic(
-          path,
-          this::getPose, // Robot pose supplier
-          () ->
-              kinematics.toChassisSpeeds(
-                  getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-          new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
-              // in your Constants class
-              new PIDConstants(5.0), // Translation PID constants
-              new PIDConstants(0.5), // Rotation PID constants
-              Constants.SwerveConstants.MAX_LINEAR_SPEED, // Max module speed, in m/s
-              DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to
-              // furthest module.
-              new ReplanningConfig() // Default path replanning config. See the API for the options
-              // here
-              ),
-          () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-          },
-          this // Reference to this subsystem to set requirements
-          );
-    } else {
-      return new FollowPathHolonomic(
-          path,
-          this::getPose, // Robot pose supplier
-          () ->
-              kinematics.toChassisSpeeds(
-                  getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-          new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
-              // in your Constants class
-              new PIDConstants(5.0), // Translation PID constants
-              new PIDConstants(1.5), // Rotation PID constants
-              Constants.SwerveConstants.MAX_LINEAR_SPEED, // Max module speed, in m/s
-              DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to
-              // furthest module.
-              new ReplanningConfig() // Default path replanning config. See the API for the options
-              // here
-              ),
-          () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    return new FollowPathHolonomic(
+        path,
+        this::getPose, // Robot pose supplier
+        () ->
+            kinematics.toChassisSpeeds(
+                getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
+            // in your Constants class
+            new PIDConstants(5.0), // Translation PID constants
+            new PIDConstants(lowerPID ? 0.5 : 1.5), // Rotation PID constants
+            Constants.SwerveConstants.MAX_LINEAR_SPEED, // Max module speed, in m/s
+            DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to
+            // furthest module.
+            new ReplanningConfig() // Default path replanning config. See the API for the options
+            // here
+            ),
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-          },
-          this // Reference to this subsystem to set requirements
-          );
-    }
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this // Reference to this subsystem to set requirements
+        );
   }
 }

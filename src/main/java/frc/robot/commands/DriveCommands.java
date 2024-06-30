@@ -42,7 +42,7 @@ public class DriveCommands {
   private static final double DEADBAND = 0.1;
   private static double error = 0;
   private static double assistEffort = 0;
-  private static PIDController pid = new PIDController(1.5, 0, 0);
+  private static PIDController pid = new PIDController(1.2, 0, 0);
 
   private DriveCommands() {}
 
@@ -116,7 +116,6 @@ public class DriveCommands {
           } else {
             assistEffort = 0;
           }
-
 
           Logger.recordOutput("Assist Effort", assistEffort);
           Logger.recordOutput("Note Assist Error", error);
