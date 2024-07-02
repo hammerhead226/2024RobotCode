@@ -40,6 +40,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
+  private static final double NOTE_FORWARD_OFFSET = -0.36;
   private static double sideWaysError = 0;
   private static double wantedSidewaysVelocity = 0;
   private static PIDController pid = new PIDController(1.2, 0, 0);
@@ -121,11 +122,10 @@ public class DriveCommands {
           double rotationSpeed = chassisSpeeds.omegaRadiansPerSecond;
 
 
-          sideWaysError =
-              drive.getNotePositionRobotRelative().getY();
+          sideWaysError = 0 - drive.getNotePositionRobotRelative().getY();
 
 
-          if (intakeAssistSupplier.getAsBoolean()) {
+          if (intakeAssistSupplier.getAsBoolean() && drive.canSeeNote()) {
             wantedSidewaysVelocity = calculateWantedSidewaysVelocity(drive, sideWaysError, forwardSpeed);
           } else {
             wantedSidewaysVelocity = sidewaysSpeed;
@@ -145,16 +145,22 @@ public class DriveCommands {
   }
 
   private static double calculateWantedSidewaysVelocity(Drive drive, double sidewaysError, double forwardSpeed) {
-    double wantedSidewaysVelocity = pid.calculate(sideWaysError);
-    // 0.36m is roughly 14 inches
-    double forwardDisplacementToNote = drive.getNotePositionRobotRelative().getX() - 0.36;
-    double maxTime = calculateTime(forwardSpeed, forwardDisplacementToNote);
-    double minVelocity = calculateVelocity(maxTime, drive.getNotePositionRobotRelative().getY());
+    double wantedSidewaysVelocityPID = pid.calculate(sideWaysError);
+    
+    double forwardDisplacementToNote = drive.getNotePositionRobotRelative().getX() + NOTE_FORWARD_OFFSET;
+    double maxTime;
+    double minVelocity;
+    if (forwardSpeed > 0 && forwardDisplacementToNote > 0) {
+      maxTime = calculateTime(forwardSpeed, forwardDisplacementToNote);
+      minVelocity = calculateVelocity(maxTime, drive.getNotePositionRobotRelative().getY());
 
-    wantedSidewaysVelocity = Math.max(Math.abs(wantedSidewaysVelocity), Math.abs(minVelocity));
-    wantedSidewaysVelocity = MathUtil.clamp(wantedSidewaysVelocity, -drive.getMaxLinearSpeedMetersPerSec(), drive.getMaxLinearSpeedMetersPerSec());
+      double wantedSidewaysVelocity = Math.max(Math.abs(wantedSidewaysVelocityPID), Math.abs(minVelocity));
+      wantedSidewaysVelocity = MathUtil.clamp(wantedSidewaysVelocity, 0.7 * -drive.getMaxLinearSpeedMetersPerSec(), 0.7 * drive.getMaxLinearSpeedMetersPerSec());
 
-    return wantedSidewaysVelocity;
+      return wantedSidewaysVelocity;
+    } else {
+      return wantedSidewaysVelocityPID;
+    }
   }
 
   private static double calculateTime(double velocity, double displacement) {

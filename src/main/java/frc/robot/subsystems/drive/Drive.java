@@ -627,6 +627,10 @@ public class Drive extends SubsystemBase {
     // }
   }
 
+  public boolean canSeeNote() {
+    return visionInputs.iTV;
+  }
+
   public boolean noteImageIsNew() {
     double maxNoteAge = 1.0; // seconds
     return Timer.getFPGATimestamp() - lastNoteLocT2d.time < maxNoteAge;
