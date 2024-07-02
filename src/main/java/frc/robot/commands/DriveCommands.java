@@ -146,8 +146,9 @@ public class DriveCommands {
 
   private static double calculateWantedSidewaysVelocity(Drive drive, double sidewaysError, double forwardSpeed) {
     double wantedSidewaysVelocity = pid.calculate(sideWaysError);
-
-    double maxTime = calculateTime(forwardSpeed, drive.getNotePositionRobotRelative().getX());
+    // 0.36m is roughly 14 inches
+    double forwardDisplacementToNote = drive.getNotePositionRobotRelative().getX() - 0.36;
+    double maxTime = calculateTime(forwardSpeed, forwardDisplacementToNote);
     double minVelocity = calculateVelocity(maxTime, drive.getNotePositionRobotRelative().getY());
 
     wantedSidewaysVelocity = Math.max(Math.abs(wantedSidewaysVelocity), Math.abs(minVelocity));
