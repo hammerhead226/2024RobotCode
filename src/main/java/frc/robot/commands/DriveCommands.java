@@ -40,7 +40,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
-  private static double error = 0;
+  private static double sideWaysError = 0;
   private static double wantedSidewaysVelocity = 0;
   private static PIDController pid = new PIDController(1.2, 0, 0);
 
@@ -121,25 +121,18 @@ public class DriveCommands {
           double rotationSpeed = chassisSpeeds.omegaRadiansPerSecond;
 
 
-            
-            // might be getY
-          error =
-              drive.getNotePositionRobotRelative().getX();
+          sideWaysError =
+              drive.getNotePositionRobotRelative().getY();
 
 
           if (intakeAssistSupplier.getAsBoolean()) {
-            wantedSidewaysVelocity = pid.calculate(error);
-            // might be getX and getY
-            double minVelocity = calculateVelocity(calculateTime(forwardSpeed, drive.getNotePositionRobotRelative().getY()), drive.getNotePositionRobotRelative().getX());
-
-            wantedSidewaysVelocity = Math.max(Math.abs(wantedSidewaysVelocity), Math.abs(minVelocity));
-            wantedSidewaysVelocity = MathUtil.clamp(wantedSidewaysVelocity, -drive.getMaxLinearSpeedMetersPerSec(), -drive.getMaxLinearSpeedMetersPerSec());
+            wantedSidewaysVelocity = calculateWantedSidewaysVelocity(drive, sideWaysError, forwardSpeed);
           } else {
             wantedSidewaysVelocity = sidewaysSpeed;
           }
 
           Logger.recordOutput("Wanted Sideways Velocity", wantedSidewaysVelocity);
-          Logger.recordOutput("Note Assist Error", error);
+          Logger.recordOutput("Note Assist Error", sideWaysError);
 
           double assistEffort = wantedSidewaysVelocity - sidewaysSpeed;
 
@@ -149,6 +142,18 @@ public class DriveCommands {
               new ChassisSpeeds(forwardSpeed, sidewaysSpeed + assistEffort, rotationSpeed));
         },
         drive);
+  }
+
+  private static double calculateWantedSidewaysVelocity(Drive drive, double sidewaysError, double forwardSpeed) {
+    double wantedSidewaysVelocity = pid.calculate(sideWaysError);
+
+    double maxTime = calculateTime(forwardSpeed, drive.getNotePositionRobotRelative().getX());
+    double minVelocity = calculateVelocity(maxTime, drive.getNotePositionRobotRelative().getY());
+
+    wantedSidewaysVelocity = Math.max(Math.abs(wantedSidewaysVelocity), Math.abs(minVelocity));
+    wantedSidewaysVelocity = MathUtil.clamp(wantedSidewaysVelocity, -drive.getMaxLinearSpeedMetersPerSec(), drive.getMaxLinearSpeedMetersPerSec());
+
+    return wantedSidewaysVelocity;
   }
 
   private static double calculateTime(double velocity, double displacement) {
