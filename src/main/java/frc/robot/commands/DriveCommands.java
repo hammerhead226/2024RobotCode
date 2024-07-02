@@ -41,7 +41,7 @@ import org.littletonrobotics.junction.Logger;
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
   private static double error = 0;
-  private static double assistEffort = 0;
+  private static double wantedSidewaysVelocity = 0;
   private static PIDController pid = new PIDController(1.2, 0, 0);
 
   private DriveCommands() {}
@@ -105,21 +105,6 @@ public class DriveCommands {
               DriverStation.getAlliance().isPresent()
                   && DriverStation.getAlliance().get() == Alliance.Red;
 
-          error =
-              getNoteDistancePerpToVel(
-                  drive.getNotePositionRobotRelative(),
-                  MathUtil.applyDeadband(xSupplier.getAsDouble(), DEADBAND),
-                  MathUtil.applyDeadband(ySupplier.getAsDouble(), DEADBAND));
-
-          if (intakeAssistSupplier.getAsBoolean()) {
-            assistEffort = pid.calculate(error);
-          } else {
-            assistEffort = 0;
-          }
-
-          Logger.recordOutput("Assist Effort", assistEffort);
-          Logger.recordOutput("Note Assist Error", error);
-
           ChassisSpeeds chassisSpeeds =
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
@@ -135,29 +120,48 @@ public class DriveCommands {
 
           double rotationSpeed = chassisSpeeds.omegaRadiansPerSecond;
 
+
+            
+            // might be getY
+          error =
+              drive.getNotePositionRobotRelative().getX();
+
+
+          if (intakeAssistSupplier.getAsBoolean()) {
+            wantedSidewaysVelocity = pid.calculate(error);
+            // might be getX and getY
+            double minVelocity = calculateVelocity(calculateTime(forwardSpeed, drive.getNotePositionRobotRelative().getY()), drive.getNotePositionRobotRelative().getX());
+
+            wantedSidewaysVelocity = Math.max(Math.abs(wantedSidewaysVelocity), Math.abs(minVelocity));
+            wantedSidewaysVelocity = MathUtil.clamp(wantedSidewaysVelocity, -drive.getMaxLinearSpeedMetersPerSec(), -drive.getMaxLinearSpeedMetersPerSec());
+          } else {
+            wantedSidewaysVelocity = sidewaysSpeed;
+          }
+
+          Logger.recordOutput("Wanted Sideways Velocity", wantedSidewaysVelocity);
+          Logger.recordOutput("Note Assist Error", error);
+
+          double assistEffort = wantedSidewaysVelocity - sidewaysSpeed;
+
+          Logger.recordOutput("Assist Effort", assistEffort);
+
           drive.runVelocity(
               new ChassisSpeeds(forwardSpeed, sidewaysSpeed + assistEffort, rotationSpeed));
         },
         drive);
   }
 
-  private static double getNoteDistancePerpToVel(
-      Translation2d noteLocRobotRel, double controllerX, double controllerY) {
-    // double commandedVelAngle = Math.atan2(controllerY, controllerX);
-    Rotation2d commandVelRotation = new Rotation2d(controllerX, controllerY);
-    Rotation2d noteVectorRotation2d =
-        new Rotation2d(noteLocRobotRel.getX(), noteLocRobotRel.getY());
-    // Logger.recordOutput("commanded vel rads", commandedVelAngle);
-    // Rotation2d commandVelRotation = Rotation2d.fromRadians(commandedVelAngle);
-    Logger.recordOutput("controller y", Math.sin(commandVelRotation.getRadians()));
-    Logger.recordOutput("controller deg", commandVelRotation.getDegrees());
-    Logger.recordOutput("note vector", noteVectorRotation2d.getDegrees());
-    Logger.recordOutput("note norm", noteLocRobotRel.getNorm());
-    Logger.recordOutput(
-        "note minus", Math.sin(commandVelRotation.minus(noteVectorRotation2d).getRadians()));
-    double error =
-        Math.sin(commandVelRotation.minus(noteVectorRotation2d).getRadians())
-            * noteLocRobotRel.getNorm();
-    return error;
+  private static double calculateTime(double velocity, double displacement) {
+    double time = displacement / velocity;
+    Logger.recordOutput("Time to note", time);
+
+    return time;
+  }
+
+  private static double calculateVelocity(double time, double displacement) {
+    double velocity = displacement / time;
+    Logger.recordOutput("Velocity needed to note", velocity);
+
+    return velocity;
   }
 }
