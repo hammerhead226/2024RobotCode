@@ -241,8 +241,8 @@ public class Drive extends SubsystemBase {
         0,
         0);
     if (DriverStation.getAlliance().isPresent() && visionInputs.aTV) {
-      mt2TagFiltering();
-      // visionLogic();
+      // mt2TagFiltering();
+      visionLogic();
     }
 
     Logger.recordOutput("note time", getCachedNoteTime());
@@ -599,8 +599,8 @@ public class Drive extends SubsystemBase {
     Pose2d pickedRobotPose =
         posePicker(
             Timer.getFPGATimestamp()
-                - LimelightHelpers.getLatency_Pipeline(Constants.LL_INTAKE)
-                - LimelightHelpers.getLatency_Capture(Constants.LL_INTAKE));
+                - (visionInputs.iPIPELINELATENCY / 1000.)
+                - (visionInputs.iCAPTURELATENCY / 1000.));
     Translation2d fieldRelNoteLocT2dCorrected =
         roboRelNoteLocT2dCorrected
             .rotateBy(pickedRobotPose.getRotation())

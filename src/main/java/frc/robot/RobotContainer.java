@@ -521,10 +521,12 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
+            led,
             () -> -driveController.getLeftY(),
             () -> -driveController.getLeftX(),
             () -> -driveController.getRightX(),
-            () -> driveController.leftBumper().getAsBoolean()));
+            () -> driveController.leftBumper().getAsBoolean(),
+            () -> manipController.leftBumper().getAsBoolean()));
 
     driveController
         .start()
@@ -673,10 +675,12 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
+            led,
             () -> -driveController.getLeftY(),
             () -> -driveController.getLeftX(),
             () -> -driveController.getRightX(),
-            () -> driveController.leftBumper().getAsBoolean()));
+            () -> driveController.leftBumper().getAsBoolean(),
+            () -> manipController.leftBumper().getAsBoolean()));
 
     driveController
         .rightBumper()
@@ -731,7 +735,8 @@ public class RobotContainer {
                     () -> -driveController.getLeftY(),
                     () -> -driveController.getLeftX(),
                     () -> -driveController.getRightX(),
-                    () -> driveController.leftBumper().getAsBoolean())));
+                    () -> driveController.leftBumper().getAsBoolean(),
+                    () -> manipController.leftBumper().getAsBoolean())));
     driveController
         .leftBumper()
         .onFalse(

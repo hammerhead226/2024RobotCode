@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.Constants.NoteState;
 import frc.robot.subsystems.drive.Drive;
@@ -43,7 +44,13 @@ public class DriveCommands {
   private static final double NOTE_FORWARD_OFFSET = -0.36;
   private static double sideWaysError = 0;
   private static double wantedSidewaysVelocity = 0;
-  private static PIDController pid = new PIDController(1.2, 0, 0);
+  private static double wantedRotationVelocity = 0;
+  private static PIDController sidewaysPID =
+      new PIDController(1.5, 0, 0, Constants.LOOP_PERIOD_SECS);
+  private static PIDController rotationPID =
+      new PIDController(2.54, 0, 0, Constants.LOOP_PERIOD_SECS);
+
+  private static double counter = 0;
 
   private DriveCommands() {}
 
@@ -57,10 +64,18 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
-      BooleanSupplier intakeAssistSupplier) {
+      BooleanSupplier intakeAssistSupplier,
+      BooleanSupplier turnToSourceSupplier) {
 
     if (shooter.seesNote() == NoteState.CURRENT || shooter.seesNote() == NoteState.SENSOR) {
-      return joystickDrive(drive, xSupplier, ySupplier, omegaSupplier, intakeAssistSupplier);
+      return joystickDrive(
+          drive,
+          led,
+          xSupplier,
+          ySupplier,
+          omegaSupplier,
+          intakeAssistSupplier,
+          turnToSourceSupplier);
     } else {
 
     }
@@ -68,7 +83,14 @@ public class DriveCommands {
     return new InstantCommand(() -> led.setState(LED_STATE.RED))
         .andThen(
             new ParallelCommandGroup(
-                joystickDrive(drive, xSupplier, ySupplier, omegaSupplier, intakeAssistSupplier),
+                joystickDrive(
+                    drive,
+                    led,
+                    xSupplier,
+                    ySupplier,
+                    omegaSupplier,
+                    intakeAssistSupplier,
+                    turnToSourceSupplier),
                 new PivotIntakeTele(pivot, intake, shooter, led, false)));
   }
   /**
@@ -76,13 +98,17 @@ public class DriveCommands {
    */
   public static Command joystickDrive(
       Drive drive,
+      LED led,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
-      BooleanSupplier intakeAssistSupplier) {
+      BooleanSupplier intakeAssistSupplier,
+      BooleanSupplier turnToSourceSupplier) {
     return Commands.run(
         () -> {
-
+          rotationPID.setTolerance(5);
+          rotationPID.enableContinuousInput(-180, 180);
+          sidewaysPID.setTolerance(0.05460);
           // Apply deadband
           double linearMagnitude =
               MathUtil.applyDeadband(
@@ -121,41 +147,81 @@ public class DriveCommands {
 
           double rotationSpeed = chassisSpeeds.omegaRadiansPerSecond;
 
-
           sideWaysError = 0 - drive.getNotePositionRobotRelative().getY();
 
+          if (turnToSourceSupplier.getAsBoolean()) {
+            Rotation2d curreRotation2d = drive.getRotation();
+            Rotation2d targeRotation2d;
+            if (DriverStation.getAlliance().get() == Alliance.Blue) {
+              targeRotation2d = Rotation2d.fromDegrees(-60);
+            } else {
+              targeRotation2d = Rotation2d.fromDegrees(240);
+            }
+            Rotation2d rotationErr2d = targeRotation2d.minus(curreRotation2d);
 
-          if (intakeAssistSupplier.getAsBoolean() && drive.canSeeNote()) {
-            wantedSidewaysVelocity = calculateWantedSidewaysVelocity(drive, sideWaysError, forwardSpeed);
+            wantedRotationVelocity =
+                Math.toRadians(rotationPID.calculate(rotationErr2d.getDegrees()));
+
           } else {
+            wantedRotationVelocity = rotationSpeed;
+          }
+
+          if ((intakeAssistSupplier.getAsBoolean() && (counter < 10 || drive.canSeeNote()))) {
+            if (!drive.canSeeNote()) {
+              counter++;
+            } else {
+              counter = 0;
+            }
+            led.setState(LED_STATE.FLASHING_RED);
+            wantedSidewaysVelocity =
+                calculateWantedSidewaysVelocity(drive, sideWaysError, forwardSpeed);
+          } else {
+            led.setState(LED_STATE.RED);
             wantedSidewaysVelocity = sidewaysSpeed;
           }
 
           Logger.recordOutput("Wanted Sideways Velocity", wantedSidewaysVelocity);
           Logger.recordOutput("Note Assist Error", sideWaysError);
 
-          double assistEffort = wantedSidewaysVelocity - sidewaysSpeed;
+          double sidewaysAssistEffort = wantedSidewaysVelocity - sidewaysSpeed * 0.2345;
 
-          Logger.recordOutput("Assist Effort", assistEffort);
+          double rotationAssistEffort = wantedRotationVelocity - rotationSpeed * 0.1690;
+
+          Logger.recordOutput("Assist Effort", sidewaysAssistEffort);
 
           drive.runVelocity(
-              new ChassisSpeeds(forwardSpeed, sidewaysSpeed + assistEffort, rotationSpeed));
+              new ChassisSpeeds(
+                  forwardSpeed,
+                  MathUtil.clamp(
+                      sidewaysSpeed + sidewaysAssistEffort,
+                      -drive.getMaxLinearSpeedMetersPerSec(),
+                      drive.getMaxLinearSpeedMetersPerSec()),
+                  rotationSpeed + rotationAssistEffort));
         },
         drive);
   }
 
-  private static double calculateWantedSidewaysVelocity(Drive drive, double sidewaysError, double forwardSpeed) {
-    double wantedSidewaysVelocityPID = pid.calculate(sideWaysError);
-    
-    double forwardDisplacementToNote = drive.getNotePositionRobotRelative().getX() + NOTE_FORWARD_OFFSET;
+  private static double calculateWantedSidewaysVelocity(
+      Drive drive, double sidewaysError, double forwardSpeed) {
+    double wantedSidewaysVelocityPID = sidewaysPID.calculate(sideWaysError);
+
+    double forwardDisplacementToNote =
+        drive.getNotePositionRobotRelative().getX() + NOTE_FORWARD_OFFSET;
     double maxTime;
     double minVelocity;
     if (forwardSpeed > 0 && forwardDisplacementToNote > 0) {
       maxTime = calculateTime(forwardSpeed, forwardDisplacementToNote);
       minVelocity = calculateVelocity(maxTime, drive.getNotePositionRobotRelative().getY());
 
-      double wantedSidewaysVelocity = Math.max(Math.abs(wantedSidewaysVelocityPID), Math.abs(minVelocity));
-      wantedSidewaysVelocity = MathUtil.clamp(wantedSidewaysVelocity, 0.7 * -drive.getMaxLinearSpeedMetersPerSec(), 0.7 * drive.getMaxLinearSpeedMetersPerSec());
+      double wantedSidewaysVelocity =
+          Math.max(Math.abs(wantedSidewaysVelocityPID), Math.abs(minVelocity))
+              * (minVelocity / Math.abs(minVelocity));
+
+      wantedSidewaysVelocity =
+          MathUtil.clamp(
+              wantedSidewaysVelocity,
+              0.7 * -drive.getMaxLinearSpeedMetersPerSec(),
+              0.7 * drive.getMaxLinearSpeedMetersPerSec());
 
       return wantedSidewaysVelocity;
     } else {
