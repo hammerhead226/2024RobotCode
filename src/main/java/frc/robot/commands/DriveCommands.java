@@ -45,6 +45,8 @@ public class DriveCommands {
   private static double sideWaysError = 0;
   private static double wantedSidewaysVelocity = 0;
   private static double wantedRotationVelocity = 0;
+  private static double sidewaysAssistEffort = 0;
+  private static double rotationAssistEffort = 0;
   private static PIDController sidewaysPID =
       new PIDController(1.5, 0, 0, Constants.LOOP_PERIOD_SECS);
   private static PIDController rotationPID =
@@ -157,13 +159,16 @@ public class DriveCommands {
             } else {
               targeRotation2d = Rotation2d.fromDegrees(240);
             }
-            Rotation2d rotationErr2d = targeRotation2d.minus(curreRotation2d);
+            rotationPID.setSetpoint(targeRotation2d.getDegrees());
 
             wantedRotationVelocity =
-                Math.toRadians(rotationPID.calculate(rotationErr2d.getDegrees()));
+                Math.toRadians(rotationPID.calculate(curreRotation2d.getDegrees()));
+
+            rotationAssistEffort = wantedRotationVelocity - rotationSpeed * 0.1690;
 
           } else {
             wantedRotationVelocity = rotationSpeed;
+            rotationAssistEffort = 0;
           }
 
           if ((intakeAssistSupplier.getAsBoolean() && (counter < 10 || drive.canSeeNote()))) {
@@ -175,19 +180,18 @@ public class DriveCommands {
             led.setState(LED_STATE.FLASHING_RED);
             wantedSidewaysVelocity =
                 calculateWantedSidewaysVelocity(drive, sideWaysError, forwardSpeed);
+            sidewaysAssistEffort = wantedSidewaysVelocity - sidewaysSpeed * 0.2345;
           } else {
             led.setState(LED_STATE.RED);
             wantedSidewaysVelocity = sidewaysSpeed;
+            sidewaysAssistEffort = 0;
           }
 
           Logger.recordOutput("Wanted Sideways Velocity", wantedSidewaysVelocity);
           Logger.recordOutput("Note Assist Error", sideWaysError);
 
-          double sidewaysAssistEffort = wantedSidewaysVelocity - sidewaysSpeed * 0.2345;
-
-          double rotationAssistEffort = wantedRotationVelocity - rotationSpeed * 0.1690;
-
-          Logger.recordOutput("Assist Effort", sidewaysAssistEffort);
+          Logger.recordOutput("Sideways Assist Effort", sidewaysAssistEffort);
+          Logger.recordOutput("Rotation Assist Effort", rotationAssistEffort);
 
           drive.runVelocity(
               new ChassisSpeeds(
@@ -196,7 +200,7 @@ public class DriveCommands {
                       sidewaysSpeed + sidewaysAssistEffort,
                       -drive.getMaxLinearSpeedMetersPerSec(),
                       drive.getMaxLinearSpeedMetersPerSec()),
-                  rotationSpeed + rotationAssistEffort));
+                  MathUtil.clamp(rotationSpeed + rotationAssistEffort, -drive.getMaxAngularSpeedRadPerSec(), drive.getMaxAngularSpeedRadPerSec())));
         },
         drive);
   }
