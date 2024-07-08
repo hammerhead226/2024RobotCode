@@ -17,6 +17,8 @@ public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   private final FlywheelIO flywheels;
 
+  private double ff;
+
   private final LeafBlowerIO leafBlower;
   private final FeederIO feeder;
   private DistanceSensorIO dist;
@@ -41,11 +43,11 @@ public class Shooter extends SubsystemBase {
       FlywheelIO flywheels, FeederIO feeder, DistanceSensorIO dist, LeafBlowerIO leafBlower) {
     switch (Constants.getMode()) {
       case REAL:
-        flywheelFFModel = new SimpleMotorFeedforward(0.18, 0.12, 0); // make constant
+        flywheelFFModel = new SimpleMotorFeedforward(0.18, 0.3, 0); // make constant
 
         feederFFModel = new SimpleMotorFeedforward(0, 0, 0);
 
-        flywheelkP.initDefault(0.5); // make constant
+        flywheelkP.initDefault(5.060); // make constant
         flywheelkI.initDefault(0);
         flywheelkD.initDefault(0);
 
@@ -99,6 +101,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setFlywheelRPMs(double leftVelocityRPM, double rightVelocityRPM) {
+
+    ff = flywheelFFModel.calculate(rightVelocityRPM / 60.);
     flywheels.setVelocityRPS(
         leftVelocityRPM / 60.,
         rightVelocityRPM / 60.,
@@ -127,7 +131,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public double[] getFlywheelVelocitiesRPM() {
-    return new double[] {flyInputs.leftVelocityRPM, flyInputs.leftVelocityRPM};
+    return new double[] {flyInputs.leftVelocityRPM, flyInputs.rightVelocityRPM};
   }
 
   public double[] getFlywheelErrors() {
@@ -138,8 +142,22 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean atFlywheelSetpoints() {
+    Logger.recordOutput("err left", getFlywheelErrors()[0]);
+    Logger.recordOutput("err right", getFlywheelErrors()[1]);
+
+    Logger.recordOutput(
+        "at left",
+        Math.abs(getFlywheelErrors()[0]) <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD);
+    Logger.recordOutput(
+        "at right",
+        Math.abs(getFlywheelErrors()[1]) <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD);
+
+    Logger.recordOutput(
+        "at yes", flyInputs.leftVelocitySetpointRPM > 0 && flyInputs.rightVelocitySetpointRPM > 0);
+
     return (Math.abs(getFlywheelErrors()[0]) <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD
-        && getFlywheelErrors()[1] <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD);
+            && Math.abs(getFlywheelErrors()[1]) <= Constants.ShooterConstants.FLYWHEEL_THRESHOLD)
+        && (flyInputs.leftVelocitySetpointRPM > 0 && flyInputs.rightVelocitySetpointRPM > 0);
   }
 
   public double getFeederRPM() {
@@ -197,6 +215,8 @@ public class Shooter extends SubsystemBase {
     Logger.processInputs("Flywheels", flyInputs);
     Logger.processInputs("Feeder", feedInputs);
     Logger.processInputs("Distance Sensor", sInputs);
+
+    Logger.recordOutput("ffvolt", ff);
 
     if (feederkP.hasChanged(hashCode())
         || feederkD.hasChanged(hashCode())

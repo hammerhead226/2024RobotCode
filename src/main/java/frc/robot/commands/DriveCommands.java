@@ -47,6 +47,7 @@ public class DriveCommands {
   private static double wantedRotationVelocity = 0;
   private static double sidewaysAssistEffort = 0;
   private static double rotationAssistEffort = 0;
+  private static double forwardConstantVelocity = 0;
   private static PIDController sidewaysPID =
       new PIDController(1.5, 0, 0, Constants.LOOP_PERIOD_SECS);
   private static PIDController rotationPID =
@@ -177,12 +178,14 @@ public class DriveCommands {
             } else {
               counter = 0;
             }
+            forwardConstantVelocity = .14657 * 2;
             led.setState(LED_STATE.FLASHING_RED);
             wantedSidewaysVelocity =
                 calculateWantedSidewaysVelocity(drive, sideWaysError, forwardSpeed);
             sidewaysAssistEffort = wantedSidewaysVelocity - sidewaysSpeed * 0.2345;
           } else {
             led.setState(LED_STATE.RED);
+            forwardConstantVelocity = 0;
             wantedSidewaysVelocity = sidewaysSpeed;
             sidewaysAssistEffort = 0;
           }
@@ -195,12 +198,18 @@ public class DriveCommands {
 
           drive.runVelocity(
               new ChassisSpeeds(
-                  forwardSpeed,
+                  MathUtil.clamp(
+                      forwardSpeed + forwardConstantVelocity,
+                      -drive.getMaxLinearSpeedMetersPerSec(),
+                      drive.getMaxLinearSpeedMetersPerSec()),
                   MathUtil.clamp(
                       sidewaysSpeed + sidewaysAssistEffort,
                       -drive.getMaxLinearSpeedMetersPerSec(),
                       drive.getMaxLinearSpeedMetersPerSec()),
-                  MathUtil.clamp(rotationSpeed + rotationAssistEffort, -drive.getMaxAngularSpeedRadPerSec(), drive.getMaxAngularSpeedRadPerSec())));
+                  MathUtil.clamp(
+                      rotationSpeed + rotationAssistEffort,
+                      -drive.getMaxAngularSpeedRadPerSec(),
+                      drive.getMaxAngularSpeedRadPerSec())));
         },
         drive);
   }

@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
@@ -25,11 +26,13 @@ import frc.robot.util.FieldConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class AimbotTele extends Command {
-
+  
   private final Drive drive;
   private final Shooter shooter;
   private final Pivot pivot;
   private final LED led;
+
+  private double startTime;
 
   private final CommandXboxController controller;
   private final PIDController pid;
@@ -74,6 +77,8 @@ public class AimbotTele extends Command {
         break;
     }
 
+    startTime = Timer.getFPGATimestamp();
+
     pid = new PIDController(gains[0], gains[1], gains[2], 0.02);
     pid.setTolerance(3);
     pid.enableContinuousInput(-180, 180);
@@ -111,7 +116,7 @@ public class AimbotTele extends Command {
       double shootingSpeed = calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter));
 
       shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 100);
-    } else shooter.setFlywheelRPMs(5400 + 100, 5400);
+    } else shooter.setFlywheelRPMs(5400 - 400, 5400 - 800);
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }
 
@@ -234,6 +239,7 @@ public class AimbotTele extends Command {
   @Override
   public boolean isFinished() {
     Logger.recordOutput("i am currently this angle", drive.getRotation().getDegrees());
-    return pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atGoal();
+    return (pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atGoal()) || (Timer.getFPGATimestamp() - startTime > 1.5);
+    // return shooter.atFlywheelSetpoints();
   }
 }
