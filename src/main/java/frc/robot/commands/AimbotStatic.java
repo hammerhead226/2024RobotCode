@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
@@ -31,6 +32,8 @@ public class AimbotStatic extends Command {
   private final Shooter shooter;
   private final Pivot pivot;
   private final LED led;
+
+  private double startTime;
 
   private final CommandXboxController controller;
   private final PIDController pid;
@@ -83,6 +86,7 @@ public class AimbotStatic extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    startTime = Timer.getFPGATimestamp();
     led.setState(LED_STATE.FLASHING_GREEN);
   }
 
@@ -129,14 +133,14 @@ public class AimbotStatic extends Command {
         // center
         else shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed);
       }
-    } else shooter.setFlywheelRPMs(5400, 5400);
+    } else shooter.setFlywheelRPMs(5400 - 400, 5400 - 800);
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }
 
   private double calculateShooterSpeed(double distanceToSpeakerFeet) {
     double shooterSpeed = -986.49 * distanceToSpeakerFeet + 17294.6;
     // shooterSpeed = MathUtil.clamp(shooterSpeed, 3850, 5400);
-    shooterSpeed = MathUtil.clamp(shooterSpeed, 4000, 5400);
+    shooterSpeed = MathUtil.clamp(shooterSpeed, 4000, 5200);
     // if (distanceToSpeakerFeet >= 11) {
     // return -430.7 * distanceToSpeakerFeet + 8815;
     // } else return -600. * distanceToSpeakerFeet + 10406;
@@ -252,6 +256,7 @@ public class AimbotStatic extends Command {
   @Override
   public boolean isFinished() {
     Logger.recordOutput("i am currently this angle", drive.getRotation().getDegrees());
-    return pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atGoal();
+    return pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atGoal()
+        || (Timer.getFPGATimestamp() - startTime > 1.323);
   }
 }

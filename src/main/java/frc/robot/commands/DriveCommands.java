@@ -72,36 +72,40 @@ public class DriveCommands {
 
     if (shooter.seesNote() == NoteState.CURRENT || shooter.seesNote() == NoteState.SENSOR) {
       return joystickDrive(
-          drive,
-          led,
-          xSupplier,
-          ySupplier,
-          omegaSupplier,
-          intakeAssistSupplier,
-          turnToSourceSupplier);
+          drive, xSupplier, ySupplier, omegaSupplier, intakeAssistSupplier, turnToSourceSupplier);
     } else {
-
+      if (intakeAssistSupplier.getAsBoolean()) {
+        return new InstantCommand(() -> led.setState(LED_STATE.FLASHING_RED))
+            .andThen(
+                new ParallelCommandGroup(
+                    joystickDrive(
+                        drive,
+                        xSupplier,
+                        ySupplier,
+                        omegaSupplier,
+                        intakeAssistSupplier,
+                        turnToSourceSupplier),
+                    new PivotIntakeTele(pivot, intake, shooter, led, false)));
+      } else {
+        return new InstantCommand(() -> led.setState(LED_STATE.RED))
+            .andThen(
+                new ParallelCommandGroup(
+                    joystickDrive(
+                        drive,
+                        xSupplier,
+                        ySupplier,
+                        omegaSupplier,
+                        intakeAssistSupplier,
+                        turnToSourceSupplier),
+                    new PivotIntakeTele(pivot, intake, shooter, led, false)));
+      }
     }
-
-    return new InstantCommand(() -> led.setState(LED_STATE.RED))
-        .andThen(
-            new ParallelCommandGroup(
-                joystickDrive(
-                    drive,
-                    led,
-                    xSupplier,
-                    ySupplier,
-                    omegaSupplier,
-                    intakeAssistSupplier,
-                    turnToSourceSupplier),
-                new PivotIntakeTele(pivot, intake, shooter, led, false)));
   }
   /**
    * Field relative drive command using two joysticks (controlling linear and angular velocities).
    */
   public static Command joystickDrive(
       Drive drive,
-      LED led,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
@@ -179,12 +183,10 @@ public class DriveCommands {
               counter = 0;
             }
             forwardConstantVelocity = .14657 * 2;
-            led.setState(LED_STATE.FLASHING_RED);
             wantedSidewaysVelocity =
                 calculateWantedSidewaysVelocity(drive, sideWaysError, forwardSpeed);
             sidewaysAssistEffort = wantedSidewaysVelocity - sidewaysSpeed * 0.2345;
           } else {
-            led.setState(LED_STATE.RED);
             forwardConstantVelocity = 0;
             wantedSidewaysVelocity = sidewaysSpeed;
             sidewaysAssistEffort = 0;

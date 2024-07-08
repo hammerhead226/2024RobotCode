@@ -94,7 +94,6 @@ import frc.robot.subsystems.shooter.LeafBlowerIOTalonSRX;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.FieldConstants;
 import java.util.Map;
-import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
@@ -267,7 +266,6 @@ public class RobotContainer {
     driveRightTrigger = driveController.rightTrigger();
     driveAButton = driveController.a();
     driveXButton = driveController.x();
-
 
     // intakeLEDCommands =
     // new SelectCommand<>(
@@ -552,7 +550,6 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            led,
             () -> -driveController.getLeftY(),
             () -> -driveController.getLeftX(),
             () -> -driveController.getRightX(),
@@ -706,97 +703,100 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            led,
             () -> -driveController.getLeftY(),
             () -> -driveController.getLeftX(),
             () -> -driveController.getRightX(),
-            () -> driveController.leftBumper().getAsBoolean(),
+            driveLeftBumper,
             manipLeftBumper));
 
-    driveRightBumper
-        .onTrue(
-            new SequentialCommandGroup(
-                new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
-                new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
-                new SetElevatorTarget(0, 1.5, elevator),
-                new PivotIntakeTele(pivot, intake, shooter, led, false)));
+    driveRightBumper.onTrue(
+        new SequentialCommandGroup(
+            new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
+            new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
+            new SetElevatorTarget(0, 1.5, elevator),
+            DriveCommands.intakeCommand(
+                drive,
+                shooter,
+                pivot,
+                intake,
+                led,
+                driveController,
+                () -> -driveController.getLeftY(),
+                () -> -driveController.getLeftX(),
+                () -> -driveController.getRightX(),
+                () -> false,
+                () -> false)));
 
-    driveRightBumper
-        .onFalse(
-            new InstantCommand(() -> led.setState(LED_STATE.BLUE))
-                .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
-                .andThen(new WaitCommand(0.02))
-                .andThen(
-                    new ConditionalCommand(
-                        new WaitCommand(0.24),
-                        new WaitCommand(0.06),
-                        () -> (shooter.getLastNoteState() == NoteState.CURRENT)))
-                .andThen(
-                    new ParallelCommandGroup(
-                            new InstantCommand(() -> intake.stopRollers(), intake),
-                            new InstantCommand(() -> shooter.stopFeeders()),
-                            new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
-                        .andThen(new PositionNoteInFeeder(shooter, intake))));
+    driveRightBumper.onFalse(
+        new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+            .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
+            .andThen(new WaitCommand(0.02))
+            .andThen(
+                new ConditionalCommand(
+                    new WaitCommand(0.24),
+                    new WaitCommand(0.06),
+                    () -> (shooter.getLastNoteState() == NoteState.CURRENT)))
+            .andThen(
+                new ParallelCommandGroup(
+                        new InstantCommand(() -> intake.stopRollers(), intake),
+                        new InstantCommand(() -> shooter.stopFeeders()),
+                        new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+                    .andThen(new PositionNoteInFeeder(shooter, intake))));
 
-    driveStartButton
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setGyroPose(
-                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                    drive)
-                .ignoringDisable(true));
+    driveStartButton.onTrue(
+        Commands.runOnce(
+                () ->
+                    drive.setGyroPose(
+                        new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                drive)
+            .ignoringDisable(true));
 
-    driveLeftBumper
-        .onTrue(
-            new SequentialCommandGroup(
-                new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
-                new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
-                new SetElevatorTarget(0, 1.5, elevator),
-                DriveCommands.intakeCommand(
-                    drive,
-                    shooter,
-                    pivot,
-                    intake,
-                    led,
-                    driveController,
-                    () -> -driveController.getLeftY(),
-                    () -> -driveController.getLeftX(),
-                    () -> -driveController.getRightX(),
-                    () -> driveController.leftBumper().getAsBoolean(),
-                    () -> manipController.leftBumper().getAsBoolean())));
-    driveLeftBumper
-        .onFalse(
-            new InstantCommand(() -> led.setState(LED_STATE.BLUE))
-                .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
-                .andThen(new WaitCommand(0.02))
-                .andThen(
-                    new ConditionalCommand(
-                        new WaitCommand(0.24),
-                        new WaitCommand(0.06),
-                        () -> (shooter.getLastNoteState() == NoteState.CURRENT)))
-                .andThen(
-                    new ParallelCommandGroup(
-                            new InstantCommand(() -> intake.stopRollers(), intake),
-                            new InstantCommand(() -> shooter.stopFeeders()),
-                            new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
-                        .andThen(new PositionNoteInFeeder(shooter, intake))));
+    driveLeftBumper.onTrue(
+        new SequentialCommandGroup(
+            new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
+            new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
+            new SetElevatorTarget(0, 1.5, elevator),
+            DriveCommands.intakeCommand(
+                drive,
+                shooter,
+                pivot,
+                intake,
+                led,
+                driveController,
+                () -> -driveController.getLeftY(),
+                () -> -driveController.getLeftX(),
+                () -> -driveController.getRightX(),
+                driveLeftBumper,
+                manipLeftBumper)));
+    driveLeftBumper.onFalse(
+        new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+            .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
+            .andThen(new WaitCommand(0.02))
+            .andThen(
+                new ConditionalCommand(
+                    new WaitCommand(0.24),
+                    new WaitCommand(0.06),
+                    () -> (shooter.getLastNoteState() == NoteState.CURRENT)))
+            .andThen(
+                new ParallelCommandGroup(
+                        new InstantCommand(() -> intake.stopRollers(), intake),
+                        new InstantCommand(() -> shooter.stopFeeders()),
+                        new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+                    .andThen(new PositionNoteInFeeder(shooter, intake))));
 
     driveLeftTrigger.whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true));
-    driveLeftTrigger
-        .onFalse(
-            new InstantCommand(intake::stopRollers)
-                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
-                .andThen(new InstantCommand(() -> shooter.stopFeeders())));
+    driveLeftTrigger.onFalse(
+        new InstantCommand(intake::stopRollers)
+            .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+            .andThen(new InstantCommand(() -> shooter.stopFeeders())));
 
     driveRightTrigger.onTrue(shootCommands);
-    driveRightTrigger
-        .onFalse(
-            new InstantCommand(() -> shooter.stopFeeders(), shooter)
-                .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE)))
-                .andThen(new WaitCommand(0.5))
-                .andThen(new InstantCommand(shooter::stopFlywheels))
-                .andThen(new InstantCommand(() -> shooter.turnOffFan(), shooter)));
+    driveRightTrigger.onFalse(
+        new InstantCommand(() -> shooter.stopFeeders(), shooter)
+            .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE)))
+            .andThen(new WaitCommand(0.5))
+            .andThen(new InstantCommand(shooter::stopFlywheels))
+            .andThen(new InstantCommand(() -> shooter.turnOffFan(), shooter)));
 
     driveAButton.onTrue(climbCommands);
 
@@ -850,37 +850,33 @@ public class RobotContainer {
     //             .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
     //             .andThen(new InstantCommand(() -> shooter.stopFeeders(), shooter)));
 
-    manipAButton
-        .onTrue(
-            new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AMP))
-                .andThen(new ScoreAmp(elevator, pivot, shooter, drive)));
+    manipAButton.onTrue(
+        new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AMP))
+            .andThen(new ScoreAmp(elevator, pivot, shooter, drive)));
 
-    manipAButton
-        .onFalse(
-            new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
-                .andThen(
-                    new SequentialCommandGroup(
-                        new InstantCommand(() -> shooter.turnOffFan()),
-                        new SetElevatorTarget(0, 0.5, elevator),
-                        new InstantCommand(() -> elevator.setConstraints(30, 85)),
-                        new InstantCommand(() -> shooter.stopFlywheels(), shooter),
-                        new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))));
+    manipAButton.onFalse(
+        new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
+            .andThen(
+                new SequentialCommandGroup(
+                    new InstantCommand(() -> shooter.turnOffFan()),
+                    new SetElevatorTarget(0, 0.5, elevator),
+                    new InstantCommand(() -> elevator.setConstraints(30, 85)),
+                    new InstantCommand(() -> shooter.stopFlywheels(), shooter),
+                    new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))));
 
-    manipBButton
-        .onTrue(
-            new ParallelCommandGroup(
-                    new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot),
-                    new SetShooterTargetRPM(
-                        Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM,
-                        Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM,
-                        shooter))
-                .andThen(new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.PIVOT_PRESET))));
-    manipBButton
-        .onFalse(
-            new ParallelCommandGroup(
-                    new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
-                    new SetShooterTargetRPM(0, 0, shooter))
-                .andThen(new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))));
+    manipBButton.onTrue(
+        new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot),
+                new SetShooterTargetRPM(
+                    Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM,
+                    Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM,
+                    shooter))
+            .andThen(new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.PIVOT_PRESET))));
+    manipBButton.onFalse(
+        new ParallelCommandGroup(
+                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
+                new SetShooterTargetRPM(0, 0, shooter))
+            .andThen(new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))));
 
     // manipController
     // .leftBumper()
@@ -910,8 +906,7 @@ public class RobotContainer {
 
     manipRightTrigger.onTrue(new SetFeedersTargetRPM(1000, shooter));
 
-    manipRightTrigger
-        .onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
+    manipRightTrigger.onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
 
     // manipController.x().onTrue(new PivotSource(pivot, intake, shooter, led));
 
@@ -926,15 +921,13 @@ public class RobotContainer {
     //             .andThen(new WaitCommand(1))
     //             .andThen(new InstantCommand(shooter::stopFeeders, shooter)));
 
-    manipRightBumper
-        .whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
+    manipRightBumper.whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
 
-    manipRightBumper
-        .onFalse(
-            new ParallelCommandGroup(
-                    new InstantCommand(shooter::stopFlywheels, shooter),
-                    new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
-                .andThen(new InstantCommand(shooter::stopFeeders, shooter)));
+    manipRightBumper.onFalse(
+        new ParallelCommandGroup(
+                new InstantCommand(shooter::stopFlywheels, shooter),
+                new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+            .andThen(new InstantCommand(shooter::stopFeeders, shooter)));
 
     // manipController
     //     .leftBumper()

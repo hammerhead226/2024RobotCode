@@ -26,7 +26,7 @@ import frc.robot.util.FieldConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class AimbotTele extends Command {
-  
+
   private final Drive drive;
   private final Shooter shooter;
   private final Pivot pivot;
@@ -77,8 +77,6 @@ public class AimbotTele extends Command {
         break;
     }
 
-    startTime = Timer.getFPGATimestamp();
-
     pid = new PIDController(gains[0], gains[1], gains[2], 0.02);
     pid.setTolerance(3);
     pid.enableContinuousInput(-180, 180);
@@ -87,6 +85,7 @@ public class AimbotTele extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    startTime = Timer.getFPGATimestamp();
     led.setState(LED_STATE.FLASHING_GREEN);
   }
 
@@ -239,7 +238,8 @@ public class AimbotTele extends Command {
   @Override
   public boolean isFinished() {
     Logger.recordOutput("i am currently this angle", drive.getRotation().getDegrees());
-    return (pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atGoal()) || (Timer.getFPGATimestamp() - startTime > 1.5);
+    return (pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atGoal())
+        || (Timer.getFPGATimestamp() - startTime > 1.323);
     // return shooter.atFlywheelSetpoints();
   }
 }
