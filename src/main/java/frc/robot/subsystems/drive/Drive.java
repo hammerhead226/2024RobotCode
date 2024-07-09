@@ -53,6 +53,8 @@ import frc.robot.Constants.LED_STATE;
 import frc.robot.subsystems.led.LED;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers;
+import frc.robot.util.LimelightHelpers.PoseEstimate;
+import frc.robot.util.LimelightHelpers.RawFiducial;
 import frc.robot.util.LocalADStarAK;
 import java.util.List;
 import java.util.Optional;
@@ -72,6 +74,9 @@ public class Drive extends SubsystemBase {
 
   private NetworkTable limelightintake =
       NetworkTableInstance.getDefault().getTable(Constants.LL_INTAKE);
+
+  private final VisionIO visionIO;
+  private final VisionIOInputsAutoLogged visionInputs = new VisionIOInputsAutoLogged();
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -112,11 +117,13 @@ public class Drive extends SubsystemBase {
 
   public Drive(
       GyroIO gyroIO,
+      VisionIO visionIO,
       ModuleIO flModuleIO,
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO) {
     this.gyroIO = gyroIO;
+    this.visionIO = visionIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
@@ -177,10 +184,14 @@ public class Drive extends SubsystemBase {
 
   public void periodic() {
     gyroIO.updateInputs(gyroInputs);
+    visionIO.updateInputs(visionInputs);
+    Logger.processInputs("Vision/Limelight", visionInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
     for (var module : modules) {
       module.periodic();
     }
+
+    Logger.recordOutput("test trans", new Translation2d(2, 4));
 
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
@@ -229,23 +240,17 @@ public class Drive extends SubsystemBase {
         0,
         0,
         0);
-    if (DriverStation.getAlliance().isPresent() && LimelightHelpers.getTV(Constants.LL_ALIGN)) {
+    if (DriverStation.getAlliance().isPresent() && visionInputs.aTV) {
       // mt2TagFiltering();
       visionLogic();
     }
 
-    Logger.recordOutput(
-        "limelilght alig latency", LimelightHelpers.getLatency_Pipeline(Constants.LL_ALIGN));
-    Logger.recordOutput("limelight intake hb", limelightintake.getEntry("hb").getDouble(0.0));
-
-    Logger.recordOutput("limelight intake tx", limelightintake.getEntry("tx").getDouble(0.0));
-
     Logger.recordOutput("note time", getCachedNoteTime());
     // Note Pose estimating
     updatePoseBuffer();
-    if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
+    if (visionInputs.iTX != 0.0) {
       double taThreshold = 0;
-      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold) {
+      if (visionInputs.iTA >= taThreshold) {
         lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
         lastNoteLocT2d.time = Timer.getFPGATimestamp();
       }
@@ -286,13 +291,24 @@ public class Drive extends SubsystemBase {
     boolean doRejectUpdate = false;
 
     LimelightHelpers.PoseEstimate mt2 =
-        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LL_ALIGN);
-
+        new PoseEstimate(
+            visionInputs.mt2VisionPose,
+            visionInputs.timestampSeconds,
+            visionInputs.latency,
+            visionInputs.tagCount,
+            visionInputs.tagSpan,
+            visionInputs.avgTagDist,
+            visionInputs.avgTagArea,
+            new RawFiducial[] {});
     if (Math.abs(gyroInputs.yawVelocityRadPerSec) > Math.toRadians(720)) {
       doRejectUpdate = true;
     }
 
     if (mt2.tagCount == 0) {
+      doRejectUpdate = true;
+    }
+
+    if (mt2.pose.getTranslation().getDistance(new Translation2d(7.9, 4.1)) < 0.4) {
       doRejectUpdate = true;
     }
 
@@ -303,11 +319,20 @@ public class Drive extends SubsystemBase {
     }
 
     Logger.recordOutput("Vision Measurement", mt2.pose);
+    Logger.recordOutput("Rejecting Tags", doRejectUpdate);
   }
 
   public void visionLogic() {
     LimelightHelpers.PoseEstimate limelightMeasurement =
-        LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LL_ALIGN);
+        new PoseEstimate(
+            visionInputs.mt1VisionPose,
+            visionInputs.timestampSeconds,
+            visionInputs.latency,
+            visionInputs.tagCount,
+            visionInputs.tagSpan,
+            visionInputs.avgTagDist,
+            visionInputs.avgTagArea,
+            new RawFiducial[] {});
 
     double xMeterStds;
     double yMeterStds;
@@ -495,27 +520,54 @@ public class Drive extends SubsystemBase {
     return MAX_ANGULAR_SPEED;
   }
 
-  public double getNoteError() {
-    return getIntakeLLTx();
-  }
+  public Translation2d getNotePositionRobotRelative() {
+    double distInch = (1 / (40 - ((30) * visionInputs.iTY / 23)) * 1000); // Convert degrees to inch
+    double noteYawAngleDegCorrected =
+        -visionInputs.iTX - 4; // account for static offset, reverse to be CCW+
+    double radiusInchCorrected =
+        distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegCorrected));
 
-  public double getIntakeLLTx() {
-    return LimelightHelpers.getTX("limelight-intake");
-  }
+    double noteYawAngleDegRaw = -visionInputs.iTX; // account for static offset, reverse to be CCW+
+    double radiusInchRaw = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegRaw));
 
-  public double getIntakeLLTy() {
-    return LimelightHelpers.getTY("limelight-intake");
+    Logger.recordOutput("NoteTracking/distInch", distInch);
+    Logger.recordOutput("NoteTracking/noteYawAngleDegCorrected", noteYawAngleDegCorrected);
+    Logger.recordOutput("NoteTracking/noteYawAngleDegRaw", noteYawAngleDegRaw);
+    Logger.recordOutput("NoteTracking/radiusCorrected", radiusInchCorrected);
+
+    // camera relative -> bot relative -> field relative
+    Translation2d camRelNoteLocT2dCorrected =
+        new Translation2d(
+            Units.inchesToMeters(radiusInchCorrected),
+            Rotation2d.fromDegrees(noteYawAngleDegCorrected));
+    Logger.recordOutput("NoteTracking/camRelNoteLocT2dCorrected", camRelNoteLocT2dCorrected);
+
+    Translation2d camRelNoteLocT2dRaw =
+        new Translation2d(
+            Units.inchesToMeters(radiusInchRaw), Rotation2d.fromDegrees(noteYawAngleDegRaw));
+
+    Translation2d roboRelNoteLocT2dRaw =
+        camRelNoteLocT2dRaw
+            .rotateBy(Rotation2d.fromDegrees(0))
+            .plus(new Translation2d(Units.inchesToMeters(12), 0));
+
+    Translation2d roboRelNoteLocT2dCorrected =
+        camRelNoteLocT2dCorrected
+            .rotateBy(Rotation2d.fromDegrees(0))
+            .plus(new Translation2d(Units.inchesToMeters(12), 0));
+
+    return roboRelNoteLocT2dCorrected;
   }
 
   public Translation2d calculateNotePositionFieldRelative() {
 
-    double distInch = (1 / (40 - ((30) * getIntakeLLTy() / 23)) * 1000); // Convert degrees to inch
+    double distInch = (1 / (40 - ((30) * visionInputs.iTY / 23)) * 1000); // Convert degrees to inch
     double noteYawAngleDegCorrected =
-        -getIntakeLLTx() - 4; // account for static offset, reverse to be CCW+
+        -visionInputs.iTX - 4; // account for static offset, reverse to be CCW+
     double radiusInchCorrected =
         distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegCorrected));
 
-    double noteYawAngleDegRaw = -getIntakeLLTx(); // account for static offset, reverse to be CCW+
+    double noteYawAngleDegRaw = -visionInputs.iTX; // account for static offset, reverse to be CCW+
     double radiusInchRaw = distInch / Math.cos(Units.degreesToRadians(noteYawAngleDegRaw));
 
     Logger.recordOutput("NoteTracking/distInch", distInch);
@@ -547,8 +599,8 @@ public class Drive extends SubsystemBase {
     Pose2d pickedRobotPose =
         posePicker(
             Timer.getFPGATimestamp()
-                - LimelightHelpers.getLatency_Pipeline(Constants.LL_INTAKE)
-                - LimelightHelpers.getLatency_Capture(Constants.LL_INTAKE));
+                - (visionInputs.iPIPELINELATENCY / 1000.)
+                - (visionInputs.iCAPTURELATENCY / 1000.));
     Translation2d fieldRelNoteLocT2dCorrected =
         roboRelNoteLocT2dCorrected
             .rotateBy(pickedRobotPose.getRotation())
@@ -573,6 +625,10 @@ public class Drive extends SubsystemBase {
     // } else {
     return lastNoteLocT2d.translation;
     // }
+  }
+
+  public boolean canSeeNote() {
+    return visionInputs.iTV;
   }
 
   public boolean noteImageIsNew() {
@@ -647,9 +703,9 @@ public class Drive extends SubsystemBase {
   }
 
   public PathPlannerPath generatePathToNote() {
-    if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
+    if (visionInputs.iTX != 0.0) {
       double taThreshold = 0;
-      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold) {
+      if (visionInputs.iTA >= taThreshold) {
         lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
         lastNoteLocT2d.time = Timer.getFPGATimestamp();
       }
@@ -760,9 +816,9 @@ public class Drive extends SubsystemBase {
 
   public Command alignToNote(LED led) {
 
-    if (LimelightHelpers.getTX(Constants.LL_INTAKE) != 0.0) {
+    if (visionInputs.iTX != 0.0) {
       double taThreshold = 0;
-      if (LimelightHelpers.getTA(Constants.LL_INTAKE) >= taThreshold) {
+      if (visionInputs.iTA >= taThreshold) {
         lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
         lastNoteLocT2d.time = Timer.getFPGATimestamp();
       }
@@ -842,68 +898,36 @@ public class Drive extends SubsystemBase {
 
   public Command followPathCommand(String pathName, boolean lowerPID) {
     PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-    if (lowerPID) {
-      return new FollowPathHolonomic(
-          path,
-          this::getPose, // Robot pose supplier
-          () ->
-              kinematics.toChassisSpeeds(
-                  getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-          new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
-              // in your Constants class
-              new PIDConstants(5.0), // Translation PID constants
-              new PIDConstants(0.5), // Rotation PID constants
-              Constants.SwerveConstants.MAX_LINEAR_SPEED, // Max module speed, in m/s
-              DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to
-              // furthest module.
-              new ReplanningConfig() // Default path replanning config. See the API for the options
-              // here
-              ),
-          () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-          },
-          this // Reference to this subsystem to set requirements
-          );
-    } else {
-      return new FollowPathHolonomic(
-          path,
-          this::getPose, // Robot pose supplier
-          () ->
-              kinematics.toChassisSpeeds(
-                  getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-          new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
-              // in your Constants class
-              new PIDConstants(5.0), // Translation PID constants
-              new PIDConstants(1.5), // Rotation PID constants
-              Constants.SwerveConstants.MAX_LINEAR_SPEED, // Max module speed, in m/s
-              DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to
-              // furthest module.
-              new ReplanningConfig() // Default path replanning config. See the API for the options
-              // here
-              ),
-          () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    return new FollowPathHolonomic(
+        path,
+        this::getPose, // Robot pose supplier
+        () ->
+            kinematics.toChassisSpeeds(
+                getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
+            // in your Constants class
+            new PIDConstants(5.0), // Translation PID constants
+            new PIDConstants(lowerPID ? 0.5 : 1.5), // Rotation PID constants
+            Constants.SwerveConstants.MAX_LINEAR_SPEED, // Max module speed, in m/s
+            DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to
+            // furthest module.
+            new ReplanningConfig() // Default path replanning config. See the API for the options
+            // here
+            ),
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-          },
-          this // Reference to this subsystem to set requirements
-          );
-    }
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this // Reference to this subsystem to set requirements
+        );
   }
 }
