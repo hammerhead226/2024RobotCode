@@ -30,6 +30,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -251,7 +252,8 @@ public class Drive extends SubsystemBase {
     if (visionInputs.iTX != 0.0) {
       double taThreshold = 0;
       if (visionInputs.iTA >= taThreshold) {
-        lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
+        lastNoteLocT2d.translation =
+            calculateNotePositionFieldRelative().getTranslation().toTranslation2d();
         lastNoteLocT2d.time = Timer.getFPGATimestamp();
       }
     }
@@ -559,7 +561,7 @@ public class Drive extends SubsystemBase {
     return roboRelNoteLocT2dCorrected;
   }
 
-  public Translation2d calculateNotePositionFieldRelative() {
+  public Pose3d calculateNotePositionFieldRelative() {
 
     double distInch = (1 / (40 - ((30) * visionInputs.iTY / 23)) * 1000); // Convert degrees to inch
     double noteYawAngleDegCorrected =
@@ -616,7 +618,14 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput(
         "distance from center of robot",
         Units.metersToInches(fieldRelNoteLocT2dCorrected.getDistance(getPose().getTranslation())));
-    return fieldRelNoteLocT2dCorrected;
+
+    // Translation3d fieldRelNoteLocT3d = new Translation3d(fieldRelNoteLocT2dCorrected.getX(),
+    // fieldRelNoteLocT2dCorrected.getY(), 10);
+    Pose3d fieldRelNoteLocP3d =
+        new Pose3d(new Pose2d(fieldRelNoteLocT2dCorrected, new Rotation2d()));
+
+    Logger.recordOutput("NoteTracking/fieldRelNoteLocP3d", fieldRelNoteLocP3d);
+    return fieldRelNoteLocP3d;
   }
 
   public Translation2d getCachedNoteLocation() {
@@ -706,7 +715,8 @@ public class Drive extends SubsystemBase {
     if (visionInputs.iTX != 0.0) {
       double taThreshold = 0;
       if (visionInputs.iTA >= taThreshold) {
-        lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
+        lastNoteLocT2d.translation =
+            calculateNotePositionFieldRelative().getTranslation().toTranslation2d();
         lastNoteLocT2d.time = Timer.getFPGATimestamp();
       }
     }
@@ -737,10 +747,7 @@ public class Drive extends SubsystemBase {
               new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
           pointsToNote =
               PathPlannerPath.bezierFromPoses(
-                  new Pose2d(
-                      FieldConstants.fieldLength - getPose().getX(),
-                      getPose().getY(),
-                      targetRotation),
+                  new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
                   new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
         }
         PathPlannerPath path =
@@ -819,7 +826,8 @@ public class Drive extends SubsystemBase {
     if (visionInputs.iTX != 0.0) {
       double taThreshold = 0;
       if (visionInputs.iTA >= taThreshold) {
-        lastNoteLocT2d.translation = calculateNotePositionFieldRelative();
+        lastNoteLocT2d.translation =
+            calculateNotePositionFieldRelative().getTranslation().toTranslation2d();
         lastNoteLocT2d.time = Timer.getFPGATimestamp();
       }
     }

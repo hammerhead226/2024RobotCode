@@ -204,7 +204,7 @@ public class RobotContainer {
                 new LeafBlowerIO() {});
         elevator = new Elevator(new ElevatorIOSim());
         pivot = new Pivot(new PivotIOSim());
-        led = new LED(new LED_IOCANdle(20, Constants.CANBUS));
+        led = new LED(new LED_IOSim());
         break;
       case SIM:
         drive =

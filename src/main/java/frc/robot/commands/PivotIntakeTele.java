@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
@@ -25,9 +26,10 @@ public class PivotIntakeTele extends SequentialCommandGroup {
     if (!outtake) {
       addCommands(
           // new InstantCommand(() -> led.setColor(LED_STATE.VIOLET)),
-          new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
-          // new WaitUntilCommand(pivot::atSetpoint),
-          new IntakeNote(intake, shooter, led),
+          new ParallelCommandGroup(
+              new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
+              // new WaitUntilCommand(pivot::atSetpoint),
+              new IntakeNote(intake, shooter, led)),
           new InstantCommand(() -> led.setState(LED_STATE.GREEN)));
       // new InstantCommand(() -> shooter.setFeedersRPM(150)),
       // new InstantCommand(shooter::stopFeeders));
