@@ -79,6 +79,7 @@ import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.led.LED_IO;
 import frc.robot.subsystems.led.LED_IOCANdle;
+import frc.robot.subsystems.led.LED_IOSim;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
 import frc.robot.subsystems.pivot.PivotIOSim;
@@ -223,7 +224,7 @@ public class RobotContainer {
                 new LeafBlowerIO() {});
         elevator = new Elevator(new ElevatorIOSim());
         pivot = new Pivot(new PivotIOSim());
-        led = new LED(new LED_IO() {});
+        led = new LED(new LED_IOSim());
         break;
 
       default:
@@ -725,7 +726,7 @@ public class RobotContainer {
                 () -> -driveController.getLeftX(),
                 () -> -driveController.getRightX(),
                 () -> false,
-                () -> false)));
+                manipLeftBumper)));
 
     driveRightBumper.onFalse(
         new InstantCommand(() -> led.setState(LED_STATE.BLUE))
@@ -766,7 +767,7 @@ public class RobotContainer {
                 () -> -driveController.getLeftY(),
                 () -> -driveController.getLeftX(),
                 () -> -driveController.getRightX(),
-                driveLeftBumper,
+                () -> true,
                 manipLeftBumper)));
     driveLeftBumper.onFalse(
         new InstantCommand(() -> led.setState(LED_STATE.BLUE))
