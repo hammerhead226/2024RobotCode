@@ -235,8 +235,8 @@ public class DriveCommands {
       wantedSidewaysVelocity =
           MathUtil.clamp(
               wantedSidewaysVelocity,
-              0.7 * -drive.getMaxLinearSpeedMetersPerSec(),
-              0.7 * drive.getMaxLinearSpeedMetersPerSec());
+              0.51 * -drive.getMaxLinearSpeedMetersPerSec(),
+              0.51 * drive.getMaxLinearSpeedMetersPerSec());
 
       return wantedSidewaysVelocity;
     } else {
