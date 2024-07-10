@@ -133,7 +133,7 @@ public class AimbotStatic extends Command {
         // center
         else shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed);
       }
-    } else shooter.setFlywheelRPMs(5400 - 400, 5400 - 800);
+    } else shooter.setFlywheelRPMs(5200, 5000);
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }
 
@@ -156,6 +156,8 @@ public class AimbotStatic extends Command {
 
     if (Units.metersToFeet(distanceToSpeakerMeter) > 12) {
       return 34;
+    } else if (Units.metersToFeet(distanceToSpeakerMeter) > 9) {
+      return pivotSetpointDeg + 1;
     }
     Logger.recordOutput("pivot target auto", pivotSetpointDeg);
     return pivotSetpointDeg;

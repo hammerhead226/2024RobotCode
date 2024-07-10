@@ -43,6 +43,7 @@ public class IntakeNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    intake.changeLEDBoolTrue();
     shooter.setFeedersRPM(0);
     intake.stopRollers();
     // if (shooter.seesNote()) ;

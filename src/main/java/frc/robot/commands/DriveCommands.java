@@ -75,6 +75,17 @@ public class DriveCommands {
           drive, xSupplier, ySupplier, omegaSupplier, intakeAssistSupplier, turnToSourceSupplier);
     } else {
       if (intakeAssistSupplier.getAsBoolean()) {
+        if (intake.getLEDBool()) {
+          return new ParallelCommandGroup(
+                    joystickDrive(
+                        drive,
+                        xSupplier,
+                        ySupplier,
+                        omegaSupplier,
+                        intakeAssistSupplier,
+                        turnToSourceSupplier),
+                    new PivotIntakeTele(pivot, intake, shooter, led, false));
+        }
         return new InstantCommand(() -> led.setState(LED_STATE.FLASHING_RED))
             .andThen(
                 new ParallelCommandGroup(
@@ -87,6 +98,17 @@ public class DriveCommands {
                         turnToSourceSupplier),
                     new PivotIntakeTele(pivot, intake, shooter, led, false)));
       } else {
+        if (intake.getLEDBool()) {
+          return new ParallelCommandGroup(
+                    joystickDrive(
+                        drive,
+                        xSupplier,
+                        ySupplier,
+                        omegaSupplier,
+                        intakeAssistSupplier,
+                        turnToSourceSupplier),
+                    new PivotIntakeTele(pivot, intake, shooter, led, false));
+        }
         return new InstantCommand(() -> led.setState(LED_STATE.RED))
             .andThen(
                 new ParallelCommandGroup(

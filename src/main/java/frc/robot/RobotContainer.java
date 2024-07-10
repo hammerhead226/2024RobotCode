@@ -730,6 +730,7 @@ public class RobotContainer {
 
     driveRightBumper.onFalse(
         new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+            .andThen(new InstantCommand(() -> intake.changeLEDBoolFalse()))
             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
             .andThen(new WaitCommand(0.02))
             .andThen(
@@ -771,6 +772,7 @@ public class RobotContainer {
                 manipLeftBumper)));
     driveLeftBumper.onFalse(
         new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+            .andThen(new InstantCommand(() -> intake.changeLEDBoolFalse()))
             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
             .andThen(new WaitCommand(0.02))
             .andThen(

@@ -10,11 +10,13 @@ import org.littletonrobotics.junction.Logger;
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private final IntakeRollerIO roller;
+  private boolean ledBool;
 
   private final IntakeRollerIOInputsAutoLogged rInputs = new IntakeRollerIOInputsAutoLogged();
 
   public Intake(IntakeRollerIO roller) {
     this.roller = roller;
+    ledBool = false;
   }
 
   public void runRollers(double volts) {
@@ -23,6 +25,18 @@ public class Intake extends SubsystemBase {
 
   public void stopRollers() {
     roller.stop();
+  }
+
+  public void changeLEDBoolFalse() {
+    ledBool = false;
+  }
+
+  public void changeLEDBoolTrue() {
+    ledBool = true;
+  }
+
+  public boolean getLEDBool() {
+    return ledBool;
   }
 
   @Override

@@ -754,7 +754,7 @@ public class Drive extends SubsystemBase {
             new PathPlannerPath(
                 pointsToNote,
                 new PathConstraints(
-                    2, 1.5, Units.degreesToRadians(100), Units.degreesToRadians(180)),
+                    3, 2.45, Units.degreesToRadians(100), Units.degreesToRadians(180)),
                 new GoalEndState(0.5, targetRotation, true));
 
         path.preventFlipping = true;
