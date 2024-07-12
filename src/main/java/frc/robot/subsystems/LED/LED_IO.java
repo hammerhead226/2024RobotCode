@@ -12,6 +12,8 @@ public interface LED_IO {
   @AutoLog
   public static class LED_IOInputs {
     public LED_STATE ledState = LED_STATE.OFF;
+
+    public double currentAmps;
   }
 
   public default void updateInputs(LED_IOInputs inputs) {}

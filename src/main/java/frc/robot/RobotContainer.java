@@ -55,6 +55,7 @@ import frc.robot.commands.ShootNoteAmp;
 import frc.robot.commands.ShootNoteCenter;
 import frc.robot.commands.ShootNoteSource;
 import frc.robot.commands.StopIntakeFeed;
+import frc.robot.commands.TurnToAmp;
 import frc.robot.commands.TurnToAmpCorner;
 import frc.robot.commands.TurnToSpeaker;
 import frc.robot.statemachines.ClimbStateMachine;
@@ -124,6 +125,7 @@ public class RobotContainer {
   private Trigger manipLeftBumper;
   private Trigger manipRightBumper;
   private Trigger manipRightTrigger;
+  private Trigger manipLeftTrigger;
   private Trigger manipAButton;
   private Trigger manipBButton;
 
@@ -257,6 +259,7 @@ public class RobotContainer {
     manipLeftBumper = manipController.leftBumper();
     manipRightBumper = manipController.rightBumper();
     manipRightTrigger = manipController.rightTrigger();
+    manipLeftTrigger = manipController.leftTrigger();
     manipAButton = manipController.a();
     manipBButton = manipController.b();
 
@@ -735,7 +738,7 @@ public class RobotContainer {
             .andThen(new WaitCommand(0.02))
             .andThen(
                 new ConditionalCommand(
-                    new WaitCommand(0.24),
+                    new WaitCommand(0.1),
                     new WaitCommand(0.06),
                     () -> (shooter.getLastNoteState() == NoteState.CURRENT)))
             .andThen(
@@ -777,7 +780,7 @@ public class RobotContainer {
             .andThen(new WaitCommand(0.02))
             .andThen(
                 new ConditionalCommand(
-                    new WaitCommand(0.24),
+                    new WaitCommand(0.1),
                     new WaitCommand(0.06),
                     () -> (shooter.getLastNoteState() == NoteState.CURRENT)))
             .andThen(
@@ -911,6 +914,8 @@ public class RobotContainer {
 
     manipRightTrigger.onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
 
+    // manipLeftTrigger.whileTrue(new TurnToAmp(drive, driveController));
+
     // manipController.x().onTrue(new PivotSource(pivot, intake, shooter, led));
 
     // manipController
@@ -923,6 +928,8 @@ public class RobotContainer {
     //             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(100)))
     //             .andThen(new WaitCommand(1))
     //             .andThen(new InstantCommand(shooter::stopFeeders, shooter)));
+
+    
 
     manipRightBumper.whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
 

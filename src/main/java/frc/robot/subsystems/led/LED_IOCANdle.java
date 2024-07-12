@@ -60,6 +60,7 @@ public class LED_IOCANdle implements LED_IO {
   @Override
   public void updateInputs(LED_IOInputs inputs) {
     inputs.ledState = ledState;
+    inputs.currentAmps = candle.getCurrent();
   }
 
   @Override
