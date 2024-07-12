@@ -157,7 +157,7 @@ public class AimbotStatic extends Command {
     if (Units.metersToFeet(distanceToSpeakerMeter) > 12) {
       return 34;
     } else if (Units.metersToFeet(distanceToSpeakerMeter) > 9) {
-      return pivotSetpointDeg + 1;
+      return pivotSetpointDeg + 2.5;
     }
     Logger.recordOutput("pivot target auto", pivotSetpointDeg);
     return pivotSetpointDeg;
