@@ -55,7 +55,6 @@ import frc.robot.commands.ShootNoteAmp;
 import frc.robot.commands.ShootNoteCenter;
 import frc.robot.commands.ShootNoteSource;
 import frc.robot.commands.StopIntakeFeed;
-import frc.robot.commands.TurnToAmp;
 import frc.robot.commands.TurnToAmpCorner;
 import frc.robot.commands.TurnToSpeaker;
 import frc.robot.statemachines.ClimbStateMachine;
@@ -928,8 +927,6 @@ public class RobotContainer {
     //             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(100)))
     //             .andThen(new WaitCommand(1))
     //             .andThen(new InstantCommand(shooter::stopFeeders, shooter)));
-
-    
 
     manipRightBumper.whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
 

@@ -70,15 +70,13 @@ public class TurnToAmp extends Command {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
 
     if (alliance == DriverStation.Alliance.Red) {
-      targetAngle =
-          -90;;
-      pid.setSetpoint(
-          targetAngle);
+      targetAngle = -90;
+      ;
+      pid.setSetpoint(targetAngle);
     } else {
-      targetAngle =
-          90;;
-      pid.setSetpoint(
-          targetAngle);
+      targetAngle = 90;
+      ;
+      pid.setSetpoint(targetAngle);
     }
 
     Logger.recordOutput("target angle amp", targetAngle);
