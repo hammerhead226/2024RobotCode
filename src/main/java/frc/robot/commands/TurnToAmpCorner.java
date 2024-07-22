@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.Constants.SHOOT_STATE;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
@@ -23,18 +24,18 @@ import org.littletonrobotics.junction.Logger;
 
 public class TurnToAmpCorner extends Command {
   private final Drive drive;
-  //private final Pivot pivot;
-  //private final Shooter shooter;
+  private final Pivot pivot;
+  private final Shooter shooter;
   private final CommandXboxController controller;
   private final PIDController pid;
   private double[] gains = new double[3];
   private DriverStation.Alliance alliance = null;
   /** Creates a new TurnToSpeaker. */
   public TurnToAmpCorner(
-      Drive drive, CommandXboxController controller) {
+      Drive drive, Pivot pivot, Shooter shooter, CommandXboxController controller) {
     this.drive = drive;
-   // this.pivot = pivot;
-   // this.shooter = shooter;
+    this.pivot = pivot;
+    this.shooter = shooter;
 
     this.controller = controller;
     addRequirements(drive);
@@ -70,8 +71,8 @@ public class TurnToAmpCorner extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //pivot.setPivotGoal(45);
-   // shooter.setFlywheelRPMs(5000, 4600);
+    pivot.setPivotGoal(45);
+    shooter.setFlywheelRPMs(5000, 4600);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -146,11 +147,13 @@ public class TurnToAmpCorner extends Command {
   @Override
   public void end(boolean interrupted) {
     //shooter.setFeedersRPM(500);
+    
+    pivot.setShootState(SHOOT_STATE.PIVOT_PRESET);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pid.atSetpoint();
+    return pid.atSetpoint() && pivot.atGoal() && shooter.atFlywheelSetpoints();
   }
 }
