@@ -305,7 +305,15 @@ public class RobotContainer {
                         new InstantCommand(() -> shooter.setFlywheelRPMs(1020, 1020)),
                         new WaitUntilCommand(() -> shooter.atFlywheelSetpoints()),
                         new WaitCommand(1.5),
-                        new InstantCommand(() -> shooter.setFeedersRPM(1000))))),
+                        new InstantCommand(() -> shooter.setFeedersRPM(1000)))),
+                 Map.entry(
+                    SHOOT_STATE.FEED,
+                        //feed shoot
+                    new SequentialCommandGroup(
+                        new InstantCommand(()-> pivot.setPivotGoal(45)),
+                        new InstantCommand(()-> shooter.setFlywheelRPMs(5000, 4600)),
+                        new WaitCommand(0.25),
+                        new InstantCommand(()-> shooter.setFeedersRPM(500))))),
             this::getShootState);
 
     // climbCommands =
@@ -928,13 +936,17 @@ public class RobotContainer {
     //             .andThen(new WaitCommand(1))
     //             .andThen(new InstantCommand(shooter::stopFeeders, shooter)));
 
-    manipRightBumper.whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
+    manipRightBumper.whileTrue(
+        new ParallelCommandGroup(
+            new TurnToAmpCorner(drive, driveController),
+            new InstantCommand(()-> pivot.setShootState(SHOOT_STATE.FEED))));
 
     manipRightBumper.onFalse(
         new ParallelCommandGroup(
                 new InstantCommand(shooter::stopFlywheels, shooter),
                 new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
-            .andThen(new InstantCommand(shooter::stopFeeders, shooter)));
+            .andThen(new InstantCommand(shooter::stopFeeders, shooter))
+            .andThen(new InstantCommand(()-> pivot.setShootState(SHOOT_STATE.AIMBOT))));
 
     // manipController
     //     .leftBumper()

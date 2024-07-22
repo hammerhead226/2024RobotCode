@@ -168,6 +168,7 @@ public final class Constants {
     PIVOT_PRESET,
     AIMBOT,
     AMP,
-    TRAP
+    TRAP,
+    FEED
   }
 }

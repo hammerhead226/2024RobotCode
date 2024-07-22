@@ -23,18 +23,18 @@ import org.littletonrobotics.junction.Logger;
 
 public class TurnToAmpCorner extends Command {
   private final Drive drive;
-  private final Pivot pivot;
-  private final Shooter shooter;
+  //private final Pivot pivot;
+  //private final Shooter shooter;
   private final CommandXboxController controller;
   private final PIDController pid;
   private double[] gains = new double[3];
   private DriverStation.Alliance alliance = null;
   /** Creates a new TurnToSpeaker. */
   public TurnToAmpCorner(
-      Drive drive, Pivot pivot, Shooter shooter, CommandXboxController controller) {
+      Drive drive, CommandXboxController controller) {
     this.drive = drive;
-    this.pivot = pivot;
-    this.shooter = shooter;
+   // this.pivot = pivot;
+   // this.shooter = shooter;
 
     this.controller = controller;
     addRequirements(drive);
@@ -70,8 +70,8 @@ public class TurnToAmpCorner extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    pivot.setPivotGoal(45);
-    shooter.setFlywheelRPMs(5000, 4600);
+    //pivot.setPivotGoal(45);
+   // shooter.setFlywheelRPMs(5000, 4600);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -145,12 +145,12 @@ public class TurnToAmpCorner extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.setFeedersRPM(500);
+    //shooter.setFeedersRPM(500);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pid.atSetpoint() && pivot.atGoal() && shooter.atFlywheelSetpoints();
+    return pid.atSetpoint();
   }
 }
