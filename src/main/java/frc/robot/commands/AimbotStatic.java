@@ -57,7 +57,7 @@ public class AimbotStatic extends Command {
 
     switch (Constants.currentMode) {
       case REAL:
-        gains[0] = 2.5;
+        gains[0] = 3.;
         gains[1] = 0;
         gains[2] = 0;
         break;
@@ -79,7 +79,7 @@ public class AimbotStatic extends Command {
     }
 
     pid = new PIDController(gains[0], gains[1], gains[2], 0.02);
-    pid.setTolerance(3);
+    pid.setTolerance(4);
     pid.enableContinuousInput(-180, 180);
   }
 
