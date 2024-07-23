@@ -799,6 +799,7 @@ public class RobotContainer {
     driveRightTrigger.onFalse(
         new InstantCommand(() -> shooter.stopFeeders(), shooter)
             .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE)))
+            .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
             .andThen(new WaitCommand(0.5))
             .andThen(new InstantCommand(shooter::stopFlywheels))
             .andThen(new InstantCommand(() -> shooter.turnOffFan(), shooter)));
