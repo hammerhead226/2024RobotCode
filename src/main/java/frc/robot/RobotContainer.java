@@ -295,8 +295,8 @@ public class RobotContainer {
                     new SequentialCommandGroup(
                         // amp shoot
                         new InstantCommand(() -> shooter.setFeedersRPM(500)),
-                        new WaitCommand(0.9312),
-                        new InstantCommand(() -> shooter.setFlywheelRPMs(-1000, -1000)))),
+                        new WaitCommand(1.323),
+                        new InstantCommand(() -> shooter.setFlywheelRPMs(-900, -900)))),
                 Map.entry(
                     SHOOT_STATE.TRAP,
                     new SequentialCommandGroup(

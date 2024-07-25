@@ -87,7 +87,7 @@ public final class Constants {
     public static final double FLYWHEEL_CURRENT_LIMIT = 40;
     public static final boolean FLYWHEEL_CURRENT_LIMIT_ENABLED = true;
 
-    public static final double FLYWHEEL_THRESHOLD = 200;
+    public static final double FLYWHEEL_THRESHOLD = 300;
 
     public static final double FLYWHEEL_AMP_RPM = 600;
     public static final double FLYWHEEL_SHOOT_RPM = 3000;
@@ -118,7 +118,7 @@ public final class Constants {
     public static final boolean CURRENT_LIMIT_ENABLED = true;
 
     public static final double PODIUM_SETPOINT_DEG = 41.45;
-    public static final double STOW_SETPOINT_DEG = 50.7;
+    public static final double STOW_SETPOINT_DEG = 51;
     public static final double INTAKE_SETPOINT_DEG = 59.0;
     public static final double AMP_SETPOINT_DEG = 58.6;
     public static final double SUBWOOFER_SETPOINT_DEG = 62.0;
