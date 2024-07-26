@@ -512,6 +512,8 @@ public class RobotContainer {
 
     autos.addOption("$a!p-b1-c1-c2", AutoBuilder.buildAuto("$a!p-b1-c1-c2"));
 
+    autos.addOption("$a!p-b1-c2-c3", AutoBuilder.buildAuto("$a!p-b1-c2-c3"));
+
     autos.addOption("$c!p-b3-b2-b1", AutoBuilder.buildAuto("$c!p-b3-b2-b1"));
 
     autos.addOption("test path", AutoBuilder.buildAuto("test path"));
@@ -915,9 +917,9 @@ public class RobotContainer {
     //                     new SetShooterTargetRPM(0, 0, shooter))
     //                 .andThen(new InstantCommand(() -> pivot.setAimbot(true))));
 
-    manipRightTrigger.onTrue(new SetFeedersTargetRPM(1000, shooter));
+    // manipRightTrigger.onTrue(new SetFeedersTargetRPM(1000, shooter));
 
-    manipRightTrigger.onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
+    // manipRightTrigger.onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
 
     // manipLeftTrigger.whileTrue(new TurnToAmp(drive, driveController));
 
