@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.0743293238629015,
+        "x": 5.07432932386291,
         "y": 7.12776074028351
       },
       "isLocked": false,
@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "$a!p-b1-c1-c2",
+  "folder": "$a!p-b1-c2-c3",
   "previewStartingState": {
     "rotation": 28.610459665965255,
     "velocity": 0

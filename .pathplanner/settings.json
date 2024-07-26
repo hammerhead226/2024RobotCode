@@ -11,8 +11,9 @@
     "$s!p-c3-c5",
     "$s!p-c4-c3",
     "$s!p-c4-c5",
+    "$s!p-c5-c3",
     "$s!p-c5-c4",
-    "$s!p-c5-c3"
+    "$a!p-b1-c2-c3"
   ],
   "autoFolders": [
     "NO limelight autos",

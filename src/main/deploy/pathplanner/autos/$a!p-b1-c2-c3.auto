@@ -1,0 +1,127 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.5248146901429311,
+      "y": 7.003080254377342
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AimbotStatic"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.14
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "get the note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimbotStatic"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$apb1c(23)!c2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$apb1c(12)!score c2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimbotStatic"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$apb1c(23)!c3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$apb1c(23)!score c3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimbotStatic"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "$apb1c(23)!reach c3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DisableOverride"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "limelight autos",
+  "choreoAuto": false
+}
