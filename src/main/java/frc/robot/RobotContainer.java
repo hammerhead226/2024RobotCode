@@ -945,7 +945,8 @@ public class RobotContainer {
         new ParallelCommandGroup(
                 new InstantCommand(shooter::stopFlywheels, shooter),
                 new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
-            .andThen(new InstantCommand(shooter::stopFeeders, shooter)));
+            .andThen(new InstantCommand(shooter::stopFeeders, shooter))
+            .andThen(new InstantCommand(()-> pivot.setShootState(SHOOT_STATE.AIMBOT))));
 
     // manipController
     //     .leftBumper()
