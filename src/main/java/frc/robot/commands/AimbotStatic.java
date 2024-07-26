@@ -57,7 +57,7 @@ public class AimbotStatic extends Command {
 
     switch (Constants.currentMode) {
       case REAL:
-        gains[0] = 3.;
+        gains[0] = 3.14;
         gains[1] = 0;
         gains[2] = 0;
         break;
