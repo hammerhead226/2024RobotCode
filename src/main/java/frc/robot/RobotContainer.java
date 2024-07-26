@@ -713,7 +713,7 @@ public class RobotContainer {
             () -> -driveController.getRightX(),
             driveLeftBumper,
             manipLeftBumper,
-            driveBButton));
+            manipRightBumper));
 
     driveRightBumper.onTrue(
         new SequentialCommandGroup(
