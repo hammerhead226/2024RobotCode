@@ -43,11 +43,11 @@ public class Shooter extends SubsystemBase {
       FlywheelIO flywheels, FeederIO feeder, DistanceSensorIO dist, LeafBlowerIO leafBlower) {
     switch (Constants.getMode()) {
       case REAL:
-        flywheelFFModel = new SimpleMotorFeedforward(0.18, 0.3, 0); // make constant
+        flywheelFFModel = new SimpleMotorFeedforward(0, 0.25, 0); // make constant
 
         feederFFModel = new SimpleMotorFeedforward(0, 0, 0);
 
-        flywheelkP.initDefault(5.060); // make constant
+        flywheelkP.initDefault(0.9312); // make constant
         flywheelkI.initDefault(0);
         flywheelkD.initDefault(0);
 

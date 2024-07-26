@@ -109,8 +109,10 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     this.leftSetpointRPM = leftVelocityRPS * 60.;
     this.rightSetpointRPM = rightVelocityRPS * 60.;
 
-    left.setControl(new VelocityVoltage(leftVelocityRPS, 0, false, 1.5, 0, false, false, false));
-    right.setControl(new VelocityVoltage(rightVelocityRPS, 0, false, 2.99, 0, false, false, false));
+    left.setControl(
+        new VelocityVoltage(leftVelocityRPS, 0, false, leftFFVolts, 0, false, false, false));
+    right.setControl(
+        new VelocityVoltage(rightVelocityRPS, 0, false, rightFFVolts, 0, false, false, false));
   }
 
   @Override
