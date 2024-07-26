@@ -912,9 +912,9 @@ public class RobotContainer {
     //                     new SetShooterTargetRPM(0, 0, shooter))
     //                 .andThen(new InstantCommand(() -> pivot.setAimbot(true))));
 
-    manipRightTrigger.onTrue(new SetFeedersTargetRPM(1000, shooter));
+    // manipRightTrigger.onTrue(new SetFeedersTargetRPM(1000, shooter));
 
-    manipRightTrigger.onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
+    // manipRightTrigger.onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
 
     // manipLeftTrigger.whileTrue(new TurnToAmp(drive, driveController));
 
