@@ -35,6 +35,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.util.AllianceFlipUtil;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
@@ -68,11 +69,18 @@ public class DriveCommands {
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
       BooleanSupplier intakeAssistSupplier,
-      BooleanSupplier turnToSourceSupplier) {
+      BooleanSupplier turnToSourceSupplier,
+      BooleanSupplier turnToAmpCornerSupplier) {
 
     if (shooter.seesNote() == NoteState.CURRENT || shooter.seesNote() == NoteState.SENSOR) {
       return joystickDrive(
-          drive, xSupplier, ySupplier, omegaSupplier, intakeAssistSupplier, turnToSourceSupplier);
+          drive,
+          xSupplier,
+          ySupplier,
+          omegaSupplier,
+          intakeAssistSupplier,
+          turnToSourceSupplier,
+          turnToAmpCornerSupplier);
     } else {
       if (intakeAssistSupplier.getAsBoolean()) {
         if (intake.getLEDBool()) {
@@ -83,7 +91,8 @@ public class DriveCommands {
                   ySupplier,
                   omegaSupplier,
                   intakeAssistSupplier,
-                  turnToSourceSupplier),
+                  turnToSourceSupplier,
+                  turnToAmpCornerSupplier),
               new PivotIntakeTele(pivot, intake, shooter, led, false));
         }
         return new InstantCommand(() -> led.setState(LED_STATE.FLASHING_RED))
@@ -95,7 +104,8 @@ public class DriveCommands {
                         ySupplier,
                         omegaSupplier,
                         intakeAssistSupplier,
-                        turnToSourceSupplier),
+                        turnToSourceSupplier,
+                        turnToAmpCornerSupplier),
                     new PivotIntakeTele(pivot, intake, shooter, led, false)));
       } else {
         if (intake.getLEDBool()) {
@@ -106,7 +116,8 @@ public class DriveCommands {
                   ySupplier,
                   omegaSupplier,
                   intakeAssistSupplier,
-                  turnToSourceSupplier),
+                  turnToSourceSupplier,
+                  turnToAmpCornerSupplier),
               new PivotIntakeTele(pivot, intake, shooter, led, false));
         }
         return new InstantCommand(() -> led.setState(LED_STATE.RED))
@@ -118,7 +129,8 @@ public class DriveCommands {
                         ySupplier,
                         omegaSupplier,
                         intakeAssistSupplier,
-                        turnToSourceSupplier),
+                        turnToSourceSupplier,
+                        turnToAmpCornerSupplier),
                     new PivotIntakeTele(pivot, intake, shooter, led, false)));
       }
     }
@@ -126,13 +138,34 @@ public class DriveCommands {
   /**
    * Field relative drive command using two joysticks (controlling linear and angular velocities).
    */
+  public static Command turnToAmpCornerCommand(
+      Drive drive,
+      CommandXboxController controller,
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier,
+      DoubleSupplier omegaSupplier,
+      BooleanSupplier intakeAssistSupplier,
+      BooleanSupplier turnToSourceSupplier,
+      BooleanSupplier turnToAmpCornerSupplier) {
+
+    return joystickDrive(
+        drive,
+        xSupplier,
+        ySupplier,
+        omegaSupplier,
+        intakeAssistSupplier,
+        turnToSourceSupplier,
+        turnToAmpCornerSupplier);
+  }
+
   public static Command joystickDrive(
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
       BooleanSupplier intakeAssistSupplier,
-      BooleanSupplier turnToSourceSupplier) {
+      BooleanSupplier turnToSourceSupplier,
+      BooleanSupplier turnToAmpCornerSupplier) {
     return Commands.run(
         () -> {
           rotationPID.setTolerance(5);
@@ -193,6 +226,25 @@ public class DriveCommands {
 
             rotationAssistEffort = wantedRotationVelocity - rotationSpeed * 0.1690;
 
+          } else if (turnToAmpCornerSupplier.getAsBoolean() == true) {
+
+            Rotation2d curreRotation2d = drive.getRotation();
+
+            Pose2d targetPos =
+                AllianceFlipUtil.apply(new Pose2d(2.1, 7.0, Rotation2d.fromDegrees(0)));
+
+            Rotation2d targetRotation2d =
+                new Rotation2d(
+                    targetPos.getX() - drive.getPose().getX(),
+                    targetPos.getY() - drive.getPose().getY());
+            rotationPID.setSetpoint(targetRotation2d.getDegrees());
+
+            wantedRotationVelocity =
+                Math.toRadians(rotationPID.calculate(curreRotation2d.getDegrees()));
+
+            rotationAssistEffort = wantedRotationVelocity - rotationSpeed * 0.1690;
+            Logger.recordOutput("Target angle for feeding", targetRotation2d.getDegrees());
+
           } else {
             wantedRotationVelocity = rotationSpeed;
             rotationAssistEffort = 0;
@@ -212,6 +264,30 @@ public class DriveCommands {
             forwardConstantVelocity = 0;
             wantedSidewaysVelocity = sidewaysSpeed;
             sidewaysAssistEffort = 0;
+          }
+
+          if (turnToAmpCornerSupplier.getAsBoolean() == true) {
+
+            Rotation2d curreRotation2d = drive.getRotation();
+
+            Pose2d targetPos =
+                AllianceFlipUtil.apply(new Pose2d(2.1, 7.0, Rotation2d.fromDegrees(0)));
+
+            Rotation2d targetRotation2d =
+                new Rotation2d(
+                    targetPos.getX() - drive.getPose().getX(),
+                    targetPos.getY() - drive.getPose().getY());
+            rotationPID.setSetpoint(targetRotation2d.getDegrees());
+
+            wantedRotationVelocity =
+                Math.toRadians(rotationPID.calculate(curreRotation2d.getDegrees()));
+
+            rotationAssistEffort = wantedRotationVelocity - rotationSpeed * 0.1690;
+            Logger.recordOutput("Target angle for feeding", targetRotation2d.getDegrees());
+
+          } else {
+            wantedRotationVelocity = rotationSpeed;
+            rotationAssistEffort = 0;
           }
 
           Logger.recordOutput("Wanted Sideways Velocity", wantedSidewaysVelocity);

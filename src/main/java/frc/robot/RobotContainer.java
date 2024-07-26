@@ -55,7 +55,6 @@ import frc.robot.commands.ShootNoteAmp;
 import frc.robot.commands.ShootNoteCenter;
 import frc.robot.commands.ShootNoteSource;
 import frc.robot.commands.StopIntakeFeed;
-import frc.robot.commands.TurnToAmpCorner;
 import frc.robot.commands.TurnToSpeaker;
 import frc.robot.statemachines.ClimbStateMachine;
 import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
@@ -135,6 +134,7 @@ public class RobotContainer {
   private Trigger driveRightTrigger;
   private Trigger driveAButton;
   private Trigger driveXButton;
+  private Trigger driveBButton;
 
   private final LoggedDashboardNumber flywheelSpeed = new LoggedDashboardNumber("fly soeed", 5400);
 
@@ -269,6 +269,7 @@ public class RobotContainer {
     driveRightTrigger = driveController.rightTrigger();
     driveAButton = driveController.a();
     driveXButton = driveController.x();
+    driveBButton = driveController.b();
 
     // intakeLEDCommands =
     // new SelectCommand<>(
@@ -557,7 +558,8 @@ public class RobotContainer {
             () -> -driveController.getLeftX(),
             () -> -driveController.getRightX(),
             () -> driveController.leftBumper().getAsBoolean(),
-            () -> manipController.leftBumper().getAsBoolean()));
+            () -> manipController.leftBumper().getAsBoolean(),
+            () -> manipController.rightBumper().getAsBoolean()));
 
     driveController
         .start()
@@ -710,7 +712,8 @@ public class RobotContainer {
             () -> -driveController.getLeftX(),
             () -> -driveController.getRightX(),
             driveLeftBumper,
-            manipLeftBumper));
+            manipLeftBumper,
+            driveBButton));
 
     driveRightBumper.onTrue(
         new SequentialCommandGroup(
@@ -728,7 +731,8 @@ public class RobotContainer {
                 () -> -driveController.getLeftX(),
                 () -> -driveController.getRightX(),
                 () -> false,
-                manipLeftBumper)));
+                manipLeftBumper,
+                () -> false)));
 
     driveRightBumper.onFalse(
         new InstantCommand(() -> led.setState(LED_STATE.BLUE))
@@ -771,7 +775,8 @@ public class RobotContainer {
                 () -> -driveController.getLeftX(),
                 () -> -driveController.getRightX(),
                 () -> true,
-                manipLeftBumper)));
+                manipLeftBumper,
+                () -> false)));
     driveLeftBumper.onFalse(
         new InstantCommand(() -> led.setState(LED_STATE.BLUE))
             .andThen(new InstantCommand(() -> intake.changeLEDBoolFalse()))
@@ -929,7 +934,12 @@ public class RobotContainer {
     //             .andThen(new WaitCommand(1))
     //             .andThen(new InstantCommand(shooter::stopFeeders, shooter)));
 
-    manipRightBumper.whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
+    manipRightBumper.whileTrue(
+        new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.PIVOT_PRESET))
+            .andThen(
+                new ParallelCommandGroup(
+                    new InstantCommand(() -> pivot.setPivotGoal(45), pivot),
+                    new InstantCommand(() -> shooter.setFlywheelRPMs(5000, 4600), shooter))));
 
     manipRightBumper.onFalse(
         new ParallelCommandGroup(
