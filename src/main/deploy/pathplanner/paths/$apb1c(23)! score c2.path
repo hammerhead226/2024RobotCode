@@ -1,0 +1,93 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.833635975678066,
+        "y": 5.801660911909887
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.524761791335811,
+        "y": 6.165252748991669
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.8883261532898614,
+        "y": 6.79584852437536
+      },
+      "prevControl": {
+        "x": 4.5725859223014105,
+        "y": 6.8418468770990994
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "$apb1c(23)!score c2 end"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8,
+      "rotationDegrees": 24.271006418809336,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "pivot39",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Pivot39"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "aimbot",
+      "waypointRelativePos": 0.9,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AimbotMoving"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 23.198590513648075,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "$a!p-b1-c2-c3",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
