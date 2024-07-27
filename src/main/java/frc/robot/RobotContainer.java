@@ -47,7 +47,6 @@ import frc.robot.commands.PositionNoteInFeeder;
 import frc.robot.commands.ScoreAmp;
 import frc.robot.commands.ScoreTrap;
 import frc.robot.commands.SetElevatorTarget;
-import frc.robot.commands.SetFeedersTargetRPM;
 import frc.robot.commands.SetPivotTarget;
 import frc.robot.commands.SetShooterTargetRPM;
 import frc.robot.commands.ShootNoteAmp;
@@ -913,9 +912,9 @@ public class RobotContainer {
     //                     new SetShooterTargetRPM(0, 0, shooter))
     //                 .andThen(new InstantCommand(() -> pivot.setAimbot(true))));
 
-    manipRightTrigger.onTrue(new SetFeedersTargetRPM(1000, shooter));
+    // manipRightTrigger.onTrue(new SetFeedersTargetRPM(1000, shooter));
 
-    manipRightTrigger.onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
+    // manipRightTrigger.onFalse(new InstantCommand(() -> shooter.stopFeeders(), shooter));
 
     // manipLeftTrigger.whileTrue(new TurnToAmp(drive, driveController));
 
