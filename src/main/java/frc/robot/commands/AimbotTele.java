@@ -230,7 +230,7 @@ public class AimbotTele extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.setFeedersRPM(2260);
+    shooter.setFeedersRPM(3538);
     led.setState(LED_STATE.GREY);
   }
 

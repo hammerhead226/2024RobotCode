@@ -28,7 +28,8 @@ public class Shooter extends SubsystemBase {
   private final FeederIOInputsAutoLogged feedInputs = new FeederIOInputsAutoLogged();
   private final DistanceSensorIOInputsAutoLogged sInputs = new DistanceSensorIOInputsAutoLogged();
 
-  private final SimpleMotorFeedforward flywheelFFModel;
+  private final SimpleMotorFeedforward leftFlywheelFFModel;
+  private final SimpleMotorFeedforward rightFlywheelFFModel;
   private final SimpleMotorFeedforward feederFFModel;
 
   private static final LoggedTunableNumber flywheelkP = new LoggedTunableNumber("flywheelkP");
@@ -43,7 +44,8 @@ public class Shooter extends SubsystemBase {
       FlywheelIO flywheels, FeederIO feeder, DistanceSensorIO dist, LeafBlowerIO leafBlower) {
     switch (Constants.getMode()) {
       case REAL:
-        flywheelFFModel = new SimpleMotorFeedforward(0, 0.25, 0); // make constant
+        leftFlywheelFFModel = new SimpleMotorFeedforward(0, 0.25, 0); // make constant
+        rightFlywheelFFModel = new SimpleMotorFeedforward(0.18, 0.3);
 
         feederFFModel = new SimpleMotorFeedforward(0, 0, 0);
 
@@ -57,13 +59,15 @@ public class Shooter extends SubsystemBase {
         lastNoteState = NoteState.Init;
         break;
       case REPLAY:
-        flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
+        leftFlywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
+        rightFlywheelFFModel = new SimpleMotorFeedforward(0.18, 0.3);
         feederFFModel = new SimpleMotorFeedforward(0, 0.03);
         break;
       case SIM:
-        flywheelFFModel = new SimpleMotorFeedforward(0, 0.5);
+        leftFlywheelFFModel = new SimpleMotorFeedforward(0, 0.5);
+        rightFlywheelFFModel = new SimpleMotorFeedforward(0.18, 0.3);
 
-        feederFFModel = new SimpleMotorFeedforward(0, 0.5);
+        feederFFModel = new SimpleMotorFeedforward(0, 0.58);
 
         flywheelkP.initDefault(0.4); // make constant
         flywheelkI.initDefault(0);
@@ -74,7 +78,8 @@ public class Shooter extends SubsystemBase {
         feederkD.initDefault(0);
         break;
       default:
-        flywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
+        leftFlywheelFFModel = new SimpleMotorFeedforward(0, 0.03);
+        rightFlywheelFFModel = new SimpleMotorFeedforward(0.18, 0.3);
         feederFFModel = new SimpleMotorFeedforward(0, 0.03);
         break;
     }
@@ -102,31 +107,31 @@ public class Shooter extends SubsystemBase {
 
   public void setFlywheelRPMs(double leftVelocityRPM, double rightVelocityRPM) {
 
-    ff = flywheelFFModel.calculate(rightVelocityRPM / 60.);
+    ff = leftFlywheelFFModel.calculate(rightVelocityRPM / 60.);
     flywheels.setVelocityRPS(
         leftVelocityRPM / 60.,
         rightVelocityRPM / 60.,
-        flywheelFFModel.calculate(leftVelocityRPM / 60.),
-        flywheelFFModel.calculate(rightVelocityRPM / 60.));
+        leftFlywheelFFModel.calculate(leftVelocityRPM / 60.),
+        rightFlywheelFFModel.calculate(rightVelocityRPM / 60.));
   }
 
   public void setFlywheelRPMSSource() {
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
       flywheels.setVelocityRPS(
-          5000, 4200, flywheelFFModel.calculate(5000 / 60.), flywheelFFModel.calculate(4200 / 60.));
+          5000, 4200, leftFlywheelFFModel.calculate(5000 / 60.), leftFlywheelFFModel.calculate(4200 / 60.));
     } else {
       flywheels.setVelocityRPS(
-          4200, 5000, flywheelFFModel.calculate(5000 / 60.), flywheelFFModel.calculate(4200 / 60.));
+          4200, 5000, leftFlywheelFFModel.calculate(5000 / 60.), leftFlywheelFFModel.calculate(4200 / 60.));
     }
   }
 
   public void setFlywheelRPMSAmp() {
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
       flywheels.setVelocityRPS(
-          4200, 5000, flywheelFFModel.calculate(4200 / 60.), flywheelFFModel.calculate(5000 / 60.));
+          4200, 5000, leftFlywheelFFModel.calculate(4200 / 60.), leftFlywheelFFModel.calculate(5000 / 60.));
     } else {
       flywheels.setVelocityRPS(
-          5000, 4200, flywheelFFModel.calculate(5000 / 60.), flywheelFFModel.calculate(4200 / 60.));
+          5000, 4200, leftFlywheelFFModel.calculate(5000 / 60.), leftFlywheelFFModel.calculate(4200 / 60.));
     }
   }
 
