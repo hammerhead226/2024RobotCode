@@ -71,7 +71,7 @@ public class TurnToAmpCorner extends Command {
   @Override
   public void initialize() {
     pivot.setPivotGoal(45);
-    shooter.setFlywheelRPMs(5000, 4600);
+    shooter.setFlywheelRPMs(5000, 4400);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -145,7 +145,7 @@ public class TurnToAmpCorner extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.setFeedersRPM(500);
+    shooter.setFeedersRPM(3538);
   }
 
   // Returns true when the command should end.

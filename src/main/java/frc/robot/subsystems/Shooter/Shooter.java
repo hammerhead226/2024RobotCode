@@ -44,12 +44,12 @@ public class Shooter extends SubsystemBase {
       FlywheelIO flywheels, FeederIO feeder, DistanceSensorIO dist, LeafBlowerIO leafBlower) {
     switch (Constants.getMode()) {
       case REAL:
-        leftFlywheelFFModel = new SimpleMotorFeedforward(0, 0.25, 0); // make constant
-        rightFlywheelFFModel = new SimpleMotorFeedforward(0.18, 0.3);
+        leftFlywheelFFModel = new SimpleMotorFeedforward(0.23, 0.18, 0); // make constant
+        rightFlywheelFFModel = new SimpleMotorFeedforward(0.4, 0.5, 0.3);
 
         feederFFModel = new SimpleMotorFeedforward(0, 0, 0);
 
-        flywheelkP.initDefault(0.9312); // make constant
+        flywheelkP.initDefault(2.056); // make constant
         flywheelkI.initDefault(0);
         flywheelkD.initDefault(0);
 
@@ -67,7 +67,7 @@ public class Shooter extends SubsystemBase {
         leftFlywheelFFModel = new SimpleMotorFeedforward(0, 0.5);
         rightFlywheelFFModel = new SimpleMotorFeedforward(0.18, 0.3);
 
-        feederFFModel = new SimpleMotorFeedforward(0, 0.58);
+        feederFFModel = new SimpleMotorFeedforward(0, 0.5);
 
         flywheelkP.initDefault(0.4); // make constant
         flywheelkI.initDefault(0);
@@ -118,20 +118,32 @@ public class Shooter extends SubsystemBase {
   public void setFlywheelRPMSSource() {
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
       flywheels.setVelocityRPS(
-          5000, 4200, leftFlywheelFFModel.calculate(5000 / 60.), leftFlywheelFFModel.calculate(4200 / 60.));
+          5000,
+          4200,
+          leftFlywheelFFModel.calculate(5000 / 60.),
+          leftFlywheelFFModel.calculate(4200 / 60.));
     } else {
       flywheels.setVelocityRPS(
-          4200, 5000, leftFlywheelFFModel.calculate(5000 / 60.), leftFlywheelFFModel.calculate(4200 / 60.));
+          4200,
+          5000,
+          leftFlywheelFFModel.calculate(5000 / 60.),
+          leftFlywheelFFModel.calculate(4200 / 60.));
     }
   }
 
   public void setFlywheelRPMSAmp() {
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
       flywheels.setVelocityRPS(
-          4200, 5000, leftFlywheelFFModel.calculate(4200 / 60.), leftFlywheelFFModel.calculate(5000 / 60.));
+          4200,
+          5000,
+          leftFlywheelFFModel.calculate(4200 / 60.),
+          leftFlywheelFFModel.calculate(5000 / 60.));
     } else {
       flywheels.setVelocityRPS(
-          5000, 4200, leftFlywheelFFModel.calculate(5000 / 60.), leftFlywheelFFModel.calculate(4200 / 60.));
+          5000,
+          4200,
+          leftFlywheelFFModel.calculate(5000 / 60.),
+          leftFlywheelFFModel.calculate(4200 / 60.));
     }
   }
 

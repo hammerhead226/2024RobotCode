@@ -41,7 +41,6 @@ import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.AngleShooterShoot;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.DriveToChain;
 import frc.robot.commands.PivotIntakeAuto;
 import frc.robot.commands.PivotIntakeTele;
 import frc.robot.commands.PositionNoteInFeeder;
@@ -571,7 +570,11 @@ public class RobotContainer {
 
     //     driveController.a().whileTrue(new TurnToSource(drive, driveController));
 
-    driveController.a().whileTrue(new DriveToChain(drive));
+    // driveController.a().whileTrue(new DriveToChain(drive));
+    driveController.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(5000, 5000)));
+    driveController.a().onFalse(new InstantCommand(() -> shooter.stopFlywheels()));
+
+    driveController.x().onTrue(new SetPivotTarget(90, pivot));
     // manipController
     //     .a()
     //     .onTrue(
