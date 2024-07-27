@@ -803,7 +803,11 @@ public class RobotContainer {
         new InstantCommand(() -> shooter.stopFeeders(), shooter)
             .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE)))
             .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
-            .andThen(new SetElevatorTarget(Constants.ElevatorConstants.RETRACT_SETPOINT_INCH, Constants.ElevatorConstants.THRESHOLD, elevator))
+            .andThen(
+                new SetElevatorTarget(
+                    Constants.ElevatorConstants.RETRACT_SETPOINT_INCH,
+                    Constants.ElevatorConstants.THRESHOLD,
+                    elevator))
             .andThen(new WaitCommand(0.5))
             .andThen(new InstantCommand(shooter::stopFlywheels))
             .andThen(new InstantCommand(() -> shooter.turnOffFan(), shooter)));
