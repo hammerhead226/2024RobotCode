@@ -508,6 +508,7 @@ public class RobotContainer {
     autos.addOption("$s!p-b3-c5-c4", AutoBuilder.buildAuto("$s!p-b3-c5-c4"));
 
     autos.addOption("$a!p-b1-c1-c2", AutoBuilder.buildAuto("$a!p-b1-c1-c2"));
+    autos.addOption("$a!p-b1-c2-c3", AutoBuilder.buildAuto("$a!p-b1-c2-c3"));
 
     autos.addOption("$c!p-b3-b2-b1", AutoBuilder.buildAuto("$c!p-b3-b2-b1"));
 

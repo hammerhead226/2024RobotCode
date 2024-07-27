@@ -140,7 +140,7 @@ public class AimbotTele extends Command {
       return 34;
     }
     Logger.recordOutput("pivot target auto", pivotSetpointDeg);
-    return pivotSetpointDeg + 2.26;
+    return pivotSetpointDeg + 3.175;
   }
 
   private double calculateDistanceToSpeaker() {
