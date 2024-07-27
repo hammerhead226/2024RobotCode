@@ -28,7 +28,13 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -52.13374537436297,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -58,7 +64,7 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": -53.0,
-    "rotateFast": true
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "$s!p-c4-c3",

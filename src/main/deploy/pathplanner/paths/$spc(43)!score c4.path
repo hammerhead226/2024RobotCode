@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.494053069693623,
-        "y": 0.831298721123698
+        "x": 5.412812423342392,
+        "y": 1.182794491123932
       },
       "isLocked": false,
       "linkedName": null
@@ -20,15 +20,21 @@
         "y": 3.193526745797886
       },
       "prevControl": {
-        "x": 4.156233022525727,
-        "y": 2.0192364489433974
+        "x": 3.7967169800245437,
+        "y": 2.4241431649767726
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "$spc(43)!score c4"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -25.108016291523345,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -40,7 +46,7 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": -53.0,
-    "rotateFast": true
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "$s!p-c4-c3",
