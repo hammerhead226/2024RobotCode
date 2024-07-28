@@ -63,6 +63,8 @@ public class PivotIOTalonFX implements PivotIO {
     appliedVolts = leader.getMotorVoltage();
     currentAmps = leader.getStatorCurrent();
 
+    // leader.get
+
     positionSetpointDegs = Constants.PivotConstants.STOW_SETPOINT_DEG;
 
     Logger.recordOutput("start angle", startAngleDegs);
