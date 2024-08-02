@@ -51,6 +51,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
+import frc.robot.Constants.NOTE_POSITIONS;
 import frc.robot.subsystems.led.LED;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers;
@@ -70,6 +71,8 @@ public class Drive extends SubsystemBase {
   private static final double MAX_ANGULAR_SPEED = Constants.SwerveConstants.MAX_ANGULAR_SPEED;
   private static double multiplier = 1.0;
   private static boolean toggle = false;
+
+  private NOTE_POSITIONS targetNote;
 
   private boolean overridePathplanner = false;
 
@@ -633,6 +636,7 @@ public class Drive extends SubsystemBase {
     // return new Translation2d(0, 0);
     // } else {
     return lastNoteLocT2d.translation;
+    // return new Translation2d(0, 0);
     // }
   }
 
@@ -937,5 +941,13 @@ public class Drive extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
         );
+  }
+
+  public void setTargetNote(NOTE_POSITIONS targetNote) {
+    this.targetNote = targetNote;
+  }
+
+  public NOTE_POSITIONS getTargetNote() {
+    return targetNote;
   }
 }

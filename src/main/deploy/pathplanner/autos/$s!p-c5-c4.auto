@@ -26,6 +26,12 @@
         {
           "type": "named",
           "data": {
+            "name": "C5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "AlignToNote"
           }
         },
@@ -51,6 +57,12 @@
           "type": "path",
           "data": {
             "pathName": "$s!c4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "C4"
           }
         },
         {
