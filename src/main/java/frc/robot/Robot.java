@@ -160,7 +160,16 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    if (Math.abs(new RobotContainer().getDriverControllerRightX()) < 0.1) {
+      new RobotContainer().getDrive().lockRotation();
+
+    } else {
+
+      new RobotContainer().getDrive().disableRotationLock();
+    }
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override

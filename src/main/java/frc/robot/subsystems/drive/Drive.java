@@ -26,6 +26,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -70,6 +71,8 @@ public class Drive extends SubsystemBase {
   private static final double MAX_ANGULAR_SPEED = Constants.SwerveConstants.MAX_ANGULAR_SPEED;
   private static double multiplier = 1.0;
   private static boolean toggle = false;
+
+  private boolean enableRotationLock;
 
   private boolean overridePathplanner = false;
 
@@ -264,7 +267,7 @@ public class Drive extends SubsystemBase {
                 getCachedNoteLocation().getX() - getPose().getX(),
                 getCachedNoteLocation().getY() - getPose().getY())
             .getDegrees());
-
+    Logger.recordOutput("rotation Locked", enableRotationLock);
     // Logger.recordOutput("dist speaker drive", calculateDistanceToSpeaker());
   }
 
@@ -413,7 +416,26 @@ public class Drive extends SubsystemBase {
    */
   public void runVelocity(ChassisSpeeds speeds) {
     // Calculate module setpoints
+
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
+
+    if (enableRotationLock) {
+
+      double rotationVelocity =
+          MathUtil.clamp(
+              rotationController.calculate(
+                  rawGyroRotation.getRadians(),
+                  poseEstimator.getEstimatedPosition().getRotation().getRadians()),
+              MAX_ANGULAR_SPEED * -1,
+              MAX_ANGULAR_SPEED);
+
+      var fieldRelative = ChassisSpeeds.fromRobotRelativeSpeeds(discreteSpeeds, rawGyroRotation);
+
+      fieldRelative.omegaRadiansPerSecond = rotationVelocity;
+
+      discreteSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelative, rawGyroRotation);
+    }
+
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, MAX_LINEAR_SPEED * multiplier);
 
@@ -937,5 +959,13 @@ public class Drive extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
         );
+  }
+
+  public void lockRotation() {
+    enableRotationLock = true;
+  }
+
+  public void disableRotationLock() {
+    enableRotationLock = false;
   }
 }
