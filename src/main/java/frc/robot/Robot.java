@@ -162,12 +162,12 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if (Math.abs(new RobotContainer().getDriverControllerRightX()) < 0.1) {
-      new RobotContainer().getDrive().lockRotation();
+    if (Math.abs(m_robotContainer.getDriverControllerRightX()) < 0.1) {
+      m_robotContainer.getDrive().lockRotation();
 
     } else {
 
-      new RobotContainer().getDrive().disableRotationLock();
+      m_robotContainer.getDrive().disableRotationLock();
     }
   }
 
