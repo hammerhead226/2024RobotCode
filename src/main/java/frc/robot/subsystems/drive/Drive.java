@@ -245,8 +245,13 @@ public class Drive extends SubsystemBase {
         0,
         0);
     if (DriverStation.getAlliance().isPresent() && visionInputs.aTV) {
-      // mt2TagFiltering();
-      visionLogic();
+      if (visionInputs.tagCount > 1 || DriverStation.isDisabled()) {
+        visionLogic();
+      } else {
+        mt2TagFiltering();
+      }
+      
+      
     }
 
     Logger.recordOutput("note time", getCachedNoteTime());
