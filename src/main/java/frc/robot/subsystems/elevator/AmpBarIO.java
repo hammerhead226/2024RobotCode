@@ -7,11 +7,11 @@ public interface AmpBarIO {
   @AutoLog
   public static class AmpBarIOInputs {
 
-    public double barVelocity = 0;
-    public double barPosition = 0;
+    public double barVelocityRPM = 0;
+    public double barPositionRotations = 0;
     public double currentAmps = 0;
     public double appliedVolts = 0;
-    public double barPositionSetpoint = 0;
+    public double barPositionSetpointRotations = 0;
   }
 
   public default void updateInputs(AmpBarIOInputs inputs) {}

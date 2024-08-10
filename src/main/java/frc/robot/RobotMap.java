@@ -16,6 +16,7 @@ public class RobotMap {
     // public static final int RIGHT = 9;
     public static final int LEFT = 8;
     public static final int RIGHT = 9;
+    public static final int BAR = 0;
   }
 
   public static class PivotIDs {

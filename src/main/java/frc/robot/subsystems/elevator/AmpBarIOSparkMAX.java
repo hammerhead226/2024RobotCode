@@ -11,7 +11,7 @@ public class AmpBarIOSparkMAX implements AmpBarIO {
 
   private final CANSparkMax barMotor;
   private final SparkPIDController pid;
-  private double barPositionSetpoint = 0;
+  private double barPositionSetpoint;
 
   public AmpBarIOSparkMAX(int motorID) {
 
@@ -22,15 +22,18 @@ public class AmpBarIOSparkMAX implements AmpBarIO {
 
     barMotor.restoreFactoryDefaults();
     barMotor.setCANTimeout(250);
+    barMotor.setSmartCurrentLimit(20);
     barMotor.burnFlash();
     barMotor.clearFaults();
+
+    barPositionSetpoint = 0;
   }
 
   @Override
   public void updateInputs(AmpBarIOInputs inputs) {
-    inputs.barVelocity = barMotor.getEncoder().getVelocity();
-    inputs.barPosition = barMotor.getEncoder().getPosition();
-    inputs.barPositionSetpoint = barPositionSetpoint;
+    inputs.barVelocityRPM = barMotor.getEncoder().getVelocity();
+    inputs.barPositionRotations = barMotor.getEncoder().getPosition();
+    inputs.barPositionSetpointRotations = barPositionSetpoint;
     inputs.currentAmps = barMotor.getOutputCurrent();
     inputs.appliedVolts = barMotor.getAppliedOutput();
   }

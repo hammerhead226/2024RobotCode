@@ -67,6 +67,9 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.VisionIO;
 import frc.robot.subsystems.drive.VisionIOLimelight;
+import frc.robot.subsystems.elevator.AmpBarIO;
+import frc.robot.subsystems.elevator.AmpBarIOSIm;
+import frc.robot.subsystems.elevator.AmpBarIOSparkMAX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
@@ -133,6 +136,7 @@ public class RobotContainer {
   private Trigger driveRightTrigger;
   private Trigger driveAButton;
   private Trigger driveXButton;
+  private Trigger driveBButton;
 
   private final LoggedDashboardNumber flywheelSpeed = new LoggedDashboardNumber("fly soeed", 5400);
 
@@ -178,7 +182,8 @@ public class RobotContainer {
                 new LeafBlowerIOTalonSRX(18));
         elevator =
             new Elevator(
-                new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT));
+                new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT),
+                new AmpBarIOSparkMAX(RobotMap.ElevatorIDs.BAR));
         pivot =
             new Pivot(
                 new PivotIOTalonFX(
@@ -201,7 +206,7 @@ public class RobotContainer {
                 new FeederIOSim(),
                 new DistanceSensorIO() {},
                 new LeafBlowerIO() {});
-        elevator = new Elevator(new ElevatorIOSim());
+        elevator = new Elevator(new ElevatorIOSim(), null);
         pivot = new Pivot(new PivotIOSim());
         led = new LED(new LED_IOSim());
         break;
@@ -221,7 +226,7 @@ public class RobotContainer {
                 new FeederIOSim(),
                 new DistanceSensorIO() {},
                 new LeafBlowerIO() {});
-        elevator = new Elevator(new ElevatorIOSim());
+        elevator = new Elevator(new ElevatorIOSim(), new AmpBarIOSIm());
         pivot = new Pivot(new PivotIOSim());
         led = new LED(new LED_IOSim());
         break;
@@ -244,7 +249,7 @@ public class RobotContainer {
                 new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER),
                 new DistanceSensorIO() {},
                 new LeafBlowerIO() {});
-        elevator = new Elevator(new ElevatorIO() {});
+        elevator = new Elevator(new ElevatorIO() {}, new AmpBarIO() {});
         pivot = new Pivot(new PivotIO() {});
         led = new LED(new LED_IO() {});
         break;
@@ -267,6 +272,7 @@ public class RobotContainer {
     driveRightTrigger = driveController.rightTrigger();
     driveAButton = driveController.a();
     driveXButton = driveController.x();
+    driveBButton = driveController.b();
 
     // intakeLEDCommands =
     // new SelectCommand<>(
@@ -702,6 +708,9 @@ public class RobotContainer {
     // driveController.leftTrigger().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(200)));
     driveController.leftTrigger().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(500)));
     driveController.leftTrigger().onFalse(new InstantCommand(() -> shooter.stopFeeders()));
+
+    driveController.b().onTrue(new InstantCommand(() -> elevator.setBarGoal(1000), elevator));
+    driveController.b().onFalse(new InstantCommand(() -> elevator.setBarGoal(0), elevator));
   }
 
   // TODO:: change drive controls to match changed test controls
