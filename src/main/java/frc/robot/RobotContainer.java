@@ -299,9 +299,10 @@ public class RobotContainer {
                     SHOOT_STATE.AMP,
                     new SequentialCommandGroup(
                         // amp shoot
-                        new InstantCommand(() -> shooter.setFeedersRPM(500)),
-                        new WaitCommand(1.323),
-                        new InstantCommand(() -> shooter.setFlywheelRPMs(-900, -900)))),
+                        new InstantCommand(() -> shooter.setFeedersRPM(500))
+                        // new WaitCommand(1.323)
+                        )),
+                // new InstantCommand(() -> shooter.setFlywheelRPMs(-900, -900)))),
                 Map.entry(
                     SHOOT_STATE.TRAP,
                     new SequentialCommandGroup(
@@ -711,7 +712,18 @@ public class RobotContainer {
     driveController.leftTrigger().onFalse(new InstantCommand(() -> shooter.stopFeeders()));
 
     driveController.b().onTrue(new SetAmpBarTarget(10, 0, elevator));
-    driveController.b().onFalse(new SetAmpBarTarget(0, 0, elevator));
+    driveController
+        .b()
+        .onFalse(
+            new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
+                .andThen(
+                    new SequentialCommandGroup(
+                        new SetAmpBarTarget(5, 3, elevator),
+                        new InstantCommand(() -> shooter.turnOffFan()),
+                        new SetElevatorTarget(0, 0.5, elevator),
+                        new InstantCommand(() -> elevator.setConstraints(30, 85)),
+                        new InstantCommand(() -> shooter.stopFlywheels(), shooter),
+                        new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))));
   }
 
   // TODO:: change drive controls to match changed test controls
@@ -825,9 +837,24 @@ public class RobotContainer {
     driveAButton.onTrue(climbCommands);
 
     driveXButton.onTrue(trapCommands);
-    driveController.b().onTrue(new SetAmpBarTarget(90, 3, elevator));
-    driveController.b().onFalse(new SetAmpBarTarget(0, 3, elevator));
+    driveController
+        .b()
+        .onTrue(
+            new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AMP))
+                .andThen(new ScoreAmp(elevator, pivot, shooter, drive)));
 
+    driveController
+        .b()
+        .onFalse(
+            new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
+                .andThen(
+                    new SequentialCommandGroup(
+                        new SetAmpBarTarget(5, 3, elevator),
+                        new InstantCommand(() -> shooter.turnOffFan()),
+                        new SetElevatorTarget(0, 0.5, elevator),
+                        new InstantCommand(() -> elevator.setConstraints(30, 85)),
+                        new InstantCommand(() -> shooter.stopFlywheels(), shooter),
+                        new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))));
     // driveController
     //     .rightBumper()
     //     .whileTrue(

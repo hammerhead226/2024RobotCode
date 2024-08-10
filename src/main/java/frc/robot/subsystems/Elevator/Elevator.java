@@ -65,8 +65,8 @@ public class Elevator extends SubsystemBase {
         kP.initDefault(0.44);
         kI.initDefault(0);
 
-        barkP.initDefault(0.04);
-        barkV.initDefault(4);
+        barkP.initDefault(0.25);
+        barkV.initDefault(0.2);
         barkG.initDefault(0);
         break;
       case REPLAY:
@@ -114,8 +114,8 @@ public class Elevator extends SubsystemBase {
     extenderProfile = new TrapezoidProfile(extenderConstraints);
     extenderCurrent = extenderProfile.calculate(0, extenderCurrent, extenderGoal);
 
-    maxVelocityDegPerSec = 90;
-    maxAccelerationDegPerSecSquared = 30;
+    maxVelocityDegPerSec = 1200;
+    maxAccelerationDegPerSecSquared = 800;
 
     barConstraints =
         new TrapezoidProfile.Constraints(maxVelocityDegPerSec, maxAccelerationDegPerSecSquared);
@@ -172,29 +172,28 @@ public class Elevator extends SubsystemBase {
     return aInputs.barPositionDegrees;
   }
 
-  public void setBarPosition(double positionRotations, double velocityDegsPerSec) {
+  public void setBarPosition(double positionDegrees, double velocityDegsPerSec) {
 
     // positionRotations = MathUtil.clamp(positionRotations, 0, 20);
-    ampBar.setPositionSetpoint(
-        positionRotations,
-        barFFmodel.calculate(
-            Math.toRadians(positionRotations), Math.toRadians(velocityDegsPerSec)));
+    Logger.recordOutput("bar PositionDegrees", positionDegrees);
+    ampBar.setPositionSetpoint(positionDegrees, 0);
+    // barFFmodel.calculate(Math.toRadians(positionDegrees), Math.toRadians(velocityDegsPerSec))
   }
 
   public void stopAmpBar() {
     ampBar.stop();
   }
 
-  public void setBarGoal(double setpoint) {
+  public void setBarGoal(double barGoalDegrees) {
 
-    barGoal = new TrapezoidProfile.State(setpoint, 0);
-    Logger.recordOutput("bar goal", setpoint);
+    barGoal = new TrapezoidProfile.State(barGoalDegrees, 0);
+    Logger.recordOutput("bar goal", barGoalDegrees);
   }
 
-  public void setbarCurrent(double current) {
+  // public void setbarCurrent(double current) {
 
-    barCurrent = new TrapezoidProfile.State(current, 0);
-  }
+  //   barCurrent = new TrapezoidProfile.State(current, 0);
+  // }
 
   public void setExtenderGoal(double setpoint) {
     goal = setpoint;
@@ -248,6 +247,7 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("amp bar error", getBarError());
     Logger.recordOutput("amp bar goal", barGoal.position);
 
+    Logger.recordOutput("amp bar currentPos", barCurrent.position);
     if (kP.hasChanged(hashCode()) || kI.hasChanged(hashCode())) {
       elevator.configurePID(kP.get(), kI.get(), 0);
     }

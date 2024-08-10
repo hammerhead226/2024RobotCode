@@ -6,13 +6,14 @@ import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
+import org.littletonrobotics.junction.Logger;
 
 public class AmpBarIOSparkMAX implements AmpBarIO {
 
   private final CANSparkMax barMotor;
   private final SparkPIDController pid;
   private double barPositionSetpoint;
-  private final double gearRatio = 15 / 1;
+  private final double gearRatio = 5. / 1.;
 
   public AmpBarIOSparkMAX(int motorID) {
 
@@ -23,8 +24,10 @@ public class AmpBarIOSparkMAX implements AmpBarIO {
 
     barMotor.restoreFactoryDefaults();
     barMotor.setCANTimeout(250);
-    barMotor.setSmartCurrentLimit(40);
+    barMotor.setSmartCurrentLimit(30);
     barMotor.getEncoder().setPosition(0);
+    barMotor.getEncoder().setPositionConversionFactor(1);
+    barMotor.setInverted(true);
 
     barMotor.burnFlash();
     barMotor.clearFaults();
@@ -55,6 +58,9 @@ public class AmpBarIOSparkMAX implements AmpBarIO {
   public void setPositionSetpoint(double barPositionOutputDegs, double ffVolts) {
 
     this.barPositionSetpoint = barPositionOutputDegs;
+    Logger.recordOutput("barPositionOutputDegs", barPositionOutputDegs);
+    Logger.recordOutput("bar equation reference", (barPositionOutputDegs / 360.) * gearRatio);
+    Logger.recordOutput("ffVolts", ffVolts);
     pid.setReference(
         (barPositionOutputDegs / 360.) * gearRatio,
         ControlType.kPosition,

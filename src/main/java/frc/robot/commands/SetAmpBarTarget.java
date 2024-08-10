@@ -37,13 +37,13 @@ public class SetAmpBarTarget extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator.stopAmpBar();
+    // elevator.stopAmpBar();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     Logger.recordOutput("bar command ", elevator.ampBarAtGoal());
-    return elevator.ampBarAtGoal();
+    return true;
   }
 }

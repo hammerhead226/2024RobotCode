@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
@@ -19,10 +20,13 @@ public class ScoreAmp extends SequentialCommandGroup {
   /** Creates a new ScoreAmp. */
   public ScoreAmp(Elevator elevator, Pivot pivot, Shooter shooter, Drive drive) {
     addCommands(
-        new InstantCommand(() -> elevator.setConstraints(100, 640)),
-        new InstantCommand(() -> shooter.setFlywheelRPMs(500, 500), shooter),
-        new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot),
+        new ParallelCommandGroup(
+            new InstantCommand(() -> elevator.setConstraints(100, 640), elevator),
+            new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter),
+            new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot)),
+        new SetAmpBarTarget(180, 0, elevator),
         new SetElevatorTarget(6, 1, elevator));
+
     // addCommands(
     //     new ParallelCommandGroup(
     //         // new AlignToAmp(drive),
