@@ -825,6 +825,8 @@ public class RobotContainer {
     driveAButton.onTrue(climbCommands);
 
     driveXButton.onTrue(trapCommands);
+    driveController.b().onTrue(new SetAmpBarTarget(90, 3, elevator));
+    driveController.b().onFalse(new SetAmpBarTarget(0, 3, elevator));
 
     // driveController
     //     .rightBumper()

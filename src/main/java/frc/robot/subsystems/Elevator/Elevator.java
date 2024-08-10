@@ -1,6 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -48,7 +47,7 @@ public class Elevator extends SubsystemBase {
   private TrapezoidProfile.State barCurrent = new TrapezoidProfile.State();
 
   private double goal;
-  private double barGoalPos;
+  // private double barGoalPos;
   private final ElevatorFeedforward elevatorFFModel;
   private final ArmFeedforward barFFmodel;
 
@@ -66,8 +65,8 @@ public class Elevator extends SubsystemBase {
         kP.initDefault(0.44);
         kI.initDefault(0);
 
-        barkP.initDefault(0);
-        barkV.initDefault(0);
+        barkP.initDefault(0.04);
+        barkV.initDefault(4);
         barkG.initDefault(0);
         break;
       case REPLAY:
@@ -115,8 +114,8 @@ public class Elevator extends SubsystemBase {
     extenderProfile = new TrapezoidProfile(extenderConstraints);
     extenderCurrent = extenderProfile.calculate(0, extenderCurrent, extenderGoal);
 
-    maxVelocityDegPerSec = 15;
-    maxAccelerationDegPerSecSquared = 1;
+    maxVelocityDegPerSec = 90;
+    maxAccelerationDegPerSecSquared = 30;
 
     barConstraints =
         new TrapezoidProfile.Constraints(maxVelocityDegPerSec, maxAccelerationDegPerSecSquared);
@@ -126,7 +125,7 @@ public class Elevator extends SubsystemBase {
     this.elevator.configurePID(kP.get(), 0, 0);
     elevatorFFModel = new ElevatorFeedforward(kS.get(), kG.get(), kV.get(), kA.get());
 
-    ampBar.configurePID(barkP.get(), 0, 0);
+    this.ampBar.configurePID(barkP.get(), 0, 0);
     barFFmodel = new ArmFeedforward(0, barkG.get(), barkV.get(), 0);
   }
 
@@ -135,7 +134,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public boolean barAtGoal() {
-    return (Math.abs(aInputs.barPositionDegrees - barGoalPos)
+    return (Math.abs(aInputs.barPositionDegrees - barGoal.position)
         <= Constants.ElevatorConstants.BAR_THRESHOLD);
   }
 
@@ -152,13 +151,17 @@ public class Elevator extends SubsystemBase {
     return aInputs.barPositionSetpointDegrees - aInputs.barPositionDegrees;
   }
 
+  private double getbarErrorToGoal() {
+    return barGoal.position - aInputs.barPositionDegrees;
+  }
+
   public boolean elevatorAtSetpoint() {
     return (Math.abs(getElevatorError()) <= Constants.ElevatorConstants.THRESHOLD);
   }
 
-  public boolean ampBarAtSetpoint() {
+  public boolean ampBarAtGoal() {
 
-    return (Math.abs(getBarError()) <= Constants.ElevatorConstants.BAR_THRESHOLD);
+    return (Math.abs(getbarErrorToGoal()) <= Constants.ElevatorConstants.BAR_THRESHOLD);
   }
 
   public void setBarBrakeMode(boolean bool) {
@@ -171,7 +174,7 @@ public class Elevator extends SubsystemBase {
 
   public void setBarPosition(double positionRotations, double velocityDegsPerSec) {
 
-    positionRotations = MathUtil.clamp(positionRotations, 0, 20);
+    // positionRotations = MathUtil.clamp(positionRotations, 0, 20);
     ampBar.setPositionSetpoint(
         positionRotations,
         barFFmodel.calculate(
@@ -183,8 +186,9 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setBarGoal(double setpoint) {
-    this.barGoalPos = setpoint;
+
     barGoal = new TrapezoidProfile.State(setpoint, 0);
+    Logger.recordOutput("bar goal", setpoint);
   }
 
   public void setbarCurrent(double current) {
@@ -242,10 +246,15 @@ public class Elevator extends SubsystemBase {
     Logger.processInputs("Amp bar inputs", aInputs);
 
     Logger.recordOutput("amp bar error", getBarError());
-    Logger.recordOutput("amp bar goal", barGoalPos);
+    Logger.recordOutput("amp bar goal", barGoal.position);
 
     if (kP.hasChanged(hashCode()) || kI.hasChanged(hashCode())) {
       elevator.configurePID(kP.get(), kI.get(), 0);
+    }
+    if (barkP.hasChanged(hashCode())
+        || barkV.hasChanged(hashCode())
+        || barkG.hasChanged(hashCode())) {
+      ampBar.configurePID(barkP.get(), 0, 0);
     }
   }
 }

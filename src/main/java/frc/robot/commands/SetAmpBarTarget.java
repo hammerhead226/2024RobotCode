@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.Elevator;
+import org.littletonrobotics.junction.Logger;
 
 public class SetAmpBarTarget extends Command {
   /** Creates a new SetAmpBarTarget. */
@@ -16,7 +17,7 @@ public class SetAmpBarTarget extends Command {
 
   public SetAmpBarTarget(double setpoint, double threshold, Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.setPoint = setPoint;
+    this.setPoint = setpoint;
     this.threshold = threshold;
     this.elevator = elevator;
 
@@ -42,6 +43,7 @@ public class SetAmpBarTarget extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.ampBarAtSetpoint();
+    Logger.recordOutput("bar command ", elevator.ampBarAtGoal());
+    return elevator.ampBarAtGoal();
   }
 }
