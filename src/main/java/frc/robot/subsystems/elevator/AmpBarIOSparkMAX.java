@@ -18,7 +18,7 @@ public class AmpBarIOSparkMAX implements AmpBarIO {
     barMotor = new CANSparkMax(motorID, CANSparkLowLevel.MotorType.kBrushless);
 
     pid = barMotor.getPIDController();
-    pid.setFeedbackDevice(barMotor.getAbsoluteEncoder());
+    // pid.setFeedbackDevice(barMotor.getAbsoluteEncoder());
 
     barMotor.restoreFactoryDefaults();
     barMotor.setCANTimeout(250);
