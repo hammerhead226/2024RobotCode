@@ -28,9 +28,9 @@ public class Elevator extends SubsystemBase {
 
   // amp bar gains
 
-  private static double barkP;
-  private static double barkV;
-  private static double barkG;
+  private static final LoggedTunableNumber barkP = new LoggedTunableNumber("Bar/kP");
+  private static final LoggedTunableNumber barkV = new LoggedTunableNumber("Bar/kV");
+  private static final LoggedTunableNumber barkG = new LoggedTunableNumber("Bar/kG");
 
   private TrapezoidProfile extenderProfile;
   private TrapezoidProfile.Constraints extenderConstraints =
@@ -38,8 +38,8 @@ public class Elevator extends SubsystemBase {
   private TrapezoidProfile.State extenderGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State extenderCurrent = new TrapezoidProfile.State();
 
-  private static double maxVelocityRPM;
-  private static double maxAccelerationRPM;
+  private static double maxVelocityDegPerSec;
+  private static double maxAccelerationDegPerSecSquared;
 
   private TrapezoidProfile barProfile;
   private TrapezoidProfile.Constraints barConstraints;
@@ -66,9 +66,9 @@ public class Elevator extends SubsystemBase {
         kP.initDefault(0.44);
         kI.initDefault(0);
 
-        barkP = 0.0;
-        barkV = 0.0;
-        barkG = 0.0;
+        barkP.initDefault(0);
+        barkV.initDefault(0);
+        barkG.initDefault(0);
         break;
       case REPLAY:
         kS.initDefault(0);
@@ -79,9 +79,9 @@ public class Elevator extends SubsystemBase {
         kP.initDefault(15);
         kI.initDefault(0);
 
-        barkP = 0.0;
-        barkV = 0.0;
-        barkG = 0.0;
+        barkP.initDefault(0);
+        barkV.initDefault(0);
+        barkG.initDefault(0);
         break;
       case SIM:
         kS.initDefault(0);
@@ -92,9 +92,9 @@ public class Elevator extends SubsystemBase {
         kP.initDefault(1);
         kI.initDefault(0);
 
-        barkP = 0.0;
-        barkV = 0.0;
-        barkG = 0.0;
+        barkP.initDefault(0);
+        barkV.initDefault(0);
+        barkG.initDefault(0);
         break;
       default:
         kS.initDefault(0);
@@ -105,9 +105,9 @@ public class Elevator extends SubsystemBase {
         kP.initDefault(15);
         kI.initDefault(0);
 
-        barkP = 0.0;
-        barkV = 0.0;
-        barkG = 0.0;
+        barkP.initDefault(0);
+        barkV.initDefault(0);
+        barkG.initDefault(0);
         break;
     }
 
@@ -115,18 +115,19 @@ public class Elevator extends SubsystemBase {
     extenderProfile = new TrapezoidProfile(extenderConstraints);
     extenderCurrent = extenderProfile.calculate(0, extenderCurrent, extenderGoal);
 
-    maxVelocityRPM = 15;
-    maxAccelerationRPM = 1;
+    maxVelocityDegPerSec = 15;
+    maxAccelerationDegPerSecSquared = 1;
 
-    barConstraints = new TrapezoidProfile.Constraints(maxVelocityRPM, maxAccelerationRPM);
+    barConstraints =
+        new TrapezoidProfile.Constraints(maxVelocityDegPerSec, maxAccelerationDegPerSecSquared);
     barProfile = new TrapezoidProfile(barConstraints);
     barCurrent = barProfile.calculate(0, barCurrent, barGoal);
 
     this.elevator.configurePID(kP.get(), 0, 0);
     elevatorFFModel = new ElevatorFeedforward(kS.get(), kG.get(), kV.get(), kA.get());
 
-    ampBar.configurePID(barkP, 0, 0);
-    barFFmodel = new ArmFeedforward(0, barkG, barkV, 0);
+    ampBar.configurePID(barkP.get(), 0, 0);
+    barFFmodel = new ArmFeedforward(0, barkG.get(), barkV.get(), 0);
   }
 
   public boolean atGoal() {
@@ -134,7 +135,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public boolean barAtGoal() {
-    return (Math.abs(aInputs.barPositionRotations - barGoalPos)
+    return (Math.abs(aInputs.barPositionDegrees - barGoalPos)
         <= Constants.ElevatorConstants.BAR_THRESHOLD);
   }
 
@@ -148,7 +149,7 @@ public class Elevator extends SubsystemBase {
 
   private double getBarError() {
 
-    return aInputs.barPositionSetpointRotations - aInputs.barPositionRotations;
+    return aInputs.barPositionSetpointDegrees - aInputs.barPositionDegrees;
   }
 
   public boolean elevatorAtSetpoint() {
@@ -165,15 +166,16 @@ public class Elevator extends SubsystemBase {
   }
 
   public double getBarPositionRotations() {
-    return aInputs.barPositionRotations;
+    return aInputs.barPositionDegrees;
   }
 
-  public void setBarPosition(double positionRotations, double velocityRPM) {
+  public void setBarPosition(double positionRotations, double velocityDegsPerSec) {
 
-    positionRotations = MathUtil.clamp(positionRotations, -1000, 1000);
+    positionRotations = MathUtil.clamp(positionRotations, 0, 20);
     ampBar.setPositionSetpoint(
         positionRotations,
-        barFFmodel.calculate(Math.toRadians(positionRotations), Math.toRadians(velocityRPM)));
+        barFFmodel.calculate(
+            Math.toRadians(positionRotations), Math.toRadians(velocityDegsPerSec)));
   }
 
   public void stopAmpBar() {

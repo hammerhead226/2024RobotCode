@@ -31,9 +31,9 @@ public class AmpBarIOSparkMAX implements AmpBarIO {
 
   @Override
   public void updateInputs(AmpBarIOInputs inputs) {
-    inputs.barVelocityRPM = barMotor.getEncoder().getVelocity();
-    inputs.barPositionRotations = barMotor.getEncoder().getPosition();
-    inputs.barPositionSetpointRotations = barPositionSetpoint;
+    inputs.barVelocityDegsPerSec = (barMotor.getEncoder().getVelocity() / 15) * 6;
+    inputs.barPositionDegrees = (barMotor.getEncoder().getPosition() / 15) * 360;
+    inputs.barPositionSetpointDegrees = barPositionSetpoint;
     inputs.currentAmps = barMotor.getOutputCurrent();
     inputs.appliedVolts = barMotor.getAppliedOutput();
   }
@@ -49,10 +49,11 @@ public class AmpBarIOSparkMAX implements AmpBarIO {
   }
 
   @Override
-  public void setPositionSetpoint(double position, double ffVolts) {
+  public void setPositionSetpoint(double positionDegs, double ffVolts) {
 
-    this.barPositionSetpoint = position;
-    pid.setReference(position, ControlType.kPosition, 0, ffVolts, ArbFFUnits.kVoltage);
+    this.barPositionSetpoint = positionDegs;
+    pid.setReference(
+        (positionDegs / 360) * 15, ControlType.kPosition, 0, ffVolts, ArbFFUnits.kVoltage);
   }
 
   @Override

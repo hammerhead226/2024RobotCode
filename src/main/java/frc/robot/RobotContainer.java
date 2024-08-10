@@ -46,6 +46,7 @@ import frc.robot.commands.PivotIntakeTele;
 import frc.robot.commands.PositionNoteInFeeder;
 import frc.robot.commands.ScoreAmp;
 import frc.robot.commands.ScoreTrap;
+import frc.robot.commands.SetAmpBarTarget;
 import frc.robot.commands.SetElevatorTarget;
 import frc.robot.commands.SetPivotTarget;
 import frc.robot.commands.SetShooterTargetRPM;
@@ -709,8 +710,8 @@ public class RobotContainer {
     driveController.leftTrigger().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(500)));
     driveController.leftTrigger().onFalse(new InstantCommand(() -> shooter.stopFeeders()));
 
-    driveController.b().onTrue(new InstantCommand(() -> elevator.setBarGoal(1000), elevator));
-    driveController.b().onFalse(new InstantCommand(() -> elevator.setBarGoal(0), elevator));
+    driveController.b().onTrue(new SetAmpBarTarget(10, 0, elevator));
+    driveController.b().onFalse(new SetAmpBarTarget(0, 0, elevator));
   }
 
   // TODO:: change drive controls to match changed test controls
