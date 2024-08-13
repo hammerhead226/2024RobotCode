@@ -22,9 +22,9 @@ public class ScoreAmp extends SequentialCommandGroup {
     addCommands(
         new ParallelCommandGroup(
             new InstantCommand(() -> elevator.setConstraints(100, 640), elevator),
-            new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1200), shooter),
+            new InstantCommand(() -> shooter.setFlywheelRPMs(2400, 2400), shooter),
             new SetPivotTarget(Constants.PivotConstants.AMP_SETPOINT_DEG, pivot)),
-        new SetAmpBarTarget(180, 0, elevator),
+        new SetAmpBarTarget(195, 0, elevator),
         new SetElevatorTarget(6, 1, elevator));
 
     // addCommands(
