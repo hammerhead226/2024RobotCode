@@ -65,10 +65,15 @@ public final class Constants {
     public static final double DRIVE_GEAR_RATIO = 6.12;
     public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
-    public static final double DRIVE_STATOR_CURRENT_LIMIT = 40.0;
+    public static final double DRIVE_STATOR_CURRENT_LIMIT = 90.0;
     public static final boolean DRIVE_STATOR_CURRENT_LIMIT_ENABLED = true;
+    public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 42.0;
+    public static final boolean DRIVE_SUPPLY_CURRENT_LIMIT_ENABLED = true;
+
     public static final double TURN_STATOR_CURRENT_LIMIT = 30.0;
     public static final boolean TURN_STATOR_CURRENT_LIMIT_ENABLED = true;
+    public static final double TURN_SUPPLY_CURRENT_LIMIT = 30.0;
+    public static final boolean TURN_SUPPLY_CURRENT_LIMIT_ENABLED = true;
   }
 
   public static class IntakeConstants {

@@ -98,6 +98,11 @@ public class ModuleIOTalonFX implements ModuleIO {
         Constants.ModuleConstants.DRIVE_STATOR_CURRENT_LIMIT;
     driveConfig.CurrentLimits.StatorCurrentLimitEnable =
         Constants.ModuleConstants.DRIVE_STATOR_CURRENT_LIMIT_ENABLED;
+    driveConfig.CurrentLimits.SupplyCurrentLimit =
+        Constants.ModuleConstants.DRIVE_SUPPLY_CURRENT_LIMIT;
+    driveConfig.CurrentLimits.SupplyCurrentLimitEnable =
+        Constants.ModuleConstants.DRIVE_SUPPLY_CURRENT_LIMIT_ENABLED;
+
     driveTalon.getConfigurator().apply(driveConfig);
     setDriveBrakeMode(true);
     // setDriveOpenLoopRamp(Constants.SwerveConstants.OPEN_LOOP_RAMP_SEC);
@@ -107,6 +112,10 @@ public class ModuleIOTalonFX implements ModuleIO {
         Constants.ModuleConstants.TURN_STATOR_CURRENT_LIMIT;
     turnConfig.CurrentLimits.StatorCurrentLimitEnable =
         Constants.ModuleConstants.TURN_STATOR_CURRENT_LIMIT_ENABLED;
+    turnConfig.CurrentLimits.SupplyCurrentLimit =
+        Constants.ModuleConstants.TURN_SUPPLY_CURRENT_LIMIT;
+    turnConfig.CurrentLimits.SupplyCurrentLimitEnable =
+        Constants.ModuleConstants.TURN_SUPPLY_CURRENT_LIMIT_ENABLED;
     turnTalon.getConfigurator().apply(turnConfig);
     setTurnBrakeMode(true);
 
