@@ -78,8 +78,8 @@ public class AlignToNoteAuto extends Command {
     pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
     targetNoteLocation = noteLocations.get(drive.getTargetNote());
     useGeneratedPathCommand =
-        drive.getCachedNoteLocation().getDistance(targetNoteLocation) < 1
-            || drive.getCachedNoteLocation() != null;
+        drive.getCachedNoteLocation().getDistance(targetNoteLocation) < 1.323
+            && drive.getCachedNoteLocation() != null;
     // useGeneratedPathCommand = false;
     generatedPathCommand = AutoBuilder.followPath(drive.generatePathToNote());
     if (useGeneratedPathCommand) {
