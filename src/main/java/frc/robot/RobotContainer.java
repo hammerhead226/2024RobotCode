@@ -46,6 +46,7 @@ import frc.robot.commands.PivotIntakeTele;
 import frc.robot.commands.PositionNoteInFeeder;
 import frc.robot.commands.ScoreAmp;
 import frc.robot.commands.ScoreTrap;
+import frc.robot.commands.SetAmpBarTarget;
 import frc.robot.commands.SetElevatorTarget;
 import frc.robot.commands.SetPivotTarget;
 import frc.robot.commands.SetShooterTargetRPM;
@@ -67,6 +68,9 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.VisionIO;
 import frc.robot.subsystems.drive.VisionIOLimelight;
+import frc.robot.subsystems.elevator.AmpBarIO;
+import frc.robot.subsystems.elevator.AmpBarIOSIm;
+import frc.robot.subsystems.elevator.AmpBarIOSparkMAX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
@@ -133,6 +137,7 @@ public class RobotContainer {
   private Trigger driveRightTrigger;
   private Trigger driveAButton;
   private Trigger driveXButton;
+  private Trigger driveBButton;
 
   private final LoggedDashboardNumber flywheelSpeed = new LoggedDashboardNumber("fly soeed", 5400);
 
@@ -178,7 +183,8 @@ public class RobotContainer {
                 new LeafBlowerIOTalonSRX(18));
         elevator =
             new Elevator(
-                new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT));
+                new ElevatorIOTalonFX(RobotMap.ElevatorIDs.LEFT, RobotMap.ElevatorIDs.RIGHT),
+                new AmpBarIOSparkMAX(RobotMap.ElevatorIDs.BAR));
         pivot =
             new Pivot(
                 new PivotIOTalonFX(
@@ -201,7 +207,7 @@ public class RobotContainer {
                 new FeederIOSim(),
                 new DistanceSensorIO() {},
                 new LeafBlowerIO() {});
-        elevator = new Elevator(new ElevatorIOSim());
+        elevator = new Elevator(new ElevatorIOSim(), null);
         pivot = new Pivot(new PivotIOSim());
         led = new LED(new LED_IOSim());
         break;
@@ -221,7 +227,7 @@ public class RobotContainer {
                 new FeederIOSim(),
                 new DistanceSensorIO() {},
                 new LeafBlowerIO() {});
-        elevator = new Elevator(new ElevatorIOSim());
+        elevator = new Elevator(new ElevatorIOSim(), new AmpBarIOSIm());
         pivot = new Pivot(new PivotIOSim());
         led = new LED(new LED_IOSim());
         break;
@@ -244,7 +250,7 @@ public class RobotContainer {
                 new FeederIOTalonFX(RobotMap.ShooterIDs.FEEDER),
                 new DistanceSensorIO() {},
                 new LeafBlowerIO() {});
-        elevator = new Elevator(new ElevatorIO() {});
+        elevator = new Elevator(new ElevatorIO() {}, new AmpBarIO() {});
         pivot = new Pivot(new PivotIO() {});
         led = new LED(new LED_IO() {});
         break;
@@ -267,6 +273,7 @@ public class RobotContainer {
     driveRightTrigger = driveController.rightTrigger();
     driveAButton = driveController.a();
     driveXButton = driveController.x();
+    driveBButton = driveController.b();
 
     // intakeLEDCommands =
     // new SelectCommand<>(
@@ -292,9 +299,10 @@ public class RobotContainer {
                     SHOOT_STATE.AMP,
                     new SequentialCommandGroup(
                         // amp shoot
-                        new InstantCommand(() -> shooter.setFeedersRPM(500)),
-                        new WaitCommand(1.323),
-                        new InstantCommand(() -> shooter.setFlywheelRPMs(-900, -900)))),
+                        new InstantCommand(() -> shooter.setFeedersRPM(500))
+                        // new WaitCommand(1.323)
+                        )),
+                // new InstantCommand(() -> shooter.setFlywheelRPMs(-900, -900)))),
                 Map.entry(
                     SHOOT_STATE.TRAP,
                     new SequentialCommandGroup(
@@ -702,6 +710,20 @@ public class RobotContainer {
     // driveController.leftTrigger().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(200)));
     driveController.leftTrigger().onTrue(new InstantCommand(() -> shooter.setFeedersRPM(500)));
     driveController.leftTrigger().onFalse(new InstantCommand(() -> shooter.stopFeeders()));
+
+    driveController.b().onTrue(new SetAmpBarTarget(10, 0, elevator));
+    driveController
+        .b()
+        .onFalse(
+            new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
+                .andThen(
+                    new SequentialCommandGroup(
+                        new SetAmpBarTarget(5, 3, elevator),
+                        new InstantCommand(() -> shooter.turnOffFan()),
+                        new SetElevatorTarget(0, 0.5, elevator),
+                        new InstantCommand(() -> elevator.setConstraints(30, 85)),
+                        new InstantCommand(() -> shooter.stopFlywheels(), shooter),
+                        new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))));
   }
 
   // TODO:: change drive controls to match changed test controls
@@ -815,7 +837,24 @@ public class RobotContainer {
     driveAButton.onTrue(climbCommands);
 
     driveXButton.onTrue(trapCommands);
+    // driveController
+    //     .b()
+    //     .onTrue(
+    //         new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AMP))
+    //             .andThen(new ScoreAmp(elevator, pivot, shooter, drive)));
 
+    // driveController
+    //     .b()
+    //     .onFalse(
+    //         new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
+    //             .andThen(
+    //                 new SequentialCommandGroup(
+    //                     new SetAmpBarTarget(5, 3, elevator),
+    //                     new InstantCommand(() -> shooter.turnOffFan()),
+    //                     new SetElevatorTarget(0, 0.5, elevator),
+    //                     new InstantCommand(() -> elevator.setConstraints(30, 85)),
+    //                     new InstantCommand(() -> shooter.stopFlywheels(), shooter),
+    //                     new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))));
     // driveController
     //     .rightBumper()
     //     .whileTrue(
@@ -872,6 +911,7 @@ public class RobotContainer {
         new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
             .andThen(
                 new SequentialCommandGroup(
+                    new SetAmpBarTarget(5, 3, elevator),
                     new InstantCommand(() -> shooter.turnOffFan()),
                     new SetElevatorTarget(0, 0.5, elevator),
                     new InstantCommand(() -> elevator.setConstraints(30, 85)),

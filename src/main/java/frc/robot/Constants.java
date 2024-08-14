@@ -116,6 +116,7 @@ public final class Constants {
     public static final double[] PID = {0, 0, 0};
 
     public static final double REDUCTION = (25.0 / 1.0);
+    public static final double BAR_THRESHOLD = 3;
   }
 
   public static class PivotConstants {
