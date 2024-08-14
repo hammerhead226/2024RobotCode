@@ -837,24 +837,24 @@ public class RobotContainer {
     driveAButton.onTrue(climbCommands);
 
     driveXButton.onTrue(trapCommands);
-    driveController
-        .b()
-        .onTrue(
-            new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AMP))
-                .andThen(new ScoreAmp(elevator, pivot, shooter, drive)));
+    // driveController
+    //     .b()
+    //     .onTrue(
+    //         new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AMP))
+    //             .andThen(new ScoreAmp(elevator, pivot, shooter, drive)));
 
-    driveController
-        .b()
-        .onFalse(
-            new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
-                .andThen(
-                    new SequentialCommandGroup(
-                        new SetAmpBarTarget(5, 3, elevator),
-                        new InstantCommand(() -> shooter.turnOffFan()),
-                        new SetElevatorTarget(0, 0.5, elevator),
-                        new InstantCommand(() -> elevator.setConstraints(30, 85)),
-                        new InstantCommand(() -> shooter.stopFlywheels(), shooter),
-                        new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))));
+    // driveController
+    //     .b()
+    //     .onFalse(
+    //         new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
+    //             .andThen(
+    //                 new SequentialCommandGroup(
+    //                     new SetAmpBarTarget(5, 3, elevator),
+    //                     new InstantCommand(() -> shooter.turnOffFan()),
+    //                     new SetElevatorTarget(0, 0.5, elevator),
+    //                     new InstantCommand(() -> elevator.setConstraints(30, 85)),
+    //                     new InstantCommand(() -> shooter.stopFlywheels(), shooter),
+    //                     new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))));
     // driveController
     //     .rightBumper()
     //     .whileTrue(
@@ -911,6 +911,7 @@ public class RobotContainer {
         new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
             .andThen(
                 new SequentialCommandGroup(
+                    new SetAmpBarTarget(5, 3, elevator),
                     new InstantCommand(() -> shooter.turnOffFan()),
                     new SetElevatorTarget(0, 0.5, elevator),
                     new InstantCommand(() -> elevator.setConstraints(30, 85)),
