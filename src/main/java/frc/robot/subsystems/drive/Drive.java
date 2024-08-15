@@ -53,6 +53,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
 import frc.robot.Constants.NOTE_POSITIONS;
 import frc.robot.subsystems.led.LED;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
@@ -697,17 +698,19 @@ public class Drive extends SubsystemBase {
     return Optional.empty();
   }
 
-  public Command generateTrajectory(
-      Pose2d target,
+  public PathPlannerPath generateTrajectory(
+      Translation2d target,
       double maxVelMetersPerSec,
       double maxAccelMetersPerSecSquared,
       double maxAngVelDegPerSec,
       double maxAngAccelDegPerSecSquared,
       double endVelMetersPerSec) {
+    Rotation2d targetRotation =
+        new Rotation2d(target.getX() - getPose().getX(), target.getY() - getPose().getY());
     List<Translation2d> points =
         PathPlannerPath.bezierFromPoses(
-            new Pose2d(getPose().getY(), getPose().getX(), getPose().getRotation()),
-            new Pose2d(target.getY(), target.getX(), target.getRotation()));
+            new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
+            new Pose2d(target.getX(), target.getY(), AllianceFlipUtil.apply(targetRotation)));
     PathPlannerPath path =
         new PathPlannerPath(
             points,
@@ -716,9 +719,9 @@ public class Drive extends SubsystemBase {
                 maxAccelMetersPerSecSquared,
                 Units.degreesToRadians(maxAngVelDegPerSec),
                 Units.degreesToRadians(maxAngAccelDegPerSecSquared)),
-            new GoalEndState(endVelMetersPerSec, target.getRotation(), true));
+            new GoalEndState(endVelMetersPerSec, AllianceFlipUtil.apply(targetRotation), true));
 
-    return AutoBuilder.followPath(path);
+    return path;
   }
 
   public void runPath(PathPlannerPath path) {

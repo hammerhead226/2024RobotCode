@@ -77,7 +77,7 @@ public class AlignToNoteAuto extends Command {
     pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
     targetNoteLocation = noteLocations.get(drive.getTargetNote());
     useGeneratedPathCommand =
-        drive.getCachedNoteLocation().getDistance(targetNoteLocation) < 2.5
+        drive.getCachedNoteLocation().getDistance(targetNoteLocation) < 1.25
             && drive.getCachedNoteLocation() != null;
     Logger.recordOutput(
         "cached note distance ", drive.getCachedNoteLocation().getDistance(targetNoteLocation));
@@ -89,17 +89,11 @@ public class AlignToNoteAuto extends Command {
 
       generatedPathCommand.initialize();
     } else {
-      // targetNoteRotation =
-      //     new Rotation2d(
-      //         targetNoteLocation.getX() - drive.getPose().getX(),
-      //         targetNoteLocation.getY() - drive.getPose().getY());
-      // targetNotePathCommand =
-      //     drive.generateTrajectory(
-      //         new Pose2d(targetNoteLocation, targetNoteRotation), 3, 2.45, 100, 180, 0.5);
-      targetNotePathCommand =
-          AutoBuilder.followPath(drive.generatePathToNoteBlind(targetNoteLocation));
+    targetNotePathCommand =
+        AutoBuilder.followPath(
+            drive.generateTrajectory(targetNoteLocation, 3, 2.45, 100, 180, 0.5));
 
-      targetNotePathCommand.initialize();
+    targetNotePathCommand.initialize();
     }
   }
 
@@ -111,7 +105,7 @@ public class AlignToNoteAuto extends Command {
     if (useGeneratedPathCommand) {
       generatedPathCommand.execute();
     } else {
-      targetNotePathCommand.execute();
+    targetNotePathCommand.execute();
     }
 
     Logger.recordOutput("path is finished", finished);

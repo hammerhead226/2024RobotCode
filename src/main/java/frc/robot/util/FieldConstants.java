@@ -49,13 +49,13 @@ public class FieldConstants {
     static {
       for (int i = 0; i < centerlineTranslations.length; i++) {
         centerlineTranslations[i] =
-            new Translation2d(centerlineFirstY + (i * centerlineSeparationY), centerlineX);
+            new Translation2d(centerlineX, centerlineFirstY + (i * centerlineSeparationY));
       }
     }
 
     static {
       for (int i = 0; i < spikeTranslations.length; i++) {
-        spikeTranslations[i] = new Translation2d(spikeFirstY + (i * spikeSeparationY), spikeX);
+        spikeTranslations[i] = new Translation2d(spikeX, spikeFirstY + (i * spikeSeparationY));
       }
     }
   }
