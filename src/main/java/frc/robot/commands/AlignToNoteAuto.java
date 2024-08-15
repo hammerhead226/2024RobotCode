@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -78,21 +77,28 @@ public class AlignToNoteAuto extends Command {
     pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
     targetNoteLocation = noteLocations.get(drive.getTargetNote());
     useGeneratedPathCommand =
-        drive.getCachedNoteLocation().getDistance(targetNoteLocation) < 1.323
+        drive.getCachedNoteLocation().getDistance(targetNoteLocation) < 2.5
             && drive.getCachedNoteLocation() != null;
+    Logger.recordOutput(
+        "cached note distance ", drive.getCachedNoteLocation().getDistance(targetNoteLocation));
+    Logger.recordOutput("useGeneratedPath command", useGeneratedPathCommand);
     // useGeneratedPathCommand = false;
-    generatedPathCommand = AutoBuilder.followPath(drive.generatePathToNote());
+    // generatedPathCommand = AutoBuilder.followPath(drive.generatePathToNote());
     if (useGeneratedPathCommand) {
+      generatedPathCommand = AutoBuilder.followPath(drive.generatePathToNote());
 
       generatedPathCommand.initialize();
     } else {
-      targetNoteRotation =
-          new Rotation2d(
-              targetNoteLocation.getX() - drive.getPose().getX(),
-              targetNoteLocation.getY() - drive.getPose().getY());
+      // targetNoteRotation =
+      //     new Rotation2d(
+      //         targetNoteLocation.getX() - drive.getPose().getX(),
+      //         targetNoteLocation.getY() - drive.getPose().getY());
+      // targetNotePathCommand =
+      //     drive.generateTrajectory(
+      //         new Pose2d(targetNoteLocation, targetNoteRotation), 3, 2.45, 100, 180, 0.5);
       targetNotePathCommand =
-          drive.generateTrajectory(
-              new Pose2d(targetNoteLocation, targetNoteRotation), 3, 2.45, 100, 180, 0.5);
+          AutoBuilder.followPath(drive.generatePathToNoteBlind(targetNoteLocation));
+
       targetNotePathCommand.initialize();
     }
   }
@@ -126,7 +132,7 @@ public class AlignToNoteAuto extends Command {
     Logger.recordOutput("isFinished align note", shooter.seesNote());
     // return false;
     return shooter.seesNote() == NoteState.SENSOR
-    || shooter.seesNote() == NoteState.CURRENT
-    || finished;
+        || shooter.seesNote() == NoteState.CURRENT
+        || finished;
   }
 }
