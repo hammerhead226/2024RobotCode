@@ -911,11 +911,25 @@ public class RobotContainer {
         new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
             .andThen(
                 new SequentialCommandGroup(
+                    new SetAmpBarTarget(5, 3, elevator),
                     new InstantCommand(() -> shooter.turnOffFan()),
                     new SetElevatorTarget(0, 0.5, elevator),
                     new InstantCommand(() -> elevator.setConstraints(30, 85)),
                     new InstantCommand(() -> shooter.stopFlywheels(), shooter),
                     new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))));
+    // manipAButton.onTrue(
+    //     new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AMP))
+    //         .andThen(new ScoreAmp(elevator, pivot, shooter, drive)));
+
+    // manipAButton.onFalse(
+    //     new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
+    //         .andThen(
+    //             new SequentialCommandGroup(
+    //                 new InstantCommand(() -> shooter.turnOffFan()),
+    //                 new SetElevatorTarget(0, 0.5, elevator),
+    //                 new InstantCommand(() -> elevator.setConstraints(30, 85)),
+    //                 new InstantCommand(() -> shooter.stopFlywheels(), shooter),
+    //                 new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))));
 
     manipBButton.onTrue(
         new ParallelCommandGroup(

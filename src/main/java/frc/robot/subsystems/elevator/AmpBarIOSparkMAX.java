@@ -13,7 +13,7 @@ public class AmpBarIOSparkMAX implements AmpBarIO {
   private final CANSparkMax barMotor;
   private final SparkPIDController pid;
   private double barPositionSetpoint;
-  private final double gearRatio = 5. / 1.;
+  private final double gearRatio = 15. / 1.;
 
   public AmpBarIOSparkMAX(int motorID) {
 
