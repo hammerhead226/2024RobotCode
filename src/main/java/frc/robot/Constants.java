@@ -152,6 +152,17 @@ public final class Constants {
     public static final double COLOR_VIOLET = 0.91;
   }
 
+  public static enum NOTE_POSITIONS {
+    B1,
+    B2,
+    B3,
+    C1,
+    C2,
+    C3,
+    C4,
+    C5
+  }
+
   public static enum LED_STATE {
     BLUE,
     RED,

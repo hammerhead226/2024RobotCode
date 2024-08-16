@@ -56,7 +56,7 @@ public class AimbotTele extends Command {
 
     switch (Constants.currentMode) {
       case REAL:
-        gains[0] = 3.14;
+        gains[0] = 3.7;
         gains[1] = 0;
         gains[2] = 0;
         break;
@@ -78,7 +78,7 @@ public class AimbotTele extends Command {
     }
 
     pid = new PIDController(gains[0], gains[1], gains[2], 0.02);
-    pid.setTolerance(3);
+    pid.setTolerance(2);
     pid.enableContinuousInput(-180, 180);
   }
 

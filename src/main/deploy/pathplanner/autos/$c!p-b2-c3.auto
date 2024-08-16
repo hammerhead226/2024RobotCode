@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "B2"
+          }
+        },
+        {
           "type": "sequential",
           "data": {
             "commands": [
@@ -76,6 +82,12 @@
           "type": "path",
           "data": {
             "pathName": "$cpb2c3!c3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "C3"
           }
         },
         {

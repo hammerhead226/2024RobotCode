@@ -32,6 +32,12 @@
         {
           "type": "named",
           "data": {
+            "name": "B1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "AlignToNote"
           }
         },
@@ -51,6 +57,12 @@
           "type": "path",
           "data": {
             "pathName": "$apb1c(23)!c2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "C2"
           }
         },
         {
@@ -81,6 +93,12 @@
           "type": "path",
           "data": {
             "pathName": "$apb1c(23)!c3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "C3"
           }
         },
         {

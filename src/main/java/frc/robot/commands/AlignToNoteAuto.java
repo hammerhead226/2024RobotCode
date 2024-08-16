@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
@@ -24,7 +25,8 @@ public class AlignToNoteAuto extends Command {
   Pivot pivot;
   Intake intake;
   Shooter shooter;
-  Command pathCommand;
+  Command generatedPathCommand;
+  Translation2d targetNoteLocation;
 
   private boolean finished;
 
@@ -35,6 +37,7 @@ public class AlignToNoteAuto extends Command {
     this.led = led;
     this.drive = drive;
     finished = false;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive, shooter, led);
   }
@@ -43,14 +46,18 @@ public class AlignToNoteAuto extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput("auto pickup init", "true");
+
     led.setState(LED_STATE.FLASHING_RED);
     intake.runRollers(12);
     shooter.setFeedersRPM(500);
-    pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
-    // this.pathCommand = drive.alignToNote();
-    // pathCommand.schedule();
-    pathCommand = AutoBuilder.followPath(drive.generatePathToNote());
-    pathCommand.initialize();
+    pivot.setPivotGoal(Constants.PivotConstants.STOW_SETPOINT_DEG);
+    targetNoteLocation = drive.getTargetNoteLocation();
+
+    generatedPathCommand =
+        AutoBuilder.followPath(
+            drive.generateTrajectoryToNote(targetNoteLocation, 3, 2.45, 100, 180, 0.5));
+
+    generatedPathCommand.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -58,7 +65,9 @@ public class AlignToNoteAuto extends Command {
   public void execute() {
 
     finished = shooter.seesNote() == NoteState.SENSOR;
-    pathCommand.execute();
+
+    generatedPathCommand.execute();
+
     Logger.recordOutput("path is finished", finished);
   }
 
@@ -68,15 +77,15 @@ public class AlignToNoteAuto extends Command {
     led.setState(LED_STATE.BLUE);
     intake.stopRollers();
     shooter.stopFeeders();
-    // pathCommand.cancel();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     Logger.recordOutput("isFinished align note", shooter.seesNote());
+    // return false;
     return shooter.seesNote() == NoteState.SENSOR
-        || shooter.seesNote() == NoteState.CURRENT
-        || finished;
+    || shooter.seesNote() == NoteState.CURRENT
+    || finished;
   }
 }

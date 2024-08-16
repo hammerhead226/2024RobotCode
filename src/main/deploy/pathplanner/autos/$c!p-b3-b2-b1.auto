@@ -51,6 +51,12 @@
         {
           "type": "named",
           "data": {
+            "name": "B3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "AlignToNote"
           }
         },
@@ -75,6 +81,12 @@
         {
           "type": "named",
           "data": {
+            "name": "B2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "AlignToNote"
           }
         },
@@ -88,6 +100,12 @@
           "type": "path",
           "data": {
             "pathName": "$cpb(321)!b1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "B1"
           }
         },
         {
@@ -112,6 +130,12 @@
           "type": "path",
           "data": {
             "pathName": "gasgas"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "C1"
           }
         },
         {

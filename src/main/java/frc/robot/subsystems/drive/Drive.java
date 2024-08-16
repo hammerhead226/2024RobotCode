@@ -51,12 +51,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.LED_STATE;
+import frc.robot.Constants.NOTE_POSITIONS;
 import frc.robot.subsystems.led.LED;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
 import frc.robot.util.LimelightHelpers.RawFiducial;
 import frc.robot.util.LocalADStarAK;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -70,6 +74,8 @@ public class Drive extends SubsystemBase {
   private static final double MAX_ANGULAR_SPEED = Constants.SwerveConstants.MAX_ANGULAR_SPEED;
   private static double multiplier = 1.0;
   private static boolean toggle = false;
+
+  private NOTE_POSITIONS targetNote;
 
   private boolean overridePathplanner = false;
 
@@ -115,6 +121,8 @@ public class Drive extends SubsystemBase {
   }
 
   CircularBuffer<TimestampedPose2d> robotPoseBuffer;
+
+  private HashMap<NOTE_POSITIONS, Translation2d> noteLocations = new HashMap<>();
 
   public Drive(
       GyroIO gyroIO,
@@ -181,6 +189,21 @@ public class Drive extends SubsystemBase {
     rotationController.setTolerance(5);
     rotationController.enableContinuousInput(-180, 180);
     robotPoseBuffer = new CircularBuffer<>(11);
+
+    noteLocations.put(NOTE_POSITIONS.C5, FieldConstants.StagingLocations.centerlineTranslations[0]);
+    noteLocations.put(NOTE_POSITIONS.C4, FieldConstants.StagingLocations.centerlineTranslations[1]);
+    noteLocations.put(NOTE_POSITIONS.C3, FieldConstants.StagingLocations.centerlineTranslations[2]);
+    noteLocations.put(NOTE_POSITIONS.C2, FieldConstants.StagingLocations.centerlineTranslations[3]);
+    noteLocations.put(NOTE_POSITIONS.C1, FieldConstants.StagingLocations.centerlineTranslations[4]);
+    noteLocations.put(
+        NOTE_POSITIONS.B1,
+        AllianceFlipUtil.apply(FieldConstants.StagingLocations.spikeTranslations[2]));
+    noteLocations.put(
+        NOTE_POSITIONS.B2,
+        AllianceFlipUtil.apply(FieldConstants.StagingLocations.spikeTranslations[1]));
+    noteLocations.put(
+        NOTE_POSITIONS.B3,
+        AllianceFlipUtil.apply(FieldConstants.StagingLocations.spikeTranslations[0]));
   }
 
   public void periodic() {
@@ -241,11 +264,20 @@ public class Drive extends SubsystemBase {
         0,
         0,
         0);
-        if (visionInputs.tagCount > 1 || DriverStation.isDisabled()) {
-          visionLogic();
-        } else {
-          mt2TagFiltering();
-        }
+    Logger.recordOutput(
+        "vision something", DriverStation.getAlliance().isPresent() && visionInputs.aTV);
+    Logger.recordOutput("isDisabled", DriverStation.isDisabled());
+
+    if (DriverStation.getAlliance().isPresent() && visionInputs.aTV) {
+      Logger.recordOutput(
+          "tags > 1 or disabled ", visionInputs.tagCount > 1 || DriverStation.isDisabled());
+
+      if (visionInputs.tagCount > 1 || DriverStation.isDisabled()) {
+        visionLogic();
+      } else {
+        mt2TagFiltering();
+      }
+    }
 
     Logger.recordOutput("note time", getCachedNoteTime());
     // Note Pose estimating
@@ -634,6 +666,7 @@ public class Drive extends SubsystemBase {
     // return new Translation2d(0, 0);
     // } else {
     return lastNoteLocT2d.translation;
+    // return new Translation2d(0, 0);
     // }
   }
 
@@ -684,35 +717,11 @@ public class Drive extends SubsystemBase {
     return Optional.empty();
   }
 
-  public Command generateTrajectory(
-      Pose2d target,
-      double maxVelMetersPerSec,
-      double maxAccelMetersPerSecSquared,
-      double maxAngVelDegPerSec,
-      double maxAngAccelDegPerSecSquared,
-      double endVelMetersPerSec) {
-    List<Translation2d> points =
-        PathPlannerPath.bezierFromPoses(
-            new Pose2d(getPose().getY(), getPose().getX(), getPose().getRotation()),
-            new Pose2d(target.getY(), target.getX(), target.getRotation()));
-    PathPlannerPath path =
-        new PathPlannerPath(
-            points,
-            new PathConstraints(
-                maxAngVelDegPerSec,
-                maxAccelMetersPerSecSquared,
-                Units.degreesToRadians(maxAngVelDegPerSec),
-                Units.degreesToRadians(maxAngAccelDegPerSecSquared)),
-            new GoalEndState(endVelMetersPerSec, target.getRotation(), true));
-
-    return AutoBuilder.followPath(path);
-  }
-
   public void runPath(PathPlannerPath path) {
     AutoBuilder.followPath(path).schedule();
   }
 
-  public PathPlannerPath generatePathToNote() {
+  public Translation2d getTargetNoteLocation() {
     if (visionInputs.iTX != 0.0) {
       double taThreshold = 0;
       if (visionInputs.iTA >= taThreshold) {
@@ -722,6 +731,51 @@ public class Drive extends SubsystemBase {
       }
     }
 
+    Translation2d visionCoords = getCachedNoteLocation();
+    Translation2d fieldCoords = noteLocations.get(getNote());
+    boolean useVisionNoteCoords =
+        getCachedNoteLocation().getDistance(fieldCoords) < 1.25
+            && getCachedNoteLocation() != null && getCachedNoteTime() != -1 && noteImageIsNew();
+
+    Logger.recordOutput(
+      "cached note distance to field ", getCachedNoteLocation().getDistance(fieldCoords));
+    Logger.recordOutput("use vision note coords", useVisionNoteCoords);
+
+    if (useVisionNoteCoords) return visionCoords;
+    return fieldCoords;
+  }
+
+    public PathPlannerPath generateTrajectoryToNote(
+      Translation2d target,
+      double maxVelMetersPerSec,
+      double maxAccelMetersPerSecSquared,
+      double maxAngVelDegPerSec,
+      double maxAngAccelDegPerSecSquared,
+      double endVelMetersPerSec) {
+    Rotation2d targetRotation =
+      AllianceFlipUtil.apply(new Rotation2d(target.getX() - getPose().getX(), target.getY() - getPose().getY()));
+
+    Logger.recordOutput("Target Note Pose3d", new Pose3d(new Pose2d(target, new Rotation2d())));
+    List<Translation2d> points =
+        PathPlannerPath.bezierFromPoses(
+            new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
+            new Pose2d(target.getX(), target.getY(), targetRotation));
+    PathPlannerPath path =
+        new PathPlannerPath(
+            points,
+            new PathConstraints(
+                maxAngVelDegPerSec,
+                maxAccelMetersPerSecSquared,
+                Units.degreesToRadians(maxAngVelDegPerSec),
+                Units.degreesToRadians(maxAngAccelDegPerSecSquared)),
+            new GoalEndState(endVelMetersPerSec, targetRotation, true));
+
+    path.preventFlipping = false;
+
+    return path;
+  }
+
+  public PathPlannerPath generatePathToNote() {
     Rotation2d targetRotation;
     Logger.recordOutput("note timeess", getCachedNoteTime());
     if (getCachedNoteTime() != -1) {
@@ -938,5 +992,13 @@ public class Drive extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
         );
+  }
+
+  public void setNote(NOTE_POSITIONS targetNote) {
+    this.targetNote = targetNote;
+  }
+
+  public NOTE_POSITIONS getNote() {
+    return targetNote;
   }
 }
