@@ -241,10 +241,11 @@ public class Drive extends SubsystemBase {
         0,
         0,
         0);
-    if (DriverStation.getAlliance().isPresent() && visionInputs.aTV) {
-      // mt2TagFiltering();
-      visionLogic();
-    }
+        if (visionInputs.tagCount > 1 || DriverStation.isDisabled()) {
+          visionLogic();
+        } else {
+          mt2TagFiltering();
+        }
 
     Logger.recordOutput("note time", getCachedNoteTime());
     // Note Pose estimating
@@ -340,7 +341,7 @@ public class Drive extends SubsystemBase {
     double yMeterStds;
     double headingDegStds;
 
-    double poseDifference = getVisionPoseDifference(limelightMeasurement.pose);
+    // double poseDifference = getVisionPoseDifference(limelightMeasurement.pose);
 
     boolean isFlipped =
         DriverStation.getAlliance().isPresent()
@@ -352,11 +353,11 @@ public class Drive extends SubsystemBase {
       xMeterStds = 0.7;
       yMeterStds = 0.7;
       headingDegStds = 8;
-    } else if (limelightMeasurement.tagCount == 1 && poseDifference < 0.5) {
+    } else if (limelightMeasurement.tagCount == 1) { // && poseDifference < 0.5
       xMeterStds = 5;
       yMeterStds = 5;
       headingDegStds = 30;
-    } else if (limelightMeasurement.tagCount == 1 && poseDifference < 3) {
+    } else if (limelightMeasurement.tagCount == 1) { // && poseDifference < 3
       xMeterStds = 11.43;
       yMeterStds = 11.43;
       headingDegStds = 9999;
