@@ -194,15 +194,9 @@ public class Drive extends SubsystemBase {
     noteLocations.put(NOTE_POSITIONS.C3, FieldConstants.StagingLocations.centerlineTranslations[2]);
     noteLocations.put(NOTE_POSITIONS.C2, FieldConstants.StagingLocations.centerlineTranslations[3]);
     noteLocations.put(NOTE_POSITIONS.C1, FieldConstants.StagingLocations.centerlineTranslations[4]);
-    noteLocations.put(
-        NOTE_POSITIONS.B1,
-        AllianceFlipUtil.apply(FieldConstants.StagingLocations.spikeTranslations[2]));
-    noteLocations.put(
-        NOTE_POSITIONS.B2,
-        AllianceFlipUtil.apply(FieldConstants.StagingLocations.spikeTranslations[1]));
-    noteLocations.put(
-        NOTE_POSITIONS.B3,
-        AllianceFlipUtil.apply(FieldConstants.StagingLocations.spikeTranslations[0]));
+    noteLocations.put(NOTE_POSITIONS.B1, FieldConstants.StagingLocations.spikeTranslations[2]);
+    noteLocations.put(NOTE_POSITIONS.B2, FieldConstants.StagingLocations.spikeTranslations[1]);
+    noteLocations.put(NOTE_POSITIONS.B3, FieldConstants.StagingLocations.spikeTranslations[0]);
   }
 
   public void periodic() {
@@ -731,9 +725,9 @@ public class Drive extends SubsystemBase {
     }
 
     Translation2d visionCoords = getCachedNoteLocation();
-    Translation2d fieldCoords = noteLocations.get(getNote());
+    Translation2d fieldCoords = AllianceFlipUtil.apply(noteLocations.get(getNote()));
     boolean useVisionNoteCoords =
-        getCachedNoteLocation().getDistance(fieldCoords) < 1.25
+        getCachedNoteLocation().getDistance(fieldCoords) < 1.323
             && getCachedNoteLocation() != null
             && getCachedNoteTime() != -1
             && noteImageIsNew();
@@ -754,8 +748,7 @@ public class Drive extends SubsystemBase {
       double maxAngAccelDegPerSecSquared,
       double endVelMetersPerSec) {
     Rotation2d targetRotation =
-        AllianceFlipUtil.apply(
-            new Rotation2d(target.getX() - getPose().getX(), target.getY() - getPose().getY()));
+        new Rotation2d(target.getX() - getPose().getX(), target.getY() - getPose().getY());
 
     Logger.recordOutput("Target Note Pose3d", new Pose3d(new Pose2d(target, new Rotation2d())));
     List<Translation2d> points =
@@ -772,73 +765,76 @@ public class Drive extends SubsystemBase {
                 Units.degreesToRadians(maxAngAccelDegPerSecSquared)),
             new GoalEndState(endVelMetersPerSec, targetRotation, true));
 
-    path.preventFlipping = false;
+    path.preventFlipping = true;
 
     return path;
   }
 
-  public PathPlannerPath generatePathToNote() {
-    Rotation2d targetRotation;
-    Logger.recordOutput("note timeess", getCachedNoteTime());
-    if (getCachedNoteTime() != -1) {
-      // led.setState(LED_STATE.FLASHING_RED);
-      Translation2d cachedNoteT2d = getCachedNoteLocation();
-      Logger.recordOutput("better translate", cachedNoteT2d);
-      if (noteImageIsNew()) {
+  // public PathPlannerPath generatePathToNote() {
+  //   Rotation2d targetRotation;
+  //   Logger.recordOutput("note timeess", getCachedNoteTime());
+  //   if (getCachedNoteTime() != -1) {
+  //     // led.setState(LED_STATE.FLASHING_RED);
+  //     Translation2d cachedNoteT2d = getCachedNoteLocation();
+  //     Logger.recordOutput("better translate", cachedNoteT2d);
+  //     if (noteImageIsNew()) {
 
-        targetRotation =
-            new Rotation2d(
-                cachedNoteT2d.getX() - getPose().getX(), cachedNoteT2d.getY() - getPose().getY());
-        List<Translation2d> pointsToNote;
-        if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-          Logger.recordOutput(
-              "goal point blue",
-              new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
-          pointsToNote =
-              PathPlannerPath.bezierFromPoses(
-                  new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
-                  new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
-        } else {
-          Logger.recordOutput(
-              "goal point red",
-              new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
-          pointsToNote =
-              PathPlannerPath.bezierFromPoses(
-                  new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
-                  new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
-        }
-        PathPlannerPath path =
-            new PathPlannerPath(
-                pointsToNote,
-                new PathConstraints(
-                    3, 2.45, Units.degreesToRadians(100), Units.degreesToRadians(180)),
-                new GoalEndState(0.5, targetRotation, true));
+  //       targetRotation =
+  //           new Rotation2d(
+  //               cachedNoteT2d.getX() - getPose().getX(), cachedNoteT2d.getY() -
+  // getPose().getY());
+  //       List<Translation2d> pointsToNote;
+  //       if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
+  //         Logger.recordOutput(
+  //             "goal point blue",
+  //             new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+  //         pointsToNote =
+  //             PathPlannerPath.bezierFromPoses(
+  //                 new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
+  //                 new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+  //       } else {
+  //         Logger.recordOutput(
+  //             "goal point red",
+  //             new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+  //         pointsToNote =
+  //             PathPlannerPath.bezierFromPoses(
+  //                 new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
+  //                 new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+  //       }
+  //       PathPlannerPath path =
+  //           new PathPlannerPath(
+  //               pointsToNote,
+  //               new PathConstraints(
+  //                   3, 2.45, Units.degreesToRadians(100), Units.degreesToRadians(180)),
+  //               new GoalEndState(0.5, targetRotation, true));
 
-        path.preventFlipping = true;
-        // AutoBuilder.followPath(path).schedule();
-        Logger.recordOutput("follow path", true);
-        return path;
-      } else {
-        // return;
-        // led.setState(LED_STATE.PAPAYA_ORANGE);
-        return new PathPlannerPath(
-            PathPlannerPath.bezierFromPoses(
-                new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
-                new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation())),
-            new PathConstraints(0.1, 1.5, Units.degreesToRadians(100), Units.degreesToRadians(180)),
-            new GoalEndState(0.5, getPose().getRotation(), true));
-      }
-    } else {
-      // return;
-      // led.setState(LED_STATE.WILLIAMS_BLUE);
-      return new PathPlannerPath(
-          PathPlannerPath.bezierFromPoses(
-              new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
-              new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation())),
-          new PathConstraints(0.1, 1.5, Units.degreesToRadians(100), Units.degreesToRadians(180)),
-          new GoalEndState(0.5, getPose().getRotation(), true));
-    }
-  }
+  //       path.preventFlipping = true;
+  //       // AutoBuilder.followPath(path).schedule();
+  //       Logger.recordOutput("follow path", true);
+  //       return path;
+  //     } else {
+  //       // return;
+  //       // led.setState(LED_STATE.PAPAYA_ORANGE);
+  //       return new PathPlannerPath(
+  //           PathPlannerPath.bezierFromPoses(
+  //               new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
+  //               new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation())),
+  //           new PathConstraints(0.1, 1.5, Units.degreesToRadians(100),
+  // Units.degreesToRadians(180)),
+  //           new GoalEndState(0.5, getPose().getRotation(), true));
+  //     }
+  //   } else {
+  //     // return;
+  //     // led.setState(LED_STATE.WILLIAMS_BLUE);
+  //     return new PathPlannerPath(
+  //         PathPlannerPath.bezierFromPoses(
+  //             new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
+  //             new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation())),
+  //         new PathConstraints(0.1, 1.5, Units.degreesToRadians(100),
+  // Units.degreesToRadians(180)),
+  //         new GoalEndState(0.5, getPose().getRotation(), true));
+  //   }
+  // }
 
   public Command createPathFindingCommand(Pose2d target) {
     Pose2d coord = target;

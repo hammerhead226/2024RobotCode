@@ -49,7 +49,7 @@ public class FieldConstants {
     static {
       for (int i = 0; i < centerlineTranslations.length; i++) {
         centerlineTranslations[i] =
-            new Translation2d(centerlineX, centerlineFirstY + (i * centerlineSeparationY));
+            new Translation2d(centerlineX + 0.25, centerlineFirstY + (i * centerlineSeparationY));
       }
     }
 
