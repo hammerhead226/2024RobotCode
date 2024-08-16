@@ -999,4 +999,8 @@ public class RobotContainer {
   public Drive getDrive() {
     return drive;
   }
+
+  public ClimbStateMachine getClimbStateMachine() {
+    return climbStateMachine;
+  }
 }

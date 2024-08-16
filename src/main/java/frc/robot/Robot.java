@@ -18,6 +18,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.LED_STATE;
+import frc.robot.statemachines.ClimbStateMachine.CLIMB_STATES;
 import frc.robot.util.LocalADStarAK;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -115,6 +116,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     m_robotContainer.getLED().setState(LED_STATE.FIRE);
+    m_robotContainer.getClimbStateMachine().setClimbState(CLIMB_STATES.NONE);
   }
 
   /** This function is called periodically when disabled. */
