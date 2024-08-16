@@ -475,22 +475,14 @@ public class RobotContainer {
                     .andThen(new InstantCommand(() -> shooter.stopFeeders())))
             .withTimeout(2.5));
 
-    NamedCommands.registerCommand(
-        "C5", new InstantCommand(() -> drive.setTargetNote(NOTE_POSITIONS.C5)));
-    NamedCommands.registerCommand(
-        "C4", new InstantCommand(() -> drive.setTargetNote(NOTE_POSITIONS.C4)));
-    NamedCommands.registerCommand(
-        "C3", new InstantCommand(() -> drive.setTargetNote(NOTE_POSITIONS.C3)));
-    NamedCommands.registerCommand(
-        "C2", new InstantCommand(() -> drive.setTargetNote(NOTE_POSITIONS.C2)));
-    NamedCommands.registerCommand(
-        "C1", new InstantCommand(() -> drive.setTargetNote(NOTE_POSITIONS.C1)));
-    NamedCommands.registerCommand(
-        "B1", new InstantCommand(() -> drive.setTargetNote(NOTE_POSITIONS.B1)));
-    NamedCommands.registerCommand(
-        "B2", new InstantCommand(() -> drive.setTargetNote(NOTE_POSITIONS.B2)));
-    NamedCommands.registerCommand(
-        "B3", new InstantCommand(() -> drive.setTargetNote(NOTE_POSITIONS.B3)));
+    NamedCommands.registerCommand("C5", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.C5)));
+    NamedCommands.registerCommand("C4", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.C4)));
+    NamedCommands.registerCommand("C3", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.C3)));
+    NamedCommands.registerCommand("C2", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.C2)));
+    NamedCommands.registerCommand("C1", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.C1)));
+    NamedCommands.registerCommand("B1", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.B1)));
+    NamedCommands.registerCommand("B2", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.B2)));
+    NamedCommands.registerCommand("B3", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.B3)));
 
     // AUTO AIM COMMANDS
     NamedCommands.registerCommand("TurnToSpeaker", new TurnToSpeaker(drive, driveController));

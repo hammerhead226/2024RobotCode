@@ -59,6 +59,7 @@ import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
 import frc.robot.util.LimelightHelpers.RawFiducial;
 import frc.robot.util.LocalADStarAK;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -119,6 +120,8 @@ public class Drive extends SubsystemBase {
   }
 
   CircularBuffer<TimestampedPose2d> robotPoseBuffer;
+
+  private HashMap<NOTE_POSITIONS, Translation2d> noteLocations = new HashMap<>();
 
   public Drive(
       GyroIO gyroIO,
@@ -185,6 +188,21 @@ public class Drive extends SubsystemBase {
     rotationController.setTolerance(5);
     rotationController.enableContinuousInput(-180, 180);
     robotPoseBuffer = new CircularBuffer<>(11);
+
+    noteLocations.put(NOTE_POSITIONS.C5, FieldConstants.StagingLocations.centerlineTranslations[0]);
+    noteLocations.put(NOTE_POSITIONS.C4, FieldConstants.StagingLocations.centerlineTranslations[1]);
+    noteLocations.put(NOTE_POSITIONS.C3, FieldConstants.StagingLocations.centerlineTranslations[2]);
+    noteLocations.put(NOTE_POSITIONS.C2, FieldConstants.StagingLocations.centerlineTranslations[3]);
+    noteLocations.put(NOTE_POSITIONS.C1, FieldConstants.StagingLocations.centerlineTranslations[4]);
+    noteLocations.put(
+        NOTE_POSITIONS.B1,
+        AllianceFlipUtil.apply(FieldConstants.StagingLocations.spikeTranslations[2]));
+    noteLocations.put(
+        NOTE_POSITIONS.B2,
+        AllianceFlipUtil.apply(FieldConstants.StagingLocations.spikeTranslations[1]));
+    noteLocations.put(
+        NOTE_POSITIONS.B3,
+        AllianceFlipUtil.apply(FieldConstants.StagingLocations.spikeTranslations[0]));
   }
 
   public void periodic() {
@@ -698,37 +716,11 @@ public class Drive extends SubsystemBase {
     return Optional.empty();
   }
 
-  public PathPlannerPath generateTrajectory(
-      Translation2d target,
-      double maxVelMetersPerSec,
-      double maxAccelMetersPerSecSquared,
-      double maxAngVelDegPerSec,
-      double maxAngAccelDegPerSecSquared,
-      double endVelMetersPerSec) {
-    Rotation2d targetRotation =
-        new Rotation2d(target.getX() - getPose().getX(), target.getY() - getPose().getY());
-    List<Translation2d> points =
-        PathPlannerPath.bezierFromPoses(
-            new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
-            new Pose2d(target.getX(), target.getY(), AllianceFlipUtil.apply(targetRotation)));
-    PathPlannerPath path =
-        new PathPlannerPath(
-            points,
-            new PathConstraints(
-                maxAngVelDegPerSec,
-                maxAccelMetersPerSecSquared,
-                Units.degreesToRadians(maxAngVelDegPerSec),
-                Units.degreesToRadians(maxAngAccelDegPerSecSquared)),
-            new GoalEndState(endVelMetersPerSec, AllianceFlipUtil.apply(targetRotation), true));
-
-    return path;
-  }
-
   public void runPath(PathPlannerPath path) {
     AutoBuilder.followPath(path).schedule();
   }
 
-  public PathPlannerPath generatePathToNote() {
+  public Translation2d getTargetNoteLocation() {
     if (visionInputs.iTX != 0.0) {
       double taThreshold = 0;
       if (visionInputs.iTA >= taThreshold) {
@@ -738,6 +730,53 @@ public class Drive extends SubsystemBase {
       }
     }
 
+    Translation2d visionCoords = getCachedNoteLocation();
+    Translation2d fieldCoords = noteLocations.get(getNote());
+    boolean useVisionNoteCoords =
+        getCachedNoteLocation().getDistance(fieldCoords) < 1.25
+            && getCachedNoteLocation() != null
+            && getCachedNoteTime() != -1
+            && noteImageIsNew();
+
+    Logger.recordOutput(
+        "cached note distance to field ", getCachedNoteLocation().getDistance(fieldCoords));
+    Logger.recordOutput("use vision note coords", useVisionNoteCoords);
+
+    if (useVisionNoteCoords) return visionCoords;
+    return fieldCoords;
+  }
+
+  public PathPlannerPath generateTrajectoryToNote(
+      Translation2d target,
+      double maxVelMetersPerSec,
+      double maxAccelMetersPerSecSquared,
+      double maxAngVelDegPerSec,
+      double maxAngAccelDegPerSecSquared,
+      double endVelMetersPerSec) {
+    Rotation2d targetRotation =
+        new Rotation2d(target.getX() - getPose().getX(), target.getY() - getPose().getY());
+
+    Logger.recordOutput("Target Note Pose3d", new Pose3d(new Pose2d(target, new Rotation2d())));
+    List<Translation2d> points =
+        PathPlannerPath.bezierFromPoses(
+            new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
+            new Pose2d(target.getX(), target.getY(), targetRotation));
+    PathPlannerPath path =
+        new PathPlannerPath(
+            points,
+            new PathConstraints(
+                maxAngVelDegPerSec,
+                maxAccelMetersPerSecSquared,
+                Units.degreesToRadians(maxAngVelDegPerSec),
+                Units.degreesToRadians(maxAngAccelDegPerSecSquared)),
+            new GoalEndState(endVelMetersPerSec, targetRotation, true));
+
+    path.preventFlipping = true;
+
+    return path;
+  }
+
+  public PathPlannerPath generatePathToNote() {
     Rotation2d targetRotation;
     Logger.recordOutput("note timeess", getCachedNoteTime());
     if (getCachedNoteTime() != -1) {
@@ -791,69 +830,6 @@ public class Drive extends SubsystemBase {
     } else {
       // return;
       // led.setState(LED_STATE.WILLIAMS_BLUE);
-      return new PathPlannerPath(
-          PathPlannerPath.bezierFromPoses(
-              new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
-              new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation())),
-          new PathConstraints(0.1, 1.5, Units.degreesToRadians(100), Units.degreesToRadians(180)),
-          new GoalEndState(0.5, getPose().getRotation(), true));
-    }
-  }
-
-  public PathPlannerPath generatePathToNoteBlind(Translation2d targetNoteLocation) {
-    // if (visionInputs.iTX != 0.0) {
-    //   double taThreshold = 0;
-    //   if (visionInputs.iTA >= taThreshold) {
-    //     lastNoteLocT2d.translation =
-    //         calculateNotePositionFieldRelative().getTranslation().toTranslation2d();
-    //     lastNoteLocT2d.time = Timer.getFPGATimestamp();
-    //   }
-    // }
-    // Pose2d targetNoteLocation = noteLocations.get(drive.getTargetNote());
-
-    Rotation2d targetRotation;
-    Logger.recordOutput("note timeess", getCachedNoteTime());
-    // led.setState(LED_STATE.FLASHING_RED);
-    // Translation2d targetNoteLocation = getCachedNoteLocation();
-    Logger.recordOutput("better translate", targetNoteLocation);
-    if (noteImageIsNew()) {
-
-      targetRotation =
-          new Rotation2d(
-              targetNoteLocation.getX() - getPose().getX(),
-              targetNoteLocation.getY() - getPose().getY());
-      List<Translation2d> pointsToNote;
-      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-        Logger.recordOutput(
-            "goal point blue",
-            new Pose2d(targetNoteLocation.getX(), targetNoteLocation.getY(), targetRotation));
-        pointsToNote =
-            PathPlannerPath.bezierFromPoses(
-                new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
-                new Pose2d(targetNoteLocation.getX(), targetNoteLocation.getY(), targetRotation));
-      } else {
-        Logger.recordOutput(
-            "goal point red",
-            new Pose2d(targetNoteLocation.getX(), targetNoteLocation.getY(), targetRotation));
-        pointsToNote =
-            PathPlannerPath.bezierFromPoses(
-                new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
-                new Pose2d(targetNoteLocation.getX(), targetNoteLocation.getY(), targetRotation));
-      }
-      PathPlannerPath path =
-          new PathPlannerPath(
-              pointsToNote,
-              new PathConstraints(
-                  3, 2.45, Units.degreesToRadians(100), Units.degreesToRadians(180)),
-              new GoalEndState(0.5, targetRotation, true));
-
-      path.preventFlipping = true;
-      // AutoBuilder.followPath(path).schedule();
-      Logger.recordOutput("follow path", true);
-      return path;
-    } else {
-      // return;
-      // led.setState(LED_STATE.PAPAYA_ORANGE);
       return new PathPlannerPath(
           PathPlannerPath.bezierFromPoses(
               new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
@@ -1019,11 +995,11 @@ public class Drive extends SubsystemBase {
         );
   }
 
-  public void setTargetNote(NOTE_POSITIONS targetNote) {
+  public void setNote(NOTE_POSITIONS targetNote) {
     this.targetNote = targetNote;
   }
 
-  public NOTE_POSITIONS getTargetNote() {
+  public NOTE_POSITIONS getNote() {
     return targetNote;
   }
 }
