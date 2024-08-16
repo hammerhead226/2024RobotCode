@@ -50,7 +50,7 @@ public class AlignToNoteAuto extends Command {
     led.setState(LED_STATE.FLASHING_RED);
     intake.runRollers(12);
     shooter.setFeedersRPM(500);
-    pivot.setPivotGoal(Constants.PivotConstants.INTAKE_SETPOINT_DEG);
+    pivot.setPivotGoal(Constants.PivotConstants.STOW_SETPOINT_DEG);
     targetNoteLocation = drive.getTargetNoteLocation();
 
     generatedPathCommand =
@@ -85,7 +85,7 @@ public class AlignToNoteAuto extends Command {
     Logger.recordOutput("isFinished align note", shooter.seesNote());
     // return false;
     return shooter.seesNote() == NoteState.SENSOR
-        || shooter.seesNote() == NoteState.CURRENT
-        || finished;
+    || shooter.seesNote() == NoteState.CURRENT
+    || finished;
   }
 }

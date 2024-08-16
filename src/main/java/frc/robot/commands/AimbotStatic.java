@@ -258,5 +258,6 @@ public class AimbotStatic extends Command {
     Logger.recordOutput("i am currently this angle", drive.getRotation().getDegrees());
     return pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atGoal()
         || (Timer.getFPGATimestamp() - startTime > 1.323);
+    // return true;
   }
 }

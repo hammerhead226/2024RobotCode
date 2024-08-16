@@ -59,6 +59,7 @@ import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
 import frc.robot.util.LimelightHelpers.RawFiducial;
 import frc.robot.util.LocalADStarAK;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -734,19 +735,17 @@ public class Drive extends SubsystemBase {
     Translation2d fieldCoords = noteLocations.get(getNote());
     boolean useVisionNoteCoords =
         getCachedNoteLocation().getDistance(fieldCoords) < 1.25
-            && getCachedNoteLocation() != null
-            && getCachedNoteTime() != -1
-            && noteImageIsNew();
+            && getCachedNoteLocation() != null && getCachedNoteTime() != -1 && noteImageIsNew();
 
     Logger.recordOutput(
-        "cached note distance to field ", getCachedNoteLocation().getDistance(fieldCoords));
+      "cached note distance to field ", getCachedNoteLocation().getDistance(fieldCoords));
     Logger.recordOutput("use vision note coords", useVisionNoteCoords);
 
     if (useVisionNoteCoords) return visionCoords;
     return fieldCoords;
   }
 
-  public PathPlannerPath generateTrajectoryToNote(
+    public PathPlannerPath generateTrajectoryToNote(
       Translation2d target,
       double maxVelMetersPerSec,
       double maxAccelMetersPerSecSquared,
@@ -754,7 +753,7 @@ public class Drive extends SubsystemBase {
       double maxAngAccelDegPerSecSquared,
       double endVelMetersPerSec) {
     Rotation2d targetRotation =
-        new Rotation2d(target.getX() - getPose().getX(), target.getY() - getPose().getY());
+      AllianceFlipUtil.apply(new Rotation2d(target.getX() - getPose().getX(), target.getY() - getPose().getY()));
 
     Logger.recordOutput("Target Note Pose3d", new Pose3d(new Pose2d(target, new Rotation2d())));
     List<Translation2d> points =
@@ -771,7 +770,7 @@ public class Drive extends SubsystemBase {
                 Units.degreesToRadians(maxAngAccelDegPerSecSquared)),
             new GoalEndState(endVelMetersPerSec, targetRotation, true));
 
-    path.preventFlipping = true;
+    path.preventFlipping = false;
 
     return path;
   }

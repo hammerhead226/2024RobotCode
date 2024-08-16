@@ -26,6 +26,12 @@
         {
           "type": "named",
           "data": {
+            "name": "C3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "AlignToNote"
           }
         },
@@ -51,6 +57,12 @@
           "type": "path",
           "data": {
             "pathName": "$spc(34)!c4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "C4"
           }
         },
         {
