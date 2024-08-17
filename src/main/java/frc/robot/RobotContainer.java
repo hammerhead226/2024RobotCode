@@ -921,7 +921,7 @@ public class RobotContainer {
         new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))
             .andThen(
                 new SequentialCommandGroup(
-                    new SetAmpBarTarget(5, 3, elevator),
+                    // new SetAmpBarTarget(5, 3, elevator),
                     new InstantCommand(() -> shooter.turnOffFan()),
                     new SetElevatorTarget(0, 0.5, elevator),
                     new InstantCommand(() -> elevator.setConstraints(30, 85)),

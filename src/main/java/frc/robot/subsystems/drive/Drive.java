@@ -726,14 +726,20 @@ public class Drive extends SubsystemBase {
 
     Translation2d visionCoords = getCachedNoteLocation();
     Translation2d fieldCoords = AllianceFlipUtil.apply(noteLocations.get(getNote()));
+
+    Logger.recordOutput(
+        "cached note distance to field ", getCachedNoteLocation().getDistance(fieldCoords));
+
+    Logger.recordOutput("note is new", noteImageIsNew());
+    Logger.recordOutput("note is not null", getCachedNoteLocation() != null);
+    Logger.recordOutput("note time aint -1", getCachedNoteTime());
+
     boolean useVisionNoteCoords =
         getCachedNoteLocation().getDistance(fieldCoords) < 1.323
             && getCachedNoteLocation() != null
             && getCachedNoteTime() != -1
             && noteImageIsNew();
 
-    Logger.recordOutput(
-        "cached note distance to field ", getCachedNoteLocation().getDistance(fieldCoords));
     Logger.recordOutput("use vision note coords", useVisionNoteCoords);
 
     if (useVisionNoteCoords) return visionCoords;
