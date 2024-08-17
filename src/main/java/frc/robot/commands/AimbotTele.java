@@ -104,7 +104,7 @@ public class AimbotTele extends Command {
     // }
   }
 
- public void angleShooter() {
+  public void angleShooter() {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
     // Logger.recordOutput("distance to speak", Units.metersToFeet(distanceToSpeakerMeter));
     distanceToSpeakerMeter = calculateDistanceToSpeaker();

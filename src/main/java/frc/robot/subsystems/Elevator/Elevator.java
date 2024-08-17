@@ -115,7 +115,7 @@ public class Elevator extends SubsystemBase {
     extenderCurrent = extenderProfile.calculate(0, extenderCurrent, extenderGoal);
 
     maxVelocityDegPerSec = 1200;
-    maxAccelerationDegPerSecSquared = 800;
+    maxAccelerationDegPerSecSquared = 1550;
 
     barConstraints =
         new TrapezoidProfile.Constraints(maxVelocityDegPerSec, maxAccelerationDegPerSecSquared);
