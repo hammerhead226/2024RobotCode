@@ -614,10 +614,14 @@ public class Drive extends SubsystemBase {
         new Translation2d(
             Units.inchesToMeters(radiusInchRaw), Rotation2d.fromDegrees(noteYawAngleDegRaw));
 
+    Logger.recordOutput("NoteTracking/camRelNoteLocT2dRaw", camRelNoteLocT2dRaw);
+
     Translation2d roboRelNoteLocT2dRaw =
         camRelNoteLocT2dRaw
             .rotateBy(Rotation2d.fromDegrees(0))
             .plus(new Translation2d(Units.inchesToMeters(12), 0));
+
+    Logger.recordOutput("NoteTracking/camRelNoteLocT2dCorrected", roboRelNoteLocT2dRaw);
 
     Translation2d roboRelNoteLocT2dCorrected =
         camRelNoteLocT2dCorrected
