@@ -158,7 +158,7 @@ public class AimbotStatic extends Command {
       return 34;
     }
     Logger.recordOutput("pivot target auto", pivotSetpointDeg);
-    return pivotSetpointDeg + 1.26;
+    return pivotSetpointDeg + 2.26;
   }
 
   private double calculateDistanceToSpeaker() {

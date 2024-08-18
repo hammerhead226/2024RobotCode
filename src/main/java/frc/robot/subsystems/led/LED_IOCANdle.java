@@ -109,6 +109,11 @@ public class LED_IOCANdle implements LED_IO {
         candle.clearAnimation(0);
         candle.setLEDs(0, 255, 0, 0, 0, 57 + 24);
         break;
+
+      case PURPLE:
+        candle.clearAnimation(0);
+        candle.setLEDs(255, 0, 255);
+        break;
       case PAPAYA_ORANGE:
         candle.clearAnimation(0);
         candle.setLEDs(255, 30, 0);

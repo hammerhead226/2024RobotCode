@@ -268,7 +268,8 @@ public class Drive extends SubsystemBase {
       if (visionInputs.tagCount > 1 || DriverStation.isDisabled()) {
         visionLogic();
       } else {
-        mt2TagFiltering();
+        // mt2TagFiltering();
+        visionLogic();
       }
     }
 
@@ -328,7 +329,7 @@ public class Drive extends SubsystemBase {
             visionInputs.avgTagDist,
             visionInputs.avgTagArea,
             new RawFiducial[] {});
-    if (Math.abs(gyroInputs.yawVelocityRadPerSec) > Math.toRadians(720)) {
+    if (Math.abs(gyroInputs.yawVelocityRadPerSec) > Math.toRadians(360)) {
       doRejectUpdate = true;
     }
 
@@ -366,7 +367,7 @@ public class Drive extends SubsystemBase {
     double yMeterStds;
     double headingDegStds;
 
-    // double poseDifference = getVisionPoseDifference(limelightMeasurement.pose);
+    double poseDifference = getVisionPoseDifference(limelightMeasurement.pose);
 
     boolean isFlipped =
         DriverStation.getAlliance().isPresent()
@@ -378,11 +379,11 @@ public class Drive extends SubsystemBase {
       xMeterStds = 0.7;
       yMeterStds = 0.7;
       headingDegStds = 8;
-    } else if (limelightMeasurement.tagCount == 1) { // && poseDifference < 0.5
+    } else if (limelightMeasurement.tagCount == 1 && poseDifference < 0.5) { // && poseDifference < 0.5
       xMeterStds = 5;
       yMeterStds = 5;
       headingDegStds = 30;
-    } else if (limelightMeasurement.tagCount == 1) { // && poseDifference < 3
+    } else if (limelightMeasurement.tagCount == 1 && poseDifference < 3) { // && poseDifference < 3
       xMeterStds = 11.43;
       yMeterStds = 11.43;
       headingDegStds = 9999;

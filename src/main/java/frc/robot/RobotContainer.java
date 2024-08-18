@@ -688,7 +688,9 @@ public class RobotContainer {
     // .andThen(new InstantCommand(shooter::stopFeeders))
     // .andThen(new InstantCommand(shooter::stopFlywheels)));
 
-    driveController.rightBumper().onTrue(new PivotIntakeTele(pivot, intake, shooter, led, false));
+    driveController
+        .rightBumper()
+        .onTrue(new PivotIntakeTele(pivot, intake, shooter, led, false, false));
     driveController
         .rightBumper()
         .onFalse(
@@ -824,7 +826,7 @@ public class RobotContainer {
                         new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
                     .andThen(new PositionNoteInFeeder(shooter, intake))));
 
-    driveLeftTrigger.whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true));
+    driveLeftTrigger.whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true, false));
     driveLeftTrigger.onFalse(
         new InstantCommand(intake::stopRollers)
             .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))

@@ -40,6 +40,18 @@ public class Intake extends SubsystemBase {
     return ledBool;
   }
 
+  public double getVolts() {
+    return rInputs.appliedVolts;
+  }
+
+  public double getAmps() {
+    return rInputs.currentAmps;
+  }
+
+  public double getRPM() {
+    return rInputs.rollerVelocityRPM;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

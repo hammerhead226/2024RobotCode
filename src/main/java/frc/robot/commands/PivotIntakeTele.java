@@ -20,7 +20,8 @@ import frc.robot.subsystems.shooter.Shooter;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PivotIntakeTele extends SequentialCommandGroup {
   /** Creates a new PivotIntake. */
-  public PivotIntakeTele(Pivot pivot, Intake intake, Shooter shooter, LED led, boolean outtake) {
+  public PivotIntakeTele(
+      Pivot pivot, Intake intake, Shooter shooter, LED led, boolean outtake, boolean isAutoAlign) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     if (!outtake) {
@@ -29,7 +30,7 @@ public class PivotIntakeTele extends SequentialCommandGroup {
           new ParallelCommandGroup(
               new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
               // new WaitUntilCommand(pivot::atSetpoint),
-              new IntakeNote(intake, shooter, led)),
+              new IntakeNote(intake, shooter, led, isAutoAlign)),
           new InstantCommand(() -> led.setState(LED_STATE.GREEN)));
       // new InstantCommand(() -> shooter.setFeedersRPM(150)),
       // new InstantCommand(shooter::stopFeeders));

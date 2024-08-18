@@ -84,7 +84,7 @@ public class DriveCommands {
                   omegaSupplier,
                   intakeAssistSupplier,
                   turnToSourceSupplier),
-              new PivotIntakeTele(pivot, intake, shooter, led, false));
+              new PivotIntakeTele(pivot, intake, shooter, led, false, true));
         }
         return new InstantCommand(() -> led.setState(LED_STATE.FLASHING_RED))
             .andThen(
@@ -96,7 +96,7 @@ public class DriveCommands {
                         omegaSupplier,
                         intakeAssistSupplier,
                         turnToSourceSupplier),
-                    new PivotIntakeTele(pivot, intake, shooter, led, false)));
+                    new PivotIntakeTele(pivot, intake, shooter, led, false, true)));
       } else {
         if (intake.getLEDBool()) {
           return new ParallelCommandGroup(
@@ -107,7 +107,7 @@ public class DriveCommands {
                   omegaSupplier,
                   intakeAssistSupplier,
                   turnToSourceSupplier),
-              new PivotIntakeTele(pivot, intake, shooter, led, false));
+              new PivotIntakeTele(pivot, intake, shooter, led, false, false));
         }
         return new InstantCommand(() -> led.setState(LED_STATE.RED))
             .andThen(
@@ -119,7 +119,7 @@ public class DriveCommands {
                         omegaSupplier,
                         intakeAssistSupplier,
                         turnToSourceSupplier),
-                    new PivotIntakeTele(pivot, intake, shooter, led, false)));
+                    new PivotIntakeTele(pivot, intake, shooter, led, false, false)));
       }
     }
   }
