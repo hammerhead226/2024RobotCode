@@ -589,7 +589,7 @@ public class RobotContainer {
     //     driveController.a().whileTrue(new TurnToSource(drive, driveController));
 
     // driveController.a().whileTrue(new DriveToChain(drive));
-    driveController.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(5000, 5000)));
+    driveController.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(5700, 5300)));
     driveController.a().onFalse(new InstantCommand(() -> shooter.stopFlywheels()));
 
     driveController.x().onTrue(new SetPivotTarget(90, pivot));

@@ -379,7 +379,8 @@ public class Drive extends SubsystemBase {
       xMeterStds = 0.7;
       yMeterStds = 0.7;
       headingDegStds = 8;
-    } else if (limelightMeasurement.tagCount == 1 && poseDifference < 0.5) { // && poseDifference < 0.5
+    } else if (limelightMeasurement.tagCount == 1
+        && poseDifference < 0.5) { // && poseDifference < 0.5
       xMeterStds = 5;
       yMeterStds = 5;
       headingDegStds = 30;

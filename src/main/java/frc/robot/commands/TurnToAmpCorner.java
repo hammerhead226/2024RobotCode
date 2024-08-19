@@ -71,7 +71,7 @@ public class TurnToAmpCorner extends Command {
   @Override
   public void initialize() {
     pivot.setPivotGoal(45);
-    shooter.setFlywheelRPMs(5000, 4400);
+    shooter.setFlywheelRPMs(4800, 4200);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -85,17 +85,17 @@ public class TurnToAmpCorner extends Command {
           "trans2",
           new Translation2d(
               FieldConstants.fieldLength - drive.getPose().getX(),
-              FieldConstants.fieldWidth - drive.getPose().getY()));
+              (FieldConstants.fieldWidth - 2.5) - drive.getPose().getY()));
       targetAngle =
           new Rotation2d(
                       FieldConstants.fieldLength - drive.getPose().getX(),
-                      FieldConstants.fieldWidth - drive.getPose().getY())
+                      (FieldConstants.fieldWidth - 2.5) - drive.getPose().getY())
                   .getDegrees()
               + 180;
       pid.setSetpoint(
           new Rotation2d(
                       FieldConstants.fieldLength - drive.getPose().getX(),
-                      FieldConstants.fieldWidth - drive.getPose().getY())
+                      (FieldConstants.fieldWidth - 2.5) - drive.getPose().getY())
                   .getDegrees()
               + 180);
       // pid.setSetpoint(
@@ -106,14 +106,15 @@ public class TurnToAmpCorner extends Command {
       //         + 180);
     } else {
       // Logger.recordOutput("trans2", new Translation2d(0, FieldConstants.fieldWidth));
-      targetAngle = new Translation2d(0, FieldConstants.fieldWidth).getAngle().getDegrees();
+      targetAngle = new Translation2d(0, (FieldConstants.fieldWidth - 2.5)).getAngle().getDegrees();
       // new Rotation2d(0, FieldConstants.fieldWidth).getDegrees() + 180;
       // pid.setSetpoint(
       //     new Rotation2d(0, FieldConstants.fieldWidth).getDegrees()
       //         + 180);
       pid.setSetpoint(
           new Rotation2d(
-                      -drive.getPose().getX(), FieldConstants.fieldWidth - drive.getPose().getY())
+                      -drive.getPose().getX(),
+                      (FieldConstants.fieldWidth - 2.5) - drive.getPose().getY())
                   .getDegrees()
               + 180);
       // pid.setSetpoint(

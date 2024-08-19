@@ -109,7 +109,7 @@ public class AimbotStatic extends Command {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
     // Logger.recordOutput("distance to speak", Units.metersToFeet(distanceToSpeakerMeter));
     distanceToSpeakerMeter = calculateDistanceToSpeaker();
-    if (Units.metersToFeet(distanceToSpeakerMeter) > 12) {
+    if (Units.metersToFeet(distanceToSpeakerMeter) > 13) {
       // double shootingSpeed =
       //     MathUtil.clamp(
       //         calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter)), 3250, 5400);
@@ -133,7 +133,7 @@ public class AimbotStatic extends Command {
         // center
         else shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed);
       }
-    } else shooter.setFlywheelRPMs(5200, 5000);
+    } else shooter.setFlywheelRPMs(5700, 5400);
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }
 
@@ -158,7 +158,7 @@ public class AimbotStatic extends Command {
       return 34;
     }
     Logger.recordOutput("pivot target auto", pivotSetpointDeg);
-    return pivotSetpointDeg + 2.26;
+    return pivotSetpointDeg + 2.9;
   }
 
   private double calculateDistanceToSpeaker() {
