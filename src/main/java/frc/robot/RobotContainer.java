@@ -620,8 +620,8 @@ public class RobotContainer {
                         new InstantCommand(() -> shooter.stopFeeders()))
                     .andThen(new PositionNoteInFeeder(shooter, intake))));
 
-        driveLeftBumper.whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true, false));
-    driveLeftBumper.onFalse(
+        driveLeftTrigger.whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true, false));
+    driveLeftTrigger.onFalse(
         new InstantCommand(intake::stopRollers)
             .andThen(new InstantCommand(() -> shooter.stopFeeders())));
 
