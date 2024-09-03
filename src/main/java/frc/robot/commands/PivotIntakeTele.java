@@ -28,7 +28,7 @@ public class PivotIntakeTele extends SequentialCommandGroup {
       addCommands(
           // new InstantCommand(() -> led.setColor(LED_STATE.VIOLET)),
           new ParallelCommandGroup(
-              new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
+              // new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
               // new WaitUntilCommand(pivot::atSetpoint),
               new IntakeNote(intake, shooter, led, isAutoAlign)),
           new InstantCommand(() -> led.setState(LED_STATE.GREEN)));
@@ -40,8 +40,8 @@ public class PivotIntakeTele extends SequentialCommandGroup {
       ;
     } else {
       addCommands(
-          new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
-          new WaitUntilCommand(pivot::atSetpoint),
+          // new SetPivotTarget(Constants.PivotConstants.INTAKE_SETPOINT_DEG, pivot),
+          // new WaitUntilCommand(pivot::atSetpoint),
           new InstantCommand(() -> shooter.setFeedersRPM(-4000)),
           new InstantCommand(
               () -> intake.runRollers(-Constants.IntakeConstants.APPLIED_VOLTAGE), intake));

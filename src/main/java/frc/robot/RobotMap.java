@@ -14,18 +14,17 @@ public class RobotMap {
   public static class ElevatorIDs {
     // public static final int LEFT = 8;
     // public static final int RIGHT = 9;
-    public static final int LEFT = 8;
-    public static final int RIGHT = 9;
+    public static final int LEFT = 2992;
+    public static final int RIGHT = 2130;
     public static final int BAR = 18;
   }
 
   public static class PivotIDs {
     public static final int GYRO = 10;
+    public static final int LEFT = 1929;
+    public static final int RIGHT = 191991;
     // public static final int LEFT = 14;
     // public static final int RIGHT = 15;
-    public static final int LEFT = 14;
-
-    public static final int RIGHT = 15;
   }
 
   public static class LEDIDs {
