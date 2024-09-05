@@ -56,7 +56,7 @@ public class AimbotTele extends Command {
 
     switch (Constants.currentMode) {
       case REAL:
-        gains[0] = 3.7;
+        gains[0] = 3.2;
         gains[1] = 0;
         gains[2] = 0;
         break;
@@ -113,14 +113,14 @@ public class AimbotTele extends Command {
       // } else {
       //   shooter.setFlywheelRPMs(5700, 5400);
       // }
-    } else if (Units.metersToFeet(distanceToSpeakerMeter) > 11.6) {
+    } else if (Units.metersToFeet(distanceToSpeakerMeter) > 12.5) {
       // double shootingSpeed =
       //     MathUtil.clamp(
       //         calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter)), 3250, 5400);
       double shootingSpeed = calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter));
 
-      shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 100);
-    } else shooter.setFlywheelRPMs(5700, 5400);
+      shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 400);
+    } else shooter.setFlywheelRPMs(5700, 5000);
 
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }
@@ -128,7 +128,7 @@ public class AimbotTele extends Command {
   private double calculateShooterSpeed(double distanceToSpeakerFeet) {
     double shooterSpeed = -986.49 * distanceToSpeakerFeet + 17294.6;
     // shooterSpeed = MathUtil.clamp(shooterSpeed, 3850, 5400);
-    shooterSpeed = MathUtil.clamp(shooterSpeed, 4400, 5400);
+    shooterSpeed = MathUtil.clamp(shooterSpeed, 4400, 5300);
     // if (distanceToSpeakerFeet >= 11) {
     // return -430.7 * distanceToSpeakerFeet + 8815;
     // } else return -600. * distanceToSpeakerFeet + 10406;
@@ -147,8 +147,8 @@ public class AimbotTele extends Command {
     // }
     // Logger.recordOutput("pivot target auto", pivotSetpointDeg);
     // return pivotSetpointDeg + 3.3;
-    pivotSetpointDeg = Units.radiansToDegrees(Math.atan(2.1 / distanceToSpeakerMeter));
-    if (Units.metersToFeet(distanceToSpeakerMeter) > 11.6) {
+    pivotSetpointDeg = Units.radiansToDegrees(Math.atan(2.1 / distanceToSpeakerMeter)) + 0.5;
+    if (Units.metersToFeet(distanceToSpeakerMeter) > 12.5) {
       return 32;
     }
     pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 32, 62);

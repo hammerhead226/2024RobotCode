@@ -63,15 +63,15 @@ public class TurnToAmpCorner extends Command {
     }
 
     pid = new PIDController(gains[0], gains[1], gains[2], 0.02);
-    pid.setTolerance(4);
+    pid.setTolerance(2);
     pid.enableContinuousInput(-180, 180);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    pivot.setPivotGoal(45);
-    shooter.setFlywheelRPMs(4800, 4200);
+    pivot.setPivotGoal(50);
+    shooter.setFlywheelRPMs(3700, 2700);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

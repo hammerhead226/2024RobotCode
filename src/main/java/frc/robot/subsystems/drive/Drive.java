@@ -208,8 +208,6 @@ public class Drive extends SubsystemBase {
       module.periodic();
     }
 
-    Logger.recordOutput("test trans", new Translation2d(2, 4));
-
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
       for (var module : modules) {

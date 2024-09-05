@@ -132,10 +132,10 @@ public class DriveCommands {
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
       BooleanSupplier intakeAssistSupplier,
-      BooleanSupplier turnToSourceSupplier) {
+      BooleanSupplier turnToAmpSupplier) {
     return Commands.run(
         () -> {
-          rotationPID.setTolerance(5);
+          rotationPID.setTolerance(1);
           rotationPID.enableContinuousInput(-180, 180);
           sidewaysPID.setTolerance(0.05460);
           // Apply deadband
@@ -178,14 +178,15 @@ public class DriveCommands {
 
           sideWaysError = 0 - drive.getNotePositionRobotRelative().getY();
 
-          if (turnToSourceSupplier.getAsBoolean()) {
+          if (turnToAmpSupplier.getAsBoolean()) {
             Rotation2d curreRotation2d = drive.getRotation();
             Rotation2d targeRotation2d;
-            if (DriverStation.getAlliance().get() == Alliance.Blue) {
-              targeRotation2d = Rotation2d.fromDegrees(-60);
-            } else {
-              targeRotation2d = Rotation2d.fromDegrees(240);
-            }
+            // if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            //   targeRotation2d = Rotation2d.fromDegrees(-60); //-60 for blue source
+            // } else {
+            //   targeRotation2d = Rotation2d.fromDegrees(240); //240 for red source
+            // }
+            targeRotation2d = Rotation2d.fromDegrees(90); // TODO 90 or -90 for amp, need to test
             rotationPID.setSetpoint(targeRotation2d.getDegrees());
 
             wantedRotationVelocity =
