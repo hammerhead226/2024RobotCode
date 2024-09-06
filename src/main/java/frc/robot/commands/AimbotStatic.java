@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -57,7 +56,7 @@ public class AimbotStatic extends Command {
 
     switch (Constants.currentMode) {
       case REAL:
-        gains[0] = 3.14;
+        gains[0] = 3.0;
         gains[1] = 0;
         gains[2] = 0;
         break;
@@ -79,7 +78,7 @@ public class AimbotStatic extends Command {
     }
 
     pid = new PIDController(gains[0], gains[1], gains[2], 0.02);
-    pid.setTolerance(4);
+    pid.setTolerance(3);
     pid.enableContinuousInput(-180, 180);
   }
 
@@ -97,68 +96,38 @@ public class AimbotStatic extends Command {
     angleShooter();
 
     Logger.recordOutput("distance from speak", Units.metersToFeet(calculateDistanceToSpeaker()));
-
-    // if (Units.metersToFeet(calculateDistanceToSpeaker()) > 12) {
-    //   led.setState(LED_STATE.FLASHING_RED);
-    // } else {
-    //   led.setState(LED_STATE.GREEN);
-    // }
   }
 
   public void angleShooter() {
     if (DriverStation.getAlliance().isPresent()) this.alliance = DriverStation.getAlliance().get();
-    // Logger.recordOutput("distance to speak", Units.metersToFeet(distanceToSpeakerMeter));
     distanceToSpeakerMeter = calculateDistanceToSpeaker();
-    if (Units.metersToFeet(distanceToSpeakerMeter) > 13) {
-      // double shootingSpeed =
-      //     MathUtil.clamp(
-      //         calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter)), 3250, 5400);
+    if (Units.metersToFeet(distanceToSpeakerMeter) < 6) {
+      shooter.setFlywheelRPMs(4500, 4000);
+
+    } else if (Units.metersToFeet(distanceToSpeakerMeter) > 12.5) {
       double shootingSpeed = calculateShooterSpeed(Units.metersToFeet(distanceToSpeakerMeter));
-      if (alliance == Alliance.Blue) {
-        // source side
-        if (drive.getPose().getY() < 4.5)
-          shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 250);
-        // amp side
-        else if (drive.getPose().getY() > 6.5)
-          shooter.setFlywheelRPMs(shootingSpeed + 250, shootingSpeed);
-        // center
-        else shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed);
-      } else {
-        // source side
-        if (drive.getPose().getY() < 4.5)
-          shooter.setFlywheelRPMs(shootingSpeed + 250, shootingSpeed);
-        // amp side
-        else if (drive.getPose().getY() > 6.5)
-          shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 250);
-        // center
-        else shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed);
-      }
-    } else shooter.setFlywheelRPMs(5700, 5400);
+      shooter.setFlywheelRPMs(shootingSpeed, shootingSpeed + 400);
+
+    } else shooter.setFlywheelRPMs(5700, 5000);
+
     pivot.setPivotGoal(calculatePivotAngleDeg(distanceToSpeakerMeter));
   }
 
   private double calculateShooterSpeed(double distanceToSpeakerFeet) {
     double shooterSpeed = -986.49 * distanceToSpeakerFeet + 17294.6;
-    // shooterSpeed = MathUtil.clamp(shooterSpeed, 3850, 5400);
-    shooterSpeed = MathUtil.clamp(shooterSpeed, 4000, 5200);
-    // if (distanceToSpeakerFeet >= 11) {
-    // return -430.7 * distanceToSpeakerFeet + 8815;
-    // } else return -600. * distanceToSpeakerFeet + 10406;
+    shooterSpeed = MathUtil.clamp(shooterSpeed, 4400, 5300);
     return shooterSpeed;
   }
 
   private double calculatePivotAngleDeg(double distanceToSpeakerMeter) {
-    // pivotSetpointDeg = (-0.272 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) +
-    // 60);
+    double shooterOffset = 0.5;
     pivotSetpointDeg =
-        (-0.253 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 57.68);
-    pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 34, 62);
-
-    if (Units.metersToFeet(distanceToSpeakerMeter) > 12) {
-      return 34;
+        Units.radiansToDegrees(Math.atan(2.1 / distanceToSpeakerMeter)) + shooterOffset;
+    if (Units.metersToFeet(distanceToSpeakerMeter) > 12.5) {
+      return 32;
     }
-    Logger.recordOutput("pivot target auto", pivotSetpointDeg);
-    return pivotSetpointDeg + 2.9;
+    pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 32, 62);
+    return pivotSetpointDeg;
   }
 
   private double calculateDistanceToSpeaker() {
@@ -188,12 +157,6 @@ public class AimbotStatic extends Command {
                   .getDegrees()
               + 180;
 
-      // Logger.recordOutput(
-      //     "speaker target",
-      //     new Translation2d(
-      //         (FieldConstants.fieldLength - Units.inchesToMeters(5)) ,
-      //         FieldConstants.Speaker.speakerCenterY ));
-
       pid.setSetpoint(
           new Rotation2d(
                       (FieldConstants.fieldLength) - drive.getPose().getX(),
@@ -207,11 +170,6 @@ public class AimbotStatic extends Command {
                       FieldConstants.Speaker.speakerCenterY - drive.getPose().getY())
                   .getDegrees()
               + 180;
-      // Logger.recordOutput(
-      //     "speaker target",
-      //     new Translation2d(
-      //         (FieldConstants.fieldLength - Units.inchesToMeters(5)) ,
-      //         FieldConstants.Speaker.speakerCenterY ));
 
       pid.setSetpoint(
           new Rotation2d(
@@ -256,8 +214,7 @@ public class AimbotStatic extends Command {
   @Override
   public boolean isFinished() {
     Logger.recordOutput("i am currently this angle", drive.getRotation().getDegrees());
-    return pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atGoal()
+    return (pid.atSetpoint() && shooter.atFlywheelSetpoints() && pivot.atGoal())
         || (Timer.getFPGATimestamp() - startTime > 1.323);
-    // return true;
   }
 }

@@ -56,7 +56,7 @@ public class AimbotTele extends Command {
 
     switch (Constants.currentMode) {
       case REAL:
-        gains[0] = 3.2;
+        gains[0] = 3.0;
         gains[1] = 0;
         gains[2] = 0;
         break;
@@ -94,14 +94,7 @@ public class AimbotTele extends Command {
   public void execute() {
     turnToSpeaker();
     angleShooter();
-
     Logger.recordOutput("distance from speak", Units.metersToFeet(calculateDistanceToSpeaker()));
-
-    // if (Units.metersToFeet(calculateDistanceToSpeaker()) > 12) {
-    //   led.setState(LED_STATE.FLASHING_RED);
-    // } else {
-    //   led.setState(LED_STATE.GREEN);
-    // }
   }
 
   public void angleShooter() {
@@ -136,18 +129,9 @@ public class AimbotTele extends Command {
   }
 
   private double calculatePivotAngleDeg(double distanceToSpeakerMeter) {
-    // pivotSetpointDeg = (-0.272 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) +
-    // 60);
-    // pivotSetpointDeg =
-    //     (-0.253 * Math.abs(Units.metersToInches(distanceToSpeakerMeter) - 36) + 57.68);
-    // pivotSetpointDeg = MathUtil.clamp(pivotSetpointDeg, 34, 62);
-
-    // if (Units.metersToFeet(distanceToSpeakerMeter) > 12) {
-    //   return 34;
-    // }
-    // Logger.recordOutput("pivot target auto", pivotSetpointDeg);
-    // return pivotSetpointDeg + 3.3;
-    pivotSetpointDeg = Units.radiansToDegrees(Math.atan(2.1 / distanceToSpeakerMeter)) + 0.5;
+    double shooterOffset = 0.5;
+    pivotSetpointDeg =
+        Units.radiansToDegrees(Math.atan(2.1 / distanceToSpeakerMeter)) + shooterOffset;
     if (Units.metersToFeet(distanceToSpeakerMeter) > 12.5) {
       return 32;
     }

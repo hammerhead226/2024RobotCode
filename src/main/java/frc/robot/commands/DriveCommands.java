@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -121,8 +122,28 @@ public class DriveCommands {
                         turnToSourceSupplier),
                     new PivotIntakeTele(pivot, intake, shooter, led, false, false)));
       }
+      //TODO rewrite above to condense, example below
+      // return new ConditionalCommand(
+      //         new InstantCommand(() -> {}),
+      //         new ConditionalCommand(
+      //             new InstantCommand(() -> led.setState(LED_STATE.FLASHING_RED)),
+      //             new InstantCommand(() -> led.setState(LED_STATE.RED)),
+      //             intakeAssistSupplier),
+      //         () -> intake.getLEDBool())
+      //     .andThen(
+      //         new ParallelCommandGroup(
+      //             joystickDrive(
+      //                 drive,
+      //                 xSupplier,
+      //                 ySupplier,
+      //                 omegaSupplier,
+      //                 intakeAssistSupplier,
+      //                 turnToSourceSupplier),
+      //             new PivotIntakeTele(
+      //                 pivot, intake, shooter, led, false, intakeAssistSupplier.getAsBoolean())));
     }
   }
+
   /**
    * Field relative drive command using two joysticks (controlling linear and angular velocities).
    */
@@ -186,7 +207,7 @@ public class DriveCommands {
             // } else {
             //   targeRotation2d = Rotation2d.fromDegrees(240); //240 for red source
             // }
-            targeRotation2d = Rotation2d.fromDegrees(90); // TODO 90 or -90 for amp, need to test
+            targeRotation2d = Rotation2d.fromDegrees(-90); // TODO 90 or -90 for amp, need to test
             rotationPID.setSetpoint(targeRotation2d.getDegrees());
 
             wantedRotationVelocity =

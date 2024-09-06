@@ -40,7 +40,7 @@ import frc.robot.commands.AimbotStatic;
 import frc.robot.commands.AimbotTele;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AngleShooter;
-import frc.robot.commands.AngleShooterShoot;
+// import frc.robot.commands.AngleShooterShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotIntakeAuto;
 import frc.robot.commands.PivotIntakeTele;
@@ -96,7 +96,6 @@ import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
 import frc.robot.subsystems.shooter.LeafBlowerIO;
 import frc.robot.subsystems.shooter.LeafBlowerIOTalonSRX;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.util.FieldConstants;
 import java.util.Map;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
@@ -430,11 +429,11 @@ public class RobotContainer {
     // AUTO AIM COMMANDS
     NamedCommands.registerCommand("TurnToSpeaker", new TurnToSpeaker(drive, driveController));
     NamedCommands.registerCommand("AngleShooter", new AngleShooter(drive, shooter, pivot));
-    NamedCommands.registerCommand(
-        "AngleShooterShoot",
-        new AngleShooterShoot(drive, shooter, pivot)
-            .andThen(
-                new WaitCommand(1.5).andThen(new InstantCommand(() -> shooter.stopFeeders()))));
+    // NamedCommands.registerCommand(
+    //     "AngleShooterShoot",
+    //     new AngleShooterShoot(drive, shooter, pivot)
+    //         .andThen(
+    //             new WaitCommand(1.5).andThen(new InstantCommand(() -> shooter.stopFeeders()))));
     NamedCommands.registerCommand(
         "AimbotStatic",
         new AimbotStatic(drive, driveController, shooter, pivot, led)
@@ -446,42 +445,21 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "DisableOverride", new InstantCommand(() -> drive.disableOverride()));
 
-    NamedCommands.registerCommand(
-        "test",
-        new ConditionalCommand(
-            new AlignToNoteAuto(led, drive, shooter, intake, pivot),
-            drive
-                .followPathCommand("c5 check", false)
-                .andThen(new AlignToNoteAuto(led, drive, shooter, intake, pivot)),
-            () -> drive.isNoteAt(FieldConstants.StagingLocations.centerlineTranslations[4])));
-
     // Set up auto routines
     autos = new SendableChooser<>();
 
-    autos.addOption("$s!p-b3-c5-c4", AutoBuilder.buildAuto("$s!p-b3-c5-c4"));
+    autos.addOption("$s!p-c5-c4", AutoBuilder.buildAuto("$s!p-c5-c4"));
+    autos.addOption("$s!p-c5-c3", AutoBuilder.buildAuto("$s!p-c5-c3"));
+    autos.addOption("$s!p-c4-c5", AutoBuilder.buildAuto("$s!p-c4-c5"));
+    autos.addOption("$s!p-c4-c3", AutoBuilder.buildAuto("$s!p-c4-c3"));
+    autos.addOption("$s!p-c3-c5", AutoBuilder.buildAuto("$s!p-c3-c5"));
+    autos.addOption("$s!p-c3-c4", AutoBuilder.buildAuto("$s!p-c3-c4"));
+
+    autos.addOption("$c!p-b3-b2-b1", AutoBuilder.buildAuto("$c!p-b3-b2-b1"));
+    autos.addOption("$c!p-b2-c3", AutoBuilder.buildAuto("$c!p-b2-c3"));
 
     autos.addOption("$a!p-b1-c1-c2", AutoBuilder.buildAuto("$a!p-b1-c1-c2"));
     autos.addOption("$a!p-b1-c2-c3", AutoBuilder.buildAuto("$a!p-b1-c2-c3"));
-
-    autos.addOption("$c!p-b3-b2-b1", AutoBuilder.buildAuto("$c!p-b3-b2-b1"));
-
-    autos.addOption("test path", AutoBuilder.buildAuto("test path"));
-
-    autos.addOption("$s!p-c5-c4", AutoBuilder.buildAuto("$s!p-c5-c4"));
-    autos.addOption("Copy of $s!p-c5-c4", AutoBuilder.buildAuto("Copy of $s!p-c5-c4"));
-    autos.addOption("$s!p-c4-c5", AutoBuilder.buildAuto("$s!p-c4-c5"));
-    autos.addOption("$s!p-c4-c3", AutoBuilder.buildAuto("$s!p-c4-c3"));
-    autos.addOption("$s!p-c3-c4", AutoBuilder.buildAuto("$s!p-c3-c4"));
-    autos.addOption("$s!p-c3-c5", AutoBuilder.buildAuto("$s!p-c3-c5"));
-    autos.addOption("$s!p-c5-c3", AutoBuilder.buildAuto("$s!p-c5-c3"));
-
-    autos.addOption("$c!p-b2-c3", AutoBuilder.buildAuto("$c!p-b2-c3"));
-
-    autos.addOption("New Auto", AutoBuilder.buildAuto("New Auto"));
-
-    autos.addOption("New New Auto", AutoBuilder.buildAuto("New New Auto"));
-
-    autos.addOption("conditional auto", AutoBuilder.buildAuto("conditional auto"));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", autos);
 
@@ -521,7 +499,6 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-
     driveController.a().onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(5700, 5300)));
     driveController.a().onFalse(new InstantCommand(() -> shooter.stopFlywheels()));
 
@@ -536,7 +513,6 @@ public class RobotContainer {
             new InstantCommand(() -> shooter.turnOffFan(), shooter)
                 .andThen(new InstantCommand(shooter::stopFeeders))
                 .andThen(new InstantCommand(shooter::stopFlywheels)));
-
 
     driveController
         .rightBumper()
@@ -713,7 +689,7 @@ public class RobotContainer {
                     new InstantCommand(() -> elevator.setConstraints(30, 85)),
                     new InstantCommand(() -> shooter.stopFlywheels(), shooter),
                     new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))));
-    
+
     manipBButton.onTrue(
         new ParallelCommandGroup(
                 new SetPivotTarget(Constants.PivotConstants.SUBWOOFER_SETPOINT_DEG, pivot),
@@ -722,21 +698,20 @@ public class RobotContainer {
                     Constants.ShooterConstants.FLYWHEEL_SHOOT_RPM,
                     shooter))
             .andThen(new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.PIVOT_PRESET))));
-            
+
     manipBButton.onFalse(
         new ParallelCommandGroup(
                 new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot),
                 new SetShooterTargetRPM(0, 0, shooter))
             .andThen(new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.AIMBOT))));
-    
+
     manipRightBumper.whileTrue(new TurnToAmpCorner(drive, pivot, shooter, driveController));
-    
+
     manipRightBumper.onFalse(
         new ParallelCommandGroup(
                 new InstantCommand(shooter::stopFlywheels, shooter),
                 new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
             .andThen(new InstantCommand(shooter::stopFeeders, shooter)));
-
   }
 
   /**

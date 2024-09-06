@@ -196,7 +196,8 @@ public class Shooter extends SubsystemBase {
       lastNoteState = NoteState.SENSOR;
       return NoteState.SENSOR;
 
-    } else if (feedInputs.currentAmps > 13) { //TODO add additional check to filter out false positives
+    } else if (feedInputs.currentAmps
+        > 13) { // TODO add additional check to filter out false positives
       // } else if (feedInputs.currentAmps > 10000) {
       Logger.recordOutput("see note val", "current");
       lastNoteState = NoteState.CURRENT;
