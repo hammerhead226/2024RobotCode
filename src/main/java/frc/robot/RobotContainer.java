@@ -46,8 +46,6 @@ import frc.robot.commands.PivotIntakeAuto;
 import frc.robot.commands.PivotIntakeTele;
 import frc.robot.commands.PositionNoteInFeeder;
 import frc.robot.commands.ScoreAmp;
-import frc.robot.commands.ScoreTrap;
-import frc.robot.commands.SetAmpBarTarget;
 import frc.robot.commands.SetElevatorTarget;
 import frc.robot.commands.SetPivotTarget;
 import frc.robot.commands.SetShooterTargetRPM;
@@ -586,7 +584,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-     driveRightBumper.onTrue(
+    driveRightBumper.onTrue(
         new SequentialCommandGroup(
             new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
             new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
@@ -604,7 +602,7 @@ public class RobotContainer {
                 () -> false,
                 manipLeftBumper)));
 
-         driveRightBumper.onFalse(
+    driveRightBumper.onFalse(
         new InstantCommand(() -> led.setState(LED_STATE.BLUE))
             .andThen(new InstantCommand(() -> intake.changeLEDBoolFalse()))
             .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
@@ -620,19 +618,49 @@ public class RobotContainer {
                         new InstantCommand(() -> shooter.stopFeeders()))
                     .andThen(new PositionNoteInFeeder(shooter, intake))));
 
-        driveLeftTrigger.whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true, false));
+    driveLeftTrigger.whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true, false));
     driveLeftTrigger.onFalse(
         new InstantCommand(intake::stopRollers)
             .andThen(new InstantCommand(() -> shooter.stopFeeders())));
 
+    driveBButton.onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(1500, 2000)));
+    driveBButton.onFalse(new InstantCommand(() -> shooter.stopFlywheels()));
 
-        driveBButton.onTrue(new InstantCommand(() -> shooter.setFlywheelRPMs(2000, 3000)));
-        driveBButton.onFalse(new InstantCommand(() -> shooter.stopFlywheels()));
+    driveRightTrigger.onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
+    driveRightTrigger.onFalse(new InstantCommand(() -> shooter.stopFeeders()));
 
-        driveRightTrigger.onTrue(new InstantCommand(() -> shooter.setFeedersRPM(1000)));
-        driveRightTrigger.onFalse(new InstantCommand(() -> shooter.stopFeeders()));
-
-   
+    driveLeftBumper.onTrue(
+        new SequentialCommandGroup(
+            new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
+            new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
+            new SetElevatorTarget(0, 1.5, elevator),
+            DriveCommands.intakeCommand(
+                drive,
+                shooter,
+                pivot,
+                intake,
+                led,
+                driveController,
+                () -> -driveController.getLeftY(),
+                () -> -driveController.getLeftX(),
+                () -> -driveController.getRightX(),
+                () -> true,
+                manipLeftBumper)));
+    driveLeftBumper.onFalse(
+        new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+            .andThen(new InstantCommand(() -> intake.changeLEDBoolFalse()))
+            .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
+            .andThen(new WaitCommand(0.02))
+            .andThen(
+                new ConditionalCommand(
+                    new WaitCommand(0.1),
+                    new WaitCommand(0.06),
+                    () -> (shooter.getLastNoteState() == NoteState.CURRENT)))
+            .andThen(
+                new ParallelCommandGroup(
+                        new InstantCommand(() -> intake.stopRollers(), intake),
+                        new InstantCommand(() -> shooter.stopFeeders()))
+                    .andThen(new PositionNoteInFeeder(shooter, intake))));
   }
 
   // TODO:: change drive controls to match changed test controls
