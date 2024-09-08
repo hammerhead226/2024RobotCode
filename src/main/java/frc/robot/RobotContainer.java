@@ -415,7 +415,7 @@ public class RobotContainer {
             .andThen(
                 new InstantCommand(() -> intake.stopRollers())
                     .andThen(new InstantCommand(() -> shooter.stopFeeders())))
-            .withTimeout(1.5));
+            .withTimeout(1.7));
 
     NamedCommands.registerCommand("C5", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.C5)));
     NamedCommands.registerCommand("C4", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.C4)));

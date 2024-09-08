@@ -85,17 +85,17 @@ public class TurnToAmpCorner extends Command {
           "trans2",
           new Translation2d(
               FieldConstants.fieldLength - drive.getPose().getX(),
-              (FieldConstants.fieldWidth - 2.5) - drive.getPose().getY()));
+              (FieldConstants.fieldWidth - 1.5) - drive.getPose().getY()));
       targetAngle =
           new Rotation2d(
                       FieldConstants.fieldLength - drive.getPose().getX(),
-                      (FieldConstants.fieldWidth - 2.5) - drive.getPose().getY())
+                      (FieldConstants.fieldWidth - 1.5) - drive.getPose().getY())
                   .getDegrees()
               + 180;
       pid.setSetpoint(
           new Rotation2d(
                       FieldConstants.fieldLength - drive.getPose().getX(),
-                      (FieldConstants.fieldWidth - 2.5) - drive.getPose().getY())
+                      (FieldConstants.fieldWidth - 1.5) - drive.getPose().getY())
                   .getDegrees()
               + 180);
       // pid.setSetpoint(
@@ -106,7 +106,7 @@ public class TurnToAmpCorner extends Command {
       //         + 180);
     } else {
       // Logger.recordOutput("trans2", new Translation2d(0, FieldConstants.fieldWidth));
-      targetAngle = new Translation2d(0, (FieldConstants.fieldWidth - 2.5)).getAngle().getDegrees();
+      targetAngle = new Translation2d(0, (FieldConstants.fieldWidth - 1.5)).getAngle().getDegrees();
       // new Rotation2d(0, FieldConstants.fieldWidth).getDegrees() + 180;
       // pid.setSetpoint(
       //     new Rotation2d(0, FieldConstants.fieldWidth).getDegrees()
@@ -114,7 +114,7 @@ public class TurnToAmpCorner extends Command {
       pid.setSetpoint(
           new Rotation2d(
                       -drive.getPose().getX(),
-                      (FieldConstants.fieldWidth - 2.5) - drive.getPose().getY())
+                      (FieldConstants.fieldWidth - 1.5) - drive.getPose().getY())
                   .getDegrees()
               + 180);
       // pid.setSetpoint(
