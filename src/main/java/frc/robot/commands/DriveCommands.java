@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -122,7 +121,7 @@ public class DriveCommands {
                         turnToSourceSupplier),
                     new PivotIntakeTele(pivot, intake, shooter, led, false, false)));
       }
-      //TODO rewrite above to condense, example below
+      // TODO rewrite above to condense, example below
       // return new ConditionalCommand(
       //         new InstantCommand(() -> {}),
       //         new ConditionalCommand(

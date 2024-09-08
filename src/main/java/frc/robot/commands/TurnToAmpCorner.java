@@ -71,7 +71,7 @@ public class TurnToAmpCorner extends Command {
   @Override
   public void initialize() {
     pivot.setPivotGoal(50);
-    shooter.setFlywheelRPMs(3700, 2700);
+    shooter.setFlywheelRPMs(4000, 3000);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -129,7 +129,7 @@ public class AimbotTele extends Command {
   }
 
   private double calculatePivotAngleDeg(double distanceToSpeakerMeter) {
-    double shooterOffset = 0.5;
+    double shooterOffset = 1.323;
     pivotSetpointDeg =
         Units.radiansToDegrees(Math.atan(2.1 / distanceToSpeakerMeter)) + shooterOffset;
     if (Units.metersToFeet(distanceToSpeakerMeter) > 12.5) {
