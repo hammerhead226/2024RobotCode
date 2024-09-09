@@ -55,7 +55,7 @@ public class AlignToNoteAuto extends Command {
 
     generatedPathCommand =
         AutoBuilder.followPath(
-            drive.generateTrajectoryToNote(targetNoteLocation, 3, 2.45, 100, 180, 0.5));
+            drive.generateTrajectoryToNote(targetNoteLocation, 3.5, 2.7, 100, 180, 0.5));
 
     generatedPathCommand.initialize();
   }

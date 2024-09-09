@@ -938,7 +938,7 @@ public class Drive extends SubsystemBase {
             new PathPlannerPath(
                 pointsToNote,
                 new PathConstraints(
-                    2, 2.26, Units.degreesToRadians(100), Units.degreesToRadians(180)),
+                    3, 2.26, Units.degreesToRadians(100), Units.degreesToRadians(180)),
                 new GoalEndState(0.5, targetRotation, true));
         Logger.recordOutput("source snap target", targetRotation.getDegrees());
         path.preventFlipping = true;
