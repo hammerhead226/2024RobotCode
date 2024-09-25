@@ -62,6 +62,8 @@ import frc.robot.util.LocalADStarAK;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -73,6 +75,7 @@ public class Drive extends SubsystemBase {
   private static final double MAX_ANGULAR_SPEED = Constants.SwerveConstants.MAX_ANGULAR_SPEED;
   private static double multiplier = 1.0;
   private static boolean toggle = false;
+  static final Lock odometryLock = new ReentrantLock();
 
   private NOTE_POSITIONS targetNote;
 
@@ -200,6 +203,8 @@ public class Drive extends SubsystemBase {
   }
 
   public void periodic() {
+    odometryLock.lock();
+    // locking updates while reading data
     gyroIO.updateInputs(gyroInputs);
     visionIO.updateInputs(visionInputs);
     Logger.processInputs("Vision/Limelight", visionInputs);
@@ -207,7 +212,8 @@ public class Drive extends SubsystemBase {
     for (var module : modules) {
       module.periodic();
     }
-
+    // unlocking after modules are updated
+    odometryLock.unlock();
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
       for (var module : modules) {
