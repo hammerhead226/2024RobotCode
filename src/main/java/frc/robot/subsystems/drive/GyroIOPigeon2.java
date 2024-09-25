@@ -21,6 +21,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import java.util.Queue;
 
 /** IO implementation for Pigeon2 */
 public class GyroIOPigeon2 implements GyroIO {
@@ -31,15 +32,21 @@ public class GyroIOPigeon2 implements GyroIO {
   private final StatusSignal<Double> accelerationYDegSecSquared = pigeon.getAccelerationY();
   private final StatusSignal<Double> accelerationZDegSecSquared = pigeon.getAccelerationZ();
 
+  private final Queue<Double> yawPositionQueue;
+  private final Queue<Double> yawTimestampQueue;
+
   public GyroIOPigeon2() {
     pigeon.getConfigurator().apply(new Pigeon2Configuration());
     pigeon.getConfigurator().setYaw(0.0);
-    yaw.setUpdateFrequency(100.0);
+    yaw.setUpdateFrequency(Module.ODOMETRY_FREQUENCY);
     yawVelocity.setUpdateFrequency(100.0);
 
     accelerationXDegSecSquared.setUpdateFrequency(100.0);
     accelerationYDegSecSquared.setUpdateFrequency(100.0);
     accelerationZDegSecSquared.setUpdateFrequency(100.0);
+
+    yawTimestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
+    yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(pigeon, pigeon.getYaw());
 
     pigeon.optimizeBusUtilization();
   }
@@ -60,5 +67,14 @@ public class GyroIOPigeon2 implements GyroIO {
     inputs.accelerationXDegSecSquared = accelerationXDegSecSquared.getValueAsDouble();
     inputs.accelerationYDegSecSquared = accelerationYDegSecSquared.getValueAsDouble();
     inputs.accelerationZDegSecSquared = accelerationZDegSecSquared.getValueAsDouble();
+
+    inputs.odometryYawTimestamps =
+        yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryYawPositions =
+        yawPositionQueue.stream()
+            .map((Double value) -> Rotation2d.fromDegrees(value))
+            .toArray(Rotation2d[]::new);
+    yawTimestampQueue.clear();
+    yawPositionQueue.clear();
   }
 }

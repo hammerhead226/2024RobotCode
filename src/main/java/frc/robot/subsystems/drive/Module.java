@@ -177,6 +177,10 @@ public class Module {
   }
 
   /** Returns the drive velocity in radians/sec. */
+  public double[] getOdometryTimestamps() {
+    return inputs.odometryTimestamps;
+  }
+
   public double getCharacterizationVelocity() {
     return inputs.driveVelocityRadPerSec;
   }

@@ -140,6 +140,9 @@ public class Drive extends SubsystemBase {
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
 
+    // starting odometry thread
+    PhoenixOdometryThread.getInstance().start();
+
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configureHolonomic(
         this::getPose,
@@ -225,6 +228,11 @@ public class Drive extends SubsystemBase {
       Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
+
+    // Update odometry
+    double[] sampleTimestamps =
+        modules[0].getOdometryTimestamps(); // All signals are sampled together
+    int sampleCount = sampleTimestamps.length;
 
     // Read wheel positions and deltas from each module
     SwerveModulePosition[] modulePositions = getModulePositions();
