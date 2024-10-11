@@ -10,6 +10,7 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.littletonrobotics.junction.Logger;
 
 public class PhoenixOdometryThread extends Thread {
 
@@ -90,6 +91,27 @@ public class PhoenixOdometryThread extends Thread {
         e.printStackTrace();
       } finally {
         signalsLock.unlock();
+      }
+
+      // Save new data to queues
+      Drive.odometryLock.lock();
+      try {
+        double timestamp = Logger.getRealTimestamp() / 1e6;
+        double totalLatency = 0.0;
+        for (BaseStatusSignal signal : signals) {
+          totalLatency += signal.getTimestamp().getLatency();
+        }
+        if (signals.length > 0) {
+          timestamp -= totalLatency / signals.length;
+        }
+        for (int i = 0; i < signals.length; i++) {
+          queues.get(i).offer(signals[i].getValueAsDouble());
+        }
+        for (int i = 0; i < timestampQueues.size(); i++) {
+          timestampQueues.get(i).offer(timestamp);
+        }
+      } finally {
+        Drive.odometryLock.unlock();
       }
     }
   }
