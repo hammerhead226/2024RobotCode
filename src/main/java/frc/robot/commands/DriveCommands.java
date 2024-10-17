@@ -204,9 +204,9 @@ public class DriveCommands {
             // if (DriverStation.getAlliance().get() == Alliance.Blue) {
             //   targeRotation2d = Rotation2d.fromDegrees(-60); //-60 for blue source
             // } else {
-            //   targeRotation2d = Rotation2d.fromDegrees(240); //240 for red source
+            //   targeRotation2d = Rotation2d.fromDegrees(240); //240 for red sjkource
             // }
-            targeRotation2d = Rotation2d.fromDegrees(-90); // TODO 90 or -90 for amp, need to test
+            targeRotation2d = Rotation2d.fromDegrees(-88); // TODO 90 or -90 for amp, need to test
             rotationPID.setSetpoint(targeRotation2d.getDegrees());
 
             wantedRotationVelocity =
