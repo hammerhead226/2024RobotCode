@@ -459,7 +459,7 @@ public class RobotContainer {
     autos.addOption("$c!p-b2-c3", AutoBuilder.buildAuto("$c!p-b2-c3"));
 
     autos.addOption("$a!p-b1-c1-c2", AutoBuilder.buildAuto("$a!p-b1-c1-c2"));
-    autos.addOption("$a!p-b1-c2-c3", AutoBuilder.buildAuto("$a!p-b1-c2-c3"));
+    autos.addOption("$a!p-b1-c2", AutoBuilder.buildAuto("$a!p-b1-c2"));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", autos);
 

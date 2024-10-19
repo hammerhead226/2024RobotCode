@@ -94,42 +94,6 @@
           "data": {
             "pathName": "$apb1c(23)!c3"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "C3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AlignToNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "$apb1c(23)!score c3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AimbotStatic"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DisableOverride"
-          }
         }
       ]
     }
