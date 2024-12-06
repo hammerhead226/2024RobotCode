@@ -13,7 +13,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -39,7 +38,6 @@ import frc.robot.commands.AimbotAuto;
 import frc.robot.commands.AimbotStatic;
 import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AngleShooter;
-// import frc.robot.commands.AngleShooterShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PivotIntakeAuto;
 import frc.robot.commands.PivotIntakeTele;
@@ -448,18 +446,18 @@ public class RobotContainer {
     // Set up auto routines
     autos = new SendableChooser<>();
 
-    autos.addOption("$s!p-c5-c4", AutoBuilder.buildAuto("$s!p-c5-c4"));
-    autos.addOption("$s!p-c5-c3", AutoBuilder.buildAuto("$s!p-c5-c3"));
-    autos.addOption("$s!p-c4-c5", AutoBuilder.buildAuto("$s!p-c4-c5"));
-    autos.addOption("$s!p-c4-c3", AutoBuilder.buildAuto("$s!p-c4-c3"));
-    autos.addOption("$s!p-c3-c5", AutoBuilder.buildAuto("$s!p-c3-c5"));
-    autos.addOption("$s!p-c3-c4", AutoBuilder.buildAuto("$s!p-c3-c4"));
+    // autos.addOption("$s!p-c5-c4", AutoBuilder.buildAuto("$s!p-c5-c4"));
+    // autos.addOption("$s!p-c5-c3", AutoBuilder.buildAuto("$s!p-c5-c3"));
+    // autos.addOption("$s!p-c4-c5", AutoBuilder.buildAuto("$s!p-c4-c5"));
+    // autos.addOption("$s!p-c4-c3", AutoBuilder.buildAuto("$s!p-c4-c3"));
+    // autos.addOption("$s!p-c3-c5", AutoBuilder.buildAuto("$s!p-c3-c5"));
+    // autos.addOption("$s!p-c3-c4", AutoBuilder.buildAuto("$s!p-c3-c4"));
 
-    autos.addOption("$c!p-b3-b2-b1", AutoBuilder.buildAuto("$c!p-b3-b2-b1"));
-    autos.addOption("$c!p-b2-c3", AutoBuilder.buildAuto("$c!p-b2-c3"));
+    // autos.addOption("$c!p-b3-b2-b1", AutoBuilder.buildAuto("$c!p-b3-b2-b1"));
+    // autos.addOption("$c!p-b2-c3", AutoBuilder.buildAuto("$c!p-b2-c3"));
 
-    autos.addOption("$a!p-b1-c1-c2", AutoBuilder.buildAuto("$a!p-b1-c1-c2"));
-    autos.addOption("$a!p-b1-c2", AutoBuilder.buildAuto("$a!p-b1-c2"));
+    // autos.addOption("$a!p-b1-c1-c2", AutoBuilder.buildAuto("$a!p-b1-c1-c2"));
+    // autos.addOption("$a!p-b1-c2", AutoBuilder.buildAuto("$a!p-b1-c2"));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", autos);
 
@@ -486,14 +484,14 @@ public class RobotContainer {
             () -> -driveController.getLeftY(),
             () -> -driveController.getLeftX(),
             () -> -driveController.getRightX(),
-            driveLeftBumper,
+            () -> false,
             manipLeftBumper));
 
     driveRightBumper.onTrue(
         new SequentialCommandGroup(
-            new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
-            new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
-            new SetElevatorTarget(0, 1.5, elevator),
+            // new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
+            // new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
+            // new SetElevatorTarget(0, 1.5, elevator),
             DriveCommands.intakeCommand(
                 drive,
                 shooter,
@@ -532,39 +530,39 @@ public class RobotContainer {
                 drive)
             .ignoringDisable(true));
 
-    driveLeftBumper.onTrue(
-        new SequentialCommandGroup(
-            new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
-            new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
-            new SetElevatorTarget(0, 1.5, elevator),
-            DriveCommands.intakeCommand(
-                drive,
-                shooter,
-                pivot,
-                intake,
-                led,
-                driveController,
-                () -> -driveController.getLeftY(),
-                () -> -driveController.getLeftX(),
-                () -> -driveController.getRightX(),
-                () -> true,
-                manipLeftBumper)));
-    driveLeftBumper.onFalse(
-        new InstantCommand(() -> led.setState(LED_STATE.BLUE))
-            .andThen(new InstantCommand(() -> intake.changeLEDBoolFalse()))
-            .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
-            .andThen(new WaitCommand(0.02))
-            .andThen(
-                new ConditionalCommand(
-                    new WaitCommand(0.1),
-                    new WaitCommand(0.06),
-                    () -> (shooter.getLastNoteState() == NoteState.CURRENT)))
-            .andThen(
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> intake.stopRollers(), intake),
-                        new InstantCommand(() -> shooter.stopFeeders()),
-                        new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
-                    .andThen(new PositionNoteInFeeder(shooter, intake))));
+    // driveLeftBumper.onTrue(
+    //     new SequentialCommandGroup(
+    //         // new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
+    //         // new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
+    //         // new SetElevatorTarget(0, 1.5, elevator),
+    //         DriveCommands.intakeCommand(
+    //             drive,
+    //             shooter,
+    //             pivot,
+    //             intake,
+    //             led,
+    //             driveController,
+    //             () -> -driveController.getLeftY(),
+    //             () -> -driveController.getLeftX(),
+    //             () -> -driveController.getRightX(),
+    //             () -> true,
+    //             manipLeftBumper)));
+    // driveLeftBumper.onFalse(
+    //     new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+    //         .andThen(new InstantCommand(() -> intake.changeLEDBoolFalse()))
+    //         .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
+    //         .andThen(new WaitCommand(0.02))
+    //         .andThen(
+    //             new ConditionalCommand(
+    //                 new WaitCommand(0.1),
+    //                 new WaitCommand(0.06),
+    //                 () -> (shooter.getLastNoteState() == NoteState.CURRENT)))
+    //         .andThen(
+    //             new ParallelCommandGroup(
+    //                     new InstantCommand(() -> intake.stopRollers(), intake),
+    //                     new InstantCommand(() -> shooter.stopFeeders()),
+    //                     new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
+    //                 .andThen(new PositionNoteInFeeder(shooter, intake))));
 
     driveLeftTrigger.whileTrue(new PivotIntakeTele(pivot, intake, shooter, led, true, false));
     driveLeftTrigger.onFalse(
@@ -577,11 +575,11 @@ public class RobotContainer {
         new InstantCommand(() -> shooter.stopFeeders(), shooter)
             .andThen(new InstantCommand(() -> led.setState(LED_STATE.BLUE)))
             .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot))
-            .andThen(
-                new SetElevatorTarget(
-                    Constants.ElevatorConstants.RETRACT_SETPOINT_INCH,
-                    Constants.ElevatorConstants.THRESHOLD,
-                    elevator))
+            // .andThen(
+            //     new SetElevatorTarget(
+            //         Constants.ElevatorConstants.RETRACT_SETPOINT_INCH,
+            //         Constants.ElevatorConstants.THRESHOLD,
+            //         elevator))
             .andThen(new WaitCommand(0.5))
             .andThen(new InstantCommand(shooter::stopFlywheels))
             .andThen(new InstantCommand(() -> shooter.turnOffFan(), shooter)));
@@ -590,12 +588,12 @@ public class RobotContainer {
         .b()
         .onTrue(
             new SequentialCommandGroup(
-                new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
-                new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
-                new SetElevatorTarget(0, 1.5, elevator),
+                // new InstantCommand(() -> climbStateMachine.setClimbState(CLIMB_STATES.NONE)),
+                // new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
+                // new SetElevatorTarget(0, 1.5, elevator),
                 new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.PIVOT_PRESET)),
                 new SetPivotTarget(45, pivot),
-                new InstantCommand(() -> shooter.setFlywheelRPMs(2000, 2300))));
+                new InstantCommand(() -> shooter.setFlywheelRPMs(1500, 1900))));
     driveController
         .b()
         .onFalse(
