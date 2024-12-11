@@ -14,8 +14,8 @@ public class RobotMap {
   public static class ElevatorIDs {
     // public static final int LEFT = 8;
     // public static final int RIGHT = 9;
-    public static final int LEFT = 8;
-    public static final int RIGHT = 9;
+    public static final int LEFT = 40946;
+    public static final int RIGHT = 95094;
     public static final int BAR = 18;
   }
 

@@ -50,7 +50,7 @@ public class PivotIOTalonFX implements PivotIO {
 
     pitch = pigeon.getRoll();
 
-    startAngleDegs = pitch.getValueAsDouble();
+    startAngleDegs = 95.65 - 59;
 
     leader.setPosition(
         Conversions.degreesToFalcon(startAngleDegs, Constants.PivotConstants.REDUCTION));

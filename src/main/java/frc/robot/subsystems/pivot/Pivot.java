@@ -70,8 +70,8 @@ public class Pivot extends SubsystemBase {
 
     shootState = SHOOT_STATE.AIMBOT;
 
-    maxVelocityDegPerSec = 150;
-    maxAccelerationDegPerSecSquared = 226;
+    maxVelocityDegPerSec = 50;
+    maxAccelerationDegPerSecSquared = 80;
     // maxAccelerationDegPerSecSquared = 180;
 
     pivotConstraints =
