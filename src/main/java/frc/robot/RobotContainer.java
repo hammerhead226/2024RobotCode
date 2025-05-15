@@ -53,6 +53,7 @@ import frc.robot.commands.SetPivotTarget;
 import frc.robot.commands.SetShooterTargetRPM;
 import frc.robot.commands.ShootNoteAmp;
 import frc.robot.commands.ShootNoteCenter;
+import frc.robot.commands.ShootNoteFAR;
 import frc.robot.commands.ShootNoteSource;
 import frc.robot.commands.StopIntakeFeed;
 import frc.robot.commands.TurnToAmpCorner;
@@ -138,6 +139,7 @@ public class RobotContainer {
   private Trigger driveAButton;
   private Trigger driveXButton;
   private Trigger driveBButton;
+  private Trigger driveBothSticks;
 
   private final LoggedDashboardNumber flywheelSpeed = new LoggedDashboardNumber("fly speed", 5400);
 
@@ -672,6 +674,10 @@ public class RobotContainer {
     driveAButton.onTrue(climbCommands);
 
     driveXButton.onTrue(trapCommands);
+
+    driveController
+        .rightStick()
+        .onTrue(new ShootNoteFAR(shooter));
   }
 
   private void manipControls() {
