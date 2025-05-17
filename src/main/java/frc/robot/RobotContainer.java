@@ -675,9 +675,7 @@ public class RobotContainer {
 
     driveXButton.onTrue(trapCommands);
 
-    driveController
-        .rightStick()
-        .onTrue(new ShootNoteFAR(shooter));
+    driveController.rightStick().onTrue(new ShootNoteFAR(shooter));
   }
 
   private void manipControls() {
