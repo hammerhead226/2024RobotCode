@@ -600,6 +600,8 @@ public class RobotContainer {
             new InstantCommand(() -> led.setState(LED_STATE.BLUE))
                 .andThen(new InstantCommand(() -> shooter.stopFlywheels()))
                 .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
+
+    driveController.back().onTrue(new SetPivotTarget(95, pivot));
   }
 
   private void testControls() {
