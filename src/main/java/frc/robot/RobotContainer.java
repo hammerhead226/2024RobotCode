@@ -600,6 +600,20 @@ public class RobotContainer {
             new InstantCommand(() -> led.setState(LED_STATE.BLUE))
                 .andThen(new InstantCommand(() -> shooter.stopFlywheels()))
                 .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
+    
+    driveController
+        .a()
+        .onTrue(
+            new SequentialCommandGroup(
+                new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.PIVOT_PRESET)),
+                new SetPivotTarget(45, pivot),
+                new InstantCommand(() -> shooter.setFlywheelRPMs(5600, 6000))));
+    driveController
+        .a()
+        .onFalse(
+            new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+                .andThen(new InstantCommand(() -> shooter.stopFlywheels()))
+                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
 
     driveController.back().onTrue(new SetPivotTarget(95, pivot));
   }
