@@ -16,15 +16,14 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
   private final SparkMax rollers;
 
   public IntakeRollerIOSparkFlex(int id) {
-    SparkMax rollers = new SparkMax(id, MotorType.kBrushless);
+    rollers = new SparkMax(id, MotorType.kBrushless);
     SparkClosedLoopController pid = rollers.getClosedLoopController();
+    SparkMaxConfig config = new SparkMaxConfig();
+
     
-    
-    
-     rollers.setSmart(5);
+    config.smartCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT);
     rollers.setCANTimeout(250);
-    SparkMaxConfig.
-    rollers.burnFlash();
+      rollers.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override

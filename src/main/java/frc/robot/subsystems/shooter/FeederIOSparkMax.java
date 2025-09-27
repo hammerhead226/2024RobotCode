@@ -1,14 +1,17 @@
 package frc.robot.subsystems.shooter;
 
-import com.revrobotics.servohub.ServoHub.ResetMode;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
+
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
-
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+
 
 import frc.robot.Constants;
 
@@ -16,7 +19,7 @@ import frc.robot.Constants;
 public class FeederIOSparkMax implements FeederIO {
    SparkMax neo;
    SparkClosedLoopController pid;
-  SparkMaxConfig config = new SparkMaxConfig();
+  SparkMaxConfig config;
 
   
 
@@ -34,11 +37,10 @@ public class FeederIOSparkMax implements FeederIO {
     neo.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
       
+    neo.setCANTimeout(250);
 
     
-    neo.setSmartCurrentLimit((int) Constants.ShooterConstants.FEEDER_CURRENT_LIMIT);
-    neo.setCANTimeout(250);
-    neo.burnFlash();
+    config.smartCurrentLimit((int) Constants.ShooterConstants.FEEDER_CURRENT_LIMIT);
   }
 
   @Override
@@ -54,7 +56,7 @@ public class FeederIOSparkMax implements FeederIO {
   @Override
   public void setVelocityRPS(double velocityRPS, double ffVolts) {
     this.velocitySetpointRPS = velocityRPS;
-    pid.setReference(velocityRPS, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
+    pid.setReference(velocityRPS, ControlType.kVelocity, , ffVolts, ArbFFUnits.kVoltage);
   }
 
   @Override
@@ -64,7 +66,8 @@ public class FeederIOSparkMax implements FeederIO {
 
   @Override
   public void configurePID(double kP, double kI, double kD) {
-    pid.setP(kP, 0);
+    pid.
+    pid.conf(kP, 0);
     pid.setI(kI, 0);
     pid.setD(kD, 0);
   }
