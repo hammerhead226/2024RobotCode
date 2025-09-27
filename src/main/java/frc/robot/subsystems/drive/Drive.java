@@ -16,16 +16,13 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.FollowPathHolonomic;
+//import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.Pathfinding;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
-import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -138,21 +135,21 @@ public class Drive extends SubsystemBase {
     modules[3] = new Module(brModuleIO, 3);
 
     // Configure AutoBuilder for PathPlanner
-    AutoBuilder.configureHolonomic(
-        this::getPose,
-        this::setPose,
-        () -> kinematics.toChassisSpeeds(getModuleStates()),
-        this::runVelocity,
-        new HolonomicPathFollowerConfig(
-            new PIDConstants(5),
-            new PIDConstants(1.5),
-            Constants.SwerveConstants.MAX_LINEAR_SPEED,
-            DRIVE_BASE_RADIUS,
-            new ReplanningConfig()),
-        () ->
-            DriverStation.getAlliance().isPresent()
-                && DriverStation.getAlliance().get() == Alliance.Red,
-        this);
+    // AutoBuilder.configureHolonomic(
+    //     this::getPose,
+    //     this::setPose,
+    //     () -> kinematics.toChassisSpeeds(getModuleStates()),
+    //     this::runVelocity,
+    //     new HolonomicPathFollowerConfig(
+    //         new PIDConstants(5),
+    //         new PIDConstants(1.5),
+    //         Constants.SwerveConstants.MAX_LINEAR_SPEED,
+    //         DRIVE_BASE_RADIUS,
+    //         new ReplanningConfig()),
+    //     () ->
+    //         DriverStation.getAlliance().isPresent()
+    //             && DriverStation.getAlliance().get() == Alliance.Red,
+    //     this);
     Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
@@ -750,35 +747,35 @@ public class Drive extends SubsystemBase {
     return fieldCoords;
   }
 
-  public PathPlannerPath generateTrajectoryToNote(
-      Translation2d target,
-      double maxVelMetersPerSec,
-      double maxAccelMetersPerSecSquared,
-      double maxAngVelDegPerSec,
-      double maxAngAccelDegPerSecSquared,
-      double endVelMetersPerSec) {
-    Rotation2d targetRotation =
-        new Rotation2d(target.getX() - getPose().getX(), target.getY() - getPose().getY());
+  // public PathPlannerPath generateTrajectoryToNote(
+  //     Translation2d target,
+  //     double maxVelMetersPerSec,
+  //     double maxAccelMetersPerSecSquared,
+  //     double maxAngVelDegPerSec,
+  //     double maxAngAccelDegPerSecSquared,
+  //     double endVelMetersPerSec) {
+  //   Rotation2d targetRotation =
+  //       new Rotation2d(target.getX() - getPose().getX(), target.getY() - getPose().getY());
 
-    Logger.recordOutput("Target Note Pose3d", new Pose3d(new Pose2d(target, new Rotation2d())));
-    List<Translation2d> points =
-        PathPlannerPath.bezierFromPoses(
-            new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
-            new Pose2d(target.getX(), target.getY(), targetRotation));
-    PathPlannerPath path =
-        new PathPlannerPath(
-            points,
-            new PathConstraints(
-                maxAngVelDegPerSec,
-                maxAccelMetersPerSecSquared,
-                Units.degreesToRadians(maxAngVelDegPerSec),
-                Units.degreesToRadians(maxAngAccelDegPerSecSquared)),
-            new GoalEndState(endVelMetersPerSec, targetRotation, true));
+    //Logger.recordOutput("Target Note Pose3d", new Pose3d(new Pose2d(target, new Rotation2d())));
+  //   List<Translation2d> points =
+  //       PathPlannerPath.bezierFromPoses(
+  //           new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
+  //           new Pose2d(target.getX(), target.getY(), targetRotation));
+  //   PathPlannerPath path =
+  //       new PathPlannerPath(
+  //           points,
+  //           new PathConstraints(
+  //               maxAngVelDegPerSec,
+  //               maxAccelMetersPerSecSquared,
+  //               Units.degreesToRadians(maxAngVelDegPerSec),
+  //               Units.degreesToRadians(maxAngAccelDegPerSecSquared)),
+  //           new GoalEndState(endVelMetersPerSec, targetRotation, true));
 
-    path.preventFlipping = true;
+  //   path.preventFlipping = true;
 
-    return path;
-  }
+  //   return path;
+  // }
 
   // public PathPlannerPath generatePathToNote() {
   //   Rotation2d targetRotation;
@@ -884,73 +881,73 @@ public class Drive extends SubsystemBase {
     return chainCoords[closeChainIndex];
   }
 
-  public Command alignToNote(LED led) {
+  // public Command alignToNote(LED led) {
 
-    if (visionInputs.iTX != 0.0) {
-      double taThreshold = 0;
-      if (visionInputs.iTA >= taThreshold) {
-        lastNoteLocT2d.translation =
-            calculateNotePositionFieldRelative().getTranslation().toTranslation2d();
-        lastNoteLocT2d.time = Timer.getFPGATimestamp();
-      }
-    }
+  //   if (visionInputs.iTX != 0.0) {
+  //     double taThreshold = 0;
+  //     if (visionInputs.iTA >= taThreshold) {
+  //       lastNoteLocT2d.translation =
+  //           calculateNotePositionFieldRelative().getTranslation().toTranslation2d();
+  //       lastNoteLocT2d.time = Timer.getFPGATimestamp();
+  //     }
+  //   }
 
-    Rotation2d targetRotation;
-    Logger.recordOutput("note timeess", getCachedNoteTime());
-    if (getCachedNoteTime() != -1) {
-      led.setState(LED_STATE.FLASHING_RED);
-      Translation2d cachedNoteT2d = getCachedNoteLocation();
-      Logger.recordOutput("better translate", cachedNoteT2d);
-      if (noteImageIsNew()) {
+  //   Rotation2d targetRotation;
+  //   Logger.recordOutput("note timeess", getCachedNoteTime());
+  //   if (getCachedNoteTime() != -1) {
+  //     led.setState(LED_STATE.FLASHING_RED);
+  //     Translation2d cachedNoteT2d = getCachedNoteLocation();
+  //     Logger.recordOutput("better translate", cachedNoteT2d);
+  //     if (noteImageIsNew()) {
 
-        targetRotation =
-            new Rotation2d(
-                cachedNoteT2d.getX() - getPose().getX(), cachedNoteT2d.getY() - getPose().getY());
-        List<Translation2d> pointsToNote;
-        Logger.recordOutput("targetPose before change", targetRotation.getDegrees());
-        if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-          if (Math.abs(targetRotation.minus(Rotation2d.fromDegrees(300)).getDegrees()) <= 10) {
-            targetRotation = Rotation2d.fromDegrees(300 + 5);
-          }
-          Logger.recordOutput(
-              "goal point blue",
-              new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
-          pointsToNote =
-              PathPlannerPath.bezierFromPoses(
-                  new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
-                  new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
-        } else {
-          if (Math.abs(targetRotation.minus(Rotation2d.fromDegrees(240)).getDegrees()) <= 10) {
-            targetRotation = Rotation2d.fromDegrees(240 - 5);
-          }
-          Logger.recordOutput(
-              "goal point red",
-              new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
-          pointsToNote =
-              PathPlannerPath.bezierFromPoses(
-                  new Pose2d(
-                      FieldConstants.fieldLength - getPose().getX(),
-                      getPose().getY(),
-                      targetRotation),
-                  new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
-        }
-        PathPlannerPath path =
-            new PathPlannerPath(
-                pointsToNote,
-                new PathConstraints(
-                    3, 2.26, Units.degreesToRadians(100), Units.degreesToRadians(180)),
-                new GoalEndState(0.5, targetRotation, true));
-        Logger.recordOutput("source snap target", targetRotation.getDegrees());
-        path.preventFlipping = true;
-        Logger.recordOutput("follow path", true);
-        return AutoBuilder.followPath(path);
-      } else {
-        return new InstantCommand(() -> led.setState(LED_STATE.PAPAYA_ORANGE));
-      }
-    } else {
-      return new InstantCommand(() -> led.setState(LED_STATE.WILLIAMS_BLUE));
-    }
-  }
+  //       targetRotation =
+  //           new Rotation2d(
+  //               cachedNoteT2d.getX() - getPose().getX(), cachedNoteT2d.getY() - getPose().getY());
+  //       List<Translation2d> pointsToNote;
+  //       Logger.recordOutput("targetPose before change", targetRotation.getDegrees());
+  //       if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
+  //         if (Math.abs(targetRotation.minus(Rotation2d.fromDegrees(300)).getDegrees()) <= 10) {
+  //           targetRotation = Rotation2d.fromDegrees(300 + 5);
+  //         }
+  //         Logger.recordOutput(
+  //             "goal point blue",
+  //             new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+  //         pointsToNote =
+  //             PathPlannerPath.bezierFromPoses(
+  //                 new Pose2d(getPose().getX(), getPose().getY(), targetRotation),
+  //                 new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+  //       } else {
+  //         if (Math.abs(targetRotation.minus(Rotation2d.fromDegrees(240)).getDegrees()) <= 10) {
+  //           targetRotation = Rotation2d.fromDegrees(240 - 5);
+  //         }
+  //         Logger.recordOutput(
+  //             "goal point red",
+  //             new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+  //         pointsToNote =
+  //             PathPlannerPath.bezierFromPoses(
+  //                 new Pose2d(
+  //                     FieldConstants.fieldLength - getPose().getX(),
+  //                     getPose().getY(),
+  //                     targetRotation),
+  //                 new Pose2d(cachedNoteT2d.getX(), cachedNoteT2d.getY(), targetRotation));
+  //       }
+  //       PathPlannerPath path =
+  //           new PathPlannerPath(
+  //               pointsToNote,
+  //               new PathConstraints(
+  //                   3, 2.26, Units.degreesToRadians(100), Units.degreesToRadians(180)),
+  //               new GoalEndState(0.5, targetRotation, true));
+  //       Logger.recordOutput("source snap target", targetRotation.getDegrees());
+  //       path.preventFlipping = true;
+  //       Logger.recordOutput("follow path", true);
+  //       return AutoBuilder.followPath(path);
+  //     } else {
+  //       return new InstantCommand(() -> led.setState(LED_STATE.PAPAYA_ORANGE));
+  //     }
+  //   } else {
+  //     return new InstantCommand(() -> led.setState(LED_STATE.WILLIAMS_BLUE));
+  //   }
+  // }
 
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
@@ -967,40 +964,40 @@ public class Drive extends SubsystemBase {
     // return false;
   }
 
-  public Command followPathCommand(String pathName, boolean lowerPID) {
-    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+  // public Command followPathCommand(String pathName, boolean lowerPID) {
+  //   PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
-    return new FollowPathHolonomic(
-        path,
-        this::getPose, // Robot pose supplier
-        () ->
-            kinematics.toChassisSpeeds(
-                getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
-            // in your Constants class
-            new PIDConstants(5.0), // Translation PID constants
-            new PIDConstants(lowerPID ? 0.5 : 1.5), // Rotation PID constants
-            Constants.SwerveConstants.MAX_LINEAR_SPEED, // Max module speed, in m/s
-            DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to
-            // furthest module.
-            new ReplanningConfig() // Default path replanning config. See the API for the options
-            // here
-            ),
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+  //   return new FollowPathHolonomic(
+  //       path,
+  //       this::getPose, // Robot pose supplier
+  //       () ->
+  //           kinematics.toChassisSpeeds(
+  //               getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+  //       this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+  //       new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
+  //           // in your Constants class
+  //           new PIDConstants(5.0), // Translation PID constants
+  //           new PIDConstants(lowerPID ? 0.5 : 1.5), // Rotation PID constants
+  //           Constants.SwerveConstants.MAX_LINEAR_SPEED, // Max module speed, in m/s
+  //           DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to
+  //           // furthest module.
+  //           new ReplanningConfig() // Default path replanning config. See the API for the options
+  //           // here
+  //           ),
+  //       () -> {
+  //         // Boolean supplier that controls when the path will be mirrored for the red alliance
+  //         // This will flip the path being followed to the red side of the field.
+  //         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        },
-        this // Reference to this subsystem to set requirements
-        );
-  }
+  //         var alliance = DriverStation.getAlliance();
+  //         if (alliance.isPresent()) {
+  //           return alliance.get() == DriverStation.Alliance.Red;
+  //         }
+  //         return false;
+  //       },
+  //       this // Reference to this subsystem to set requirements
+  //       );
+  // }
 
   public void setNote(NOTE_POSITIONS targetNote) {
     this.targetNote = targetNote;

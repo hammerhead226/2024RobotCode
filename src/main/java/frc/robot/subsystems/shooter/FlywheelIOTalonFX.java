@@ -8,6 +8,11 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 
 public class FlywheelIOTalonFX implements FlywheelIO {
@@ -15,16 +20,16 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final TalonFX left;
   private final TalonFX right;
 
-  private final StatusSignal<Double> leftVelocityRPS;
-  private final StatusSignal<Double> leftAppliedVolts;
-  private final StatusSignal<Double> leftCurrentAmps;
-  private final StatusSignal<Double> leftRotations;
+  private final StatusSignal<AngularVelocity> leftVelocityRPS;
+  private final StatusSignal<Voltage> leftAppliedVolts;
+  private final StatusSignal<Current> leftCurrentAmps;
+  private final StatusSignal<Angle> leftRotations;
   private double leftSetpointRPM = 0.0;
 
-  private final StatusSignal<Double> rightVelocityRPS;
-  private final StatusSignal<Double> rightAppliedVolts;
-  private final StatusSignal<Double> rightCurrentAmps;
-  private final StatusSignal<Double> rightRotations;
+  private final StatusSignal<AngularVelocity> rightVelocityRPS;
+  private final StatusSignal<Voltage> rightAppliedVolts;
+  private final StatusSignal<Current> rightCurrentAmps;
+  private final StatusSignal<Angle> rightRotations;
   private double rightSetpointRPM = 0.0;
 
   public FlywheelIOTalonFX(int leftID, int rightID) {

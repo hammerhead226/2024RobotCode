@@ -3,17 +3,20 @@ package frc.robot.subsystems.intake;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants;
 
 public class IntakeRollerIOSim implements IntakeRollerIO {
   private final DCMotor simGearbox = DCMotor.getNeoVortex(1);
   private DCMotorSim sim = new DCMotorSim(simGearbox, 0.33, 0.1);
+
+ ;
   private PIDController pid = new PIDController(0.2, 0, 0);
 
   private boolean closedLoop = false;
-  private double volts = 0.0;
-  private double appliedVolts = 0.0;
+  private double volts;
+  private double appliedVolts;
 
   @Override
   public void updateInputs(IntakeRollerIOInputs inputs) {

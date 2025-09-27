@@ -9,6 +9,11 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.util.Conversions;
 
@@ -17,10 +22,10 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private final TalonFX follower;
 
   private double positionSetpoint;
-  private final StatusSignal<Double> elevatorPosition;
-  private final StatusSignal<Double> elevatorVelocity;
-  private final StatusSignal<Double> appliedVolts;
-  private final StatusSignal<Double> currentAmps;
+  private final StatusSignal<Angle> elevatorPosition;
+  private final StatusSignal<AngularVelocity> elevatorVelocity;
+  private final StatusSignal<Voltage> appliedVolts;
+  private final StatusSignal<Current> currentAmps;
 
   public ElevatorIOTalonFX(int lead, int follow) {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -71,15 +76,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   public void setPositionSetpoint(double position, double ffVolts) {
     this.positionSetpoint = position;
     leader.setControl(
-        new PositionVoltage(
-            Conversions.inchesToMotorRot(position, 5.97, Constants.ElevatorConstants.REDUCTION),
-            0,
-            false,
-            ffVolts,
-            0,
-            false,
-            false,
-            false));
+      new PositionVoltage(position).withFeedForward(ffVolts));
+
+  
   }
 
   @Override

@@ -1,22 +1,27 @@
 package frc.robot.subsystems.shooter;
 
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.SparkPIDController.ArbFFUnits;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkClosedLoopController;
+
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
+
 import frc.robot.Constants;
 
+
 public class FeederIOSparkMax implements FeederIO {
-  private final CANSparkMax neo;
-  private final SparkPIDController pid;
+  private final SparkMax neo;
+  private final SparkClosedLoopController pid;
+
+  
 
   private double velocitySetpointRPS = 0;
 
   public FeederIOSparkMax(int id) {
 
-    neo = new CANSparkMax(id, MotorType.kBrushless);
-    pid = neo.getPIDController();
+    neo = new SparkMax(id, MotorType.kBrushless);
+    pid = neo.getClosedLoopController();
 
     neo.restoreFactoryDefaults();
     neo.setSmartCurrentLimit((int) Constants.ShooterConstants.FEEDER_CURRENT_LIMIT);

@@ -5,15 +5,20 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 
 public class IntakeRollerIOTalonFX implements IntakeRollerIO {
   private final TalonFX falcon;
 
-  private final StatusSignal<Double> rollerRotations;
-  private final StatusSignal<Double> rollerVelocityRPS;
-  private final StatusSignal<Double> appliedVolts;
-  private final StatusSignal<Double> currentAmps;
+  private final StatusSignal<Angle> rollerRotations;
+  private final StatusSignal<AngularVelocity> rollerVelocityRPS;
+  private final StatusSignal<Voltage> appliedVolts;
+  private final StatusSignal<Current> currentAmps;
 
   public IntakeRollerIOTalonFX(int id) {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -39,8 +44,8 @@ public class IntakeRollerIOTalonFX implements IntakeRollerIO {
 
     inputs.rollerRotations = rollerRotations.getValueAsDouble();
     inputs.rollerVelocityRPM = rollerVelocityRPS.getValueAsDouble() * 60.;
-    inputs.appliedVolts = appliedVolts.getValue();
-    inputs.currentAmps = currentAmps.getValue();
+    inputs.appliedVolts = appliedVolts.getValueAsDouble();
+    inputs.currentAmps = currentAmps.getValueAsDouble();
   }
 
   @Override

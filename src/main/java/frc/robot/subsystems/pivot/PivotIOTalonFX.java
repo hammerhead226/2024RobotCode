@@ -12,6 +12,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.util.Conversions;
 import org.littletonrobotics.junction.Logger;
@@ -26,11 +31,11 @@ public class PivotIOTalonFX implements PivotIO {
 
   private double startAngleDegs;
 
-  private final StatusSignal<Double> leaderPositionDegs;
-  private final StatusSignal<Double> velocityDegsPerSec;
-  private final StatusSignal<Double> appliedVolts;
-  private final StatusSignal<Double> currentAmps;
-  private final StatusSignal<Double> pitch;
+  private final StatusSignal<Angle> leaderPositionDegs;
+  private final StatusSignal<AngularVelocity> velocityDegsPerSec;
+  private final StatusSignal<Voltage> appliedVolts;
+  private final StatusSignal<Current> currentAmps;
+  private final StatusSignal<Angle> pitch;
 
   public PivotIOTalonFX(int leadID, int followID, int gyroID) {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -118,15 +123,9 @@ public class PivotIOTalonFX implements PivotIO {
   public void setPositionSetpointDegs(double positionDegs, double ffVolts) {
     this.positionSetpointDegs = positionDegs;
     leader.setControl(
-        new PositionVoltage(
-            Conversions.degreesToFalcon(positionDegs - 59, Constants.PivotConstants.REDUCTION),
-            0,
-            false,
-            ffVolts,
-            0,
-            false,
-            false,
-            false));
+      new PositionVoltage(positionDegs-59).withFeedForward(ffVolts));
+
+           
   }
 
   @Override
