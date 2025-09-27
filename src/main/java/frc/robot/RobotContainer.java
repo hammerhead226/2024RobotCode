@@ -89,9 +89,9 @@ import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.shooter.DistanceSensorIO;
 import frc.robot.subsystems.shooter.DistanceSensorIOAnalog;
-import frc.robot.subsystems.shooter.FeederIOSim;
+//import frc.robot.subsystems.shooter.FeederIOSim;
 import frc.robot.subsystems.shooter.FeederIOTalonFX;
-import frc.robot.subsystems.shooter.FlywheelIOSim;
+//import frc.robot.subsystems.shooter.FlywheelIOSim;
 import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
 import frc.robot.subsystems.shooter.LeafBlowerIO;
 import frc.robot.subsystems.shooter.LeafBlowerIOTalonSRX;
@@ -191,46 +191,7 @@ public class RobotContainer {
                     RobotMap.PivotIDs.LEFT, RobotMap.PivotIDs.RIGHT, RobotMap.PivotIDs.GYRO));
         led = new LED(new LED_IOCANdle(20, Constants.CANBUS));
         break;
-      case REPLAY:
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new VisionIO() {},
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim());
-        intake = new Intake(new IntakeRollerIOSim());
-        shooter =
-            new Shooter(
-                new FlywheelIOSim(),
-                new FeederIOSim(),
-                new DistanceSensorIO() {},
-                new LeafBlowerIO() {});
-        elevator = new Elevator(new ElevatorIOSim(), null);
-        pivot = new Pivot(new PivotIOSim());
-        led = new LED(new LED_IOSim());
-        break;
-      case SIM:
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new VisionIO() {},
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim());
-        intake = new Intake(new IntakeRollerIOSim());
-        shooter =
-            new Shooter(
-                new FlywheelIOSim(),
-                new FeederIOSim(),
-                new DistanceSensorIO() {},
-                new LeafBlowerIO() {});
-        elevator = new Elevator(new ElevatorIOSim(), new AmpBarIOSIm());
-        pivot = new Pivot(new PivotIOSim());
-        led = new LED(new LED_IOSim());
-        break;
+     
 
       default:
         // Replayed robot, disable IO implementations
@@ -401,21 +362,7 @@ public class RobotContainer {
             () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
 
     // NOTE ALIGNMENT NAMED COMMANDS
-    NamedCommands.registerCommand(
-        "AlignToNote",
-        new AlignToNoteAuto(led, drive, shooter, intake, pivot)
-            .until(
-                () ->
-                    shooter.seesNote() == NoteState.SENSOR
-                        || shooter.seesNote() == NoteState.CURRENT)
-            // TODO:: adjust this delay
-            .andThen(new InstantCommand(drive::stop))
-            .andThen(new InstantCommand(() -> shooter.setFeedersRPM(500)))
-            .andThen(new WaitCommand(0.15))
-            .andThen(
-                new InstantCommand(() -> intake.stopRollers())
-                    .andThen(new InstantCommand(() -> shooter.stopFeeders())))
-            .withTimeout(1.7));
+    
 
     NamedCommands.registerCommand("C5", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.C5)));
     NamedCommands.registerCommand("C4", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.C4)));

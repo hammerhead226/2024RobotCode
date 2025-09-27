@@ -60,8 +60,19 @@ public class FeederIOTalonFX implements FeederIO {
   @Override
   public void setVelocityRPS(double velocityRPS, double ffVolts) {
     this.velocitySetpointRPS = velocityRPS;
-    feeder.setControl(new VelocityVoltage(velocityRPS, 0, false, ffVolts, 0, false, false, false));
-  }
+
+     VelocityVoltage request = new VelocityVoltage(velocityRPS)
+        .withAcceleration(0)                 
+        .withEnableFOC(false)                
+        .withFeedForward(ffVolts)              
+        .withSlot(0)                          
+        .withOverrideBrakeDurNeutral(false)  
+        .withLimitForwardMotion(false)         
+        .withLimitReverseMotion(false);      
+
+    feeder.setControl(request);
+}
+
 
   @Override
   public void stop() {

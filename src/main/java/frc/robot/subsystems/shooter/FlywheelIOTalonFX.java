@@ -113,11 +113,30 @@ public class FlywheelIOTalonFX implements FlywheelIO {
       double leftVelocityRPS, double rightVelocityRPS, double leftFFVolts, double rightFFVolts) {
     this.leftSetpointRPM = leftVelocityRPS * 60.;
     this.rightSetpointRPM = rightVelocityRPS * 60.;
-
-    left.setControl(
-        new VelocityVoltage(leftVelocityRPS, 0, false, leftFFVolts, 0, false, false, false));
-    right.setControl(
-        new VelocityVoltage(rightVelocityRPS, 0, false, rightFFVolts, 0, false, false, false));
+      
+          VelocityVoltage leftRequest = new VelocityVoltage(leftVelocityRPS)
+              .withAcceleration(0)                 
+              .withEnableFOC(false)          
+              .withFeedForward(leftFFVolts)             
+              .withSlot(0)                          
+              .withOverrideBrakeDurNeutral(false)   
+              .withLimitForwardMotion(false)      
+              .withLimitReverseMotion(false);  
+              left.setControl(leftRequest);      
+      
+          // Send the control request to the motor
+          
+      
+      
+          VelocityVoltage rightRequest = new VelocityVoltage(rightVelocityRPS)
+          .withAcceleration(0)                 
+          .withEnableFOC(false)          
+          .withFeedForward(rightFFVolts)             
+          .withSlot(0)                          
+          .withOverrideBrakeDurNeutral(false)   
+          .withLimitForwardMotion(false)      
+          .withLimitReverseMotion(false);  
+          left.setControl(rightRequest);     
   }
 
   @Override

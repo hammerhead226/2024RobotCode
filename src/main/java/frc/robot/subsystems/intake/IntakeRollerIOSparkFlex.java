@@ -4,11 +4,16 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 
+ 
 import frc.robot.Constants;
 
 public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
-  private final SparkFlex rollers;
+  private final SparkMax rollers;
 
   public IntakeRollerIOSparkFlex(int id) {
     SparkMax rollers = new SparkMax(id, MotorType.kBrushless);
@@ -16,11 +21,10 @@ public class IntakeRollerIOSparkFlex implements IntakeRollerIO {
     
     
     
-
-    rollers.setSmartCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT);
+     rollers.setSmart(5);
     rollers.setCANTimeout(250);
-
-    rollers.SparkBase.PersistenMode.kPersistentParameters();
+    SparkMaxConfig.
+    rollers.burnFlash();
   }
 
   @Override
