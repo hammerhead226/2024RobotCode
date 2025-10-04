@@ -6,9 +6,6 @@ package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Voltage;
-
 /** Add your docs here. */
 public interface IntakeRollerIO {
   @AutoLog

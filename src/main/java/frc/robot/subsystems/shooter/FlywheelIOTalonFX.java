@@ -8,7 +8,6 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -113,30 +112,30 @@ public class FlywheelIOTalonFX implements FlywheelIO {
       double leftVelocityRPS, double rightVelocityRPS, double leftFFVolts, double rightFFVolts) {
     this.leftSetpointRPM = leftVelocityRPS * 60.;
     this.rightSetpointRPM = rightVelocityRPS * 60.;
-      
-          VelocityVoltage leftRequest = new VelocityVoltage(leftVelocityRPS)
-              .withAcceleration(0)                 
-              .withEnableFOC(false)          
-              .withFeedForward(leftFFVolts)             
-              .withSlot(0)                          
-              .withOverrideBrakeDurNeutral(false)   
-              .withLimitForwardMotion(false)      
-              .withLimitReverseMotion(false);  
-              left.setControl(leftRequest);      
-      
-          // Send the control request to the motor
-          
-      
-      
-          VelocityVoltage rightRequest = new VelocityVoltage(rightVelocityRPS)
-          .withAcceleration(0)                 
-          .withEnableFOC(false)          
-          .withFeedForward(rightFFVolts)             
-          .withSlot(0)                          
-          .withOverrideBrakeDurNeutral(false)   
-          .withLimitForwardMotion(false)      
-          .withLimitReverseMotion(false);  
-          left.setControl(rightRequest);     
+
+    VelocityVoltage leftRequest =
+        new VelocityVoltage(leftVelocityRPS)
+            .withAcceleration(0)
+            .withEnableFOC(false)
+            .withFeedForward(leftFFVolts)
+            .withSlot(0)
+            .withOverrideBrakeDurNeutral(false)
+            .withLimitForwardMotion(false)
+            .withLimitReverseMotion(false);
+    left.setControl(leftRequest);
+
+    // Send the control request to the motor
+
+    VelocityVoltage rightRequest =
+        new VelocityVoltage(rightVelocityRPS)
+            .withAcceleration(0)
+            .withEnableFOC(false)
+            .withFeedForward(rightFFVolts)
+            .withSlot(0)
+            .withOverrideBrakeDurNeutral(false)
+            .withLimitForwardMotion(false)
+            .withLimitReverseMotion(false);
+    left.setControl(rightRequest);
   }
 
   @Override

@@ -43,7 +43,8 @@
 //       targetRotation =
 //           new Rotation2d(
 //               (Units.degreesToRadians(
-//                   new Rotation2d(FieldConstants.ampCenter.getX(), FieldConstants.ampCenter.getY())
+//                   new Rotation2d(FieldConstants.ampCenter.getX(),
+// FieldConstants.ampCenter.getY())
 //                           .getDegrees()
 //                       + 13)));
 //       pointsToAmp =
@@ -57,7 +58,8 @@
 //       path =
 //           new PathPlannerPath(
 //               pointsToAmp,
-//               new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720)),
+//               new PathConstraints(3, 3, Units.degreesToRadians(540),
+// Units.degreesToRadians(720)),
 //               new GoalEndState(0, targetRotation, true));
 //     } else {
 //       targetRotation =
@@ -83,7 +85,8 @@
 //       path =
 //           new PathPlannerPath(
 //               pointsToAmp,
-//               new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720)),
+//               new PathConstraints(3, 3, Units.degreesToRadians(540),
+// Units.degreesToRadians(720)),
 //               new GoalEndState(0, targetRotation, true));
 //     }
 

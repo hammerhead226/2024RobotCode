@@ -47,7 +47,8 @@
 //     if (closedLoop) {
 //       rightAppliedVolts =
 //           MathUtil.clamp(
-//               rightPID.calculate(right.getAngularVelocityRPM() / 60.) + rightFFVolts, -12.0, 12.0);
+//               rightPID.calculate(right.getAngularVelocityRPM() / 60.) + rightFFVolts, -12.0,
+// 12.0);
 //       right.setInputVoltage(rightAppliedVolts);
 //     }
 

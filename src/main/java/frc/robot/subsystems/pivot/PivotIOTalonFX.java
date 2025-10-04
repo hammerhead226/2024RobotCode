@@ -12,7 +12,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -122,10 +121,7 @@ public class PivotIOTalonFX implements PivotIO {
   @Override
   public void setPositionSetpointDegs(double positionDegs, double ffVolts) {
     this.positionSetpointDegs = positionDegs;
-    leader.setControl(
-      new PositionVoltage(positionDegs-59).withFeedForward(ffVolts));
-
-           
+    leader.setControl(new PositionVoltage(positionDegs - 59).withFeedForward(ffVolts));
   }
 
   @Override

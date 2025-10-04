@@ -38,7 +38,7 @@ import frc.robot.Constants.SHOOT_STATE;
 import frc.robot.commands.AimbotAuto;
 import frc.robot.commands.AimbotStatic;
 import frc.robot.commands.AimbotTele;
-//import frc.robot.commands.AlignToNoteAuto;
+// import frc.robot.commands.AlignToNoteAuto;
 import frc.robot.commands.AngleShooter;
 // import frc.robot.commands.AngleShooterShoot;
 import frc.robot.commands.DriveCommands;
@@ -65,35 +65,31 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
-//import frc.robot.subsystems.drive.ModuleIOSim;
+// import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.VisionIO;
 import frc.robot.subsystems.drive.VisionIOLimelight;
 import frc.robot.subsystems.elevator.AmpBarIO;
-import frc.robot.subsystems.elevator.AmpBarIOSIm;
 import frc.robot.subsystems.elevator.AmpBarIOSparkMAX;
-//import frc.robot.subsystems.elevator.AmpBarIOSparkMAX;
+// import frc.robot.subsystems.elevator.AmpBarIOSparkMAX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
-//import frc.robot.subsystems.intake.IntakeRollerIOSim;
-//import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
+// import frc.robot.subsystems.intake.IntakeRollerIOSim;
+// import frc.robot.subsystems.intake.IntakeRollerIOSparkFlex;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.led.LED_IO;
 import frc.robot.subsystems.led.LED_IOCANdle;
-import frc.robot.subsystems.led.LED_IOSim;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
-import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.shooter.DistanceSensorIO;
 import frc.robot.subsystems.shooter.DistanceSensorIOAnalog;
-//import frc.robot.subsystems.shooter.FeederIOSim;
+// import frc.robot.subsystems.shooter.FeederIOSim;
 import frc.robot.subsystems.shooter.FeederIOTalonFX;
-//import frc.robot.subsystems.shooter.FlywheelIOSim;
+// import frc.robot.subsystems.shooter.FlywheelIOSim;
 import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
 import frc.robot.subsystems.shooter.LeafBlowerIO;
 import frc.robot.subsystems.shooter.LeafBlowerIOTalonSRX;
@@ -193,7 +189,6 @@ public class RobotContainer {
                     RobotMap.PivotIDs.LEFT, RobotMap.PivotIDs.RIGHT, RobotMap.PivotIDs.GYRO));
         led = new LED(new LED_IOCANdle(20, Constants.CANBUS));
         break;
-     
 
       default:
         // Replayed robot, disable IO implementations
@@ -364,7 +359,6 @@ public class RobotContainer {
             () -> intake.runRollers(Constants.IntakeConstants.APPLIED_VOLTAGE), intake));
 
     // NOTE ALIGNMENT NAMED COMMANDS
-    
 
     NamedCommands.registerCommand("C5", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.C5)));
     NamedCommands.registerCommand("C4", new InstantCommand(() -> drive.setNote(NOTE_POSITIONS.C4)));

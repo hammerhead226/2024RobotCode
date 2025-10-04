@@ -24,7 +24,8 @@
 // /**
 //  * Physics sim implementation of module IO.
 //  *
-//  * <p>Uses two flywheel sims for the drive and turn motors, with the absolute position initialized
+//  * <p>Uses two flywheel sims for the drive and turn motors, with the absolute position
+// initialized
 //  * to a random value. The flywheel sims are not physically accurate, but provide a decent
 //  * approximation for the behavior of the module.
 //  */
@@ -33,8 +34,8 @@
 //    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1), 150.0 / 7.0, 0.004);
 //    private DCMotorSim turnSim = new DCMotorSim(DCMotor.getNEO(1), 150.0 / 7.0, 0.004);
 
-
-//   private final Rotation2d turnAbsoluteInitPosition = new Rotation2d(Math.random() * 2.0 * Math.PI);
+//   private final Rotation2d turnAbsoluteInitPosition = new Rotation2d(Math.random() * 2.0 *
+// Math.PI);
 //   private double driveAppliedVolts = 0.0;
 //   private double turnAppliedVolts = 0.0;
 

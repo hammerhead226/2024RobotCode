@@ -1,16 +1,8 @@
 package frc.robot.subsystems.elevator;
 
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLowLevel;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.SparkMax;
 
 public class AmpBarIOSparkMAX implements AmpBarIO {
 
@@ -26,8 +18,6 @@ public class AmpBarIOSparkMAX implements AmpBarIO {
     pid = barMotor.getClosedLoopController();
     // pid.setFeedbackDevice(barMotor.getAbsoluteEncoder());
 
-     
-
     barMotor.clearFaults();
 
     barPositionSetpoint = 0;
@@ -42,5 +32,3 @@ public class AmpBarIOSparkMAX implements AmpBarIO {
     inputs.appliedVolts = barMotor.getAppliedOutput();
   }
 }
-
-  

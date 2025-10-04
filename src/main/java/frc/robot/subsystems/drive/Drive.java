@@ -16,9 +16,8 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-//import com.pathplanner.lib.commands.FollowPathHolonomic;
+// import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -43,13 +42,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.Constants.LED_STATE;
 import frc.robot.Constants.NOTE_POSITIONS;
-import frc.robot.subsystems.led.LED;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers;
@@ -57,7 +53,6 @@ import frc.robot.util.LimelightHelpers.PoseEstimate;
 import frc.robot.util.LimelightHelpers.RawFiducial;
 import frc.robot.util.LocalADStarAK;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -757,7 +752,7 @@ public class Drive extends SubsystemBase {
   //   Rotation2d targetRotation =
   //       new Rotation2d(target.getX() - getPose().getX(), target.getY() - getPose().getY());
 
-    //Logger.recordOutput("Target Note Pose3d", new Pose3d(new Pose2d(target, new Rotation2d())));
+  // Logger.recordOutput("Target Note Pose3d", new Pose3d(new Pose2d(target, new Rotation2d())));
   //   List<Translation2d> points =
   //       PathPlannerPath.bezierFromPoses(
   //           new Pose2d(getPose().getX(), getPose().getY(), getPose().getRotation()),
@@ -902,7 +897,8 @@ public class Drive extends SubsystemBase {
 
   //       targetRotation =
   //           new Rotation2d(
-  //               cachedNoteT2d.getX() - getPose().getX(), cachedNoteT2d.getY() - getPose().getY());
+  //               cachedNoteT2d.getX() - getPose().getX(), cachedNoteT2d.getY() -
+  // getPose().getY());
   //       List<Translation2d> pointsToNote;
   //       Logger.recordOutput("targetPose before change", targetRotation.getDegrees());
   //       if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {

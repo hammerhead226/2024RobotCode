@@ -30,9 +30,12 @@ public class GyroIOPigeon2 implements GyroIO {
   private final Pigeon2 pigeon = new Pigeon2(0, Constants.CANBUS);
   private final StatusSignal<Angle> yaw = pigeon.getYaw();
   private final StatusSignal<AngularVelocity> yawVelocity = pigeon.getAngularVelocityZWorld();
-  private final StatusSignal<LinearAcceleration> accelerationXDegSecSquared = pigeon.getAccelerationX();
-  private final StatusSignal<LinearAcceleration> accelerationYDegSecSquared = pigeon.getAccelerationY();
-  private final StatusSignal<LinearAcceleration> accelerationZDegSecSquared = pigeon.getAccelerationZ();
+  private final StatusSignal<LinearAcceleration> accelerationXDegSecSquared =
+      pigeon.getAccelerationX();
+  private final StatusSignal<LinearAcceleration> accelerationYDegSecSquared =
+      pigeon.getAccelerationY();
+  private final StatusSignal<LinearAcceleration> accelerationZDegSecSquared =
+      pigeon.getAccelerationZ();
 
   public GyroIOPigeon2() {
     pigeon.getConfigurator().apply(new Pigeon2Configuration());

@@ -7,7 +7,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -61,18 +60,18 @@ public class FeederIOTalonFX implements FeederIO {
   public void setVelocityRPS(double velocityRPS, double ffVolts) {
     this.velocitySetpointRPS = velocityRPS;
 
-     VelocityVoltage request = new VelocityVoltage(velocityRPS)
-        .withAcceleration(0)                 
-        .withEnableFOC(false)                
-        .withFeedForward(ffVolts)              
-        .withSlot(0)                          
-        .withOverrideBrakeDurNeutral(false)  
-        .withLimitForwardMotion(false)         
-        .withLimitReverseMotion(false);      
+    VelocityVoltage request =
+        new VelocityVoltage(velocityRPS)
+            .withAcceleration(0)
+            .withEnableFOC(false)
+            .withFeedForward(ffVolts)
+            .withSlot(0)
+            .withOverrideBrakeDurNeutral(false)
+            .withLimitForwardMotion(false)
+            .withLimitReverseMotion(false);
 
     feeder.setControl(request);
-}
-
+  }
 
   @Override
   public void stop() {

@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.LED_STATE;
 import frc.robot.Constants.NoteState;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.led.LED;
@@ -40,7 +39,7 @@ public class IntakeNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+
     // if (intake.getVolts() < 1 && intake.getAmps() > 38 && intake.getRPM() < 44.14) {
     //   led.setState(LED_STATE.PURPLE);
     // } else {
