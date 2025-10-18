@@ -34,4 +34,8 @@ public class LED extends SubsystemBase {
     led.setLEDState(state);
     Logger.recordOutput("Set State", state);
   }
+
+  public void setLEDs(int r, int g, int b, int w, int startIdx, int count) {
+    led.setLEDs(r, g, b, w, startIdx, count);
+  }
 }

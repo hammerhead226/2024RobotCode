@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -478,6 +479,18 @@ public class RobotContainer {
   }
 
   private void demoControls() {
+    // led.setDefaultCommand(new BatteryDisplay(led));
+    // alternatively
+    // new Trigger(() -> RobotController.getBatteryVoltage() < 11)
+    //     .onTrue(
+    //         new InstantCommand(() -> led.setState(LED_STATE.PURPLE))
+    //             .andThen(new WaitCommand(0.2))
+    //             .andThen(new InstantCommand(() -> led.setState(LED_STATE.YELLOW))));
+    // alternatively alternatively
+    new Trigger(() -> RobotController.getBatteryVoltage() < 11)
+        .onTrue(new InstantCommand(() -> led.setState(LED_STATE.PURPLE)))
+        .onFalse(new InstantCommand(() -> led.setState(LED_STATE.YELLOW)));
+
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
@@ -592,28 +605,28 @@ public class RobotContainer {
                 // new InstantCommand(() -> trapStateMachine.setTargetState(TRAP_STATES.PIVOT)),
                 // new SetElevatorTarget(0, 1.5, elevator),
                 new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.PIVOT_PRESET)),
-                new SetPivotTarget(45, pivot),
-                new InstantCommand(() -> shooter.setFlywheelRPMs(1500, 1900))));
+                new SetPivotTarget(60, pivot),
+                new InstantCommand(() -> shooter.setFlywheelRPMs(1200, 1600))));
     driveController
         .b()
         .onFalse(
             new InstantCommand(() -> led.setState(LED_STATE.BLUE))
                 .andThen(new InstantCommand(() -> shooter.stopFlywheels()))
                 .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
-    
-    driveController
-        .a()
-        .onTrue(
-            new SequentialCommandGroup(
-                new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.PIVOT_PRESET)),
-                new SetPivotTarget(45, pivot),
-                new InstantCommand(() -> shooter.setFlywheelRPMs(5600, 6000))));
-    driveController
-        .a()
-        .onFalse(
-            new InstantCommand(() -> led.setState(LED_STATE.BLUE))
-                .andThen(new InstantCommand(() -> shooter.stopFlywheels()))
-                .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
+
+    // driveController
+    //     .a()
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             new InstantCommand(() -> pivot.setShootState(SHOOT_STATE.PIVOT_PRESET)),
+    //             new SetPivotTarget(60, pivot),
+    //             new InstantCommand(() -> shooter.setFlywheelRPMs(5600, 6000))));
+    // driveController
+    //     .a()
+    //     .onFalse(
+    //         new InstantCommand(() -> led.setState(LED_STATE.BLUE))
+    //             .andThen(new InstantCommand(() -> shooter.stopFlywheels()))
+    //             .andThen(new SetPivotTarget(Constants.PivotConstants.STOW_SETPOINT_DEG, pivot)));
 
     driveController.back().onTrue(new SetPivotTarget(95, pivot));
   }

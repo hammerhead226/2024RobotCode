@@ -156,4 +156,9 @@ public class LED_IOCANdle implements LED_IO {
         break;
     }
   }
+
+  @Override
+  public void setLEDs(int r, int g, int b, int w, int startIdx, int count) {
+    candle.setLEDs(r, g, b, w, startIdx, count);
+  }
 }

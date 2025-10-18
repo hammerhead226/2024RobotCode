@@ -21,4 +21,6 @@ public interface LED_IO {
   public default void noBumpersPressed() {}
 
   public default void setLEDState(LED_STATE state) {}
+
+  public default void setLEDs(int r, int g, int b, int w, int startIdx, int count) {}
 }

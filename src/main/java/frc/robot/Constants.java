@@ -14,6 +14,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.LoggedTunableNumber;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -124,7 +125,7 @@ public final class Constants {
     public static final boolean CURRENT_LIMIT_ENABLED = true;
 
     public static final double PODIUM_SETPOINT_DEG = 41.45;
-    public static final double STOW_SETPOINT_DEG = 50.7;
+    public static final double STOW_SETPOINT_DEG = 60;
     public static final double INTAKE_SETPOINT_DEG = 59.0;
     public static final double AMP_SETPOINT_DEG = 58.6;
     public static final double SUBWOOFER_SETPOINT_DEG = 62.0;
@@ -150,6 +151,8 @@ public final class Constants {
     public static final double COLOR_RED = 0.61;
     public static final double COLOR_YELLOW = 0.66;
     public static final double COLOR_VIOLET = 0.91;
+    public static final LoggedTunableNumber debugLEDIdx =
+        new LoggedTunableNumber("debugLEDIdx", 50);
   }
 
   public static enum NOTE_POSITIONS {

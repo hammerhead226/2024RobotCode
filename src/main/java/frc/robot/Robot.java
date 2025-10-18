@@ -15,6 +15,8 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.pathfinding.Pathfinding;
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.LED_STATE;
@@ -37,6 +39,9 @@ public class Robot extends LoggedRobot {
 
   private Command autonomousCommand;
   private RobotContainer m_robotContainer;
+
+  private static final LinearFilter voltageFilter = LinearFilter.movingAverage(500);
+  private static double filteredVoltage;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -110,12 +115,18 @@ public class Robot extends LoggedRobot {
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    filteredVoltage = voltageFilter.calculate(RobotController.getBatteryVoltage());
+  }
+
+  public static double getFilteredVoltage() {
+    return filteredVoltage;
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    m_robotContainer.getLED().setState(LED_STATE.FIRE);
+    m_robotContainer.getLED().setState(LED_STATE.BLUE);
     m_robotContainer.getClimbStateMachine().setClimbState(CLIMB_STATES.NONE);
   }
 

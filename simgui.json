@@ -39,6 +39,19 @@
       "/SmartDashboard/Auto Choices": "String Chooser"
     }
   },
+  "NetworkTables": {
+    "transitory": {
+      "AdvantageKit": {
+        "DashboardInputs": {
+          "Tunables": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      }
+    }
+  },
   "NetworkTables Info": {
     "visible": true
   }
